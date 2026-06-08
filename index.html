@@ -958,21 +958,39 @@ ehProfessor=false;
             }
         })
     </script>
-    <!-- Mascote Flutuante da SulSafe -->
-<div class="mascote-sulsafe">
-  <img src="sipat-seguranca.png" alt="Mascote SulSafe">
+   <!-- Mascote Flutuante Estilo Pop-up de Ajuda -->
+<div class="mascote-sulsafe-popup">
+  <div class="balao-ajuda-wrapper">
+    <img src="sipat-seguranca.png" alt="Mascote SulSafe">
+  </div>
 </div>
 
 <style>
-  .mascote-sulsafe {
+  .mascote-sulsafe-popup {
     position: fixed;
-    bottom: 20px;       /* Distância do fundo da tela */
-    right: 20px;        /* Distância do canto direito */
-    width: 130px;       /* Tamanho do boneco na tela */
+    bottom: 25px;       /* Distância do fundo da tela */
+    right: 25px;        /* Distância do canto direito */
+    z-index: 9999;      /* Fica na frente de tudo */
+  }
+
+  .balao-ajuda-wrapper {
+    width: 80px;        /* Tamanho ideal do botão de ajuda (estilo chat) */
+    height: 80px;
+    background-color: #ffffff; /* Fundo branco para destacar */
+    border-radius: 50%; /* Deixa o fundo perfeitamente redondo */
+    overflow: hidden;   /* Corta o excesso da imagem para virar um círculo */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante de pop-up */
+    border: 3px solid #006400; /* Bordinha verde escura combinando com a SulSafe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .balao-ajuda-wrapper img {
+    width: 130%;        /* Ajusta o zoom da imagem para focar no boneco */
     height: auto;
-    z-index: 9999;      /* Garante que ele fique na frente do fundo */
-    pointer-events: none; /* Deixa cliques passarem por ele */
-    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3)); /* Sombra */
+    object-fit: cover;
   }
 </style>
 </body>
