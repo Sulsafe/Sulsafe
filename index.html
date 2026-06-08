@@ -959,4 +959,23 @@ ehProfessor=false;
         })
     </script>
 </body>
+    <!-- Mascote Flutuante da SulSafe -->
+<div class="mascote-sulsafe">
+  <img src="sipat-seguranca.png" alt="Mascote SulSafe">
+</div>
+
+<style>
+  .mascote-sulsafe {
+    position: fixed;
+    bottom: 20px;       /* Distância do fundo da tela */
+    right: 20px;        /* Distância do canto direito */
+    width: 130px;       /* Tamanho do boneco na tela */
+    height: auto;
+    z-index: 9999;      /* Garante que ele fique na frente do fundo */
+    pointer-events: none; /* Deixa cliques passarem por ele para não travar botões atrás */
+    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3)); /* Sombra corrigida perfeita */
+  }
+</style>
+</body>
+</html>
 </html>
