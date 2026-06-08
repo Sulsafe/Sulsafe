@@ -2,65 +2,102 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SulSafe - Gestão de Segurança do Trabalho</title>
   <style>
-    body {
+    /* Zera as margens e faz o fundo ocupar toda a tela de forma limpa */
+    html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff; /* Fundo branco para sumir com as bordas da logo */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7f6;
+      overflow: hidden; /* Evita barras de rolagem desnecessárias */
+    }
+
+    /* Estrutura principal que se adapta ao dispositivo */
+    .tela-cheia {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Centraliza tudo verticalmente */
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 30px;
+    }
+
+    /* Área da Logo: Ajusta o tamanho automático */
+    .area-logo {
+      width: 100%;
+      max-width: 550px; /* Tamanho máximo ideal para não estourar no Computador */
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      margin-bottom: 40px; /* Espaço entre a logo e o botão */
     }
-    .container {
-      text-align: center;
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 90%;
-    }
+
     .logo-principal {
       width: 100%;
-      max-width: 350px;
       height: auto;
-      margin-bottom: 35px;
+      object-fit: contain;
     }
+
+    /* Área do Botão: Confortável no celular e discreto no computador */
+    .area-botao {
+      width: 100%;
+      max-width: 320px; /* Largura perfeita para clicar com o polegar no celular ou ver no PC */
+    }
+
     .btn-acessar {
-      display: inline-block;
-      background-color: #2E7D32; /* Verde oficial da SulSafe */
+      display: block;
+      background-color: #2E7D32; /* Verde oficial SulSafe */
       color: #ffffff;
       text-decoration: none;
-      padding: 16px 45px;
+      padding: 16px 20px;
       font-size: 18px;
       font-weight: bold;
+      text-align: center;
       border-radius: 30px;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
       border: none;
       cursor: pointer;
     }
+
+    /* Efeito moderno ao passar o mouse (no computador) */
     .btn-acessar:hover {
       background-color: #1b5e20;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
     }
+
+    /* Regras exclusivas para telas grandes (Computadores) */
+    @media (min-width: 768px) {
+      .tela-cheia {
+        justify-content: center; /* Mantém a logo e botão elegantes no centro do monitor */
+      }
+      .area-logo {
+        max-width: 500px; /* Deixa a logo numa proporção perfeita no PC */
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Chama a foto da logo que acabou de subir -->
-    <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
+  <div class="tela-cheia">
     
-    <!-- Botão verde direto para o arquivo de login -->
-    <div>
+    <!-- Logo que se ajusta ao tamanho da tela -->
+    <div class="area-logo">
+      <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
+    </div>
+    
+    <!-- Botão inteligente adaptável -->
+    <div class="area-botao">
       <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
     </div>
+
   </div>
 
 </body>
