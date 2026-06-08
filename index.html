@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SulSafe - Gestão de Segurança do Trabalho</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      margin: 0;
-      padding: 0;
       width: 100%;
-      height: 100%;
-      background-color: #f3f4f4;
+      height: 100dvh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
     }
@@ -19,13 +16,12 @@
     .layout-container {
       position: relative;
       width: 100%;
-      height: 100dvh; /* dvh resolve o problema de altura no celular */
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      height: 100%;
+      /* Logo vira fundo cobrindo a tela toda */
+      background: #f3f4f4 url('sulsafe.png') center center no-repeat;
+      background-size: cover;
     }
 
-    /* Botão agora no canto superior DIREITO */
     .area-topo-direita {
       position: absolute;
       top: 20px;
@@ -43,7 +39,7 @@
       font-weight: bold;
       border-radius: 20px;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
       border: none;
       cursor: pointer;
     }
@@ -51,25 +47,15 @@
     .btn-acessar:hover {
       background-color: #1b5e20;
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(46, 125, 50, 0.3);
-    }
-
-    .area-logo-central {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .logo-principal {
-      max-width: 90%;
-      max-height: 85vh;
-      object-fit: contain;
+      box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
     }
 
     @media (max-width: 768px) {
+      .layout-container {
+        /* No celular deixa contain pra não cortar o texto da logo */
+        background-size: contain;
+        background-color: #f3f4f4;
+      }
       .area-topo-direita {
         top: 16px;
         right: 16px;
@@ -78,27 +64,14 @@
         padding: 9px 18px;
         font-size: 13px;
       }
-      .logo-principal {
-        max-width: 100%;
-        max-height: 75vh;
-      }
     }
   </style>
 </head>
 <body>
-
   <div class="layout-container">
-    
-    <!-- Botão agora no topo DIREITO -->
     <div class="area-topo-direita">
       <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
     </div>
-
-    <div class="area-logo-central">
-      <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
-    </div>
-
   </div>
-
 </body>
 </html>
