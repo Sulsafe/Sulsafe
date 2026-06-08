@@ -2,69 +2,107 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SulSafe - Gestão de Segurança do Trabalho</title>
   <style>
+    /* Zera margens e define o fundo com o cinza sutil que casa com a imagem */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      background-color: #f3f4f4; /* Tom cinza aproximado do fundo da logo */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden; /* Evita barras de rolagem */
     }
 
-    /* A mágica acontece aqui: a imagem vira o fundo completo da tela */
-    .tela-bg {
-      background-image: url('sulsafe.png');
-      background-size: cover; /* Força a imagem a preencher toda a tela */
-      background-position: center center; /* Mantém o centro da logo focado */
-      background-repeat: no-repeat;
+    /* Container principal ocupando toda a tela */
+    .layout-container {
+      position: relative;
       width: 100%;
       height: 100%;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end; /* Empurra o botão totalmente para a base */
+      justify-content: center;
       align-items: center;
       box-sizing: border-box;
-      padding-bottom: 60px; /* Distância do botão até o final da tela */
     }
 
-    .area-botao {
-      width: 90%;
-      max-width: 325px;
+    /* Fixa o botão no canto superior esquerdo de forma discreta e elegante */
+    .area-topo-esquerda {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10; /* Garante que o botão fique sempre por cima da imagem */
     }
 
     .btn-acessar {
-      display: block;
-      background-color: #2E7D32;
+      display: inline-block;
+      background-color: #2E7D32; /* Verde oficial SulSafe */
       color: #ffffff;
       text-decoration: none;
-      padding: 18px 20px;
-      font-size: 19px;
+      padding: 10px 22px; /* Tamanho menor, mas altamente clicável */
+      font-size: 14px;
       font-weight: bold;
-      text-align: center;
-      border-radius: 30px;
+      border-radius: 20px; /* Bordas arredondadas elegantes */
       transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       border: none;
       cursor: pointer;
     }
 
     .btn-acessar:hover {
       background-color: #1b5e20;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(46, 125, 50, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(46, 125, 50, 0.3);
+    }
+
+    /* Ajusta a imagem para caber na tela inteira sem sofrer cortes agressivos */
+    .area-logo-central {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px; /* Margem de segurança para a logo respirar */
+      box-sizing: border-box;
+    }
+
+    .logo-principal {
+      max-width: 100%;
+      max-height: 85vh; /* Impede a imagem de estourar a altura da tela */
+      object-fit: contain; /* Ajusta a foto proporcionalmente sem cortar nada */
+    }
+
+    /* Ajustes específicos para telas de celulares */
+    @media (max-width: 480px) {
+      .area-topo-esquerda {
+        top: 15px;
+        left: 15px;
+      }
+      .btn-acessar {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+      .logo-principal {
+        max-height: 70vh; /* Dá mais espaço para o botão no celular */
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- O container agora carrega a imagem como fundo total -->
-  <div class="tela-bg">
-    <div class="area-botao">
+  <div class="layout-container">
+    
+    <!-- Botão posicionado estrategicamente no topo esquerdo -->
+    <div class="area-topo-esquerda">
       <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
     </div>
+
+    <!-- Imagem centralizada que se auto-ajusta ao monitor ou celular -->
+    <div class="area-logo-central">
+      <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
+    </div>
+
   </div>
 
 </body>
