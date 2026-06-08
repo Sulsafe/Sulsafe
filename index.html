@@ -9,6 +9,7 @@
     html, body {
       width: 100%;
       height: 100dvh;
+      background-color: #f3f4f4;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
     }
@@ -17,9 +18,9 @@
       position: relative;
       width: 100%;
       height: 100%;
-      /* Logo vira fundo cobrindo a tela toda */
-      background: #f3f4f4 url('sulsafe.png') center center no-repeat;
-      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .area-topo-direita {
@@ -39,7 +40,7 @@
       font-weight: bold;
       border-radius: 20px;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       border: none;
       cursor: pointer;
     }
@@ -47,15 +48,16 @@
     .btn-acessar:hover {
       background-color: #1b5e20;
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+      box-shadow: 0 6px 15px rgba(46, 125, 50, 0.3);
+    }
+
+    .logo-principal {
+      max-width: 95%;
+      max-height: 95vh;
+      object-fit: contain;
     }
 
     @media (max-width: 768px) {
-      .layout-container {
-        /* No celular deixa contain pra não cortar o texto da logo */
-        background-size: contain;
-        background-color: #f3f4f4;
-      }
       .area-topo-direita {
         top: 16px;
         right: 16px;
@@ -63,6 +65,10 @@
       .btn-acessar {
         padding: 9px 18px;
         font-size: 13px;
+      }
+      .logo-principal {
+        max-width: 100%;
+        max-height: 80vh;
       }
     }
   </style>
@@ -72,6 +78,8 @@
     <div class="area-topo-direita">
       <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
     </div>
+    
+    <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
   </div>
 </body>
 </html>
