@@ -274,6 +274,7 @@
         <i class="fab fa-linkedin-in"></i>
     </a>
 </div>
+</div> 
         <div class="tela" id="telaCadastro">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconCad"></div><div class="logo-text">SulSafe</div></div>
@@ -617,7 +618,7 @@
             document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active')
             if(viewId==='salas')atualizarListaSalas()
             if(viewId==='equipe')carregarEquipe()
-            if(viewId==='materiais')carregarMaterials()
+           if(viewId==='materiais')carregarMateriais()
             if(viewId==='videoaulas')carregarVideoaulas()
         }
 
@@ -1100,8 +1101,9 @@ window.baixarArquivo = async (url, nomeArquivo) => {
 
   }
 
-</style>
+    </style>
 </head>
+<body>
     <div class="tela" id="telaLogin">
         <img src="logo1.png" alt="Logo SulSafe" class="logo">
         
