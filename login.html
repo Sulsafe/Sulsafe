@@ -1036,16 +1036,24 @@ window.baixarArquivo = async (url, nomeArquivo) => {
     object-fit: cover;
   }
   
-  .social-bar {
+.social-bar {
     position: relative;
-    z-index: 9999;
+    z-index: 999999 !important;
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
-  }
-  .social-btn {
+}
+.tela {
+    z-index: 1 !important;
+}
+.balao-ajuda-wrapper {
+    z-index: 10 !important;
+    pointer-events: none !important;
+}
+.balao-ajuda-wrapper .social-bar {
     pointer-events: auto !important;
+}
     font-size: 24px;
     color: #555;
     text-decoration: none;
