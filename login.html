@@ -250,7 +250,6 @@
         <div id="avisoFileProtocol" style="display:none;margin-bottom:10px;padding:10px;background:#FFF3E0;border:1px solid #FFB74D;border-radius:12px;font-size:12px;line-height:1.4;color:#E65100;">
             <strong>Login não funciona abrindo o arquivo direto.</strong> Hospede em um servidor (Netlify, Vercel ou localhost).
         </div>
-   <!-- TELA LOGIN -->
         <div class="tela active" id="telaLogin">
             <a class="link-voltar-inicio" href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo"><div class="logo-icon" id="logoIcon"></div><div class="logo-text" id="logoText">SulSafe</div></div>
@@ -270,8 +269,6 @@
                 <a href="#" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
             </div>
         </div>
-
-        <!-- TELA CADASTRO -->
         <div class="tela" id="telaCadastro">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconCad"></div><div class="logo-text">SulSafe</div></div>
@@ -284,7 +281,6 @@
                 <button type="submit" class="botao botao-primario">Criar conta</button>
             </form>
         </div>
-        <!-- TELA RECUPERAR -->
         <div class="tela" id="telaRecuperar">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconRec"></div><div class="logo-text">SulSafe</div></div>
@@ -297,7 +293,6 @@
         </div>
     </div>
 
-    <!-- ===== DASHBOARD ===== -->
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
             <div class="dash-logo">
@@ -321,7 +316,6 @@
         </div>
 
         <div class="dash-main">
-            <!-- HOME -->
             <div id="viewHome">
                 <h1 class="dash-welcome">Bem-vindo ao painel SulSafe</h1>
                 <p class="dash-subtitle">Sua plataforma de segurança do trabalho</p>
@@ -337,7 +331,6 @@
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
 
-            <!-- VIDEOAULAS -->
             <div id="viewVideoaulas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px">Videoaulas</h2>
                 <p class="dash-subtitle">Assista às aulas e acompanhe seu progresso</p>
@@ -360,7 +353,6 @@
                 </div>
             </div>
 
-            <!-- SALAS -->
             <div id="viewSalas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-shield-alt"></i> Salas de Reunião</h2>
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
@@ -371,14 +363,12 @@
                 <ul class="meeting-list" id="meetingList"></ul>
             </div>
 
-            <!-- MATERIAIS -->
             <div id="viewMateriais" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book"></i> Biblioteca de Materiais</h2>
                 <p class="dash-subtitle">Apostilas e PDFs publicados pelo professor</p>
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
-            <!-- AREA ALUNO -->
             <div id="viewAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
                 <p class="dash-subtitle">Envie seu trabalho em PDF para o professor</p>
@@ -393,7 +383,6 @@
                 </div>
             </div>
 
-            <!-- IA -->
             <div id="viewIa" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente sobre NRs</h2>
                 <p class="dash-subtitle">Tire dúvidas sobre normas e segurança do trabalho</p>
@@ -408,7 +397,6 @@
                 </div>
             </div>
 
-            <!-- EQUIPE -->
             <div id="viewEquipe" style="display:none">
                 <div class="team-container">
                     <div class="team-members">
@@ -437,7 +425,6 @@
                 </div>
             </div>
 
-            <!-- CONFIG -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
                     <div class="config-sidebar">
@@ -476,7 +463,6 @@
         </div>
     </div>
 
-    <!-- SALA JITSI -->
     <div class="meeting-modal" id="meetingModal">
         <div class="meeting-room">
             <div class="room-header">
@@ -512,7 +498,6 @@
         </div>
     </div>
 
-    <!-- PLAYER DE VÍDEO -->
     <div class="video-modal" id="videoModal">
         <div class="video-wrapper">
             <iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
@@ -520,7 +505,6 @@
         <button class="video-modal-close" onclick="fecharVideo()"><i class="fas fa-times"></i> Fechar</button>
     </div>
 
-    <!-- ADMIN MODAL -->
     <div class="admin-modal" id="modalAdmin">
         <div class="admin-modal-content">
             <h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2>
@@ -529,7 +513,6 @@
                 <div class="admin-tab" onclick="trocarAbaAdmin('aula')" id="tabAula">🎬 Videoaula (YouTube)</div>
             </div>
 
-            <!-- ABA MATERIAL -->
             <div id="abaAdminMaterial">
                 <div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div>
                 <div class="campo"><label>NR</label><select id="matNR">
@@ -561,7 +544,6 @@
                 </div>
             </div>
 
-            <!-- ABA VIDEOAULA -->
             <div id="abaAdminAula" style="display:none">
                 <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura: Introdução"></div>
                 <div class="campo"><label>NR</label><select id="aulaNR">
@@ -629,23 +611,34 @@
             document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active')
             if(viewId==='salas')atualizarListaSalas()
             if(viewId==='equipe')carregarEquipe()
-            if(viewId==='materiais')carregarMateriais()
+            if(viewId==='materiais')carregarMaterials()
             if(viewId==='videoaulas')carregarVideoaulas()
         }
 
         // AUTH
-        async function garantirPerfil(user){const{data:p}=await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle();if(p)return p.role;const role=user.user_metadata?.role==='professor'?'professor':'user';await supabase.from('profiles').insert({id:user.id,email:user.email,role}).catch(()=>{});return role}
+        async function garantirPerfil(user){
+            const{data:p}=await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle();
+            if(p)return p.role;
+            const role=user.user_metadata?.role==='professor'?'professor':'aluno';
+            await supabase.from('profiles').insert({id:user.id,email:user.email,role}).catch(()=>{});
+            return role;
+        }
 
         window.fazerLogin=async()=>{
             const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
             const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
             if(error)return alert(traduzirErroAuth(error.message))
+            
             usuarioAtual=data.user.email;usuarioId=data.user.id
-            perfilUsuario='aluno'; //await garantirPerfil(data.user)
-            ehProfessor=false; //perfilUsuario==='admin'||perfilUsuario==='professor'||data.user.user_metadata?.role==='professor'
+            
+            // 🔒 Realiza a busca correta das permissões no banco de dados
+            const role = await garantirPerfil(data.user)
+            perfilUsuario = role
+            ehProfessor = (role==='admin' || role==='professor' || data.user.user_metadata?.role==='professor')
+            
             document.getElementById('dashUserName').innerHTML=usuarioAtual
-            //atualizarPainelProfessor();
-entrarDashboard()
+            atualizarPainelProfessor();
+            entrarDashboard()
         }
 
         window.fazerCadastro=async()=>{
@@ -655,10 +648,8 @@ entrarDashboard()
             if(senha.length<6)return alert('Senha mínimo 6 caracteres')
             const{data,error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
             if(error)return alert(traduzirErroAuth(error.message))
-        perfilUsuario='aluno'; 
-ehProfessor=false; 
-//await garantirPerfil(data.user);
-//ehProfessor=perfilUsuario==='admin'||perfilUsuario==='professor';
+            perfilUsuario='aluno'; 
+            ehProfessor=false; 
             alert('Conta criada! Confirme seu e-mail e depois faça login.');mostrarTela('login')
         }
 
@@ -959,8 +950,7 @@ ehProfessor=false;
             }
         })
     </script>
-   <!-- Mascote Flutuante Estilo Pop-up de Ajuda -->
-<div class="mascote-sulsafe-popup">
+   <div class="mascote-sulsafe-popup">
   <div class="balao-ajuda-wrapper">
     <img src="sipat-seguranca.png" alt="Mascote SulSafe">
   </div>
@@ -981,7 +971,7 @@ ehProfessor=false;
     border-radius: 50%; /* Deixa o fundo perfeitamente redondo */
     overflow: hidden;   /* Corta o excesso da imagem para virar um círculo */
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante de pop-up */
-    border: 3px solid #006400; /* Bordinha verde escura combinando com a SulSafe */
+    border: 3px solid #006400; /* Bordinha verde escura combinando with a SulSafe */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -996,4 +986,3 @@ ehProfessor=false;
 </style>
 </body>
 </html>
-   
