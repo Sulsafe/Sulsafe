@@ -624,7 +624,7 @@
             return role;
         }
 
-        window.fazerLogin=async()=>{
+      window.fazerLogin=async()=>{
             const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
             const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
             if(error)return alert(traduzirErroAuth(error.message))
