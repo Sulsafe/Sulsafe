@@ -943,7 +943,8 @@
             if(session?.user){
                 usuarioAtual=session.user.email;usuarioId=session.user.id
                 garantirPerfil(session.user).then(role=>{
-                    perfilUsuario=role;ehProfessor=role==='admin'||role==='professor'||session.user.user_metadata?.role==='professor'
+                    perfilUsuario = role;
+                    ehProfessor = (role === 'admin' || role === 'professor');
                     document.getElementById('dashUserName').innerHTML=usuarioAtual
                     atualizarPainelProfessor();entrarDashboard()
                 })
