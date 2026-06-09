@@ -1,9 +1,11 @@
-    <!DOCTYPE html>
-   <html lang="pt-BR">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">        <title>SulSafe | Plataforma de Segurança do Trabalho</title>        <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://meet.jit.si/external_api.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -57,8 +59,8 @@
         .botao-terciario{background:transparent;border:none;color:var(--texto-sec);font-size:13px}
         .divisor{display:flex;align-items:center;gap:14px;margin:14px 0;color:var(--texto-sec);font-size:12px}
         .divisor::before,.divisor::after{content:'';flex:1;height:1px;background:var(--borda)}
-        .social-bar{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-        .social-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.05);border-radius:10px;color:var(--texto-sec);transition:.2s;text-decoration:none}
+        .social-bar{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative;z-index:999}
+        .social-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.05);border-radius:50%;color:var(--texto-sec);transition:.2s;text-decoration:none;font-size:20px;cursor:pointer;position:relative;z-index:999}
         .social-btn:hover{color:var(--primaria);background:rgba(46,125,50,.1);transform:translateY(-2px)}
         .link-voltar-inicio{display:inline-block;margin-bottom:14px;font-size:13px;color:var(--texto-sec);text-decoration:none}
 
@@ -228,6 +230,11 @@
         .color-option{display:inline-flex;width:32px;height:32px;border-radius:50%;margin:3px;cursor:pointer;border:2px solid transparent}
         .color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--primaria)}
 
+        /* MASCOTE */
+        .mascote-sulsafe-popup{position:fixed;bottom:25px;right:25px;z-index:9999}
+        .balao-ajuda-wrapper{width:80px;height:80px;background-color:#ffffff;border-radius:50%;overflow:hidden;box-shadow:0px 4px 15px rgba(0,0,0,0.2);border:3px solid #006400;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .balao-ajuda-wrapper img{width:130%;height:auto;object-fit:cover}
+
         /* RESPONSIVO */
         @media(max-width:768px){
             .dash-sidebar{width:60px;padding:.8rem .4rem}
@@ -248,6 +255,8 @@
         <div id="avisoFileProtocol" style="display:none;margin-bottom:10px;padding:10px;background:#FFF3E0;border:1px solid #FFB74D;border-radius:12px;font-size:12px;line-height:1.4;color:#E65100;">
             <strong>Login não funciona abrindo o arquivo direto.</strong> Hospede em um servidor (Netlify, Vercel ou localhost).
         </div>
+
+        <!-- TELA LOGIN -->
         <div class="tela active" id="telaLogin">
             <a class="link-voltar-inicio" href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo"><div class="logo-icon" id="logoIcon"></div><div class="logo-text" id="logoText">SulSafe</div></div>
@@ -260,21 +269,15 @@
             <div class="divisor">ou</div>
             <button class="botao botao-secundario" onclick="mostrarTela('cadastro')">Cadastrar nova conta</button>
             <button class="botao botao-terciario" onclick="mostrarTela('recuperar')">Esqueci minha senha</button>
-<div class="social-bar">
-    <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-youtube"></i>
-    </a>
-    <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i>
-    </a>
-    <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-    <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-linkedin-in"></i>
-    </a>
-</div>
-</div> 
+            <div class="social-bar">
+                <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+        <!-- TELA CADASTRO -->
         <div class="tela" id="telaCadastro">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconCad"></div><div class="logo-text">SulSafe</div></div>
@@ -287,6 +290,8 @@
                 <button type="submit" class="botao botao-primario">Criar conta</button>
             </form>
         </div>
+
+        <!-- TELA RECUPERAR SENHA -->
         <div class="tela" id="telaRecuperar">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconRec"></div><div class="logo-text">SulSafe</div></div>
@@ -299,6 +304,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
             <div class="dash-logo">
@@ -322,6 +328,7 @@
         </div>
 
         <div class="dash-main">
+            <!-- HOME -->
             <div id="viewHome">
                 <h1 class="dash-welcome">Bem-vindo ao painel SulSafe</h1>
                 <p class="dash-subtitle">Sua plataforma de segurança do trabalho</p>
@@ -337,6 +344,7 @@
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
 
+            <!-- VIDEOAULAS -->
             <div id="viewVideoaulas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px">Videoaulas</h2>
                 <p class="dash-subtitle">Assista às aulas e acompanhe seu progresso</p>
@@ -359,6 +367,7 @@
                 </div>
             </div>
 
+            <!-- SALAS -->
             <div id="viewSalas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-shield-alt"></i> Salas de Reunião</h2>
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
@@ -369,12 +378,14 @@
                 <ul class="meeting-list" id="meetingList"></ul>
             </div>
 
+            <!-- MATERIAIS -->
             <div id="viewMateriais" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book"></i> Biblioteca de Materiais</h2>
                 <p class="dash-subtitle">Apostilas e PDFs publicados pelo professor</p>
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
+            <!-- ÁREA DO ALUNO -->
             <div id="viewAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
                 <p class="dash-subtitle">Envie seu trabalho em PDF para o professor</p>
@@ -389,6 +400,7 @@
                 </div>
             </div>
 
+            <!-- ASSISTENTE IA -->
             <div id="viewIa" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente sobre NRs</h2>
                 <p class="dash-subtitle">Tire dúvidas sobre normas e segurança do trabalho</p>
@@ -403,6 +415,7 @@
                 </div>
             </div>
 
+            <!-- EQUIPE -->
             <div id="viewEquipe" style="display:none">
                 <div class="team-container">
                     <div class="team-members">
@@ -431,6 +444,7 @@
                 </div>
             </div>
 
+            <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
                     <div class="config-sidebar">
@@ -469,6 +483,7 @@
         </div>
     </div>
 
+    <!-- MODAL SALA REUNIÃO -->
     <div class="meeting-modal" id="meetingModal">
         <div class="meeting-room">
             <div class="room-header">
@@ -504,6 +519,7 @@
         </div>
     </div>
 
+    <!-- MODAL VIDEO -->
     <div class="video-modal" id="videoModal">
         <div class="video-wrapper">
             <iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
@@ -511,6 +527,7 @@
         <button class="video-modal-close" onclick="fecharVideo()"><i class="fas fa-times"></i> Fechar</button>
     </div>
 
+    <!-- MODAL ADMIN -->
     <div class="admin-modal" id="modalAdmin">
         <div class="admin-modal-content">
             <h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2>
@@ -518,7 +535,6 @@
                 <div class="admin-tab active" onclick="trocarAbaAdmin('material')" id="tabMaterial">📄 Material / PDF</div>
                 <div class="admin-tab" onclick="trocarAbaAdmin('aula')" id="tabAula">🎬 Videoaula (YouTube)</div>
             </div>
-
             <div id="abaAdminMaterial">
                 <div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div>
                 <div class="campo"><label>NR</label><select id="matNR">
@@ -549,7 +565,6 @@
                     <button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button>
                 </div>
             </div>
-
             <div id="abaAdminAula" style="display:none">
                 <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura: Introdução"></div>
                 <div class="campo"><label>NR</label><select id="aulaNR">
@@ -585,9 +600,15 @@
 
     <div id="errorTooltip" class="error-tooltip"></div>
 
+    <!-- MASCOTE -->
+    <div class="mascote-sulsafe-popup">
+        <div class="balao-ajuda-wrapper">
+            <img src="sipat-seguranca.png" alt="Mascote SulSafe">
+        </div>
+    </div>
+
     <script type="module">
-       import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-        
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
         const supabase = createClient(
             'https://dhhvhiyoxadcwsfqlndw.supabase.co',
@@ -618,7 +639,7 @@
             document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active')
             if(viewId==='salas')atualizarListaSalas()
             if(viewId==='equipe')carregarEquipe()
-           if(viewId==='materiais')carregarMateriais()
+            if(viewId==='materiais')carregarMateriais()
             if(viewId==='videoaulas')carregarVideoaulas()
         }
 
@@ -631,18 +652,14 @@
             return role;
         }
 
-      window.fazerLogin=async()=>{
+        window.fazerLogin=async()=>{
             const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
             const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
             if(error)return alert(traduzirErroAuth(error.message))
-            
             usuarioAtual=data.user.email;usuarioId=data.user.id
-            
-            // 🔒 Realiza a busca correta das permissões no banco de dados
-            const role = await garantirPerfil(data.user)
-            perfilUsuario = role
-            ehProfessor = (role==='admin' || role==='professor' || data.user.user_metadata?.role==='professor')
-            
+            const role=await garantirPerfil(data.user)
+            perfilUsuario=role
+            ehProfessor=(role==='admin'||role==='professor'||data.user.user_metadata?.role==='professor')
             document.getElementById('dashUserName').innerHTML=usuarioAtual
             atualizarPainelProfessor();
             entrarDashboard()
@@ -652,13 +669,10 @@
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
             const senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
             if(senha!==senha2)return alert('Senhas não coincidem')
-  
-            
             if(senha.length<6)return alert('Senha mínimo 6 caracteres')
             const{data,error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
             if(error)return alert(traduzirErroAuth(error.message))
-            perfilUsuario='aluno'; 
-            ehProfessor=false; 
+            perfilUsuario='aluno';ehProfessor=false;
             alert('Conta criada! Confirme seu e-mail e depois faça login.');mostrarTela('login')
         }
 
@@ -674,6 +688,11 @@
             atualizarListaSalas();carregarEquipe();renderizarProgressoHome()
         }
         function atualizarPainelProfessor(){const btn=document.getElementById('btnPainelProfessor');if(btn)btn.style.display=ehProfessor?'inline-block':'none'}
+
+        // ADMIN MODAL
+        window.abrirModalAdmin=()=>document.getElementById('modalAdmin').classList.add('active')
+        window.fecharModalAdmin=()=>document.getElementById('modalAdmin').classList.remove('active')
+        window.trocarAbaAdmin=(aba)=>{document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none';document.getElementById('tabMaterial').classList.toggle('active',aba==='material');document.getElementById('tabAula').classList.toggle('active',aba==='aula')}
 
         // VIDEOAULAS
         function extrairYoutubeId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null}
@@ -693,7 +712,7 @@
             todasAulas=aulas
             atualizarFiltrosNR(aulas)
             const aulasFiltradas=filtroNR==='todos'?aulas:aulas.filter(a=>a.nr===filtroNR)
-            if(!aulasFiltradas.length){container.innerHTML='<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0">Nenhuma videoaula publicada ainda. Adicione aulas pelo painel de professor!</p>';renderizarProgressoAulas(aulas);return}
+            if(!aulasFiltradas.length){container.innerHTML='<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0">Nenhuma videoaula publicada ainda.</p>';renderizarProgressoAulas(aulas);return}
             const progresso=getProgressoLocal()
             container.innerHTML=aulasFiltradas.map(aula=>{
                 const ytId=extrairYoutubeId(aula.youtube_url)
@@ -731,7 +750,6 @@
         }
 
         window.filtrarAulas=(nr)=>{document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`[data-nr="${nr}"]`)?.classList.add('active');carregarVideoaulas(nr)}
-
         window.abrirVideo=(url,aulaId)=>{const ytId=extrairYoutubeId(url);if(!ytId)return mostrarErro('Link do YouTube inválido.');document.getElementById('videoIframe').src=`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;document.getElementById('videoModal').classList.add('active')}
         window.fecharVideo=()=>{document.getElementById('videoModal').classList.remove('active');document.getElementById('videoIframe').src=''}
 
@@ -797,9 +815,6 @@
             doc.save(`Certificado_SulSafe_${nome.replace(/\s+/g,'_')}.pdf`)
         }
 
-        // ADMIN
-        window.trocarAbaAdmin=(aba)=>{document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none';document.getElementById('tabMaterial').classList.toggle('active',aba==='material');document.getElementById('tabAula').classList.toggle('active',aba==='aula')}
-
         window.salvarVideoaula=async()=>{
             const titulo=document.getElementById('aulaTitulo').value.trim(),nr=document.getElementById('aulaNR').value
             const youtube_url=document.getElementById('aulaYoutube').value.trim(),descricao=document.getElementById('aulaDescricao').value.trim()
@@ -810,103 +825,84 @@
             const item={titulo,nr,descricao,youtube_url,criado_por:usuarioId,criado_em:new Date().toISOString()}
             if(usuarioId){const{error}=await supabase.from('videoaulas').insert(item);if(!error){status.innerHTML='<span style="color:var(--sucesso)">Videoaula publicada!</span>';setTimeout(()=>{fecharModalAdmin();carregarVideoaulas()},1200);return}}
             const lista=getAulasLocal();lista.push({...item,id:'loc-'+Date.now()});salvarAulasLocal(lista)
-            status.innerHTML='<span style="color:var(--sucesso)">Salvo localmente. Crie a tabela videoaulas no Supabase para salvar na nuvem.</span>'
+            status.innerHTML='<span style="color:var(--sucesso)">Salvo localmente.</span>'
             setTimeout(()=>{fecharModalAdmin();carregarVideoaulas()},1800)
         }
 
         window.deletarVideoaula=async(id)=>{if(!confirm('Remover esta videoaula?'))return;if(String(id).startsWith('loc-')){salvarAulasLocal(getAulasLocal().filter(a=>a.id!==id))}else{await supabase.from('videoaulas').delete().eq('id',id)};carregarVideoaulas()}
 
         // MATERIAIS
-// 1. FUNÇÃO DE SALVAMENTO (Upload real + Registro no Banco)
- window.carregarMateriais = async () => {
-    const lista = document.getElementById('listaMateriais');
-    if (!lista) return;
-    lista.innerHTML = 'Carregando...';
+        window.carregarMateriais=async()=>{
+            const lista=document.getElementById('listaMateriais');
+            if(!lista)return;
+            lista.innerHTML='Carregando...';
+            const{data,error}=await supabase.from('materiais').select('*').order('criado_em',{ascending:false});
+            if(error){lista.innerHTML=`<p style="text-align:center;color:var(--erro)">Erro: ${error.message}</p>`;return}
+            if(!data.length){lista.innerHTML='<p style="text-align:center;color:var(--texto-sec)">Nenhum material publicado.</p>';return}
+            lista.innerHTML=data.map(m=>{
+                const del=ehProfessor?`<button class="btn-entrar" style="background:var(--erro)" onclick="deletarMaterial('${m.id}','${m.path}')"><i class="fas fa-trash"></i></button>`:''
+                return `<div class="material-item">
+                    <div class="material-info">
+                        <h4>${escapeHtml(m.titulo)}</h4>
+                        <p>${escapeHtml(m.descricao||'')}</p>
+                        <span class="badge-nr">${escapeHtml(m.nr||'')}</span>
+                    </div>
+                    <div style="display:flex;gap:7px">
+                        <button class="btn-entrar" onclick="baixarArquivo('${m.url}','${escapeHtml(m.titulo)}.pdf')"><i class="fas fa-download"></i> Baixar</button>
+                        ${del}
+                    </div>
+                </div>`
+            }).join('')
+        }
 
-    const { data, error } = await supabase.from('materiais').select('*').order('criado_em', { ascending: false });
-    if (error) {
-        lista.innerHTML = `<p style="text-align:center;color:var(--erro)">Erro: ${error.message}</p>`;
-        return;
-    }
+        window.salvarMaterial=async()=>{
+            const titulo=document.getElementById('matTitulo').value.trim()
+            const nr=document.getElementById('matNR').value
+            const descricao=document.getElementById('matDescricao').value.trim()
+            const arquivo=document.getElementById('matArquivo').files[0]
+            const status=document.getElementById('adminStatus')
+            if(!titulo||!arquivo){status.innerHTML='<span style="color:var(--erro)">Informe título e arquivo.</span>';return}
+            status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
+            const ext=arquivo.name.split('.').pop()
+            const path=`materiais/${Date.now()}_${arquivo.name.replace(/\s/g,'_')}`
+            const{error:upErr}=await supabase.storage.from('sulsafe-assets').upload(path,arquivo,{cacheControl:'3600',upsert:false})
+            if(upErr){status.innerHTML=`<span style="color:var(--erro)">Erro upload: ${upErr.message}</span>`;return}
+            const{data:{publicUrl}}=supabase.storage.from('sulsafe-assets').getPublicUrl(path)
+            const{error:dbErr}=await supabase.from('materiais').insert({titulo,nr,descricao,url:publicUrl,path,criado_por:usuarioId,criado_em:new Date().toISOString()})
+            if(dbErr){status.innerHTML=`<span style="color:var(--erro)">Erro ao salvar: ${dbErr.message}</span>`;return}
+            status.innerHTML='<span style="color:var(--sucesso)">Material publicado!</span>'
+            setTimeout(()=>{fecharModalAdmin();carregarMateriais()},1200)
+        }
 
-    if (!data.length) {
-        lista.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum material publicado.</p>';
-        return;
-    }
+        window.deletarMaterial=async(id,path)=>{
+            if(!confirm('Remover este material?'))return
+            if(path)await supabase.storage.from('sulsafe-assets').remove([path])
+            await supabase.from('materiais').delete().eq('id',id)
+            carregarMateriais()
+        }
 
-    lista.innerHTML = data.map(m => {
-        const del = ehProfessor? `<button class="btn-entrar" style="background:var(--erro)" onclick="deletarMaterial('${m.id}', '${m.path}')"><i class="fas fa-trash"></i></button>` : '';
-        return `
-        <div class="material-item">
-            <div class="material-info">
-                <h4>${escapeHtml(m.titulo)}</h4>
-                <p>${escapeHtml(m.descricao || '')}</p>
-                <span class="badge-nr">${escapeHtml(m.nr || '')}</span>
-            </div>
-            <div style="display:flex;gap:7px">
-                <button class="btn-entrar" onclick="baixarArquivo('${m.url}', '${escapeHtml(m.titulo)}.pdf')">
-                    <i class="fas fa-download"></i> Baixar
-                </button>
-                ${del}
-            </div>
-        </div>`;
-    }).join('');
-};
+        window.baixarArquivo=async(url,nomeArquivo)=>{
+            try{const response=await fetch(url);const blob=await response.blob();const link=document.createElement('a');link.href=window.URL.createObjectURL(blob);link.download=nomeArquivo;document.body.appendChild(link);link.click();document.body.removeChild(link)}
+            catch{window.open(url,'_blank')}
+        }
 
-// Função nova pra forçar download no celular
-window.baixarArquivo = async (url, nomeArquivo) => {
-    try {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = nomeArquivo;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } catch (err) {
-        window.open(url, '_blank'); // fallback se fetch falhar
-    }
-};
         // TRABALHO
-      window.enviarTrabalho = async (input) => {
-    const file = input.files[0];
-    if (!file ||!usuarioId) return;
-
-    const status = document.getElementById('uploadStatus');
-    status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-
-    try {
-        const fileName = `${usuarioId}/${Date.now()}_${file.name.replace(/\s/g, '_')}`;
-
-        const { error } = await supabase.storage
-           .from('trabalhos-sulsafe')
-           .upload(fileName, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-
-        if (error) throw error;
-
-        status.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado!</span>';
-
-    } catch (err) {
-        // Fallback pro localStorage se der erro no Supabase
-        const hist = JSON.parse(localStorage.getItem('sulsafe_trabalhos') || '[]');
-        hist.push({
-            user: usuarioAtual,
-            nome: file.name,
-            quando: new Date().toISOString()
-        });
-        localStorage.setItem('sulsafe_trabalhos', JSON.stringify(hist));
-
-        status.innerHTML = '<span style="color:var(--erro)">Erro no envio. Salvo localmente. Erro: ' + err.message + '</span>';
-        console.error(err);
-
-    } finally {
-        input.value = ''; // limpa o input sempre
-    }
-};
+        window.enviarTrabalho=async(input)=>{
+            const file=input.files[0];if(!file||!usuarioId)return
+            const status=document.getElementById('uploadStatus')
+            status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
+            try{
+                const fileName=`${usuarioId}/${Date.now()}_${file.name.replace(/\s/g,'_')}`
+                const{error}=await supabase.storage.from('trabalhos-sulsafe').upload(fileName,file,{cacheControl:'3600',upsert:false})
+                if(error)throw error
+                status.innerHTML='<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado!</span>'
+            }catch(err){
+                const hist=JSON.parse(localStorage.getItem('sulsafe_trabalhos')||'[]')
+                hist.push({user:usuarioAtual,nome:file.name,quando:new Date().toISOString()})
+                localStorage.setItem('sulsafe_trabalhos',JSON.stringify(hist))
+                status.innerHTML='<span style="color:var(--erro)">Erro no envio: '+err.message+'</span>'
+            }finally{input.value=''}
+        }
 
         // IA
         window.enviarPerguntaIA=async()=>{
@@ -1004,125 +1000,13 @@ window.baixarArquivo = async (url, nomeArquivo) => {
             if(session?.user){
                 usuarioAtual=session.user.email;usuarioId=session.user.id
                 garantirPerfil(session.user).then(role=>{
-                    perfilUsuario = role;
-                    ehProfessor = (role === 'admin' || role === 'professor');
+                    perfilUsuario=role;
+                    ehProfessor=(role==='admin'||role==='professor');
                     document.getElementById('dashUserName').innerHTML=usuarioAtual
                     atualizarPainelProfessor();entrarDashboard()
                 })
             }
         })
     </script>
-   <div class="mascote-sulsafe-popup">
-  <div class="balao-ajuda-wrapper">
-    <img src="sipat-seguranca.png" alt="Mascote SulSafe">
-  </div>
-</div>
-
-<style>
-  .mascote-sulsafe-popup {
-    position: fixed;
-    bottom: 25px;       /* Distância do fundo da tela */
-    right: 25px;        /* Distância do canto direito */
-    z-index: 9999;      /* Fica na frente de tudo */
-  }
-
-  .balao-ajuda-wrapper {
-    width: 80px;        /* Tamanho ideal do botão de ajuda (estilo chat) */
-    height: 80px;
-    background-color: #ffffff; /* Fundo branco para destacar */
-    border-radius: 50%; /* Deixa o fundo perfeitamente redondo */
-    overflow: hidden;   /* Corta o excesso da imagem para virar um círculo */
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante de pop-up */
-    border: 3px solid #006400; /* Bordinha verde escura combinando with a SulSafe */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-   .balao-ajuda-wrapper img {
-    width: 130%;
-    height: auto;
-    object-fit: cover;
-  }
-  
-.social-bar {
-    position: relative;
-    z-index: 999999 !important;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-/* SOCIAL BAR - 100% FUNCIONAL */
-.tela {
-    z-index: 1 !important;
-    pointer-events: auto !important;
-}
-
-.balao-ajuda-wrapper {
-    z-index: 10 !important;
-    pointer-events: auto !important;
-}
-
-.social-bar {
-    position: relative !important;
-    z-index: 999999 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 15px !important;
-    margin-top: 20px !important;
-    pointer-events: auto !important;
-}
-
-.social-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 24px !important;
-    color: #555 !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    position: relative !important;
-    z-index: 999999 !important;
-    pointer-events: auto !important;
-    border-radius: 50% !important;
-    transition: all 0.2s ease !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-.social-btn:hover, .social-btn:active {
-    color: #000 !important;
-    background-color: rgba(0,0,0,0.05) !important;
-    transform: scale(1.1) !important;
-
-  }
-
-    </style>
-</head>
-<body>
-    <div class="tela" id="telaLogin">
-        <img src="logo1.png" alt="Logo SulSafe" class="logo">
-        
-        <input type="text" placeholder="Usuário" class="input">
-        <input type="password" placeholder="Senha" class="input">
-        
-        <button class="botao botao-primario" onclick="mostrarTela('principal')">Entrar</button>
-        <button class="botao botao-secundario" onclick="mostrarTela('cadastro')">Cadastrar</button>
-        <button class="botao botao-terciario" onclick="mostrarTela('recuperar')">Esqueci minha senha</button>
-        
-        <div class="social-bar">
-            <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-    </div>
-
-    <!-- Resto das outras telas aqui -->
-    
 </body>
 </html>
