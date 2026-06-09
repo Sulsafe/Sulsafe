@@ -663,7 +663,7 @@ ehProfessor=false;
         }
 
         window.recuperarSenha=async()=>{const email=document.getElementById('recEmail').value;const{error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo:CONFIG.authRedirectUrl});if(error)return alert(traduzirErroAuth(error.message));document.getElementById('msgSucessoRec').style.display='block';setTimeout(()=>{document.getElementById('msgSucessoRec').style.display='none';mostrarTela('login')},3000)}
-        window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();window.location.href='entrada.html'}
+        window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();window.location.href='index.html'}
 
         function entrarDashboard(){
             document.getElementById('authContainer').classList.add('hidden')
