@@ -808,42 +808,58 @@
         window.deletarVideoaula=async(id)=>{if(!confirm('Remover esta videoaula?'))return;if(String(id).startsWith('loc-')){salvarAulasLocal(getAulasLocal().filter(a=>a.id!==id))}else{await supabase.from('videoaulas').delete().eq('id',id)};carregarVideoaulas()}
 
         // MATERIAIS
-window.salvarMaterial=async()=>{
-            const titulo=document.getElementById('matTitulo').value.trim(),nr=document.getElementById('matNR').value
-            const descricao=document.getElementById('matDescricao').value.trim(),arquivo=document.getElementById('matArquivo').files[0]
-            const status=document.getElementById('adminStatus')
-            
-            if(!titulo||!arquivo){status.innerHTML='<span style="color:var(--erro)">Informe título e arquivo.</span>';return}
-            status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
+window.salvarMaterial = async () => {
+    const titulo = document.getElementById('matTitulo').value.trim();
+    const nr = document.getElementById('matNR').value;
+    const descricao = document.getElementById('matDescricao').value.trim();
+    const arquivoInput = document.getElementById('matArquivo');
+    const arquivo = arquivoInput.files[0];
+    const status = document.getElementById('adminStatus');
 
-            // 1. Faz o upload primeiro
-            const fileName=`${Date.now()}_${arquivo.name}`
-            const {error:upErr}=await supabase.storage.from('materiais-sulsafe').upload(fileName,arquivo)
-            
-            if(upErr){
-                status.innerHTML='<span style="color:var(--erro)">Erro no upload do arquivo.</span>'
-                return
-            }
+    if (!titulo || !arquivo) {
+        status.innerHTML = '<span style="color:var(--erro)">Informe título e arquivo.</span>';
+        return;
+    }
 
-            // 2. Pega a URL pública real
-            const {data:{publicUrl}}=supabase.storage.from('materiais-sulsafe').getPublicUrl(fileName)
+    status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
-            // 3. Insere no banco APENAS com a URL pública
-            const {error:insErr}=await supabase.from('materiais').insert({
-                titulo, nr, descricao, 
-                tipo: arquivo.type.includes('pdf')?'pdf':'imagem', 
-                url: publicUrl, 
-                criado_por: usuarioId
-            })
+    try {
+        // 1. Upload do arquivo para o Storage do Supabase
+        const fileName = `${Date.now()}_${arquivo.name}`;
+        const { error: upErr } = await supabase.storage
+            .from('materiais-sulsafe')
+            .upload(fileName, arquivo);
 
-            if(insErr){
-                status.innerHTML='<span style="color:var(--erro)">Erro ao salvar no banco.</span>'
-                return
-            }
+        if (upErr) throw new Error('Erro ao subir arquivo: ' + upErr.message);
 
-            status.innerHTML='<span style="color:var(--sucesso)">Material publicado!</span>'
-            setTimeout(()=>{fecharModalAdmin();carregarMateriais()}, 1200)
-        }
+        // 2. Obtém a URL pública real do arquivo
+        const { data: { publicUrl } } = supabase.storage
+            .from('materiais-sulsafe')
+            .getPublicUrl(fileName);
+
+        // 3. Insere os dados no banco usando a URL pública (NUNCA o blob local)
+        const { error: insErr } = await supabase.from('materiais').insert({
+            titulo,
+            nr,
+            descricao,
+            tipo: arquivo.type.includes('pdf') ? 'pdf' : 'imagem',
+            url: publicUrl,
+            criado_por: usuarioId
+        });
+
+        if (insErr) throw new Error('Erro ao salvar no banco: ' + insErr.message);
+
+        status.innerHTML = '<span style="color:var(--sucesso)">Material publicado com sucesso!</span>';
+        setTimeout(() => {
+            fecharModalAdmin();
+            carregarMateriais();
+        }, 1500);
+
+    } catch (err) {
+        console.error(err);
+        status.innerHTML = `<span style="color:var(--erro)">${err.message}</span>`;
+    }
+};
         // TRABALHO
         window.enviarTrabalho=async(input)=>{
             const file=input.files[0];if(!file||!usuarioId)return
