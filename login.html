@@ -651,6 +651,8 @@
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
             const senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
             if(senha!==senha2)return alert('Senhas não coincidem')
+  
+            
             if(senha.length<6)return alert('Senha mínimo 6 caracteres')
             const{data,error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
             if(error)return alert(traduzirErroAuth(error.message))
