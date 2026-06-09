@@ -860,14 +860,44 @@ window.baixarArquivo = async (url, nomeArquivo) => {
     }
 };
         // TRABALHO
-        window.enviarTrabalho=async(input)=>{
-            const file=input.files[0];if(!file||!usuarioId)return
-            const status=document.getElementById('uploadStatus');status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
-            const fileName=`${usuarioId}/${Date.now()}_${file.name}`;const{error}=await supabase.storage.from('trabalhos-sulsafe').upload(fileName,file)
-            if(error){const hist=JSON.parse(localStorage.getItem('sulsafe_trabalhos')||'[]');hist.push({user:usuarioAtual,nome:file.name,quando:new Date().toISOString()});localStorage.setItem('sulsafe_trabalhos',JSON.stringify(hist));status.innerHTML='<span style="color:var(--sucesso)">Registrado localmente. Configure bucket trabalhos-sulsafe no Supabase.</span>'}
-            else{status.innerHTML='<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado!</span>'}
-            input.value=''
-        }
+      window.enviarTrabalho = async (input) => {
+    const file = input.files[0];
+    if (!file ||!usuarioId) return;
+
+    const status = document.getElementById('uploadStatus');
+    status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+    try {
+        const fileName = `${usuarioId}/${Date.now()}_${file.name.replace(/\s/g, '_')}`;
+
+        const { error } = await supabase.storage
+           .from('trabalhos-sulsafe')
+           .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) throw error;
+
+        status.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado!</span>';
+
+    } catch (err) {
+        // Fallback pro localStorage se der erro no Supabase
+        const hist = JSON.parse(localStorage.getItem('sulsafe_trabalhos') || '[]');
+        hist.push({
+            user: usuarioAtual,
+            nome: file.name,
+            quando: new Date().toISOString()
+        });
+        localStorage.setItem('sulsafe_trabalhos', JSON.stringify(hist));
+
+        status.innerHTML = '<span style="color:var(--erro)">Erro no envio. Salvo localmente. Erro: ' + err.message + '</span>';
+        console.error(err);
+
+    } finally {
+        input.value = ''; // limpa o input sempre
+    }
+};
 
         // IA
         window.enviarPerguntaIA=async()=>{
