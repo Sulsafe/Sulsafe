@@ -886,23 +886,53 @@
             catch{window.open(url,'_blank')}
         }
 
-        // TRABALHO
-        window.enviarTrabalho=async(input)=>{
-            const file=input.files[0];if(!file||!usuarioId)return
-            const status=document.getElementById('uploadStatus')
-            status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
-            try{
-                const fileName=`${usuarioId}/${Date.now()}_${file.name.replace(/\s/g,'_')}`
-                const{error}=await supabase.storage.from('trabalhos-sulsafe').upload(fileName,file,{cacheControl:'3600',upsert:false})
-                if(error)throw error
-                status.innerHTML='<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado!</span>'
-            }catch(err){
-                const hist=JSON.parse(localStorage.getItem('sulsafe_trabalhos')||'[]')
-                hist.push({user:usuarioAtual,nome:file.name,quando:new Date().toISOString()})
-                localStorage.setItem('sulsafe_trabalhos',JSON.stringify(hist))
-                status.innerHTML='<span style="color:var(--erro)">Erro no envio: '+err.message+'</span>'
-            }finally{input.value=''}
-        }
+      window.enviarTrabalho = async (input) => {
+  const file = input.files[0];
+  if (!file || !usuarioId) return;
+  const statusDiv = document.getElementById('uploadStatus');
+  statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+  
+  try {
+    const ext = file.name.split('.').pop();
+    const fileName = `${usuarioId}/${Date.now()}_trabalho.${ext}`;
+    
+    // 1. Upload para o Storage
+    const { error: uploadError } = await supabase.storage
+      .from('trabalhos-sulsafe')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false });
+    if (uploadError) throw uploadError;
+    
+    // 2. Obter URL pública
+    const { data: urlData } = supabase.storage
+      .from('trabalhos-sulsafe')
+      .getPublicUrl(fileName);
+    
+    // 3. Inserir na tabela 'trabalhos'
+    const { error: insertError } = await supabase
+      .from('trabalhos')
+      .insert({
+        aluno_id: usuarioId,
+        aluno_email: usuarioAtual,
+        arquivo_url: urlData.publicUrl,
+        arquivo_path: fileName,
+        disciplina: 'Segurança do Trabalho',
+        status: 'pendente'
+      });
+    if (insertError) throw insertError;
+    
+    statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
+    input.value = '';
+    setTimeout(() => statusDiv.innerHTML = '', 4000);
+    
+  } catch (err) {
+    console.error(err);
+    statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`;
+    // Fallback opcional mantido
+    const hist = JSON.parse(localStorage.getItem('sulsafe_trabalhos') || '[]');
+    hist.push({ user: usuarioAtual, nome: file.name, quando: new Date().toISOString() });
+    localStorage.setItem('sulsafe_trabalhos', JSON.stringify(hist));
+  }
+};
 
         // IA
         window.enviarPerguntaIA=async()=>{
