@@ -2,8 +2,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const supabase=createClient('https://dhhvhyieoattdhrdwkrt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoeWllb2F0dGRocmR3a3J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzYwNDAsImV4cCI6MjA3MDQxMjA0MH0.YGLgdVdk6Garg8R4US9CFqNKbzVxoYRzITcfhA0eFBs')
 
 const CONFIG={
-    nomeEmpresa:'Canaã Conservadora',
-    logoUrl:'https://i.ibb.co/1tYH7MmM/Captura-de-tela-2025-08-11-095710.png'
+    nomeEmpresa:'Sulsafe',
+    logoUrl:'https://sulsafe.com.br/logo1.png' // ou a URL do teu logo
 }
 
 let usuarioAtual=null,usuarioId=null,perfilUsuario=null,ehProfessor=false,cursoAtual=null,arquivosSelecionados=[]
