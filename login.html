@@ -320,8 +320,8 @@
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" data-view="equipe"><i class="fas fa-users"></i><span>Equipe</span></div>
                 <div class="nav-item" data-view="trabalhos" id="navTrabalhos" style="display:none">
-                <i class="fas fa-tasks"></i><span>Trabalhos enviados</span>
-               </div>
+                    <i class="fas fa-tasks"></i><span>Trabalhos enviados</span>
+                </div>
                 <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
             </div>
             <div class="dash-user-info">
@@ -447,6 +447,22 @@
                 </div>
             </div>
 
+            <!-- TRABALHOS DOS ALUNOS (professor/admin) -->
+            <div id="viewTrabalhos" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos dos Alunos</h2>
+                <p class="dash-subtitle">Corrija e acompanhe as entregas</p>
+                <div class="filtro-nr" style="margin-bottom:20px">
+                    <button class="filtro-btn active" data-filtro="todos" onclick="filtrarTrabalhos('todos')">Todos</button>
+                    <button class="filtro-btn" data-filtro="pendente" onclick="filtrarTrabalhos('pendente')">Pendentes</button>
+                    <button class="filtro-btn" data-filtro="corrigido" onclick="filtrarTrabalhos('corrigido')">Corrigidos</button>
+                </div>
+                <div id="listaTrabalhos" class="videoaulas-grid" style="grid-template-columns:1fr">
+                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    </p>
+                </div>
+            </div>
+
             <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
@@ -546,7 +562,7 @@
                     <option value="NR-06">NR-06 — EPI</option>
                     <option value="NR-07">NR-07 — PCMSO</option>
                     <option value="NR-09">NR-09 — Riscos Ambientais</option>
-                    <option value="NR-10">NR-10 — Instalações Elétricas</option>
+                    <option value="NR-10">NR-10 — Instalações Elétriques</option>
                     <option value="NR-11">NR-11 — Transporte e Movimentação</option>
                     <option value="NR-12">NR-12 — Máquinas e Equipamentos</option>
                     <option value="NR-17">NR-17 — Ergonomia</option>
@@ -634,16 +650,21 @@
 
         window.mostrarTela=(tela)=>{document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')}
 
-        window.alternarView=(viewId)=>{
-            ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config'].forEach(v=>{const el=document.getElementById(`view${v}`);if(el)el.style.display='none'})
-            const target=document.getElementById(`view${viewId.charAt(0).toUpperCase()+viewId.slice(1)}`)
-            if(target)target.style.display='block'
-            document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'))
-            document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active')
-            if(viewId==='salas')atualizarListaSalas()
-            if(viewId==='equipe')carregarEquipe()
-            if(viewId==='materiais')carregarMateriais()
-            if(viewId==='videoaulas')carregarVideoaulas()
+        window.alternarView = (viewId) => {
+            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos'];
+            views.forEach(v => {
+                const el = document.getElementById(`view${v}`);
+                if (el) el.style.display = 'none';
+            });
+            const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
+            if (target) target.style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+            document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active');
+            if(viewId==='salas') atualizarListaSalas();
+            if(viewId==='equipe') carregarEquipe();
+            if(viewId==='materiais') carregarMateriais();
+            if(viewId==='videoaulas') carregarVideoaulas();
+            if(viewId==='trabalhos' && ehProfessor) carregarTrabalhos();
         }
 
         // AUTH
@@ -688,7 +709,10 @@
             document.getElementById('heroTexto').classList.add('hidden')
             document.getElementById('overlay').classList.add('hidden')
             document.getElementById('dashboard').classList.add('active')
-            atualizarListaSalas();carregarEquipe();renderizarProgressoHome()
+            atualizarListaSalas();carregarEquipe();renderizarProgressoHome();
+            // Mostrar item do menu "Trabalhos enviados" se for professor
+            const navTrabalhos = document.getElementById('navTrabalhos');
+            if (navTrabalhos) navTrabalhos.style.display = ehProfessor ? 'flex' : 'none';
         }
         function atualizarPainelProfessor(){const btn=document.getElementById('btnPainelProfessor');if(btn)btn.style.display=ehProfessor?'inline-block':'none'}
 
@@ -889,53 +913,43 @@
             catch{window.open(url,'_blank')}
         }
 
-      window.enviarTrabalho = async (input) => {
-  const file = input.files[0];
-  if (!file || !usuarioId) return;
-  const statusDiv = document.getElementById('uploadStatus');
-  statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-  
-  try {
-    const ext = file.name.split('.').pop();
-    const fileName = `${usuarioId}/${Date.now()}_trabalho.${ext}`;
-    
-    // 1. Upload para o Storage
-    const { error: uploadError } = await supabase.storage
-      .from('trabalhos-sulsafe')
-      .upload(fileName, file, { cacheControl: '3600', upsert: false });
-    if (uploadError) throw uploadError;
-    
-    // 2. Obter URL pública
-    const { data: urlData } = supabase.storage
-      .from('trabalhos-sulsafe')
-      .getPublicUrl(fileName);
-    
-    // 3. Inserir na tabela 'trabalhos'
-    const { error: insertError } = await supabase
-      .from('trabalhos')
-      .insert({
-        aluno_id: usuarioId,
-        aluno_email: usuarioAtual,
-        arquivo_url: urlData.publicUrl,
-        arquivo_path: fileName,
-        disciplina: 'Segurança do Trabalho',
-        status: 'pendente'
-      });
-    if (insertError) throw insertError;
-    
-    statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
-    input.value = '';
-    setTimeout(() => statusDiv.innerHTML = '', 4000);
-    
-  } catch (err) {
-    console.error(err);
-    statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`;
-    // Fallback opcional mantido
-    const hist = JSON.parse(localStorage.getItem('sulsafe_trabalhos') || '[]');
-    hist.push({ user: usuarioAtual, nome: file.name, quando: new Date().toISOString() });
-    localStorage.setItem('sulsafe_trabalhos', JSON.stringify(hist));
-  }
-};
+        window.enviarTrabalho = async (input) => {
+            const file = input.files[0];
+            if (!file || !usuarioId) return;
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            try {
+                const ext = file.name.split('.').pop();
+                const fileName = `${usuarioId}/${Date.now()}_trabalho.${ext}`;
+                const { error: uploadError } = await supabase.storage
+                    .from('trabalhos-sulsafe')
+                    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+                if (uploadError) throw uploadError;
+                const { data: urlData } = supabase.storage
+                    .from('trabalhos-sulsafe')
+                    .getPublicUrl(fileName);
+                const { error: insertError } = await supabase
+                    .from('trabalhos')
+                    .insert({
+                        aluno_id: usuarioId,
+                        aluno_email: usuarioAtual,
+                        arquivo_url: urlData.publicUrl,
+                        arquivo_path: fileName,
+                        disciplina: 'Segurança do Trabalho',
+                        status: 'pendente'
+                    });
+                if (insertError) throw insertError;
+                statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
+                input.value = '';
+                setTimeout(() => statusDiv.innerHTML = '', 4000);
+            } catch (err) {
+                console.error(err);
+                statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`;
+                const hist = JSON.parse(localStorage.getItem('sulsafe_trabalhos') || '[]');
+                hist.push({ user: usuarioAtual, nome: file.name, quando: new Date().toISOString() });
+                localStorage.setItem('sulsafe_trabalhos', JSON.stringify(hist));
+            }
+        };
 
         // IA
         window.enviarPerguntaIA=async()=>{
@@ -987,6 +1001,80 @@
         window.copiarLink=()=>{const code=document.getElementById('inviteCode').value;if(!code){alert('Gere um código primeiro');return};navigator.clipboard.writeText(`${window.location.href}?invite=${code}`);alert('Link copiado!')}
         window.removerConvite=(code)=>{const team=getTeamData();team.invites=team.invites.filter(i=>i.code!==code);saveTeamData(team);carregarEquipe();document.getElementById('inviteCode').value=''}
         window.entrarNaEquipe=()=>{const code=document.getElementById('joinCode').value.trim();if(!code)return;alert(`Código ${code} recebido!`)}
+
+        // TRABALHOS (admin/professor)
+        let todosTrabalhos = [];
+        async function carregarTrabalhos() {
+            if (!ehProfessor) return;
+            const container = document.getElementById('listaTrabalhos');
+            if (!container) return;
+            container.innerHTML = '<p style="text-align:center"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            const { data, error } = await supabase.from('trabalhos').select('*').order('data_envio', { ascending: false });
+            if (error) {
+                container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`;
+                return;
+            }
+            todosTrabalhos = data || [];
+            renderizarListaTrabalhos(todosTrabalhos);
+        }
+        function renderizarListaTrabalhos(trabalhos) {
+            const container = document.getElementById('listaTrabalhos');
+            if (!container) return;
+            if (!trabalhos.length) {
+                container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>';
+                return;
+            }
+            container.innerHTML = trabalhos.map(trab => `
+                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
+                        <div>
+                            <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
+                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
+                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
+                            <div>Status: 
+                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
+                                    ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
+                                </span>
+                            </div>
+                            ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
+                            ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
+                        </div>
+                        <div style="display:flex; gap:8px">
+                            <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
+                                <i class="fas fa-download"></i> Baixar PDF
+                            </button>
+                            <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
+                                <i class="fas fa-edit"></i> Corrigir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        window.abrirModalCorrecao = async (trabalhoId) => {
+            const { data: trab, error } = await supabase.from('trabalhos').select('*').eq('id', trabalhoId).single();
+            if (error || !trab) { alert('Trabalho não encontrado'); return; }
+            const nota = prompt(`Nota para ${trab.aluno_email} (0-10):`, trab.nota ?? '');
+            if (nota === null) return;
+            const notaNum = parseFloat(nota);
+            if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) { alert('Nota inválida. Digite entre 0 e 10.'); return; }
+            const comentario = prompt('Comentário (opcional):', trab.comentario ?? '');
+            const { error: updateError } = await supabase.from('trabalhos').update({
+                nota: notaNum,
+                comentario: comentario || null,
+                status: 'corrigido',
+                corrigido_por: usuarioId,
+                data_correcao: new Date().toISOString()
+            }).eq('id', trabalhoId);
+            if (updateError) alert('Erro ao salvar correção: ' + updateError.message);
+            else { alert('Correção salva com sucesso!'); carregarTrabalhos(); }
+        };
+        window.filtrarTrabalhos = (filtro) => {
+            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filtro="${filtro}"]`).classList.add('active');
+            const filtrados = filtro === 'todos' ? todosTrabalhos : todosTrabalhos.filter(t => t.status === filtro);
+            renderizarListaTrabalhos(filtrados);
+        };
 
         // CONFIG
         async function loadDevices(){try{await navigator.mediaDevices.getUserMedia({audio:true,video:true});const devices=await navigator.mediaDevices.enumerateDevices();const fill=(id,kind)=>{const sel=document.getElementById(id);if(sel)sel.innerHTML=devices.filter(d=>d.kind===kind).map(d=>`<option value="${d.deviceId}">${d.label||kind}</option>`).join('')};fill('speakerDevice','audiooutput');fill('micDevice','audioinput');fill('cameraDevice','videoinput')}catch{}}
