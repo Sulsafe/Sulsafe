@@ -979,35 +979,28 @@
         document.getElementById('joinTeamBtn')?.addEventListener('click',entrarNaEquipe)
         loadDevices()
 
-        // CANVAS HERO
-        const canvas=document.getElementById('canvas-hero'),ctx=canvas.getContext('2d')
-        let w,h,mx=0,my=0,tx=0,ty=0
-        function resizeCanvas(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
-        resizeCanvas();window.addEventListener('resize',resizeCanvas)
-        document.addEventListener('mousemove',e=>{mx=(e.clientX/w-.5)*2;my=(e.clientY/h-.5)*2})
-        const stars=Array.from({length:80},()=>({x:Math.random()*1920,y:Math.random()*1080,z:Math.random()*1000,size:Math.random()*1.2}))
-        const lines=Array.from({length:8},(_,i)=>({y:(i/8)*1080,speed:.2+Math.random()*.6}))
-        function draw(){ctx.fillStyle='#F4F7F6';ctx.fillRect(0,0,w,h);tx+=(mx-tx)*.05;ty+=(my-ty)*.05;ctx.fillStyle='#2E7D32';stars.forEach(s=>{s.z-=1.2;if(s.z<=0){s.z=1000;s.x=Math.random()*w;s.y=Math.random()*h};let scale=1000/(1000-s.z);let x=(s.x-w/2)*scale+w/2+tx*30;let y=(s.y-h/2)*scale+h/2+ty*15;ctx.globalAlpha=scale*.5;ctx.beginPath();ctx.arc(x,y,s.size*scale,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=.2;ctx.strokeStyle='#2E7D32';lines.forEach(l=>{l.y+=l.speed;if(l.y>h)l.y=0;ctx.beginPath();ctx.moveTo(0,l.y+ty*12);ctx.lineTo(w,l.y+ty*12);ctx.stroke()});requestAnimationFrame(draw)}
-        draw()
-
-        if(window.location.protocol==='file:'){const a=document.getElementById('avisoFileProtocol');if(a)a.style.display='block'}
-        document.getElementById('nomeEmpresa').innerText=CONFIG.nomeEmpresa
-        document.getElementById('dashEmpresaNome').innerText=CONFIG.nomeEmpresa
-        document.getElementById('logoText').innerText=CONFIG.nomeEmpresa
-        if(CONFIG.logoUrl){['logoIcon','logoIconCad','logoIconRec','dashLogoIcon'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.classList.add('has-img');el.innerHTML=`<img src="${CONFIG.logoUrl}" alt="logo">`})}
-        if(window.location.hash==='#cadastro')mostrarTela('cadastro')
-
-        supabase.auth.getSession().then(({data:{session}})=>{
-            if(session?.user){
-                usuarioAtual=session.user.email;usuarioId=session.user.id
-                garantirPerfil(session.user).then(role=>{
-                    perfilUsuario=role;
-                    ehProfessor=(role==='admin'||role==='professor');
-                    document.getElementById('dashUserName').innerHTML=usuarioAtual
-                    atualizarPainelProfessor();entrarDashboard()
-                })
-            }
-        })
+          <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    
+    <script type="module">
+    // CANVAS HERO
+    const canvas=document.getElementById('canvas-hero'),ctx=canvas.getContext('2d')
+    let w,h,mx=0,my=0,tx=0,ty=0
+    function resizeCanvas(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
+    resizeCanvas();window.addEventListener('resize',resizeCanvas)
+    document.addEventListener('mousemove',e=>{mx=(e.clientX/w-.5)*5;my=(e.clientY/h-.5)*5})
+    const stars=Array.from({length:80},()=>({x:Math.random()*1920,y:Math.random()*1080,z:Math.random()*1000,size:Math.random()*1.2}))
+    const lines=Array.from({length:8},(_,i)=>({y:(i/8)*1080,speed:.2+Math.random()*.6}))
+    function draw(){ctx.fillStyle='#4F7F6';ctx.fillRect(0,0,w,h);tx+=(mx-tx)*.05;ty+=(my-ty)*.05;ctx.fillStyle='#2E7D32';stars.forEach(s=>{s.z-=1.2;if(s.z<=0){s.z=1000;s.x=Math.random()*w;s.y=Math.random()*h};let px=(s.x-w/2)*(600/s.z)+w/2+tx,py=(s.y-h/2)*(600/s.z)+h/2+ty;if(px>=0&&px<=w&&py>=0&&py<=h)ctx.fillRect(px,py,s.size,s.size)});ctx.strokeStyle='rgba(46,125,50,.15)';lines.forEach(l=>{l.y+=l.speed;if(l.y>h)l.y=-5;ctx.beginPath();ctx.moveTo(0,l.y);ctx.lineTo(w,l.y);ctx.stroke()});requestAnimationFrame(draw)}
+    draw()
     </script>
+    
+    <script type="module" src="./index.js"></script>
+</body>
+</html>
+
+          <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="./index.js"></script>
 </body>
 </html>
