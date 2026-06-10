@@ -865,9 +865,9 @@
             status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...'
             const ext=arquivo.name.split('.').pop()
             const path=`materiais/${Date.now()}_${arquivo.name.replace(/\s/g,'_')}`
-            const{error:upErr}=await supabase.storage.from('sulsafe-assets').upload(path,arquivo,{cacheControl:'3600',upsert:false})
+           await supabase.storage.from('materiais').upload(path,arquivo,{cacheControl:'3600',upsert:false})
             if(upErr){status.innerHTML=`<span style="color:var(--erro)">Erro upload: ${upErr.message}</span>`;return}
-            const{data:{publicUrl}}=supabase.storage.from('sulsafe-assets').getPublicUrl(path)
+            const{data:{publicUrl}}=supabase.storage.from('materiais').getPublicUrl(path)
             const{error:dbErr}=await supabase.from('materiais').insert({titulo,nr,descricao,url:publicUrl,path,criado_por:usuarioId,criado_em:new Date().toISOString()})
             if(dbErr){status.innerHTML=`<span style="color:var(--erro)">Erro ao salvar: ${dbErr.message}</span>`;return}
             status.innerHTML='<span style="color:var(--sucesso)">Material publicado!</span>'
