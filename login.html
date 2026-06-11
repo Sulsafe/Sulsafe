@@ -435,10 +435,33 @@
 
         <div class="dash-main">
                      <!-- VIEW HOME -->
+                      <!-- VIEW HOME com gráficos -->
             <div id="viewHome">
                 <h1 class="dash-welcome">Bem-vindo ao painel SulSafe</h1>
                 <p class="dash-subtitle">Sua plataforma de segurança do trabalho</p>
-                <div id="progressoResumoHome"></div>
+                
+                <!-- Cards de métricas com gráficos -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 28px;">
+                    <div class="painel-card" style="text-align: center;">
+                        <h3 style="font-size: 14px; color: var(--texto-sec);"><i class="fas fa-chalkboard-user"></i> Progresso Videoaulas</h3>
+                        <div style="font-size: 32px; font-weight: bold; color: var(--primaria);" id="progressoPercentual">0%</div>
+                        <canvas id="graficoProgresso" width="150" height="150" style="max-width: 150px; margin: 0 auto;"></canvas>
+                    </div>
+                    <div class="painel-card" style="text-align: center;">
+                        <h3 style="font-size: 14px; color: var(--texto-sec);"><i class="fas fa-tasks"></i> Trabalhos</h3>
+                        <div style="font-size: 32px; font-weight: bold; color: var(--primaria);" id="totalTrabalhos">0</div>
+                        <canvas id="graficoTrabalhosStatus" width="150" height="150" style="max-width: 150px; margin: 0 auto;"></canvas>
+                    </div>
+                    <div class="painel-card" style="text-align: center;">
+                        <h3 style="font-size: 14px; color: var(--texto-sec);"><i class="fas fa-star"></i> Média das Notas</h3>
+                        <div style="font-size: 32px; font-weight: bold; color: var(--primaria);" id="mediaNotas">--</div>
+                        <canvas id="graficoMedia" width="150" height="150" style="max-width: 150px; margin: 0 auto;"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Card de progresso antigo (opcional) – pode manter ou remover -->
+                <div id="progressoResumoHome" style="display:none;"></div>
+                
                 <div class="dash-cards">
                     <div class="dash-card" onclick="alternarView('videoaulas')"><div class="dash-card-icon"><i class="fas fa-play-circle"></i></div><div class="dash-card-title">Videoaulas</div><div class="dash-card-desc">Aulas gravadas por NR com acompanhamento de progresso.</div></div>
                     <div class="dash-card" onclick="alternarView('salas')"><div class="dash-card-icon"><i class="fas fa-video"></i></div><div class="dash-card-title">Aula ao vivo</div><div class="dash-card-desc">Entre na videoconferência via Jitsi Meet.</div></div>
@@ -449,7 +472,6 @@
                 </div>
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
-
                        <!-- VIDEOAULAS -->
             <div id="viewVideoaulas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px">Videoaulas</h2>
