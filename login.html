@@ -230,10 +230,109 @@
         .color-option{display:inline-flex;width:32px;height:32px;border-radius:50%;margin:3px;cursor:pointer;border:2px solid transparent}
         .color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--primaria)}
 
-        /* MASCOTE */
-        .mascote-sulsafe-popup{position:fixed;bottom:25px;right:25px;z-index:9999}
-        .balao-ajuda-wrapper{width:80px;height:80px;background-color:#ffffff;border-radius:50%;overflow:hidden;box-shadow:0px 4px 15px rgba(0,0,0,0.2);border:3px solid #006400;display:flex;align-items:center;justify-content:center;cursor:pointer}
-        .balao-ajuda-wrapper img{width:130%;height:auto;object-fit:cover}
+        /* MASCOTE - ASSISTENTE INTERATIVO */
+        .mascote-assistente {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 9999;
+            cursor: pointer;
+        }
+        .mascote-avatar {
+            width: 70px;
+            height: 70px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 3px solid #2E7D32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        .mascote-avatar:hover {
+            transform: scale(1.05);
+        }
+        .mascote-avatar img {
+            width: 110%;
+            height: auto;
+            object-fit: cover;
+        }
+        .balao-ajuda {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 1px solid var(--borda);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            font-size: 13px;
+            z-index: 10000;
+        }
+        .balao-ajuda.active {
+            display: flex;
+        }
+        .balao-header {
+            background: var(--primaria);
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .balao-header i {
+            cursor: pointer;
+        }
+        .balao-conteudo {
+            padding: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+        .balao-mensagem {
+            background: #e8f5e9;
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+        .balao-mensagem strong {
+            color: var(--primaria);
+        }
+        .balao-opcoes {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .balao-opcao {
+            background: white;
+            border: 1px solid var(--borda);
+            border-radius: 20px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            font-size: 12px;
+        }
+        .balao-opcao:hover {
+            background: rgba(46,125,50,0.1);
+            border-color: var(--primaria);
+        }
+        .balao-footer {
+            padding: 8px 12px;
+            background: #fff;
+            border-top: 1px solid var(--borda);
+            font-size: 10px;
+            color: var(--texto-sec);
+            text-align: center;
+        }
 
         /* RESPONSIVO */
         @media(max-width:768px){
@@ -243,6 +342,7 @@
             .config-container{flex-direction:column}
             .config-sidebar{width:100%;display:flex;flex-wrap:wrap}
             .config-tab{flex:1;justify-content:center}
+            .balao-ajuda { width: 250px; right: -10px; bottom: 90px; }
         }
     </style>
 </head>
@@ -447,44 +547,22 @@
                 </div>
             </div>
 
-window.excluirTrabalho = async (trabalhoId) => {
-    if (!ehProfessor || !trabalhoId) return;
-    
-    if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return;
-    
-    // Buscar o trabalho para obter o caminho do arquivo no storage
-    const { data: trab, error: buscaError } = await supabase
-        .from('trabalhos')
-        .select('arquivo_path')
-        .eq('id', trabalhoId)
-        .single();
-    
-    if (buscaError) {
-        alert('Erro ao localizar trabalho: ' + buscaError.message);
-        return;
-    }
-    
-    // Excluir o arquivo do Storage (se existir)
-    if (trab && trab.arquivo_path) {
-        const { error: storageError } = await supabase.storage
-            .from('trabalhos-sulsafe')
-            .remove([trab.arquivo_path]);
-        if (storageError) console.warn('Erro ao excluir arquivo:', storageError);
-    }
-    
-    // Excluir o registro da tabela
-    const { error: deleteError } = await supabase
-        .from('trabalhos')
-        .delete()
-        .eq('id', trabalhoId);
-    
-    if (deleteError) {
-        alert('Erro ao excluir trabalho: ' + deleteError.message);
-    } else {
-        alert('Trabalho excluído com sucesso!');
-        carregarTrabalhos(); // recarrega a lista
-    }
-};
+            <!-- TRABALHOS DOS ALUNOS (professor/admin) -->
+            <div id="viewTrabalhos" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos dos Alunos</h2>
+                <p class="dash-subtitle">Corrija e acompanhe as entregas</p>
+                <div class="filtro-nr" style="margin-bottom:20px">
+                    <button class="filtro-btn active" data-filtro="todos" onclick="filtrarTrabalhos('todos')">Todos</button>
+                    <button class="filtro-btn" data-filtro="pendente" onclick="filtrarTrabalhos('pendente')">Pendentes</button>
+                    <button class="filtro-btn" data-filtro="corrigido" onclick="filtrarTrabalhos('corrigido')">Corrigidos</button>
+                </div>
+                <div id="listaTrabalhos" class="videoaulas-grid" style="grid-template-columns:1fr">
+                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    </p>
+                </div>
+            </div>
+
             <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
@@ -584,7 +662,7 @@ window.excluirTrabalho = async (trabalhoId) => {
                     <option value="NR-06">NR-06 — EPI</option>
                     <option value="NR-07">NR-07 — PCMSO</option>
                     <option value="NR-09">NR-09 — Riscos Ambientais</option>
-                    <option value="NR-10">NR-10 — Instalações Elétriques</option>
+                    <option value="NR-10">NR-10 — Instalações Elétricas</option>
                     <option value="NR-11">NR-11 — Transporte e Movimentação</option>
                     <option value="NR-12">NR-12 — Máquinas e Equipamentos</option>
                     <option value="NR-17">NR-17 — Ergonomia</option>
@@ -641,10 +719,32 @@ window.excluirTrabalho = async (trabalhoId) => {
 
     <div id="errorTooltip" class="error-tooltip"></div>
 
-    <!-- MASCOTE -->
-    <div class="mascote-sulsafe-popup">
-        <div class="balao-ajuda-wrapper">
+    <!-- MASCOTE - ASSISTENTE INTERATIVO -->
+    <div class="mascote-assistente" id="mascoteAssistente">
+        <div class="mascote-avatar">
             <img src="sipat-seguranca.png" alt="Mascote SulSafe">
+        </div>
+        <div class="balao-ajuda" id="balaoAjuda">
+            <div class="balao-header">
+                <span><i class="fas fa-robot"></i> Assistente SulSafe</span>
+                <i class="fas fa-times" onclick="fecharAssistente()"></i>
+            </div>
+            <div class="balao-conteudo" id="balaoConteudo">
+                <div class="balao-mensagem">
+                    <strong>Olá! 👋</strong><br>
+                    Sou seu assistente virtual. Posso ajudar com:
+                </div>
+                <div class="balao-opcoes">
+                    <div class="balao-opcao" onclick="ajudaEnvioTrabalho()">📄 Como enviar um trabalho?</div>
+                    <div class="balao-opcao" onclick="ajudaVideoaula()">🎬 Como acessar videoaulas?</div>
+                    <div class="balao-opcao" onclick="ajudaSala()">🎥 Como entrar em uma aula ao vivo?</div>
+                    <div class="balao-opcao" onclick="ajudaMateriais()">📚 Onde encontro os materiais?</div>
+                    <div class="balao-opcao" onclick="abrirAssistenteNR()">🤖 Falar com o Assistente NR (IA)</div>
+                </div>
+            </div>
+            <div class="balao-footer">
+                Dica: clique no ícone do mascote para abrir/fechar.
+            </div>
         </div>
     </div>
 
@@ -732,7 +832,6 @@ window.excluirTrabalho = async (trabalhoId) => {
             document.getElementById('overlay').classList.add('hidden')
             document.getElementById('dashboard').classList.add('active')
             atualizarListaSalas();carregarEquipe();renderizarProgressoHome();
-            // Mostrar item do menu "Trabalhos enviados" se for professor
             const navTrabalhos = document.getElementById('navTrabalhos');
             if (navTrabalhos) navTrabalhos.style.display = ehProfessor ? 'flex' : 'none';
         }
@@ -1039,43 +1138,43 @@ window.excluirTrabalho = async (trabalhoId) => {
             todosTrabalhos = data || [];
             renderizarListaTrabalhos(todosTrabalhos);
         }
- function renderizarListaTrabalhos(trabalhos) {
-    const container = document.getElementById('listaTrabalhos');
-    if (!container) return;
-    if (!trabalhos.length) {
-        container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>';
-        return;
-    }
-    container.innerHTML = trabalhos.map(trab => `
-        <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
-                <div>
-                    <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
-                    <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
-                    <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
-                    <div>Status: 
-                        <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
-                            ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
-                        </span>
+        function renderizarListaTrabalhos(trabalhos) {
+            const container = document.getElementById('listaTrabalhos');
+            if (!container) return;
+            if (!trabalhos.length) {
+                container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>';
+                return;
+            }
+            container.innerHTML = trabalhos.map(trab => `
+                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
+                        <div>
+                            <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
+                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
+                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
+                            <div>Status: 
+                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
+                                    ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
+                                </span>
+                            </div>
+                            ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
+                            ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
+                        </div>
+                        <div style="display:flex; gap:8px">
+                            <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
+                                <i class="fas fa-download"></i> Baixar PDF
+                            </button>
+                            <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
+                                <i class="fas fa-edit"></i> Corrigir
+                            </button>
+                            ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="excluirTrabalho('${trab.id}')">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>` : ''}
+                        </div>
                     </div>
-                    ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
-                    ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
                 </div>
-                <div style="display:flex; gap:8px">
-                    <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
-                        <i class="fas fa-download"></i> Baixar PDF
-                    </button>
-                    <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
-                        <i class="fas fa-edit"></i> Corrigir
-                    </button>
-                    ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="excluirTrabalho('${trab.id}')">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>` : ''}
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
+            `).join('');
+        }
         window.abrirModalCorrecao = async (trabalhoId) => {
             const { data: trab, error } = await supabase.from('trabalhos').select('*').eq('id', trabalhoId).single();
             if (error || !trab) { alert('Trabalho não encontrado'); return; }
@@ -1101,6 +1200,37 @@ window.excluirTrabalho = async (trabalhoId) => {
             renderizarListaTrabalhos(filtrados);
         };
 
+        // FUNÇÃO EXCLUIR TRABALHO
+        window.excluirTrabalho = async (trabalhoId) => {
+            if (!ehProfessor || !trabalhoId) return;
+            if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return;
+            const { data: trab, error: buscaError } = await supabase
+                .from('trabalhos')
+                .select('arquivo_path')
+                .eq('id', trabalhoId)
+                .single();
+            if (buscaError) {
+                alert('Erro ao localizar trabalho: ' + buscaError.message);
+                return;
+            }
+            if (trab && trab.arquivo_path) {
+                const { error: storageError } = await supabase.storage
+                    .from('trabalhos-sulsafe')
+                    .remove([trab.arquivo_path]);
+                if (storageError) console.warn('Erro ao excluir arquivo:', storageError);
+            }
+            const { error: deleteError } = await supabase
+                .from('trabalhos')
+                .delete()
+                .eq('id', trabalhoId);
+            if (deleteError) {
+                alert('Erro ao excluir trabalho: ' + deleteError.message);
+            } else {
+                alert('Trabalho excluído com sucesso!');
+                carregarTrabalhos();
+            }
+        };
+
         // CONFIG
         async function loadDevices(){try{await navigator.mediaDevices.getUserMedia({audio:true,video:true});const devices=await navigator.mediaDevices.enumerateDevices();const fill=(id,kind)=>{const sel=document.getElementById(id);if(sel)sel.innerHTML=devices.filter(d=>d.kind===kind).map(d=>`<option value="${d.deviceId}">${d.label||kind}</option>`).join('')};fill('speakerDevice','audiooutput');fill('micDevice','audioinput');fill('cameraDevice','videoinput')}catch{}}
         document.getElementById('testMic')?.addEventListener('click',async()=>{const s=await navigator.mediaDevices.getUserMedia({audio:true});alert('Microfone OK');setTimeout(()=>s.getTracks().forEach(t=>t.stop()),3000)})
@@ -1115,6 +1245,38 @@ window.excluirTrabalho = async (trabalhoId) => {
         const savedColor=localStorage.getItem('sulsafe_corDestaque');if(savedColor){document.documentElement.style.setProperty('--primaria',savedColor);document.querySelectorAll('.color-option').forEach(o=>{if(o.dataset.color===savedColor)o.classList.add('selected')})}
         document.getElementById('limparDados')?.addEventListener('click',()=>{localStorage.clear();document.getElementById('clearMsg').style.display='inline';setTimeout(()=>document.getElementById('clearMsg').style.display='none',2000)})
         document.querySelectorAll('.config-tab').forEach(tab=>tab.addEventListener('click',()=>{const t=tab.dataset.config;document.querySelectorAll('.config-tab').forEach(x=>x.classList.remove('active'));tab.classList.add('active');document.querySelectorAll('.config-section').forEach(x=>x.classList.remove('active-section'));document.getElementById(`config-${t}`)?.classList.add('active-section')}))
+
+        // ASSISTENTE MASCOTE
+        const mascoteDiv = document.getElementById('mascoteAssistente');
+        const balao = document.getElementById('balaoAjuda');
+        window.fecharAssistente = () => {
+            balao.classList.remove('active');
+        };
+        mascoteDiv.addEventListener('click', (e) => {
+            if (e.target.closest('.mascote-avatar')) {
+                balao.classList.toggle('active');
+            }
+        });
+        window.ajudaEnvioTrabalho = () => {
+            alert("📄 Para enviar um trabalho, acesse 'Área do aluno' e clique na área de upload. Selecione um arquivo PDF e aguarde a confirmação.");
+            balao.classList.remove('active');
+        };
+        window.ajudaVideoaula = () => {
+            alert("🎬 As videoaulas estão disponíveis no menu 'Videoaulas'. Clique em qualquer aula para assistir. Seu progresso é salvo automaticamente.");
+            balao.classList.remove('active');
+        };
+        window.ajudaSala = () => {
+            alert("🎥 Para participar de uma aula ao vivo, vá em 'Aulas ao vivo', crie ou entre em uma sala. Você precisará de permissão de microfone e câmera.");
+            balao.classList.remove('active');
+        };
+        window.ajudaMateriais = () => {
+            alert("📚 Os materiais de apoio (PDFs) estão na aba 'Materiais'. Basta clicar em 'Baixar' para obter o arquivo.");
+            balao.classList.remove('active');
+        };
+        window.abrirAssistenteNR = () => {
+            alternarView('ia');
+            balao.classList.remove('active');
+        };
 
         // NAV & INIT
         document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click',()=>alternarView(el.getAttribute('data-view'))))
