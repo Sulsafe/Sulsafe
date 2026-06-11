@@ -447,8 +447,9 @@
                 </div>
             </div>
 
-          window.excluirTrabalho = async (trabalhoId) => {
-    if (!ehProfessor) return;
+window.excluirTrabalho = async (trabalhoId) => {
+    if (!ehProfessor || !trabalhoId) return;
+    
     if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return;
     
     // Buscar o trabalho para obter o caminho do arquivo no storage
@@ -457,6 +458,7 @@
         .select('arquivo_path')
         .eq('id', trabalhoId)
         .single();
+    
     if (buscaError) {
         alert('Erro ao localizar trabalho: ' + buscaError.message);
         return;
@@ -464,7 +466,10 @@
     
     // Excluir o arquivo do Storage (se existir)
     if (trab && trab.arquivo_path) {
-        await supabase.storage.from('trabalhos-sulsafe').remove([trab.arquivo_path]);
+        const { error: storageError } = await supabase.storage
+            .from('trabalhos-sulsafe')
+            .remove([trab.arquivo_path]);
+        if (storageError) console.warn('Erro ao excluir arquivo:', storageError);
     }
     
     // Excluir o registro da tabela
@@ -474,13 +479,12 @@
         .eq('id', trabalhoId);
     
     if (deleteError) {
-        alert('Erro ao excluir: ' + deleteError.message);
+        alert('Erro ao excluir trabalho: ' + deleteError.message);
     } else {
         alert('Trabalho excluído com sucesso!');
         carregarTrabalhos(); // recarrega a lista
     }
 };
-
             <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
