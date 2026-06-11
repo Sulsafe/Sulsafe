@@ -1101,18 +1101,47 @@
         };
 
         // IA
-        window.enviarPerguntaIA=async()=>{
-            const input=document.getElementById('iaChatInput'),pergunta=input.value.trim();if(!pergunta)return
-            const box=document.getElementById('iaChatMessages')
-            box.innerHTML+=`<div class="ia-msg user">${escapeHtml(pergunta)}</div>`
-            input.value='';const loading=document.createElement('div');loading.className='ia-msg bot';loading.textContent='Pensando...';box.appendChild(loading);box.scrollTop=box.scrollHeight
-            try{
-                const{data,error}=await supabase.functions.invoke('gemini-chat-import',{body:{prompt:`Você é especialista em Segurança do Trabalho SULSAFE. Responda didaticamente sobre NRs, especialmente NR-18, NR-31, NR-33, NR-35 e NR-10. Pergunta: ${pergunta}`}})
-                loading.remove();const texto=(!error&&(data?.response||data?.text))?(data.response||data.text):`Sobre "${pergunta}": consulte o material na aba Materiais ou fale com seu instrutor.`
-                box.innerHTML+=`<div class="ia-msg bot">${escapeHtml(texto)}</div>`
-            }catch{loading.remove();box.innerHTML+=`<div class="ia-msg bot">Não foi possível contactar a IA agora.</div>`}
-            box.scrollTop=box.scrollHeight
-        }
+window.enviarPerguntaIA = async () => {
+    const input = document.getElementById('iaChatInput');
+    const pergunta = input.value.trim();
+    if (!pergunta) return;
+    const box = document.getElementById('iaChatMessages');
+    box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
+    input.value = '';
+    const loading = document.createElement('div');
+    loading.className = 'ia-msg bot';
+    loading.textContent = 'Pensando...';
+    box.appendChild(loading);
+    box.scrollTop = box.scrollHeight;
+    try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://sulsafe.com.br',
+                'X-Title': 'SulSafe'
+            },
+            body: JSON.stringify({
+                model: 'mistralai/mistral-7b-instruct:free',
+                messages: [
+                    { role: 'system', content: 'Você é um especialista em Segurança do Trabalho, respondendo apenas sobre NRs (NR-18, NR-31, NR-33, NR-35, NR-10, EPIs etc.). Seja breve e claro.' },
+                    { role: 'user', content: pergunta }
+                ],
+                max_tokens: 300
+            })
+        });
+        if (!response.ok) throw new Error('Falha na API');
+        const data = await response.json();
+        const resposta = data.choices?.[0]?.message?.content || 'Não entendi. Consulte o material na aba Materiais.';
+        loading.remove();
+        box.innerHTML += `<div class="ia-msg bot">${escapeHtml(resposta)}</div>`;
+    } catch (erro) {
+        loading.remove();
+        box.innerHTML += `<div class="ia-msg bot">⚠️ Assistente momentaneamente indisponível. Tente novamente mais tarde.</div>`;
+        console.error(erro);
+    }
+    box.scrollTop = box.scrollHeight;
+};
 
         // SALAS JITSI
         function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
