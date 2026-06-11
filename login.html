@@ -1004,17 +1004,27 @@
             else{btnCert.style.display='none';certDesc.innerHTML=`Conclua ${total-concluidas} aula(s) restante(s) para liberar seu certificado.`;document.getElementById('certSection').classList.add('cert-locked')}
         }
 
-        function renderizarProgressoHome(){
-            const aulas=getAulasLocal();if(!aulas.length){document.getElementById('progressoResumoHome').innerHTML='';return}
-            const progresso=getProgressoLocal(),total=aulas.length,concluidas=aulas.filter(a=>progresso[a.id]).length,pct=Math.round((concluidas/total)*100)
-            document.getElementById('progressoResumoHome').innerHTML=`
-            <div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px">
-                <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span><span class="progresso-pct">${pct}%</span></div>
-                <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-                <div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div>
-            </div>`
-        }
-
+    function renderizarProgressoHome() {
+    const aulas = getAulasLocal();
+    if (!aulas.length) {
+        document.getElementById('progressoResumoHome').innerHTML = '';
+        return;
+    }
+    const progresso = getProgressoLocal();
+    const total = aulas.length;
+    const concluidas = aulas.filter(a => progresso[a.id]).length;
+    const pct = Math.round((concluidas / total) * 100);
+    document.getElementById('progressoResumoHome').innerHTML = `
+        <div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px">
+            <div class="progresso-header">
+                <span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span>
+                <span class="progresso-pct">${pct}%</span>
+            </div>
+            <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
+            <div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div>
+        </div>
+    `;
+}
         window.gerarCertificado=()=>{
             const aulas=getAulasLocal(),progresso=getProgressoLocal()
             const nrsConcluidas=[...new Set(aulas.filter(a=>progresso[a.id]).map(a=>a.nr).filter(Boolean))]
