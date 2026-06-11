@@ -25,8 +25,6 @@
         body{font-family:'Inter',sans-serif;height:100vh;overflow:hidden;background:var(--bg-pagina);color:var(--texto);transition:background .3s,color .3s}
         body.tema-claro{--bg-pagina:#FFF;--fundo-dash:#F9F9F9;--texto:#1A1A1A;--borda:#E0E0E0;--input-bg:#FFF;--fundo-sidebar:#FFF;--sidebar-bg:#FFF;--card-bg:#FFF}
 
-        /* O restante do seu estilo continua igual a partir daqui */
-
         /* HERO */
         .hero-container{position:fixed;inset:0;z-index:1;overflow:hidden;transition:opacity .5s}
         .hero-container.hidden{opacity:0;pointer-events:none}
@@ -116,7 +114,6 @@
         .meeting-modal.active{display:flex}
         .meeting-room{width:90vw;height:85vh;max-width:1400px;background:#fff;border-radius:24px;border:1px solid var(--primaria);display:flex;flex-direction:column;overflow:hidden}
         .room-header{padding:12px 18px;background:rgba(0,0,0,.02);border-bottom:1px solid var(--borda);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
-        .room-title{font-size:1rem;font-weight:700;color:var(--primaria)}
         .room-actions button{background:rgba(0,0,0,.05);border:none;color:var(--texto-sec);font-size:.8rem;cursor:pointer;margin-left:5px;padding:5px 10px;border-radius:20px;transition:.2s}
         .close-room{background:none!important;border:none;color:var(--texto-sec);font-size:20px;cursor:pointer}
         .btn-ia-assistente{background:var(--primaria)!important;color:#fff!important;font-weight:bold}
@@ -234,107 +231,36 @@
         .color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--primaria)}
 
         /* MASCOTE - ASSISTENTE INTERATIVO */
-        .mascote-assistente {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 9999;
-            cursor: pointer;
-        }
-        .mascote-avatar {
-            width: 70px;
-            height: 70px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 3px solid #2E7D32;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-        }
-        .mascote-avatar:hover {
-            transform: scale(1.05);
-        }
-        .mascote-avatar img {
-            width: 110%;
-            height: auto;
-            object-fit: cover;
-        }
-        .balao-ajuda {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 280px;
-            background: white;
+        .mascote-assistente{position:fixed;bottom:25px;right:25px;z-index:9999;cursor:pointer}
+        .mascote-avatar{width:70px;height:70px;background-color:#ffffff;border-radius:50%;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.2);border:3px solid #2E7D32;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease}
+        .mascote-avatar:hover{transform:scale(1.05)}
+        .mascote-avatar img{width:110%;height:auto;object-fit:cover}
+        .balao-ajuda{position:absolute;bottom:80px;right:0;width:280px;background:white;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);border:1px solid var(--borda);display:none;flex-direction:column;overflow:hidden;font-size:13px;z-index:10000}
+        .balao-ajuda.active{display:flex}
+        .balao-header{background:var(--primaria);color:white;padding:10px 15px;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+        .balao-header i{cursor:pointer}
+        .balao-conteudo{padding:12px;max-height:300px;overflow-y:auto;background:#f9f9f9}
+        .balao-mensagem{background:#e8f5e9;padding:8px 12px;border-radius:15px;margin-bottom:10px;color:#1a1a1a}
+        .balao-mensagem strong{color:var(--primaria)}
+        .balao-opcoes{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+        .balao-opcao{background:white;border:1px solid var(--borda);border-radius:20px;padding:6px 12px;cursor:pointer;transition:0.2s;text-align:left;font-size:12px}
+        .balao-opcao:hover{background:rgba(46,125,50,0.1);border-color:var(--primaria)}
+        .balao-footer{padding:8px 12px;background:#fff;border-top:1px solid var(--borda);font-size:10px;color:var(--texto-sec);text-align:center}
+
+        /* BADGE DE NOTIFICAÇÃO */
+        .badge-novo {
+            background: #ff9800;
+            color: #fff;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 1px solid var(--borda);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            font-size: 13px;
-            z-index: 10000;
-        }
-        .balao-ajuda.active {
-            display: flex;
-        }
-        .balao-header {
-            background: var(--primaria);
-            color: white;
-            padding: 10px 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .balao-header i {
-            cursor: pointer;
-        }
-        .balao-conteudo {
-            padding: 12px;
-            max-height: 300px;
-            overflow-y: auto;
-            background: #f9f9f9;
-        }
-        .balao-mensagem {
-            background: #e8f5e9;
-            padding: 8px 12px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            color: #1a1a1a;
-        }
-        .balao-mensagem strong {
-            color: var(--primaria);
-        }
-        .balao-opcoes {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .balao-opcao {
-            background: white;
-            border: 1px solid var(--borda);
-            border-radius: 20px;
-            padding: 6px 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: left;
-            font-size: 12px;
-        }
-        .balao-opcao:hover {
-            background: rgba(46,125,50,0.1);
-            border-color: var(--primaria);
-        }
-        .balao-footer {
-            padding: 8px 12px;
-            background: #fff;
-            border-top: 1px solid var(--borda);
+            padding: 2px 8px;
             font-size: 10px;
-            color: var(--texto-sec);
-            text-align: center;
+            margin-left: 8px;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
 
         /* RESPONSIVO */
@@ -345,7 +271,7 @@
             .config-container{flex-direction:column}
             .config-sidebar{width:100%;display:flex;flex-wrap:wrap}
             .config-tab{flex:1;justify-content:center}
-            .balao-ajuda { width: 250px; right: -10px; bottom: 90px; }
+            .balao-ajuda{width:250px;right:-10px;bottom:90px}
         }
     </style>
 </head>
