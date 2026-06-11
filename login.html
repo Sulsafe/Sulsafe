@@ -488,11 +488,14 @@
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
-            <!-- ÁREA DO ALUNO -->
+                 <!-- ÁREA DO ALUNO -->
             <div id="viewAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
-                <p class="dash-subtitle">Envie seu trabalho em PDF para o professor</p>
+                <p class="dash-subtitle">Envie seu trabalho em PDF e acompanhe as correções</p>
+                
+                <!-- Seção de envio -->
                 <div class="painel-card">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-cloud-upload-alt"></i> Enviar novo trabalho</h3>
                     <div class="upload-area" onclick="document.getElementById('fileInputTrabalho').click()">
                         <i class="fas fa-cloud-upload-alt" style="font-size:36px;color:var(--primaria)"></i>
                         <p style="margin-top:10px"><strong>Clique para enviar PDF</strong></p>
@@ -500,6 +503,16 @@
                     </div>
                     <input type="file" id="fileInputTrabalho" accept=".pdf" style="display:none" onchange="enviarTrabalho(this)">
                     <div id="uploadStatus" style="margin-top:10px;font-size:14px"></div>
+                </div>
+
+                <!-- Seção de trabalhos enviados (com correção) -->
+                <div class="painel-card">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-history"></i> Meus trabalhos enviados</h3>
+                    <div id="meusTrabalhosList">
+                        <p style="color:var(--texto-sec);text-align:center;padding:20px">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando...
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -749,6 +762,50 @@
     </div>
 
     <script type="module">
+         // CARREGAR TRABALHOS DO ALUNO (para visualização)
+        async function carregarMeusTrabalhos() {
+            if (!usuarioId) return;
+            const container = document.getElementById('meusTrabalhosList');
+            if (!container) return;
+            container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            
+            const { data, error } = await supabase
+                .from('trabalhos')
+                .select('*')
+                .eq('aluno_id', usuarioId)
+                .order('data_envio', { ascending: false });
+            
+            if (error) {
+                container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px">Você ainda não enviou nenhum trabalho.</p>';
+                return;
+            }
+            
+            container.innerHTML = data.map(trab => `
+                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:8px; margin-bottom:12px">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
+                        <div>
+                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
+                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
+                            <div>Status: 
+                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
+                                    ${trab.status === 'pendente' ? 'Aguardando correção' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
+                                </span>
+                            </div>
+                            ${trab.nota ? `<div><strong>Nota:</strong> ${trab.nota}</div>` : ''}
+                            ${trab.comentario ? `<div><strong>Comentário do professor:</strong><br>${escapeHtml(trab.comentario)}</div>` : ''}
+                        </div>
+                        <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'meu_trabalho_${trab.id}.pdf')" style="margin-top:8px">
+                            <i class="fas fa-download"></i> Baixar meu PDF
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
         const supabase = createClient(
