@@ -1017,40 +1017,43 @@
             todosTrabalhos = data || [];
             renderizarListaTrabalhos(todosTrabalhos);
         }
-        function renderizarListaTrabalhos(trabalhos) {
-            const container = document.getElementById('listaTrabalhos');
-            if (!container) return;
-            if (!trabalhos.length) {
-                container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>';
-                return;
-            }
-            container.innerHTML = trabalhos.map(trab => `
-                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
-                        <div>
-                            <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
-                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
-                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
-                            <div>Status: 
-                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
-                                    ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
-                                </span>
-                            </div>
-                            ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
-                            ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
-                        </div>
-                        <div style="display:flex; gap:8px">
-                            <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
-                                <i class="fas fa-download"></i> Baixar PDF
-                            </button>
-                            <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
-                                <i class="fas fa-edit"></i> Corrigir
-                            </button>
-                        </div>
+ function renderizarListaTrabalhos(trabalhos) {
+    const container = document.getElementById('listaTrabalhos');
+    if (!container) return;
+    if (!trabalhos.length) {
+        container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>';
+        return;
+    }
+    container.innerHTML = trabalhos.map(trab => `
+        <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
+                <div>
+                    <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
+                    <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
+                    <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
+                    <div>Status: 
+                        <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
+                            ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
+                        </span>
                     </div>
+                    ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
+                    ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
                 </div>
-            `).join('');
-        }
+                <div style="display:flex; gap:8px">
+                    <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
+                        <i class="fas fa-download"></i> Baixar PDF
+                    </button>
+                    <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
+                        <i class="fas fa-edit"></i> Corrigir
+                    </button>
+                    ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="excluirTrabalho('${trab.id}')">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
         window.abrirModalCorrecao = async (trabalhoId) => {
             const { data: trab, error } = await supabase.from('trabalhos').select('*').eq('id', trabalhoId).single();
             if (error || !trab) { alert('Trabalho não encontrado'); return; }
