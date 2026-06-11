@@ -447,21 +447,39 @@
                 </div>
             </div>
 
-            <!-- TRABALHOS DOS ALUNOS (professor/admin) -->
-            <div id="viewTrabalhos" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos dos Alunos</h2>
-                <p class="dash-subtitle">Corrija e acompanhe as entregas</p>
-                <div class="filtro-nr" style="margin-bottom:20px">
-                    <button class="filtro-btn active" data-filtro="todos" onclick="filtrarTrabalhos('todos')">Todos</button>
-                    <button class="filtro-btn" data-filtro="pendente" onclick="filtrarTrabalhos('pendente')">Pendentes</button>
-                    <button class="filtro-btn" data-filtro="corrigido" onclick="filtrarTrabalhos('corrigido')">Corrigidos</button>
-                </div>
-                <div id="listaTrabalhos" class="videoaulas-grid" style="grid-template-columns:1fr">
-                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0">
-                        <i class="fas fa-spinner fa-spin"></i> Carregando...
-                    </p>
-                </div>
-            </div>
+          window.excluirTrabalho = async (trabalhoId) => {
+    if (!ehProfessor) return;
+    if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return;
+    
+    // Buscar o trabalho para obter o caminho do arquivo no storage
+    const { data: trab, error: buscaError } = await supabase
+        .from('trabalhos')
+        .select('arquivo_path')
+        .eq('id', trabalhoId)
+        .single();
+    if (buscaError) {
+        alert('Erro ao localizar trabalho: ' + buscaError.message);
+        return;
+    }
+    
+    // Excluir o arquivo do Storage (se existir)
+    if (trab && trab.arquivo_path) {
+        await supabase.storage.from('trabalhos-sulsafe').remove([trab.arquivo_path]);
+    }
+    
+    // Excluir o registro da tabela
+    const { error: deleteError } = await supabase
+        .from('trabalhos')
+        .delete()
+        .eq('id', trabalhoId);
+    
+    if (deleteError) {
+        alert('Erro ao excluir: ' + deleteError.message);
+    } else {
+        alert('Trabalho excluído com sucesso!');
+        carregarTrabalhos(); // recarrega a lista
+    }
+};
 
             <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
