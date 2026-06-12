@@ -1339,41 +1339,87 @@ async function garantirPerfil(user) {
             `).join('')
         }
 
-        window.enviarTrabalho = async (input) => {
-            const file = input.files[0]
-            if (!file || !usuarioId) return
-            const statusDiv = document.getElementById('uploadStatus')
-            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'
-            try {
-                const ext = file.name.split('.').pop()
-                const fileName = `${usuarioId}/${Date.now()}_trabalho.${ext}`
-                const { error: uploadError } = await supabase.storage
-                    .from('trabalhos-sulsafe')
-                    .upload(fileName, file, { cacheControl: '3600', upsert: false })
-                if (uploadError) throw uploadError
-                const { data: urlData } = supabase.storage
-                    .from('trabalhos-sulsafe')
-                    .getPublicUrl(fileName)
-                const { error: insertError } = await supabase
-                    .from('trabalhos')
-                    .insert({
-                        aluno_id: usuarioId,
-                        aluno_email: usuarioAtual,
-                        arquivo_url: urlData.publicUrl,
-                        arquivo_path: fileName,
-                        disciplina: 'Segurança do Trabalho',
-                        status: 'pendente'
-                    })
-                if (insertError) throw insertError
-                statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>'
-                input.value = ''
-                setTimeout(() => statusDiv.innerHTML = '', 4000)
-                carregarMeusTrabalhos()
-            } catch (err) {
-                console.error(err)
-                statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`
-            }
+       window.enviarTrabalho = async (input) => {
+    const file = input.files[0];
+    const statusDiv = document.getElementById('uploadStatus');
+    
+    if (!file) {
+        statusDiv.innerHTML = '<span style="color:var(--erro)">Selecione um arquivo PDF</span>';
+        return;
+    }
+    
+    if (file.type !== 'application/pdf') {
+        statusDiv.innerHTML = '<span style="color:var(--erro)">Apenas arquivos PDF são permitidos</span>';
+        return;
+    }
+    
+    if (!usuarioId) {
+        statusDiv.innerHTML = '<span style="color:var(--erro)">Você precisa estar logado</span>';
+        return;
+    }
+    
+    statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+    
+    try {
+        // Criar um nome único para o arquivo
+        const timestamp = Date.now();
+        const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const filePath = `${usuarioId}/${timestamp}_${nomeLimpo}`;
+        
+        console.log('Enviando para:', filePath);
+        
+        // Upload direto
+        const { data, error } = await supabase.storage
+            .from('trabalhos-sulsafe')
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+        
+        if (error) {
+            console.error('Erro detalhado:', error);
+            statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${error.message}</span>`;
+            return;
         }
+        
+        // Pegar a URL pública
+        const { data: urlData } = supabase.storage
+            .from('trabalhos-sulsafe')
+            .getPublicUrl(filePath);
+        
+        // Salvar no banco
+        const { error: insertError } = await supabase
+            .from('trabalhos')
+            .insert({
+                aluno_id: usuarioId,
+                aluno_email: usuarioAtual,
+                arquivo_url: urlData.publicUrl,
+                arquivo_path: filePath,
+                disciplina: 'Segurança do Trabalho',
+                status: 'pendente',
+                data_envio: new Date().toISOString()
+            });
+        
+        if (insertError) {
+            console.error('Erro ao salvar:', insertError);
+            statusDiv.innerHTML = `<span style="color:var(--erro)">Erro ao salvar: ${insertError.message}</span>`;
+            return;
+        }
+        
+        statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
+        input.value = '';
+        
+        // Recarregar a lista
+        setTimeout(() => {
+            carregarMeusTrabalhos();
+            statusDiv.innerHTML = '';
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Erro inesperado:', err);
+        statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`;
+    }
+};
 
         // TRABALHOS (professor)
         async function carregarTrabalhos() {
