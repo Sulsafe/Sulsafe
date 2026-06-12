@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SulSafe - Gestão de Segurança do Trabalho</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      background-color: #f3f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .layout-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .area-topo-direita {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .btn-acessar {
+      display: inline-block;
+      background-color: #2E7D32;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Efeito hover para melhor experiência */
+    .btn-acessar:hover {
+      background-color: #1B5E20;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-principal {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout-container">
+    <div class="area-topo-direita">
+      <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
+    </div>
+    <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
+  </div>
+</body>
+</html>
