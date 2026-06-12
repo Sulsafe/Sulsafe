@@ -786,8 +786,8 @@
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
 
-        // FUNÇÃO GARANTIR PERFIL - CORRIGIDA
-       async function garantirPerfil(user) {
+  // FUNÇÃO GARANTIR PERFIL - CORRIGIDA (sem duplicação)
+async function garantirPerfil(user) {
     // Verificar se já existe o perfil
     const { data: existing, error: queryError } = await supabase
         .from('profiles')
@@ -801,10 +801,7 @@
     }
     
     // Se não existe, criar um novo perfil
-    // CONFIGURAÇÃO MANUAL DO ADMIN
-    // COLOQUE SEU EMAIL ADMIN AQUI:
     const ADMIN_EMAILS = ['sulsafetreinamentos@gmail.com'];
-    
     const role = ADMIN_EMAILS.includes(user.email) ? 'admin' : 'aluno'
     
     console.log('Criando novo perfil para', user.email, 'com role:', role)
