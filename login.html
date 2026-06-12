@@ -821,13 +821,7 @@ async function garantirPerfil(user) {
     
     return role
 }
-            if (insertError) {
-                console.error('Erro ao criar perfil:', insertError)
-                return 'aluno' // fallback
-            }
-            
-            return role
-        }
+    
 
         // TROCAR TELAS
         window.mostrarTela = (tela) => {
