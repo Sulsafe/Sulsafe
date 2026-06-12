@@ -787,34 +787,43 @@
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
 
         // FUNÇÃO GARANTIR PERFIL - CORRIGIDA
-        async function garantirPerfil(user) {
-            // Verificar se já existe o perfil
-            const { data: existing, error: queryError } = await supabase
-                .from('profiles')
-                .select('role')
-                .eq('id', user.id)
-                .maybeSingle()
-            
-            if (existing) {
-                console.log('Perfil encontrado:', existing.role)
-                return existing.role
-            }
-            
-            // Se não existe, criar um novo perfil
-            // Verificar se o email é de admin (você pode ajustar isso)
-            const adminEmails = ['admin@sulsafe.com', 'sulsafetreinamentos@gmail.com'] // Adicione seu email admin aqui
-            const role = adminEmails.includes(user.email) ? 'admin' : 'aluno'
-            
-            console.log('Criando novo perfil para', user.email, 'com role:', role)
-            
-            const { error: insertError } = await supabase
-                .from('profiles')
-                .insert({
-                    id: user.id,
-                    email: user.email,
-                    role: role
-                })
-            
+       async function garantirPerfil(user) {
+    // Verificar se já existe o perfil
+    const { data: existing, error: queryError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+    
+    if (existing) {
+        console.log('Perfil encontrado:', existing.role)
+        return existing.role
+    }
+    
+    // Se não existe, criar um novo perfil
+    // CONFIGURAÇÃO MANUAL DO ADMIN
+    // COLOQUE SEU EMAIL ADMIN AQUI:
+    const ADMIN_EMAILS = ['sulsafetreinamentos@gmail.com'];
+    
+    const role = ADMIN_EMAILS.includes(user.email) ? 'admin' : 'aluno'
+    
+    console.log('Criando novo perfil para', user.email, 'com role:', role)
+    
+    const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+            id: user.id,
+            email: user.email,
+            role: role
+        })
+    
+    if (insertError) {
+        console.error('Erro ao criar perfil:', insertError)
+        return 'aluno'
+    }
+    
+    return role
+}
             if (insertError) {
                 console.error('Erro ao criar perfil:', insertError)
                 return 'aluno' // fallback
