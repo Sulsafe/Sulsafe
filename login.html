@@ -845,6 +845,12 @@
         };
 
    // AUTH
+let usuarioAtual=null,usuarioId=null,perfilUsuario=null,ehProfessor=false
+let salaAtual=null,jitsiApi=null,isRecording=false,todasAulas=[]
+
+// ... outras funções ...
+
+// TROCA SÓ ESSA FUNÇÃO AQUI:
 async function garantirPerfil(user){
     const {data:p, error:err1} = await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle();
     if(p) return p.role;
@@ -873,7 +879,6 @@ window.fazerLogin=async()=>{
     atualizarPainelProfessor();
     entrarDashboard()
 }
-
         window.fazerCadastro=async()=>{
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
             const senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
