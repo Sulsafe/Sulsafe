@@ -878,21 +878,64 @@ window.fazerLogin=async()=>{
     document.getElementById('dashUserName').innerHTML=usuarioAtual
     atualizarPainelProfessor();
     entrarDashboard()
+    
+    // Mostra menu admin se for professor/admin
+    const menuAdmin = document.getElementById('menuAdmin');
+    if(menuAdmin) menuAdmin.style.display = ehProfessor ? 'block' : 'none';
 }
-        window.fazerCadastro=async()=>{
-            const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
-            const senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
-            if(senha!==senha2)return alert('Senhas não coincidem')
-            if(senha.length<6)return alert('Senha mínimo 6 caracteres')
-            const{data,error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
-            if(error)return alert(traduzirErroAuth(error.message))
-            perfilUsuario='aluno';ehProfessor=false;
-            alert('Conta criada! Confirme seu e-mail e depois faça login.');mostrarTela('login')
-        }
 
-        window.recuperarSenha=async()=>{const email=document.getElementById('recEmail').value;const{error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo:CONFIG.authRedirectUrl});if(error)return alert(traduzirErroAuth(error.message));document.getElementById('msgSucessoRec').style.display='block';setTimeout(()=>{document.getElementById('msgSucessoRec').style.display='none';mostrarTela('login')},3000)}
-        window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();window.location.href='index.html'}
-
+window.fazerCadastro=async()=>{
+    const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
+    const senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
+    if(senha!==senha2)return alert('Senhas não coincidem')
+    if(senha.length<6)return alert('Senha mínimo 6 caracteres')
+    const{data,error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
+    if(error)return alert(traduzirErroAuth(error.message))
+    perfilUsuario='aluno';ehProfessor=false;
+    alert('Conta criada! Confirme seu e-mail e depois faça login.');mostrarTela('login')
+}
+window.abrirAdminAulas=()=>{
+    // Esconde todas as telas
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    
+    // Mostra tela admin
+    const adminTab = document.getElementById('adminAulas');
+    if(!adminTab){
+        // Se não existe, cria a tela
+        const main = document.querySelector('.main-content');
+        const novaTela = document.createElement('div');
+        novaTela.id = 'adminAulas';
+        novaTela.className = 'tab-content';
+        novaTela.innerHTML = `
+            <div class="card">
+                <h2><i class="fas fa-cog"></i> Gerenciar Aulas</h2>
+                <p style="color:#b0c4de;margin-bottom:20px">Área do Professor/Admin - ${usuarioAtual}</p>
+                
+                <div style="background:#1e2a4a;padding:20px;border-radius:10px;margin-bottom:20px">
+                    <h3>Subir Nova Aula</h3>
+                    <input type="text" id="tituloAula" placeholder="Título da aula" style="width:100%;padding:10px;margin:10px 0;border-radius:5px;border:1px solid #3a4a6a;background:#0f1419;color:#fff">
+                    <textarea id="descAula" placeholder="Descrição" rows="3" style="width:100%;padding:10px;margin:10px 0;border-radius:5px;border:1px solid #3a4a6a;background:#0f1419;color:#fff"></textarea>
+                    <input type="url" id="urlVideo" placeholder="Link do vídeo YouTube/Vimeo" style="width:100%;padding:10px;margin:10px 0;border-radius:5px;border:1px solid #3a4a6a;background:#0f1419;color:#fff">
+                    <input type="file" id="materialAula" style="margin:10px 0;color:#fff">
+                    <button onclick="salvarAula()" class="btn-primary" style="width:100%;padding:12px;background:#4a7c59;border:none;border-radius:5px;color:#fff;cursor:pointer;margin-top:10px">Salvar Aula</button>
+                </div>
+                
+                <div id="listaAulas">
+                    <h3>Aulas Cadastradas</h3>
+                    <p>Carregando...</p>
+                </div>
+            </div>
+        `;
+        main.appendChild(novaTela);
+    }
+    
+    document.getElementById('adminAulas').classList.add('active');
+    
+    // Carrega aulas existentes
+    carregarAulasAdmin();
+}
+window.recuperarSenha=async()=>{const email=document.getElementById('recEmail').value;const{error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo:CONFIG.authRedirectUrl});if(error)return alert(traduzirErroAuth(error.message));document.getElementById('msgSucessoRec').style.display='block';setTimeout(()=>{document.getElementById('msgSucessoRec').style.display='none';mostrarTela('login')},3000)}
+window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();window.location.href='index.html'}
         function entrarDashboard(){
             document.getElementById('authContainer').classList.add('hidden')
             document.getElementById('heroContainer').classList.add('hidden')
