@@ -844,27 +844,35 @@
             if(viewId === 'aluno') carregarMeusTrabalhos();   // <-- LINHA ADICIONADA
         };
 
-        // AUTH
-        async function garantirPerfil(user){
-            const{data:p}=await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle();
-            if(p)return p.role;
-            const role=user.user_metadata?.role==='professor'?'professor':'aluno';
-            await supabase.from('profiles').insert({id:user.id,email:user.email,role}).catch(()=>{});
-            return role;
-        }
+   // AUTH
+async function garantirPerfil(user){
+    const {data:p, error:err1} = await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle();
+    if(p) return p.role;
+    
+    const role = user.user_metadata?.role==='professor' ? 'professor' : 'aluno';
+    
+    const { error: err2 } = await supabase.from('profiles').insert({
+        id:user.id,
+        email:user.email,
+        role
+    });
+    
+    if(err2) console.log('Erro insert profile:', err2);
+    return role;
+}
 
-        window.fazerLogin=async()=>{
-            const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
-            const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
-            if(error)return alert(traduzirErroAuth(error.message))
-            usuarioAtual=data.user.email;usuarioId=data.user.id
-            const role=await garantirPerfil(data.user)
-            perfilUsuario=role
-            ehProfessor=(role==='admin'||role==='professor'||data.user.user_metadata?.role==='professor')
-            document.getElementById('dashUserName').innerHTML=usuarioAtual
-            atualizarPainelProfessor();
-            entrarDashboard()
-        }
+window.fazerLogin=async()=>{
+    const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
+    const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
+    if(error)return alert(traduzirErroAuth(error.message))
+    usuarioAtual=data.user.email;usuarioId=data.user.id
+    const role=await garantirPerfil(data.user)
+    perfilUsuario=role
+    ehProfessor=(role==='admin'||role==='professor'||data.user_metadata?.role==='professor')
+    document.getElementById('dashUserName').innerHTML=usuarioAtual
+    atualizarPainelProfessor();
+    entrarDashboard()
+}
 
         window.fazerCadastro=async()=>{
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value
