@@ -874,10 +874,11 @@ window.fazerLogin=async()=>{
     usuarioAtual=data.user.email;usuarioId=data.user.id
     const role=await garantirPerfil(data.user)
     perfilUsuario=role
-   ehProfessor=(role==='admin'||role==='professor'||data.user_metadata?.role==='professor')
+   ehProfessor=(role==='admin'||role==='professor'||data.user_metadata.role==='professor')
     document.getElementById('dashUserName').innerHTML=usuarioAtual
     atualizarPainelProfessor();
     entrarDashboard()
+}
     
     // Mostra menu admin se for professor/admin
     const menuAdmin = document.getElementById('menuAdmin');
