@@ -1881,8 +1881,7 @@ async function garantirPerfil(user) {
                 el.innerHTML = `<img src="${CONFIG.logoUrl}" alt="logo">`
             })
         }
-        if (window.location.hash === '#cadastro') mostrarTela('cadastro')
-
+       if (window.location.hash === '#cadastro') mostrarTela('cadastro');
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session?.user) {
                 usuarioAtual = session.user.email
