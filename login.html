@@ -1477,48 +1477,77 @@ window.carregarBoletimAdmin = async () => {
 
 // Abrir modal para lançar notas
 window.abrirModalLancarNotas = async () => {
-    // Carregar alunos
+    console.log('Abrindo modal...');
+    
+    // Carregar alunos de forma SIMPLES
     const selectAluno = document.getElementById('notaAlunoId');
+    if (!selectAluno) {
+        console.error('Select de aluno não encontrado');
+        return;
+    }
+    
     selectAluno.innerHTML = '<option value="">Carregando alunos...</option>';
     
-   const { data: todos } = await supabase
-    .from('profiles')
-    .select('id, email, role');
-    
-const alunos = todos?.filter(p => p.role === 'aluno') || [];
-    
-    selectAluno.innerHTML = '<option value="">Selecione um aluno...</option>';
-    alunos?.forEach(aluno => {
-        selectAluno.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
-    });
-    
-    // Carregar disciplinas
-    const selectDisc = document.getElementById('notaDisciplinaId');
-    selectDisc.innerHTML = '<option value="">Carregando disciplinas...</option>';
-    
-    const { data: disciplinas } = await supabase
-        .from('disciplinas')
-        .select('id, nome')
-        .eq('ativa', true);
-    
-    selectDisc.innerHTML = '<option value="">Selecione uma disciplina...</option>';
-    disciplinas?.forEach(disc => {
-        selectDisc.innerHTML += `<option value="${disc.id}">${escapeHtml(disc.nome)}</option>`;
-    });
-    
-    // Limpar campos
-    document.getElementById('nota1').value = '';
-    document.getElementById('nota2').value = '';
-    document.getElementById('nota3').value = '';
-    document.getElementById('notaRec').value = '';
-    document.getElementById('notaFaltas').value = '0';
-    document.getElementById('notaSemestre').value = '2025/1';
-    
-    document.getElementById('modalLancarNotas').style.display = 'flex';
-};
-
-window.fecharModalLancarNotas = () => {
-    document.getElementById('modalLancarNotas').style.display = 'none';
+    try {
+        // Buscar TODOS os perfis
+        const { data: perfis, error } = await window.supabase
+            .from('profiles')
+            .select('id, email');
+        
+        console.log('Perfis carregados:', perfis);
+        
+        if (error) {
+            console.error('Erro:', error);
+            selectAluno.innerHTML = '<option value="">Erro ao carregar</option>';
+            return;
+        }
+        
+        if (!perfis || perfis.length === 0) {
+            selectAluno.innerHTML = '<option value="">Nenhum aluno encontrado</option>';
+            return;
+        }
+        
+        selectAluno.innerHTML = '<option value="">Selecione um aluno...</option>';
+        perfis.forEach(perfil => {
+            // Mostrar todos, exceto o admin (opcional)
+            if (perfil.email !== 'sulsafetreinamentos@gmail.com') {
+                selectAluno.innerHTML += `<option value="${perfil.id}">${perfil.email}</option>`;
+            }
+        });
+        
+        // Carregar disciplinas
+        const selectDisc = document.getElementById('notaDisciplinaId');
+        selectDisc.innerHTML = '<option value="">Carregando disciplinas...</option>';
+        
+        const { data: disciplinas, error: discError } = await window.supabase
+            .from('disciplinas')
+            .select('id, nome')
+            .eq('ativa', true);
+        
+        if (discError) {
+            selectDisc.innerHTML = '<option value="">Erro ao carregar disciplinas</option>';
+            return;
+        }
+        
+        selectDisc.innerHTML = '<option value="">Selecione uma disciplina...</option>';
+        disciplinas?.forEach(disc => {
+            selectDisc.innerHTML += `<option value="${disc.id}">${disc.nome}</option>`;
+        });
+        
+        // Limpar campos
+        document.getElementById('nota1').value = '';
+        document.getElementById('nota2').value = '';
+        document.getElementById('nota3').value = '';
+        document.getElementById('notaRec').value = '';
+        document.getElementById('notaFaltas').value = '0';
+        document.getElementById('notaSemestre').value = '2025/1';
+        
+        document.getElementById('modalLancarNotas').style.display = 'flex';
+        
+    } catch (err) {
+        console.error('Erro geral:', err);
+        selectAluno.innerHTML = '<option value="">Erro: ' + err.message + '</option>';
+    }
 };
 
 window.salvarNotas = async () => {
@@ -1578,6 +1607,13 @@ window.salvarNotas = async () => {
         fecharModalLancarNotas();
         carregarBoletimAdmin();
     }
+};
+        // FUNÇÃO DE TESTE - COLE NO FINAL DO SCRIPT
+window.testarConexao = async () => {
+    console.log('Testando conexão Supabase...');
+    const { data, error } = await supabase.from('profiles').select('id, email');
+    console.log('Resultado:', { data, error });
+    alert('Verifique o console para o resultado');
 };
     </script>    
 </body>
