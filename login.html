@@ -301,11 +301,11 @@
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
-                <div class="nav-item" data-view="aluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
                 <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
                 <div class="nav-item" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
+                <div class="nav-item" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
             </div>
             <div class="dash-user-info">
                 <span class="dash-user-name" id="dashUserName">Usuário</span>
@@ -322,7 +322,6 @@
                     <div class="dash-card" onclick="alternarView('videoaulas')"><div class="dash-card-icon"><i class="fas fa-play-circle"></i></div><div class="dash-card-title">Videoaulas</div><div class="dash-card-desc">Aulas gravadas por NR com acompanhamento de progresso.</div></div>
                     <div class="dash-card" onclick="alternarView('salas')"><div class="dash-card-icon"><i class="fas fa-video"></i></div><div class="dash-card-title">Aula ao vivo</div><div class="dash-card-desc">Entre na videoconferência via Jitsi Meet.</div></div>
                     <div class="dash-card" onclick="alternarView('materiais')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Materiais</div><div class="dash-card-desc">Apostilas e PDFs das NRs.</div></div>
-                    <div class="dash-card" onclick="alternarView('aluno')"><div class="dash-card-icon"><i class="fas fa-file-upload"></i></div><div class="dash-card-title">Área do aluno</div><div class="dash-card-desc">Envie trabalhos e atividades em PDF.</div></div>
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
                     <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
                 </div>
@@ -492,6 +491,50 @@
                     </div>
                 </div>
             </div>
+
+            <!-- VIEW FINANCEIRO (ADMIN) -->
+            <div id="viewFinanceiro" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
+                <p class="dash-subtitle">Gerencie pagamentos e transações</p>
+                
+                <div class="painel-card">
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
+                        <button class="btn-criar-sala" onclick="carregarTransacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    
+                    <div id="transacoesContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando transações...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL PARA GERAR PAGAMENTO -->
+            <div id="modalPagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+                <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:400px">
+                    <h3 style="margin-bottom:20px" id="modalPagamentoTitulo">Gerar PIX</h3>
+                    <div class="campo">
+                        <label>Aluno</label>
+                        <select id="pagamentoAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)">
+                            <option value="">Selecione um aluno...</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="pagamentoValor" step="0.01" placeholder="Ex: 99.90">
+                    </div>
+                    <div class="campo">
+                        <label>Descrição</label>
+                        <input type="text" id="pagamentoDescricao" placeholder="Ex: Mensalidade - Mês 01">
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:20px">
+                        <button class="btn-criar-sala" onclick="gerarPagamento()" style="flex:1">Confirmar</button>
+                        <button class="botao botao-secundario" onclick="fecharModalPagamento()" style="flex:1">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -632,48 +675,6 @@
             <div class="balao-footer">Dica: clique no ícone do mascote para abrir/fechar.</div>
         </div>
     </div>
-                      <!-- VIEW FINANCEIRO (ADMIN) -->
-            <div id="viewFinanceiro" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
-                <p class="dash-subtitle">Gerencie pagamentos e transações</p>
-                
-                <div class="painel-card">
-                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
-                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
-                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
-                        <button class="btn-criar-sala" onclick="carregarTransacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                    </div>
-                    
-                    <div id="transacoesContainer">
-                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando transações...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODAL PARA GERAR PAGAMENTO -->
-            <div id="modalPagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
-                <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:400px">
-                    <h3 style="margin-bottom:20px" id="modalPagamentoTitulo">Gerar PIX</h3>
-                    <div class="campo">
-                        <label>Aluno</label>
-                        <select id="pagamentoAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)">
-                            <option value="">Selecione um aluno...</option>
-                        </select>
-                    </div>
-                    <div class="campo">
-                        <label>Valor (R$)</label>
-                        <input type="number" id="pagamentoValor" step="0.01" placeholder="Ex: 99.90">
-                    </div>
-                    <div class="campo">
-                        <label>Descrição</label>
-                        <input type="text" id="pagamentoDescricao" placeholder="Ex: Mensalidade - Mês 01">
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:20px">
-                        <button class="btn-criar-sala" onclick="gerarPagamento()" style="flex:1">Confirmar</button>
-                        <button class="botao botao-secundario" onclick="fecharModalPagamento()" style="flex:1">Cancelar</button>
-                    </div>
-                </div>
-            </div>
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
@@ -719,7 +720,7 @@
         }
 
         window.alternarView = (viewId) => {
-            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio'];
+            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro'];
             views.forEach(v => { const el = document.getElementById(`view${v}`); if (el) el.style.display = 'none' });
             const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
             if (target) target.style.display = 'block';
@@ -732,6 +733,7 @@
             if(viewId === 'trabalhos' && ehProfessor) carregarTrabalhos();
             if(viewId === 'aluno') carregarMeusTrabalhos();
             if(viewId === 'relatorio' && ehProfessor) carregarRelatorioAlunos();
+            if(viewId === 'financeiro') carregarTransacoes();
         }
 
         window.fazerLogin = async () => {
@@ -1120,6 +1122,183 @@
             doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
             mostrarErro(`✅ Certificado gerado para ${nome}!`);
         }
+
+        // ============================================
+        // FUNÇÕES DO FINANCEIRO
+        // ============================================
+
+        let tipoPagamentoAtual = '';
+
+        window.carregarTransacoes = async () => {
+            const container = document.getElementById('transacoesContainer');
+            if (!container) return;
+            
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('transacoes')
+                    .select('*')
+                    .order('data_criacao', { ascending: false });
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma transação registrada.</p>';
+                    return;
+                }
+                
+                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
+                
+                for (const t of data) {
+                    let statusStyle = '';
+                    let statusText = '';
+                    if (t.status === 'PAGO') {
+                        statusStyle = 'background:#4CAF50; color:white';
+                        statusText = '✅ PAGO';
+                    } else if (t.status === 'PENDENTE') {
+                        statusStyle = 'background:#FF9800; color:white';
+                        statusText = '⏳ PENDENTE';
+                    } else {
+                        statusStyle = 'background:#F44336; color:white';
+                        statusText = '❌ ' + t.status;
+                    }
+                    
+                    let acoes = '';
+                    if (t.tipo === 'PIX' && t.qr_code) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366">Copiar PIX</button>`;
+                    } else if (t.tipo === 'BOLETO' && t.boleto_url && t.boleto_url !== '#') {
+                        acoes = `<button class="btn-entrar" onclick="window.open('${t.boleto_url}','_blank')" style="background:#1565C0">Ver Boleto</button>`;
+                    } else if (t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0">Copiar Linha Digitável</button>`;
+                    }
+                    
+                    if (t.status === 'PENDENTE') {
+                        acoes += `<button class="btn-entrar" onclick="confirmarPagamentoSimulado(${t.id})" style="background:#4CAF50">Confirmar</button>`;
+                    }
+                    
+                    html += `<tr style="border-bottom: 1px solid var(--borda)"><td style="padding:12px">${escapeHtml(t.aluno_email)}</td><td style="padding:12px">${t.tipo}</td><td style="padding:12px">R$ ${t.valor.toFixed(2)}</td><td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td><td style="padding:12px">${acoes}</td></tr>`;
+                }
+                
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+                
+            } catch (err) {
+                container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
+            }
+        };
+
+        window.abrirModalGerarPagamento = async (tipo) => {
+            tipoPagamentoAtual = tipo;
+            const titulo = document.getElementById('modalPagamentoTitulo');
+            if (titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX' : '📄 Gerar Boleto';
+            
+            const select = document.getElementById('pagamentoAlunoId');
+            if (!select) return;
+            select.innerHTML = '<option value="">Carregando alunos...</option>';
+            
+            const { data: alunos, error } = await supabase
+                .from('profiles')
+                .select('id, email')
+                .eq('role', 'aluno');
+            
+            if (error) {
+                select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
+                return;
+            }
+            
+            select.innerHTML = '<option value="">Selecione um aluno...</option>';
+            alunos.forEach(aluno => {
+                select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
+            });
+            
+            const valorInput = document.getElementById('pagamentoValor');
+            const descricaoInput = document.getElementById('pagamentoDescricao');
+            if (valorInput) valorInput.value = '';
+            if (descricaoInput) descricaoInput.value = '';
+            
+            const modal = document.getElementById('modalPagamento');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.fecharModalPagamento = () => {
+            const modal = document.getElementById('modalPagamento');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.gerarPagamento = async () => {
+            const alunoId = document.getElementById('pagamentoAlunoId')?.value;
+            const valor = parseFloat(document.getElementById('pagamentoValor')?.value || '0');
+            const descricao = document.getElementById('pagamentoDescricao')?.value || `${tipoPagamentoAtual} - ${new Date().toLocaleString()}`;
+            
+            if (!alunoId) { mostrarErro('Selecione um aluno'); return; }
+            if (!valor || valor <= 0) { mostrarErro('Digite um valor válido'); return; }
+            
+            const { data: aluno, error: alunoError } = await supabase
+                .from('profiles')
+                .select('email')
+                .eq('id', alunoId)
+                .single();
+            
+            if (alunoError || !aluno) { mostrarErro('Aluno não encontrado'); return; }
+            
+            const codigoSimulado = `${tipoPagamentoAtual}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`.toUpperCase();
+            
+            const dadosInserir = {
+                aluno_id: alunoId,
+                aluno_email: aluno.email,
+                tipo: tipoPagamentoAtual,
+                valor: valor,
+                status: 'PENDENTE',
+                descricao: descricao,
+                data_criacao: new Date().toISOString(),
+                data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            
+            if (tipoPagamentoAtual === 'PIX') {
+                dadosInserir.qr_code = codigoSimulado;
+                dadosInserir.qr_code_image = null;
+            } else {
+                dadosInserir.boleto_url = '#';
+                dadosInserir.boleto_linha_digitavel = codigoSimulado;
+            }
+            
+            const { error } = await supabase.from('transacoes').insert(dadosInserir);
+            
+            if (error) {
+                mostrarErro('Erro ao gerar: ' + error.message);
+            } else {
+                mostrarErro(`✅ ${tipoPagamentoAtual} gerado! Código: ${codigoSimulado}`);
+                window.fecharModalPagamento();
+                window.carregarTransacoes();
+            }
+        };
+
+        window.confirmarPagamentoSimulado = async (transacaoId) => {
+            if (!confirm('Confirmar pagamento desta transação?')) return;
+            
+            const { error } = await supabase
+                .from('transacoes')
+                .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
+                .eq('id', transacaoId);
+            
+            if (error) {
+                mostrarErro('Erro ao confirmar: ' + error.message);
+            } else {
+                mostrarErro('✅ Pagamento confirmado!');
+                window.carregarTransacoes();
+            }
+        };
+
+        window.copiarTexto = (texto) => {
+            navigator.clipboard.writeText(texto);
+            mostrarErro('📋 Código copiado!');
+        };
+
+        // ============================================
+        // FIM DAS FUNÇÕES DO FINANCEIRO
+        // ============================================
+
     </script>    
 </body>
 </html>
