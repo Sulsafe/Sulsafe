@@ -297,6 +297,7 @@
                 <div class="dash-logo-text" id="dashEmpresaNome">SulSafe</div>
             </div>
             <div class="dash-nav">
+                <div class="nav-item" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
                 <div class="nav-item active" data-view="home"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
@@ -689,6 +690,7 @@
             if(viewId === 'trabalhos' && ehProfessor) carregarTrabalhos();
             if(viewId === 'aluno') carregarMeusTrabalhos();
             if(viewId === 'relatorio' && ehProfessor) carregarRelatorioAlunos();
+            if(viewId === 'financeiro') carregarTransacoes();
         }
 
         window.fazerLogin = async () => {
@@ -1050,33 +1052,210 @@
             } catch (err) { container.innerHTML = '<p style="text-align:center; color:red">Erro ao carregar: ' + err.message + '</p>' }
         }
 
-        window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
-            const { data: progresso, error } = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq('concluido', true);
-            if (error) { mostrarErro('Erro ao buscar progresso: ' + error.message); return }
-            if (!progresso || progresso.length === 0) { mostrarErro('Aluno não concluiu nenhuma aula ainda.'); return }
-            const aulasIds = progresso.map(p => p.aula_id);
-            const { data: aulas } = await supabase.from('videoaulas').select('nr, titulo').in('id', aulasIds);
-            const nrsConcluidas = [...new Set(aulas.map(a => a.nr).filter(Boolean))];
-            const nome = alunoEmail.split('@')[0];
-            const dataAtual = new Date().toLocaleDateString('pt-BR');
-            if (typeof window.jspdf === 'undefined') { mostrarErro('Biblioteca PDF não carregada.'); return }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-            doc.setFillColor(27, 94, 32); doc.rect(0, 0, 297, 210, 'F');
-            doc.setFillColor(255, 255, 255); doc.roundedRect(15, 15, 267, 180, 8, 8, 'F');
-            doc.setFillColor(46, 125, 50); doc.rect(25, 25, 247, 3, 'F'); doc.rect(25, 182, 247, 3, 'F');
-            doc.setTextColor(46, 125, 50); doc.setFontSize(32); doc.setFont('helvetica', 'bold'); doc.text('SULSAFE', 148.5, 50, { align: 'center' });
-            doc.setFontSize(15); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80); doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' });
-            doc.setTextColor(30, 30, 30); doc.setFontSize(13); doc.text('Certificamos que', 148.5, 80, { align: 'center' });
-            doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(27, 94, 32); doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' });
-            doc.setFontSize(13); doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30); doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
-            if (nrsConcluidas.length) { doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' }) }
-            doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Emitido em ${dataAtual}`, 148.5, 146, { align: 'center' });
-            doc.setFontSize(10); doc.setTextColor(120, 120, 120); doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' });
-            doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 167, 207, 167); doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' });
-            doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-            mostrarErro(`✅ Certificado gerado para ${nome}!`);
+       window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
+    const { data: progresso, error } = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq('concluido', true);
+    if (error) { mostrarErro('Erro ao buscar progresso: ' + error.message); return }
+    if (!progresso || progresso.length === 0) { mostrarErro('Aluno não concluiu nenhuma aula ainda.'); return }
+    const aulasIds = progresso.map(p => p.aula_id);
+    const { data: aulas } = await supabase.from('videoaulas').select('nr, titulo').in('id', aulasIds);
+    const nrsConcluidas = [...new Set(aulas.map(a => a.nr).filter(Boolean))];
+    const nome = alunoEmail.split('@')[0];
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    if (typeof window.jspdf === 'undefined') { mostrarErro('Biblioteca PDF não carregada.'); return }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.setFillColor(27, 94, 32); doc.rect(0, 0, 297, 210, 'F');
+    doc.setFillColor(255, 255, 255); doc.roundedRect(15, 15, 267, 180, 8, 8, 'F');
+    doc.setFillColor(46, 125, 50); doc.rect(25, 25, 247, 3, 'F'); doc.rect(25, 182, 247, 3, 'F');
+    doc.setTextColor(46, 125, 50); doc.setFontSize(32); doc.setFont('helvetica', 'bold'); doc.text('SULSAFE', 148.5, 50, { align: 'center' });
+    doc.setFontSize(15); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80); doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' });
+    doc.setTextColor(30, 30, 30); doc.setFontSize(13); doc.text('Certificamos que', 148.5, 80, { align: 'center' });
+    doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(27, 94, 32); doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' });
+    doc.setFontSize(13); doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30); doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
+    if (nrsConcluidas.length) { doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' }) }
+    doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Emitido em ${dataAtual}`, 148.5, 146, { align: 'center' });
+    doc.setFontSize(10); doc.setTextColor(120, 120, 120); doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' });
+    doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 167, 207, 167); doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' });
+    doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
+    mostrarErro(`✅ Certificado gerado para ${nome}!`);
+}
+
+// ============================================
+// FUNÇÕES DO FINANCEIRO
+// ============================================
+
+let tipoPagamentoAtual = '';
+
+window.carregarTransacoes = async () => {
+    const container = document.getElementById('transacoesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+    
+    try {
+        const { data, error } = await supabase
+            .from('transacoes')
+            .select('*')
+            .order('data_criacao', { ascending: false });
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma transação registrada.</p>';
+            return;
         }
+        
+        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
+        
+        for (const t of data) {
+            let statusStyle = '';
+            let statusText = '';
+            if (t.status === 'PAGO') {
+                statusStyle = 'background:#4CAF50; color:white';
+                statusText = '✅ PAGO';
+            } else if (t.status === 'PENDENTE') {
+                statusStyle = 'background:#FF9800; color:white';
+                statusText = '⏳ PENDENTE';
+            } else {
+                statusStyle = 'background:#F44336; color:white';
+                statusText = '❌ ' + t.status;
+            }
+            
+            let acoes = '';
+            if (t.tipo === 'PIX' && t.qr_code) {
+                acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366">Copiar PIX</button>`;
+            } else if (t.tipo === 'BOLETO' && t.boleto_url && t.boleto_url !== '#') {
+                acoes = `<button class="btn-entrar" onclick="window.open('${t.boleto_url}','_blank')" style="background:#1565C0">Ver Boleto</button>`;
+            } else if (t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0">Copiar Linha Digitável</button>`;
+            }
+            
+            if (t.status === 'PENDENTE') {
+                acoes += `<button class="btn-entrar" onclick="confirmarPagamentoSimulado(${t.id})" style="background:#4CAF50">Confirmar</button>`;
+            }
+            
+            html += `<tr style="border-bottom: 1px solid var(--borda)"><td style="padding:12px">${escapeHtml(t.aluno_email)}</td><td style="padding:12px">${t.tipo}</td><td style="padding:12px">R$ ${t.valor.toFixed(2)}</td><td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td><td style="padding:12px">${acoes}</td></tr>`;
+        }
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+        
+    } catch (err) {
+        container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
+    }
+};
+
+window.abrirModalGerarPagamento = async (tipo) => {
+    tipoPagamentoAtual = tipo;
+    const titulo = document.getElementById('modalPagamentoTitulo');
+    if (titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX' : '📄 Gerar Boleto';
+    
+    const select = document.getElementById('pagamentoAlunoId');
+    if (!select) return;
+    select.innerHTML = '<option value="">Carregando alunos...</option>';
+    
+    const { data: alunos, error } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('role', 'aluno');
+    
+    if (error) {
+        select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
+        return;
+    }
+    
+    select.innerHTML = '<option value="">Selecione um aluno...</option>';
+    alunos.forEach(aluno => {
+        select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
+    });
+    
+    const valorInput = document.getElementById('pagamentoValor');
+    const descricaoInput = document.getElementById('pagamentoDescricao');
+    if (valorInput) valorInput.value = '';
+    if (descricaoInput) descricaoInput.value = '';
+    
+    const modal = document.getElementById('modalPagamento');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.fecharModalPagamento = () => {
+    const modal = document.getElementById('modalPagamento');
+    if (modal) modal.style.display = 'none';
+};
+
+window.gerarPagamento = async () => {
+    const alunoId = document.getElementById('pagamentoAlunoId')?.value;
+    const valor = parseFloat(document.getElementById('pagamentoValor')?.value || '0');
+    const descricao = document.getElementById('pagamentoDescricao')?.value || `${tipoPagamentoAtual} - ${new Date().toLocaleString()}`;
+    
+    if (!alunoId) { mostrarErro('Selecione um aluno'); return; }
+    if (!valor || valor <= 0) { mostrarErro('Digite um valor válido'); return; }
+    
+    const { data: aluno, error: alunoError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('id', alunoId)
+        .single();
+    
+    if (alunoError || !aluno) { mostrarErro('Aluno não encontrado'); return; }
+    
+    const codigoSimulado = `${tipoPagamentoAtual}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`.toUpperCase();
+    
+    const dadosInserir = {
+        aluno_id: alunoId,
+        aluno_email: aluno.email,
+        tipo: tipoPagamentoAtual,
+        valor: valor,
+        status: 'PENDENTE',
+        descricao: descricao,
+        data_criacao: new Date().toISOString(),
+        data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    };
+    
+    if (tipoPagamentoAtual === 'PIX') {
+        dadosInserir.qr_code = codigoSimulado;
+        dadosInserir.qr_code_image = null;
+    } else {
+        dadosInserir.boleto_url = '#';
+        dadosInserir.boleto_linha_digitavel = codigoSimulado;
+    }
+    
+    const { error } = await supabase.from('transacoes').insert(dadosInserir);
+    
+    if (error) {
+        mostrarErro('Erro ao gerar: ' + error.message);
+    } else {
+        mostrarErro(`✅ ${tipoPagamentoAtual} gerado! Código: ${codigoSimulado}`);
+        window.fecharModalPagamento();
+        window.carregarTransacoes();
+    }
+};
+
+window.confirmarPagamentoSimulado = async (transacaoId) => {
+    if (!confirm('Confirmar pagamento desta transação?')) return;
+    
+    const { error } = await supabase
+        .from('transacoes')
+        .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
+        .eq('id', transacaoId);
+    
+    if (error) {
+        mostrarErro('Erro ao confirmar: ' + error.message);
+    } else {
+        mostrarErro('✅ Pagamento confirmado!');
+        window.carregarTransacoes();
+    }
+};
+
+window.copiarTexto = (texto) => {
+    navigator.clipboard.writeText(texto);
+    mostrarErro('📋 Código copiado!');
+};
+
+// ============================================
+// FIM DAS FUNÇÕES DO FINANCEIRO
+// ============================================
+
     </script>    
 </body>
 </html>
