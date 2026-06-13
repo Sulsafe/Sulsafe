@@ -632,6 +632,48 @@
             <div class="balao-footer">Dica: clique no ícone do mascote para abrir/fechar.</div>
         </div>
     </div>
+                      <!-- VIEW FINANCEIRO (ADMIN) -->
+            <div id="viewFinanceiro" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
+                <p class="dash-subtitle">Gerencie pagamentos e transações</p>
+                
+                <div class="painel-card">
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
+                        <button class="btn-criar-sala" onclick="carregarTransacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    
+                    <div id="transacoesContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando transações...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL PARA GERAR PAGAMENTO -->
+            <div id="modalPagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+                <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:400px">
+                    <h3 style="margin-bottom:20px" id="modalPagamentoTitulo">Gerar PIX</h3>
+                    <div class="campo">
+                        <label>Aluno</label>
+                        <select id="pagamentoAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)">
+                            <option value="">Selecione um aluno...</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="pagamentoValor" step="0.01" placeholder="Ex: 99.90">
+                    </div>
+                    <div class="campo">
+                        <label>Descrição</label>
+                        <input type="text" id="pagamentoDescricao" placeholder="Ex: Mensalidade - Mês 01">
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:20px">
+                        <button class="btn-criar-sala" onclick="gerarPagamento()" style="flex:1">Confirmar</button>
+                        <button class="botao botao-secundario" onclick="fecharModalPagamento()" style="flex:1">Cancelar</button>
+                    </div>
+                </div>
+            </div>
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
