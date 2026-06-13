@@ -737,22 +737,29 @@ window.corrigirTrabalho = async function(id) {
             atualizarPainelProfessor();entrarDashboard()
         }
 
-        function atualizarPainelProfessor(){
-            const isAdmin=perfilUsuario==='admin'
-            const isProfessor=perfilUsuario==='professor'||perfilUsuario==='admin'
-            const isAluno=perfilUsuario==='aluno'
-            const adminItems=['navFinanceiro','navConfig']
-            adminItems.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=isAdmin?'flex':'none'})
-            const professorItems=['navRelatorio','navTrabalhos','navBoletim']
-            professorItems.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=isProfessor||isAdmin?'flex':'none'})
-            const btn=document.getElementById('btnPainelProfessor')
-            if(btn)btn.style.display=isProfessor||isAdmin?'inline-block':'none'
-            const alunoItem=document.getElementById('navAreaAluno')
-            if(alunoItem)alunoItem.style.display=isAluno?'flex':'none'
-            const btnLancarNotas=document.getElementById('btnLancarNotas')
-            if(btnLancarNotas)btnLancarNotas.style.display=isProfessor||isAdmin?'inline-block':'none'
-        }
+function atualizarPainelProfessor(){
+    const isAdmin = perfilUsuario === 'admin';
+    const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin'; // admin herda tudo
+    const isAluno = perfilUsuario === 'aluno';
 
+    // 1. Só Admin vê Financeiro e Config
+    document.getElementById('navFinanceiro').style.display = isAdmin ? 'flex' : 'none';
+    document.getElementById('navConfig').style.display = isAdmin ? 'flex' : 'none';
+
+    // 2. Admin e Professor veem isso
+    document.getElementById('navRelatorio').style.display = isProfessor ? 'flex' : 'none';
+    document.getElementById('navTrabalhos').style.display = isProfessor ? 'flex' : 'none';
+    document.getElementById('navBoletim').style.display = isProfessor ? 'flex' : 'none';
+    document.getElementById('btnLancarNotas').style.display = isProfessor ? 'inline-block' : 'none';
+    
+    // 3. Botão adicionar conteúdo - admin e professor
+    const btn = document.getElementById('btnPainelProfessor');
+    if(btn) btn.style.display = isProfessor ? 'inline-block' : 'none';
+
+    // 4. Aluno
+    const alunoItem = document.getElementById('navAreaAluno');
+    if(alunoItem) alunoItem.style.display = isAluno ? 'flex' : 'none';
+}
         window.fazerCadastro=async()=>{
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value,senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
             if(senha!==senha2){alert('Senhas não coincidem');return}
@@ -959,35 +966,110 @@ window.corrigirTrabalho = async function(id) {
                 html+='</tbody></table></div>';container.innerHTML=html
             }catch(err){container.innerHTML='<p style="color:red">Erro ao carregar: '+err.message+'</p>'}
         }
-        window.abrirModalGerarPagamento=async(tipo)=>{
-            tipoPagamentoAtual=tipo
-            const titulo=document.getElementById('modalPagamentoTitulo');if(titulo)titulo.innerHTML=tipo==='PIX'?'💰 Gerar PIX':'📄 Gerar Boleto'
-            const select=document.getElementById('pagamentoAlunoId');if(!select)return
-            select.innerHTML='<option value="">Carregando alunos...</option>'
-            const{data:alunos,error}=await supabase.from('profiles').select('id,email').eq('role','aluno')
-            if(error){select.innerHTML='<option value="">Erro ao carregar alunos</option>';return}
-            select.innerHTML='<option value="">Selecione um aluno...</option>'
-            alunos.forEach(aluno=>{select.innerHTML+=`<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`})
-            const valorInput=document.getElementById('pagamentoValor');const descricaoInput=document.getElementById('pagamentoDescricao')
-            if(valorInput)valorInput.value='';if(descricaoInput)descricaoInput.value=''
-            const modal=document.getElementById('modalPagamento');if(modal)modal.style.display='flex'
-        }
-        window.fecharModalPagamento=()=>{const modal=document.getElementById('modalPagamento');if(modal)modal.style.display='none'}
-        window.gerarPagamento=async()=>{
-            const alunoId=document.getElementById('pagamentoAlunoId')?.value
-            const valor=parseFloat(document.getElementById('pagamentoValor')?.value||'0')
-            const descricao=document.getElementById('pagamentoDescricao')?.value||`${tipoPagamentoAtual} - ${new Date().toLocaleString()}`
-            if(!alunoId){mostrarErro('Selecione um aluno');return}
-            if(!valor||valor<=0){mostrarErro('Digite um valor válido');return}
-            const{data:aluno}=await supabase.from('profiles').select('email').eq('id',alunoId).single()
-            if(!aluno){mostrarErro('Aluno não encontrado');return}
-            const codigoSimulado=`${tipoPagamentoAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase()
-            const dadosInserir={aluno_id:alunoId,aluno_email:aluno.email,tipo:tipoPagamentoAtual,valor:valor,status:'PENDENTE',descricao:descricao,data_criacao:new Date().toISOString(),data_expiracao:new Date(Date.now()+7*24*60*60*1000).toISOString()}
-            if(tipoPagamentoAtual==='PIX'){dadosInserir.qr_code=codigoSimulado;dadosInserir.qr_code_image=null}
-            else{dadosInserir.boleto_url='#';dadosInserir.boleto_linha_digitavel=codigoSimulado}
-            const{error}=await supabase.from('transacoes').insert(dadosInserir)
-            if(error){mostrarErro('Erro ao gerar: '+error.message)}else{mostrarErro(`✅ ${tipoPagamentoAtual} gerado! Código: ${codigoSimulado}`);window.fecharModalPagamento();window.carregarTransacoes()}
-        }
+       // Gera modal de pagamento - SÓ ADMIN
+window.abrirModalGerarPagamento = async (tipo) => {
+    // Bloqueio: só admin acessa
+    if(perfilUsuario !== 'admin') {
+        mostrarErro('Apenas administradores podem gerar pagamentos');
+        return;
+    }
+    
+    tipoPagamentoAtual = tipo;
+    const titulo = document.getElementById('modalPagamentoTitulo');
+    if(titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX' : '📄 Gerar Boleto';
+    
+    const select = document.getElementById('pagamentoAlunoId');
+    if(!select) return;
+    
+    select.innerHTML = '<option value="">Carregando alunos...</option>';
+    
+    const {data: alunos, error} = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
+    
+    if(error) {
+        select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
+        mostrarErro('Erro: ' + error.message);
+        return;
+    }
+    
+    select.innerHTML = '<option value="">Selecione um aluno...</option>';
+    alunos.forEach(aluno => {
+        select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
+    });
+    
+    const valorInput = document.getElementById('pagamentoValor');
+    const descricaoInput = document.getElementById('pagamentoDescricao');
+    if(valorInput) valorInput.value = '';
+    if(descricaoInput) descricaoInput.value = '';
+    
+    const modal = document.getElementById('modalPagamento');
+    if(modal) modal.style.display = 'flex';
+}
+
+window.fecharModalPagamento = () => {
+    const modal = document.getElementById('modalPagamento');
+    if(modal) modal.style.display = 'none';
+}
+
+// Gera pagamento - SÓ ADMIN
+window.gerarPagamento = async () => {
+    // Bloqueio: só admin gera
+    if(perfilUsuario !== 'admin') {
+        mostrarErro('Apenas administradores podem gerar pagamentos');
+        return;
+    }
+    
+    const alunoId = document.getElementById('pagamentoAlunoId')?.value;
+    const valor = parseFloat(document.getElementById('pagamentoValor')?.value || '0');
+    const descricao = document.getElementById('pagamentoDescricao')?.value || `${tipoPagamentoAtual} - ${new Date().toLocaleString()}`;
+    
+    if(!alunoId) {
+        mostrarErro('Selecione um aluno');
+        return;
+    }
+    
+    if(!valor || valor <= 0) {
+        mostrarErro('Digite um valor válido');
+        return;
+    }
+    
+    const {data: aluno, error: erroAluno} = await supabase.from('profiles').select('email').eq('id', alunoId).single();
+    
+    if(erroAluno || !aluno) {
+        mostrarErro('Aluno não encontrado');
+        return;
+    }
+    
+    const codigoSimulado = `${tipoPagamentoAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase();
+    
+    const dadosInserir = {
+        aluno_id: alunoId,
+        aluno_email: aluno.email,
+        tipo: tipoPagamentoAtual,
+        valor: valor,
+        status: 'PENDENTE',
+        descricao: descricao,
+        data_criacao: new Date().toISOString(),
+        data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    };
+    
+    if(tipoPagamentoAtual === 'PIX') {
+        dadosInserir.qr_code = codigoSimulado;
+        dadosInserir.qr_code_image = null;
+    } else {
+        dadosInserir.boleto_url = '#';
+        dadosInserir.boleto_linha_digitavel = codigoSimulado;
+    }
+    
+    const {error} = await supabase.from('transacoes').insert(dadosInserir);
+    
+    if(error) {
+        mostrarErro('Erro ao gerar: ' + error.message);
+    } else {
+        mostrarErro(`✅ ${tipoPagamentoAtual} gerado! Código: ${codigoSimulado}`);
+        window.fecharModalPagamento();
+        window.carregarTransacoes();
+    }
+}
         window.confirmarPagamentoSimulado=async(transacaoId)=>{
             if(!confirm('Confirmar pagamento desta transação?'))return
             const{error}=await supabase.from('transacoes').update({status:'PAGO',data_pagamento:new Date().toISOString()}).eq('id',transacaoId)
