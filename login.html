@@ -301,11 +301,12 @@
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
+                <div class="nav-item" data-view="boletim"><i class="fas fa-chart-simple"></i><span>Boletim</span></div>
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
-                <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
                 <div class="nav-item" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
                 <div class="nav-item" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
+                <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
             </div>
             <div class="dash-user-info">
                 <span class="dash-user-name" id="dashUserName">Usuário</span>
@@ -492,7 +493,7 @@
                 </div>
             </div>
 
-            <!-- VIEW FINANCEIRO (ADMIN) -->
+                        <!-- VIEW FINANCEIRO (ADMIN) -->
             <div id="viewFinanceiro" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
                 <p class="dash-subtitle">Gerencie pagamentos e transações</p>
@@ -533,11 +534,84 @@
                         <button class="botao botao-secundario" onclick="fecharModalPagamento()" style="flex:1">Cancelar</button>
                     </div>
                 </div>
+            </div>  <!-- FECHA MODAL PAGAMENTO -->
+
+            <!-- VIEW BOLETIM (ADMIN) -->
+            <div id="viewBoletim" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
+                <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
+                
+                <div class="painel-card">
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="abrirModalLancarNotas()" style="background:#2E7D32"><i class="fas fa-edit"></i> Lançar Notas</button>
+                        <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    
+                    <div id="boletimContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>
+                    </div>
+                </div>
             </div>
 
-        </div>
-    </div>
+            <!-- MODAL PARA LANÇAR NOTAS -->
+            <div id="modalLancarNotas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+                <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto">
+                    <h3 style="margin-bottom:20px">📝 Lançar Notas</h3>
+                    
+                    <div class="campo">
+                        <label>Aluno</label>
+                        <select id="notaAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)">
+                            <option value="">Selecione um aluno...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Disciplina</label>
+                        <select id="notaDisciplinaId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)">
+                            <option value="">Selecione uma disciplina...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Semestre</label>
+                        <input type="text" id="notaSemestre" value="2025/1">
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Nota 1 (0-10)</label>
+                        <input type="number" id="nota1" step="0.1" min="0" max="10">
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Nota 2 (0-10)</label>
+                        <input type="number" id="nota2" step="0.1" min="0" max="10">
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Nota 3 (0-10)</label>
+                        <input type="number" id="nota3" step="0.1" min="0" max="10">
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Recuperação (0-10)</label>
+                        <input type="number" id="notaRec" step="0.1" min="0" max="10">
+                    </div>
+                    
+                    <div class="campo">
+                        <label>Faltas</label>
+                        <input type="number" id="notaFaltas" value="0">
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; margin-top:20px">
+                        <button class="btn-criar-sala" onclick="salvarNotas()" style="flex:1">Salvar Notas</button>
+                        <button class="botao botao-secundario" onclick="fecharModalLancarNotas()" style="flex:1">Cancelar</button>
+                    </div>
+                </div>
+            </div>  <!-- FECHA MODAL LANÇAR NOTAS -->
 
+        </div>  <!-- FECHA O DASH-MAIN -->
+    </div>      <!-- FECHA O DASHBOARD -->
+    
     <div class="meeting-modal" id="meetingModal">
         <div class="meeting-room">
             <div class="room-header">
@@ -720,7 +794,7 @@
         }
 
         window.alternarView = (viewId) => {
-            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro'];
+          const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim'];
             views.forEach(v => { const el = document.getElementById(`view${v}`); if (el) el.style.display = 'none' });
             const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
             if (target) target.style.display = 'block';
@@ -729,6 +803,7 @@
             if(viewId === 'salas') atualizarListaSalas();
             if(viewId === 'equipe') carregarEquipe();
             if(viewId === 'materiais') carregarMateriais();
+            if(viewId === 'boletim') carregarBoletimAdmin();
             if(viewId === 'videoaulas') carregarVideoaulas();
             if(viewId === 'trabalhos' && ehProfessor) carregarTrabalhos();
             if(viewId === 'aluno') carregarMeusTrabalhos();
@@ -1298,7 +1373,205 @@
         // ============================================
         // FIM DAS FUNÇÕES DO FINANCEIRO
         // ============================================
+// Carregar boletim (admin)
+window.carregarBoletimAdmin = async () => {
+    const container = document.getElementById('boletimContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+    
+    try {
+        // Buscar todos os alunos com suas notas
+        const { data: alunos, error: alunosError } = await supabase
+            .from('profiles')
+            .select('id, email')
+            .eq('role', 'aluno');
+        
+        if (alunosError) throw alunosError;
+        
+        if (!alunos || alunos.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado.</p>';
+            return;
+        }
+        
+        const { data: disciplinas } = await supabase
+            .from('disciplinas')
+            .select('*')
+            .eq('ativa', true);
+        
+        const { data: notas } = await supabase
+            .from('notas')
+            .select('*');
+        
+        // Organizar notas por aluno e disciplina
+        const notasPorAluno = {};
+        notas?.forEach(nota => {
+            if (!notasPorAluno[nota.aluno_id]) notasPorAluno[nota.aluno_id] = {};
+            notasPorAluno[nota.aluno_id][nota.disciplina_id] = nota;
+        });
+        
+        let html = `
+            <div style="overflow-x: auto;">
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #2E7D32; color: white;">
+                            <th style="padding:12px">Aluno</th>
+                            ${disciplinas?.map(d => `<th style="padding:12px">${escapeHtml(d.nome)}</th>`).join('')}
+                            <th style="padding:12px">Média Final</th>
+                            <th style="padding:12px">Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        for (const aluno of alunos) {
+            let somaMedias = 0;
+            let disciplinasContadas = 0;
+            let situacaoGeral = 'EM_ANDAMENTO';
+            
+            html += `<tr style="border-bottom: 1px solid var(--borda)">
+                        <td style="padding:12px">${escapeHtml(aluno.email)}</td>`;
+            
+            for (const disc of disciplinas || []) {
+                const nota = notasPorAluno[aluno.id]?.[disc.id];
+                let media = 0;
+                let notaExibicao = '-';
+                
+                if (nota) {
+                    const n1 = parseFloat(nota.nota1) || 0;
+                    const n2 = parseFloat(nota.nota2) || 0;
+                    const n3 = parseFloat(nota.nota3) || 0;
+                    media = (n1 + n2 + n3) / 3;
+                    if (nota.recuperacao > media) media = (media + parseFloat(nota.recuperacao)) / 2;
+                    notaExibicao = media.toFixed(1);
+                    somaMedias += media;
+                    disciplinasContadas++;
+                }
+                
+                html += `<td style="padding:12px; text-align:center">${notaExibicao}</td>`;
+            }
+            
+            const mediaFinal = disciplinasContadas > 0 ? (somaMedias / disciplinasContadas).toFixed(1) : '-';
+            if (mediaFinal !== '-') {
+                situacaoGeral = parseFloat(mediaFinal) >= 6 ? '✅ APROVADO' : (parseFloat(mediaFinal) >= 4 ? '🟡 RECUPERAÇÃO' : '❌ REPROVADO');
+            }
+            
+            html += `<td style="padding:12px; text-align:center"><strong>${mediaFinal}</strong></td>
+                     <td style="padding:12px; text-align:center">${situacaoGeral}</td>
+                 </tr>`;
+        }
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+        
+    } catch (err) {
+        container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>';
+    }
+};
 
+// Abrir modal para lançar notas
+window.abrirModalLancarNotas = async () => {
+    // Carregar alunos
+    const selectAluno = document.getElementById('notaAlunoId');
+    selectAluno.innerHTML = '<option value="">Carregando alunos...</option>';
+    
+    const { data: alunos } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('role', 'aluno');
+    
+    selectAluno.innerHTML = '<option value="">Selecione um aluno...</option>';
+    alunos?.forEach(aluno => {
+        selectAluno.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
+    });
+    
+    // Carregar disciplinas
+    const selectDisc = document.getElementById('notaDisciplinaId');
+    selectDisc.innerHTML = '<option value="">Carregando disciplinas...</option>';
+    
+    const { data: disciplinas } = await supabase
+        .from('disciplinas')
+        .select('id, nome')
+        .eq('ativa', true);
+    
+    selectDisc.innerHTML = '<option value="">Selecione uma disciplina...</option>';
+    disciplinas?.forEach(disc => {
+        selectDisc.innerHTML += `<option value="${disc.id}">${escapeHtml(disc.nome)}</option>`;
+    });
+    
+    // Limpar campos
+    document.getElementById('nota1').value = '';
+    document.getElementById('nota2').value = '';
+    document.getElementById('nota3').value = '';
+    document.getElementById('notaRec').value = '';
+    document.getElementById('notaFaltas').value = '0';
+    document.getElementById('notaSemestre').value = '2025/1';
+    
+    document.getElementById('modalLancarNotas').style.display = 'flex';
+};
+
+window.fecharModalLancarNotas = () => {
+    document.getElementById('modalLancarNotas').style.display = 'none';
+};
+
+window.salvarNotas = async () => {
+    const alunoId = document.getElementById('notaAlunoId').value;
+    const disciplinaId = document.getElementById('notaDisciplinaId').value;
+    const semestre = document.getElementById('notaSemestre').value;
+    const nota1 = parseFloat(document.getElementById('nota1').value) || 0;
+    const nota2 = parseFloat(document.getElementById('nota2').value) || 0;
+    const nota3 = parseFloat(document.getElementById('nota3').value) || 0;
+    const recuperacao = parseFloat(document.getElementById('notaRec').value) || 0;
+    const faltas = parseInt(document.getElementById('notaFaltas').value) || 0;
+    
+    if (!alunoId || !disciplinaId) {
+        mostrarErro('Selecione aluno e disciplina');
+        return;
+    }
+    
+    // Calcular média e situação
+    let media = (nota1 + nota2 + nota3) / 3;
+    let situacao = 'EM_ANDAMENTO';
+    
+    if (recuperacao > media) {
+        media = (media + recuperacao) / 2;
+    }
+    
+    if (media >= 6) situacao = 'APROVADO';
+    else if (media >= 4) situacao = 'RECUPERACAO';
+    else situacao = 'REPROVADO';
+    
+    // Buscar email do aluno
+    const { data: aluno } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('id', alunoId)
+        .single();
+    
+    const { error } = await supabase
+        .from('notas')
+        .upsert({
+            aluno_id: alunoId,
+            aluno_email: aluno.email,
+            disciplina_id: parseInt(disciplinaId),
+            nota1: nota1,
+            nota2: nota2,
+            nota3: nota3,
+            recuperacao: recuperacao,
+            faltas: faltas,
+            media_final: media,
+            situacao: situacao,
+            semestre: semestre
+        }, { onConflict: 'aluno_id,disciplina_id,semestre' });
+    
+    if (error) {
+        mostrarErro('Erro: ' + error.message);
+    } else {
+        mostrarErro('✅ Notas salvas! Média: ' + media.toFixed(1) + ' - ' + situacao);
+        fecharModalLancarNotas();
+        carregarBoletimAdmin();
+    }
+};
     </script>    
 </body>
 </html>
