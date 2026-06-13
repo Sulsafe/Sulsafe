@@ -421,6 +421,7 @@
                 <div class="nav-item" data-view="equipe"><i class="fas fa-users"></i><span>Equipe</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
                 <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
+                <div class="nav-item" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
             </div>
             <div class="dash-user-info">
                 <span class="dash-user-name" id="dashUserName">Usuário</span>
@@ -442,6 +443,22 @@
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
                     <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
                 </div>
+                            <!-- RELATÓRIO DE ALUNOS (ADMIN) -->
+            <div id="viewRelatorio" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
+                <p class="dash-subtitle">Acompanhe o progresso e desempenho da turma</p>
+                
+                <div class="painel-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap">
+                        <h3 style="font-size:16px"><i class="fas fa-users"></i> Progresso geral</h3>
+                        <button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:8px 16px"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    
+                    <div id="relatorioContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando relatório...</p>
+                    </div>
+                </div>
+            </div>
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
 
@@ -1942,6 +1959,115 @@ async function garantirPerfil(user) {
                 })
             }
         })
+        // ============================================
+// FUNÇÕES DO RELATÓRIO DE ALUNOS
+// ============================================
+
+async function carregarRelatorioAlunos() {
+    const container = document.getElementById('relatorioContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+    
+    try {
+        // Buscar todos os alunos
+        const { data: alunos, error: alunosError } = await supabase
+            .from('profiles')
+            .select('id, email, role')
+            .eq('role', 'aluno');
+        
+        if (alunosError) throw alunosError;
+        
+        if (!alunos || alunos.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--texto-sec)">Nenhum aluno cadastrado ainda.</p>';
+            return;
+        }
+        
+        // Buscar todas as videoaulas
+        const { data: aulas, error: aulasError } = await supabase
+            .from('videoaulas')
+            .select('id, titulo, nr');
+        
+        if (aulasError) throw aulasError;
+        
+        const totalAulas = aulas?.length || 0;
+        
+        // Buscar progresso de todos os alunos
+        const { data: progresso, error: progError } = await supabase
+            .from('progresso_aulas')
+            .select('user_id, aula_id');
+        
+        if (progError) throw progError;
+        
+        // Organizar progresso por aluno
+        const progressoPorAluno = {};
+        progresso?.forEach(p => {
+            if (!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = [];
+            progressoPorAluno[p.user_id].push(p.aula_id);
+        });
+        
+        // Montar tabela
+        let html = `
+            <div style="overflow-x: auto;">
+                <table style="width:100%; border-collapse: collapse; font-size:13px">
+                    <thead>
+                        <tr style="background: var(--primaria); color: white;">
+                            <th style="padding:12px; text-align:left">Aluno</th>
+                            <th style="padding:12px; text-align:center">Aulas assistidas</th>
+                            <th style="padding:12px; text-align:center">Progresso</th>
+                            <th style="padding:12px; text-align:center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        for (const aluno of alunos) {
+            const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
+            const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
+            
+            let statusStyle = '';
+            let statusText = '';
+            if (percentual === 100) {
+                statusStyle = 'background:#4CAF50; color:white';
+                statusText = '✅ Concluído';
+            } else if (percentual > 0) {
+                statusStyle = 'background:#FF9800; color:white';
+                statusText = '🟡 Em andamento';
+            } else {
+                statusStyle = 'background:#F44336; color:white';
+                statusText = '🔴 Não iniciado';
+            }
+            
+            html += `
+                <tr style="border-bottom: 1px solid var(--borda)">
+                    <td style="padding:12px">${escapeHtml(aluno.email)}</td>
+                    <td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td>
+                    <td style="padding:12px; text-align:center">
+                        <div style="background: #e0e0e0; border-radius:20px; height:8px; width:120px; margin:0 auto">
+                            <div style="background: var(--primaria); border-radius:20px; height:8px; width:${percentual}%"></div>
+                        </div>
+                        <span style="font-size:11px">${percentual}%</span>
+                    </td>
+                    <td style="padding:12px; text-align:center">
+                        <span style="${statusStyle}; padding:4px 12px; border-radius:20px; font-size:11px; display:inline-block">${statusText}</span>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        
+    } catch (err) {
+        console.error('Erro:', err);
+        container.innerHTML = `<p style="text-align:center; color:var(--erro)">Erro ao carregar: ${err.message}</p>`;
+    }
+}
     </script>    
 </body>
 </html>
