@@ -1056,181 +1056,238 @@ async function garantirPerfil(user) {
             document.getElementById('videoModal').classList.remove('active')
             document.getElementById('videoIframe').src = ''
         }
-
-        window.toggleConcluida = async (aulaId, e) => {
-            e.stopPropagation()
-            const progresso = getProgressoLocal()
-            if (progresso[aulaId]) {
-                delete progresso[aulaId]
+window.toggleConcluida = async (aulaId, e) => {
+    if (e) e.stopPropagation();
+    const progresso = getProgressoLocal();
+    const concluidoAtualmente = progresso[aulaId];
+    
+    if (concluidoAtualmente) {
+        delete progresso[aulaId];
+    } else {
+        progresso[aulaId] = Date.now();
+    }
+    salvarProgressoLocal(progresso);
+    
+    if (usuarioId) {
+        try {
+            if (!concluidoAtualmente) {
+                // CORRIGIDO: coluna 'concluído' com acento
+                const { error } = await supabase
+                    .from('progresso_aulas')
+                    .upsert({ 
+                        user_id: usuarioId, 
+                        aula_id: aulaId, 
+                        "concluído": true, 
+                        ultima_atualizacao: new Date().toISOString() 
+                    });
+                if (error) console.error('Erro ao salvar progresso:', error);
             } else {
-                progresso[aulaId] = Date.now()
+                const { error } = await supabase
+                    .from('progresso_aulas')
+                    .delete()
+                    .match({ user_id: usuarioId, aula_id: aulaId });
+                if (error) console.error('Erro ao remover progresso:', error);
             }
-            salvarProgressoLocal(progresso)
-            if (usuarioId) {
-                try {
-                    if (progresso[aulaId]) {
-                        await supabase.from('progresso_aulas').upsert({ user_id: usuarioId, aula_id: aulaId, concluida: true, concluida_em: new Date().toISOString() })
-                    } else {
-                        await supabase.from('progresso_aulas').delete().match({ user_id: usuarioId, aula_id: aulaId })
-                    }
-                } catch (e) {}
-            }
-            carregarVideoaulas(document.querySelector('.filtro-btn.active')?.dataset?.nr || 'todos')
+        } catch (err) {
+            console.error('Erro:', err);
         }
+    }
+    carregarVideoaulas(document.querySelector('.filtro-btn.active')?.dataset?.nr || 'todos');
+}
 
-        function renderizarProgressoAulas(aulas) {
-            if (!aulas.length) return
-            const progresso = getProgressoLocal()
-            const total = aulas.length
-            const concluidas = aulas.filter(a => progresso[a.id]).length
-            const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0
-            const progressoEl = document.getElementById('progressoVideoaulas')
-            if (progressoEl) {
-                progressoEl.innerHTML = `
-                <div class="progresso-container">
-                    <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-chart-line" style="color:var(--primaria)"></i> Seu progresso</span><span class="progresso-pct">${pct}%</span></div>
-                    <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-                    <div class="progresso-info">${concluidas} de ${total} aulas concluídas</div>
-                </div>`
-            }
-            const btnCert = document.getElementById('btnCertificado')
-            const certDesc = document.getElementById('certDesc')
-            if (pct === 100) {
-                if (btnCert) btnCert.style.display = 'inline-block'
-                if (certDesc) certDesc.innerHTML = '✅ Parabéns! Você concluiu todas as aulas. Seu certificado está disponível!'
-                const certSection = document.getElementById('certSection')
-                if (certSection) certSection.classList.remove('cert-locked')
-            } else {
-                if (btnCert) btnCert.style.display = 'none'
-                if (certDesc) certDesc.innerHTML = `Conclua ${total - concluidas} aula(s) restante(s) para liberar seu certificado.`
-                const certSection = document.getElementById('certSection')
-                if (certSection) certSection.classList.add('cert-locked')
-            }
+function renderizarProgressoAulas(aulas) {
+    if (!aulas.length) return
+    const progresso = getProgressoLocal()
+    const total = aulas.length
+    const concluidas = aulas.filter(a => progresso[a.id]).length
+    const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0
+    const progressoEl = document.getElementById('progressoVideoaulas')
+    if (progressoEl) {
+        progressoEl.innerHTML = `
+        <div class="progresso-container">
+            <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-chart-line" style="color:var(--primaria)"></i> Seu progresso</span><span class="progresso-pct">${pct}%</span></div>
+            <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
+            <div class="progresso-info">${concluidas} de ${total} aulas concluídas</div>
+        </div>`
+    }
+    // REMOVIDO: Botão de certificado para alunos (agora só admin)
+}
+
+function renderizarProgressoHome() {
+    const aulas = getAulasLocal()
+    const progressoResumo = document.getElementById('progressoResumoHome')
+    if (!progressoResumo) return
+    if (!aulas.length) {
+        progressoResumo.innerHTML = ''
+        return
+    }
+    const progresso = getProgressoLocal()
+    const total = aulas.length
+    const concluidas = aulas.filter(a => progresso[a.id]).length
+    const pct = Math.round((concluidas / total) * 100)
+    progressoResumo.innerHTML = `
+    <div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px">
+        <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span><span class="progresso-pct">${pct}%</span></div>
+        <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
+        <div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div>
+    </div>`
+}
+
+// FUNÇÃO PARA GERAR CERTIFICADO (APENAS ADMIN)
+window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
+    const { data: progresso, error } = await supabase
+        .from('progresso_aulas')
+        .select('aula_id')
+        .eq('user_id', alunoId)
+        .eq("concluído", true);
+    
+    if (error) {
+        mostrarErro('Erro ao buscar progresso: ' + error.message);
+        return;
+    }
+    
+    if (!progresso || progresso.length === 0) {
+        mostrarErro('Aluno não concluiu nenhuma aula ainda.');
+        return;
+    }
+    
+    const aulasIds = progresso.map(p => p.aula_id);
+    const { data: aulas } = await supabase.from('videoaulas').select('nr, titulo').in('id', aulasIds);
+    const nrsConcluidas = [...new Set(aulas.map(a => a.nr).filter(Boolean))];
+    const nome = alunoEmail.split('@')[0];
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    
+    if (typeof window.jspdf === 'undefined') {
+        mostrarErro('Biblioteca PDF não carregada.');
+        return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    
+    doc.setFillColor(27, 94, 32);
+    doc.rect(0, 0, 297, 210, 'F');
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 15, 267, 180, 8, 8, 'F');
+    doc.setFillColor(46, 125, 50);
+    doc.rect(25, 25, 247, 3, 'F');
+    doc.rect(25, 182, 247, 3, 'F');
+    doc.setTextColor(46, 125, 50);
+    doc.setFontSize(32);
+    doc.setFont('helvetica', 'bold');
+    doc.text('SULSAFE', 148.5, 50, { align: 'center' });
+    doc.setFontSize(15);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(80, 80, 80);
+    doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' });
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(13);
+    doc.text('Certificamos que', 148.5, 80, { align: 'center' });
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(27, 94, 32);
+    doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' });
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 30, 30);
+    doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
+    
+    if (nrsConcluidas.length) {
+        doc.setFontSize(11);
+        doc.setTextColor(60, 60, 60);
+        doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' });
+    }
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Emitido em ${dataAtual}`, 148.5, 146, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setTextColor(120, 120, 120);
+    doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' });
+    doc.setDrawColor(46, 125, 50);
+    doc.setLineWidth(0.5);
+    doc.line(90, 167, 207, 167);
+    doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' });
+    
+    doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
+    mostrarErro(`✅ Certificado gerado para ${nome}!`);
+}
+
+// FUNÇÃO ATUALIZADA DO RELATÓRIO COM BOTÃO DE CERTIFICADO
+async function carregarRelatorioAlunos() {
+    const container = document.getElementById('relatorioContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+    
+    try {
+        const { data: alunos, error: alunosError } = await supabase
+            .from('profiles')
+            .select('id, email, role')
+            .eq('role', 'aluno');
+        
+        if (alunosError) throw alunosError;
+        
+        if (!alunos || alunos.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado ainda.</p>';
+            return;
         }
-
-        function renderizarProgressoHome() {
-            const aulas = getAulasLocal()
-            const progressoResumo = document.getElementById('progressoResumoHome')
-            if (!progressoResumo) return
-            if (!aulas.length) {
-                progressoResumo.innerHTML = ''
-                return
-            }
-            const progresso = getProgressoLocal()
-            const total = aulas.length
-            const concluidas = aulas.filter(a => progresso[a.id]).length
-            const pct = Math.round((concluidas / total) * 100)
-            progressoResumo.innerHTML = `
-            <div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px">
-                <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span><span class="progresso-pct">${pct}%</span></div>
-                <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-                <div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div>
-            </div>`
+        
+        const { data: aulas, error: aulasError } = await supabase
+            .from('videoaulas')
+            .select('id');
+        
+        if (aulasError) throw aulasError;
+        
+        const totalAulas = aulas?.length || 0;
+        
+        const { data: progresso, error: progError } = await supabase
+            .from('progresso_aulas')
+            .select('user_id, aula_id')
+            .eq("concluído", true);
+        
+        if (progError) throw progError;
+        
+        const progressoPorAluno = {};
+        progresso?.forEach(p => {
+            if (!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = [];
+            progressoPorAluno[p.user_id].push(p.aula_id);
+        });
+        
+        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th><th style="padding:12px">Certificado</th></tr></thead><tbody>';
+        
+        for (const aluno of alunos) {
+            const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
+            const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
+            let statusText = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado');
+            
+            const botaoCertificado = percentual === 100 ? 
+                `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}', '${aluno.email}')" style="padding:5px 10px; font-size:11px"><i class="fas fa-award"></i> Certificado</button>` : 
+                '<span style="color:gray; font-size:11px">⏳ 100%</span>';
+            
+            html += `
+                <tr style="border-bottom: 1px solid var(--borda)">
+                    <td style="padding:12px">${aluno.email}</td>
+                    <td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td>
+                    <td style="padding:12px">
+                        <div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%">
+                            <div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div>
+                        </div>
+                        ${percentual}%
+                    </td>
+                    <td style="padding:12px">${statusText}</td>
+                    <td style="padding:12px; text-align:center">${botaoCertificado}</td>
+                </tr>
+            `;
         }
-
-        window.gerarCertificado = () => {
-            const aulas = getAulasLocal()
-            const progresso = getProgressoLocal()
-            const nrsConcluidas = [...new Set(aulas.filter(a => progresso[a.id]).map(a => a.nr).filter(Boolean))]
-            const nome = usuarioAtual || 'Aluno'
-            const data = new Date().toLocaleDateString('pt-BR')
-            if (typeof window.jspdf === 'undefined') {
-                mostrarErro('Biblioteca PDF não carregada.')
-                return
-            }
-            const { jsPDF } = window.jspdf
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
-            doc.setFillColor(27, 94, 32)
-            doc.rect(0, 0, 297, 210, 'F')
-            doc.setFillColor(255, 255, 255)
-            doc.roundedRect(15, 15, 267, 180, 8, 8, 'F')
-            doc.setFillColor(46, 125, 50)
-            doc.rect(25, 25, 247, 3, 'F')
-            doc.rect(25, 182, 247, 3, 'F')
-            doc.setTextColor(46, 125, 50)
-            doc.setFontSize(32)
-            doc.setFont('helvetica', 'bold')
-            doc.text('SULSAFE', 148.5, 50, { align: 'center' })
-            doc.setFontSize(15)
-            doc.setFont('helvetica', 'normal')
-            doc.setTextColor(80, 80, 80)
-            doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' })
-            doc.setTextColor(30, 30, 30)
-            doc.setFontSize(13)
-            doc.text('Certificamos que', 148.5, 80, { align: 'center' })
-            doc.setFontSize(22)
-            doc.setFont('helvetica', 'bold')
-            doc.setTextColor(27, 94, 32)
-            doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' })
-            doc.setFontSize(13)
-            doc.setFont('helvetica', 'normal')
-            doc.setTextColor(30, 30, 30)
-            doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' })
-            if (nrsConcluidas.length) {
-                doc.setFontSize(11)
-                doc.setTextColor(60, 60, 60)
-                doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' })
-            }
-            doc.setFontSize(11)
-            doc.setTextColor(100, 100, 100)
-            doc.text(`Emitido em ${data}`, 148.5, 146, { align: 'center' })
-            doc.setFontSize(10)
-            doc.setTextColor(120, 120, 120)
-            doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' })
-            doc.setDrawColor(46, 125, 50)
-            doc.setLineWidth(0.5)
-            doc.line(90, 167, 207, 167)
-            doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' })
-            doc.save(`Certificado_SulSafe_${nome.replace(/\s+/g, '_')}.pdf`)
-        }
-
-        window.salvarVideoaula = async () => {
-            const titulo = document.getElementById('aulaTitulo').value.trim()
-            const nr = document.getElementById('aulaNR').value
-            const youtube_url = document.getElementById('aulaYoutube').value.trim()
-            const descricao = document.getElementById('aulaDescricao').value.trim()
-            const statusEl = document.getElementById('aulaStatus')
-            if (!titulo || !youtube_url) {
-                statusEl.innerHTML = '<span style="color:var(--erro)">Informe título e link do YouTube.</span>'
-                return
-            }
-            if (!extrairYoutubeId(youtube_url)) {
-                statusEl.innerHTML = '<span style="color:var(--erro)">Link do YouTube inválido. Cole a URL completa.</span>'
-                return
-            }
-            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'
-            const item = { titulo, nr, descricao, youtube_url, criado_por: usuarioId, criado_em: new Date().toISOString() }
-            if (usuarioId) {
-                const { error } = await supabase.from('videoaulas').insert(item)
-                if (!error) {
-                    statusEl.innerHTML = '<span style="color:var(--sucesso)">Videoaula publicada!</span>'
-                    setTimeout(() => {
-                        fecharModalAdmin()
-                        carregarVideoaulas()
-                    }, 1200)
-                    return
-                }
-            }
-            const lista = getAulasLocal()
-            lista.push({ ...item, id: 'loc-' + Date.now() })
-            salvarAulasLocal(lista)
-            statusEl.innerHTML = '<span style="color:var(--sucesso)">Salvo localmente.</span>'
-            setTimeout(() => {
-                fecharModalAdmin()
-                carregarVideoaulas()
-            }, 1800)
-        }
-
-        window.deletarVideoaula = async (id) => {
-            if (!confirm('Remover esta videoaula?')) return
-            if (String(id).startsWith('loc-')) {
-                salvarAulasLocal(getAulasLocal().filter(a => a.id !== id))
-            } else {
-                await supabase.from('videoaulas').delete().eq('id', id)
-            }
-            carregarVideoaulas()
-        }
-
+        
+        html += '</tbody>}</div>';
+        container.innerHTML = html;
+        
+    } catch (err) {
+        container.innerHTML = '<p style="text-align:center; color:red">Erro ao carregar: ' + err.message + '</p>';
+    }
+}
         // MATERIAIS
         window.carregarMateriais = async () => {
             const lista = document.getElementById('listaMateriais')
