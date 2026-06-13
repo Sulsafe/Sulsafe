@@ -619,6 +619,81 @@
         const CONFIG = {nomeEmpresa:"SulSafe",logoUrl:"https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-assets/logo1.png",authRedirectUrl:window.location.origin + window.location.pathname}
         let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = []
 
+// Função pra filtrar e carregar trabalhos
+window.filtrarTrabalhos = async function(status) {
+  // Marca botão ativo
+  document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`[data-filtro="${status}"]`).classList.add('active');
+  
+  const container = document.getElementById('listaTrabalhos');
+  container.innerHTML = '<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+  
+  try {
+    let query = supabase.from('trabalhos').select('*').order('data_envio', {ascending: false});
+    
+    if(status !== 'todos') {
+      query = query.eq('status', status);
+    }
+    
+    const {data, error} = await query;
+    
+    if(error) {
+      container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`;
+      return;
+    }
+    
+    if(!data || data.length === 0) {
+      container.innerHTML = '<p style="text-align:center;padding:40px">Nenhum trabalho encontrado</p>';
+      return;
+    }
+    
+    todosTrabalhos = data;
+    
+    container.innerHTML = data.map(t => `
+      <div class="painel-card" style="margin-bottom:12px">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+          <div>
+            <h4 style="margin-bottom:4px">${escapeHtml(t.aluno_nome || 'Aluno')}</h4>
+            <p style="font-size:13px; color:var(--texto-sec); margin-bottom:4px">
+              ${escapeHtml(t.titulo)} - <span class="badge-nr">${t.nr}</span>
+            </p>
+            <p style="font-size:12px; color:var(--texto-sec)">
+              Enviado: ${new Date(t.data_envio).toLocaleDateString('pt-BR')}
+            </p>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <span class="status-badge" style="background:${t.status==='corrigido'?'rgba(46,125,50,.1)':'rgba(255,193,7,.1)'}; color:${t.status==='corrigido'?'var(--primaria)':'#FF9800'}">
+              ${t.status}
+            </span>
+            ${t.arquivo_url ? `<a href="${t.arquivo_url}" target="_blank" class="btn-entrar"><i class="fas fa-download"></i> Baixar</a>` : ''}
+            ${t.status === 'pendente' ? `<button class="btn-criar-sala" style="padding:6px 14px; font-size:12px" onclick="corrigirTrabalho('${t.id}')"><i class="fas fa-check"></i> Corrigir</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+  } catch(e) {
+    container.innerHTML = `<p style="color:var(--erro)">Erro ao carregar: ${e.message}</p>`;
+  }
+}
+
+// Função pra marcar como corrigido
+window.corrigirTrabalho = async function(id) {
+  if(!confirm('Marcar este trabalho como corrigido?')) return;
+  
+  const {error} = await supabase.from('trabalhos').update({status: 'corrigido'}).eq('id', id);
+  
+  if(error) {
+    alert('Erro: ' + error.message);
+    return;
+  }
+  
+  alert('Trabalho marcado como corrigido!');
+  filtrarTrabalhos('pendente'); // Recarrega lista
+}
+
+// Carrega quando abre a aba Trabalhos
+// Isso já tá no teu alternarView(), então quando clica no menu ele chama
         function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
