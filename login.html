@@ -23,8 +23,6 @@
         }
         body{font-family:'Inter',sans-serif;height:100vh;overflow:hidden;background:var(--bg-pagina);color:var(--texto);transition:background .3s,color .3s}
         body.tema-claro{--bg-pagina:#FFF;--fundo-dash:#F9F9F9;--texto:#1A1A1A;--borda:#E0E0E0;--input-bg:#FFF;--fundo-sidebar:#FFF;--sidebar-bg:#FFF;--card-bg:#FFF}
-
-        /* HERO */
         .hero-container{position:fixed;inset:0;z-index:1;overflow:hidden;transition:opacity .5s}
         .hero-container.hidden{opacity:0;pointer-events:none}
         #canvas-hero{width:100%;height:100%;display:block}
@@ -63,8 +61,6 @@
         .social-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.05);border-radius:50%;color:var(--texto-sec);transition:.2s;text-decoration:none;font-size:20px;cursor:pointer;position:relative;z-index:999}
         .social-btn:hover{color:var(--primaria);background:rgba(46,125,50,.1);transform:translateY(-2px)}
         .link-voltar-inicio{display:inline-block;margin-bottom:14px;font-size:13px;color:var(--texto-sec);text-decoration:none}
-
-        /* DASHBOARD */
         .dashboard{position:fixed;inset:0;background:var(--fundo-dash);z-index:20;display:none;opacity:0;transition:opacity .4s}
         .dashboard.active{display:flex;opacity:1}
         .dash-sidebar{width:270px;background:var(--sidebar-bg);border-right:1px solid var(--borda);padding:28px 18px;display:flex;flex-direction:column;gap:32px;transition:.3s;flex-shrink:0}
@@ -101,8 +97,6 @@
         .material-info h4{color:var(--texto);margin-bottom:3px;font-size:14px}
         .badge-nr{background:var(--primaria);color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;margin-top:4px}
         .btn-entrar{background:var(--sala-btn);border:none;border-radius:40px;padding:7px 18px;font-weight:700;color:#fff;cursor:pointer;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-
-        /* SALAS */
         .salas-controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
         .salas-controls input{flex:2;background:var(--input-bg);border:1px solid var(--borda);border-radius:40px;padding:12px 20px;color:var(--texto);font-size:14px}
         .meeting-list{display:flex;flex-direction:column;gap:10px;list-style:none}
@@ -140,8 +134,6 @@
         .chat-input input{flex:1;background:var(--input-bg);border:1px solid var(--borda);border-radius:40px;padding:8px 12px;color:var(--texto);font-size:12px}
         .chat-input button{background:var(--sala-btn);border:none;border-radius:40px;padding:8px 14px;color:#fff;font-weight:bold;cursor:pointer;font-size:11px}
         .error-tooltip{position:fixed;bottom:20px;right:20px;background:var(--erro);color:#fff;padding:10px 20px;border-radius:40px;font-size:14px;z-index:2000;display:none}
-
-        /* VIDEOAULAS */
         .videoaulas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
         .aula-card{background:var(--card-bg);border:1px solid var(--borda);border-radius:18px;overflow:hidden;transition:.25s}
         .aula-card:hover{border-color:var(--primaria);transform:translateY(-4px);box-shadow:0 12px 28px rgba(46,125,50,.12)}
@@ -169,8 +161,6 @@
         .filtro-nr{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
         .filtro-btn{background:var(--input-bg);border:1px solid var(--borda);color:var(--texto-sec);border-radius:30px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
         .filtro-btn.active{background:var(--primaria);color:#fff;border-color:var(--primaria)}
-
-        /* PROGRESSO */
         .progresso-container{background:var(--card-bg);border:1px solid var(--borda);border-radius:18px;padding:18px;margin-bottom:20px}
         .progresso-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
         .progresso-titulo{font-weight:700;font-size:14px;color:var(--texto)}
@@ -178,15 +168,11 @@
         .progresso-bar-wrap{background:rgba(0,0,0,.07);border-radius:40px;height:9px;overflow:hidden}
         .progresso-bar{background:linear-gradient(90deg,var(--primaria),#4CAF50);height:100%;border-radius:40px;transition:width .6s ease}
         .progresso-info{font-size:12px;color:var(--texto-sec);margin-top:7px}
-
-        /* CERTIFICADO */
         .cert-section{text-align:center;padding:8px 0}
         .cert-icon{font-size:52px;margin-bottom:10px}
         .cert-titulo{font-size:17px;font-weight:800;color:var(--primaria);margin-bottom:7px}
         .cert-desc{color:var(--texto-sec);font-size:13px;margin-bottom:18px;line-height:1.6}
         .cert-locked{opacity:.5}
-
-        /* IA */
         .ia-chat-box{display:flex;flex-direction:column;height:400px}
         .ia-messages{flex:1;overflow-y:auto;padding:14px;background:rgba(0,0,0,.02);border-radius:14px;margin-bottom:10px}
         .ia-msg{padding:9px 13px;border-radius:12px;margin-bottom:9px;max-width:85%;font-size:13px;line-height:1.45}
@@ -194,16 +180,12 @@
         .ia-msg.bot{background:#E8F5E9;color:var(--texto)}
         .ia-input-row{display:flex;gap:9px}
         .ia-input-row input{flex:1;padding:11px 16px;border:1px solid var(--borda);border-radius:40px;background:var(--input-bg);color:var(--texto);font-size:14px}
-
-        /* ADMIN MODAL */
         .admin-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
         .admin-modal.active{display:flex}
         .admin-modal-content{background:var(--card-bg);border-radius:20px;padding:24px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;border:1px solid var(--borda)}
         .admin-tabs{display:flex;gap:7px;margin-bottom:20px}
         .admin-tab{flex:1;padding:9px;border:1px solid var(--borda);border-radius:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--texto-sec);transition:.2s}
         .admin-tab.active{background:var(--primaria);color:#fff;border-color:var(--primaria)}
-
-        /* EQUIPE */
         .team-container{display:flex;flex-direction:column;gap:20px}
         .team-members,.team-invite{background:var(--card-bg);border-radius:18px;padding:18px;border:1px solid var(--borda)}
         .member-list{display:flex;flex-direction:column;gap:9px}
@@ -215,8 +197,6 @@
         .pending-invites{margin-top:16px;background:rgba(0,0,0,.02);border-radius:12px;padding:12px}
         .pending-invite{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borda);font-size:13px}
         .test-button{background:var(--sala-btn);border:none;border-radius:40px;padding:7px 16px;color:#fff;cursor:pointer;margin-top:7px;font-size:13px}
-
-        /* CONFIG */
         .config-container{display:flex;gap:18px;flex-wrap:wrap}
         .config-sidebar{width:210px;background:var(--card-bg);border-radius:18px;padding:12px;border:1px solid var(--borda)}
         .config-tab{padding:9px 13px;border-radius:12px;cursor:pointer;transition:.2s;color:var(--texto-sec);display:flex;align-items:center;gap:9px;font-size:13px}
@@ -229,112 +209,21 @@
         .config-group select,.config-group input[type="range"]{width:100%;background:var(--input-bg);border:1px solid var(--borda);border-radius:40px;padding:9px 14px;color:var(--texto)}
         .color-option{display:inline-flex;width:32px;height:32px;border-radius:50%;margin:3px;cursor:pointer;border:2px solid transparent}
         .color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--primaria)}
-
-        /* MASCOTE - ASSISTENTE INTERATIVO */
-        .mascote-assistente {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 9999;
-            cursor: pointer;
-        }
-        .mascote-avatar {
-            width: 70px;
-            height: 70px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 3px solid #2E7D32;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-        }
-        .mascote-avatar:hover {
-            transform: scale(1.05);
-        }
-        .mascote-avatar img {
-            width: 110%;
-            height: auto;
-            object-fit: cover;
-        }
-        .balao-ajuda {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 280px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 1px solid var(--borda);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            font-size: 13px;
-            z-index: 10000;
-        }
-        .balao-ajuda.active {
-            display: flex;
-        }
-        .balao-header {
-            background: var(--primaria);
-            color: white;
-            padding: 10px 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .balao-header i {
-            cursor: pointer;
-        }
-        .balao-conteudo {
-            padding: 12px;
-            max-height: 300px;
-            overflow-y: auto;
-            background: #f9f9f9;
-        }
-        .balao-mensagem {
-            background: #e8f5e9;
-            padding: 8px 12px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            color: #1a1a1a;
-        }
-        .balao-mensagem strong {
-            color: var(--primaria);
-        }
-        .balao-opcoes {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .balao-opcao {
-            background: white;
-            border: 1px solid var(--borda);
-            border-radius: 20px;
-            padding: 6px 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: left;
-            font-size: 12px;
-        }
-        .balao-opcao:hover {
-            background: rgba(46,125,50,0.1);
-            border-color: var(--primaria);
-        }
-        .balao-footer {
-            padding: 8px 12px;
-            background: #fff;
-            border-top: 1px solid var(--borda);
-            font-size: 10px;
-            color: var(--texto-sec);
-            text-align: center;
-        }
-
-        /* RESPONSIVO */
+        .mascote-assistente{position:fixed;bottom:25px;right:25px;z-index:9999;cursor:pointer}
+        .mascote-avatar{width:70px;height:70px;background-color:#ffffff;border-radius:50%;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.2);border:3px solid #2E7D32;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease}
+        .mascote-avatar:hover{transform:scale(1.05)}
+        .mascote-avatar img{width:110%;height:auto;object-fit:cover}
+        .balao-ajuda{position:absolute;bottom:80px;right:0;width:280px;background:white;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);border:1px solid var(--borda);display:none;flex-direction:column;overflow:hidden;font-size:13px;z-index:10000}
+        .balao-ajuda.active{display:flex}
+        .balao-header{background:var(--primaria);color:white;padding:10px 15px;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+        .balao-header i{cursor:pointer}
+        .balao-conteudo{padding:12px;max-height:300px;overflow-y:auto;background:#f9f9f9}
+        .balao-mensagem{background:#e8f5e9;padding:8px 12px;border-radius:15px;margin-bottom:10px;color:#1a1a1a}
+        .balao-mensagem strong{color:var(--primaria)}
+        .balao-opcoes{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+        .balao-opcao{background:white;border:1px solid var(--borda);border-radius:20px;padding:6px 12px;cursor:pointer;transition:0.2s;text-align:left;font-size:12px}
+        .balao-opcao:hover{background:rgba(46,125,50,0.1);border-color:var(--primaria)}
+        .balao-footer{padding:8px 12px;background:#fff;border-top:1px solid var(--borda);font-size:10px;color:var(--texto-sec);text-align:center}
         @media(max-width:768px){
             .dash-sidebar{width:60px;padding:.8rem .4rem}
             .dash-sidebar .dash-logo-text,.dash-sidebar span{display:none}
@@ -342,7 +231,7 @@
             .config-container{flex-direction:column}
             .config-sidebar{width:100%;display:flex;flex-wrap:wrap}
             .config-tab{flex:1;justify-content:center}
-            .balao-ajuda { width: 250px; right: -10px; bottom: 90px; }
+            .balao-ajuda{width:250px;right:-10px;bottom:90px}
         }
     </style>
 </head>
@@ -356,7 +245,6 @@
             <strong>Login não funciona abrindo o arquivo direto.</strong> Hospede em um servidor (Netlify, Vercel ou localhost).
         </div>
 
-        <!-- TELA LOGIN -->
         <div class="tela active" id="telaLogin">
             <a class="link-voltar-inicio" href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo"><div class="logo-icon" id="logoIcon"></div><div class="logo-text" id="logoText">SulSafe</div></div>
@@ -377,7 +265,6 @@
             </div>
         </div>
 
-        <!-- TELA CADASTRO -->
         <div class="tela" id="telaCadastro">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconCad"></div><div class="logo-text">SulSafe</div></div>
@@ -391,7 +278,6 @@
             </form>
         </div>
 
-        <!-- TELA RECUPERAR SENHA -->
         <div class="tela" id="telaRecuperar">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo"><div class="logo-icon" id="logoIconRec"></div><div class="logo-text">SulSafe</div></div>
@@ -404,7 +290,6 @@
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
             <div class="dash-logo">
@@ -412,15 +297,15 @@
                 <div class="dash-logo-text" id="dashEmpresaNome">SulSafe</div>
             </div>
             <div class="dash-nav">
-   <div class="nav-item active" data-view="home"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
-<div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
-<div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
-<div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
-<div class="nav-item" data-view="aluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
-<div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
-<div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
-<div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
-<div class="nav-item" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>>
+                <div class="nav-item active" data-view="home"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+                <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
+                <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
+                <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
+                <div class="nav-item" data-view="aluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
+                <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
+                <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
+                <div class="nav-item" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
+                <div class="nav-item" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
             </div>
             <div class="dash-user-info">
                 <span class="dash-user-name" id="dashUserName">Usuário</span>
@@ -429,7 +314,6 @@
         </div>
 
         <div class="dash-main">
-            <!-- VIEW HOME -->
             <div id="viewHome">
                 <h1 class="dash-welcome">Bem-vindo ao painel SulSafe</h1>
                 <p class="dash-subtitle">Sua plataforma de segurança do trabalho</p>
@@ -442,26 +326,9 @@
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
                     <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
                 </div>
-                            <!-- RELATÓRIO DE ALUNOS (ADMIN) -->
-            <div id="viewRelatorio" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
-                <p class="dash-subtitle">Acompanhe o progresso e desempenho da turma</p>
-                
-                <div class="painel-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap">
-                        <h3 style="font-size:16px"><i class="fas fa-users"></i> Progresso geral</h3>
-                        <button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:8px 16px"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                    </div>
-                    
-                    <div id="relatorioContainer">
-                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando relatório...</p>
-                    </div>
-                </div>
-            </div>
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
 
-            <!-- VIDEOAULAS -->
             <div id="viewVideoaulas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px">Videoaulas</h2>
                 <p class="dash-subtitle">Assista às aulas e acompanhe seu progresso</p>
@@ -484,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- SALAS -->
             <div id="viewSalas" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-shield-alt"></i> Salas de Reunião</h2>
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
@@ -495,18 +361,15 @@
                 <ul class="meeting-list" id="meetingList"></ul>
             </div>
 
-            <!-- MATERIAIS -->
             <div id="viewMateriais" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book"></i> Biblioteca de Materiais</h2>
                 <p class="dash-subtitle">Apostilas e PDFs publicados pelo professor</p>
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
-            <!-- ÁREA DO ALUNO -->
             <div id="viewAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
                 <p class="dash-subtitle">Envie seu trabalho em PDF e acompanhe as correções</p>
-                
                 <div class="painel-card">
                     <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-cloud-upload-alt"></i> Enviar novo trabalho</h3>
                     <div class="upload-area" onclick="document.getElementById('fileInputTrabalho').click()">
@@ -517,18 +380,14 @@
                     <input type="file" id="fileInputTrabalho" accept=".pdf" style="display:none" onchange="enviarTrabalho(this)">
                     <div id="uploadStatus" style="margin-top:10px;font-size:14px"></div>
                 </div>
-
                 <div class="painel-card">
                     <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-history"></i> Meus trabalhos enviados</h3>
                     <div id="meusTrabalhosList">
-                        <p style="color:var(--texto-sec);text-align:center;padding:20px">
-                            <i class="fas fa-spinner fa-spin"></i> Carregando...
-                        </p>
+                        <p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ASSISTENTE IA -->
             <div id="viewIa" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente sobre NRs</h2>
                 <p class="dash-subtitle">Tire dúvidas sobre normas e segurança do trabalho</p>
@@ -543,7 +402,6 @@
                 </div>
             </div>
 
-            <!-- EQUIPE -->
             <div id="viewEquipe" style="display:none">
                 <div class="team-container">
                     <div class="team-members">
@@ -572,7 +430,6 @@
                 </div>
             </div>
 
-            <!-- TRABALHOS DOS ALUNOS (professor/admin) -->
             <div id="viewTrabalhos" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos dos Alunos</h2>
                 <p class="dash-subtitle">Corrija e acompanhe as entregas</p>
@@ -582,13 +439,10 @@
                     <button class="filtro-btn" data-filtro="corrigido" onclick="filtrarTrabalhos('corrigido')">Corrigidos</button>
                 </div>
                 <div id="listaTrabalhos" class="videoaulas-grid" style="grid-template-columns:1fr">
-                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0">
-                        <i class="fas fa-spinner fa-spin"></i> Carregando...
-                    </p>
+                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
 
-            <!-- CONFIGURAÇÕES -->
             <div id="viewConfig" style="display:none">
                 <div class="config-container">
                     <div class="config-sidebar">
@@ -624,10 +478,23 @@
                     </div>
                 </div>
             </div>
+
+            <div id="viewRelatorio" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
+                <p class="dash-subtitle">Acompanhe o progresso e desempenho da turma</p>
+                <div class="painel-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap">
+                        <h3 style="font-size:16px"><i class="fas fa-users"></i> Progresso geral</h3>
+                        <button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:8px 16px"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    <div id="relatorioContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando relatório...</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL SALA REUNIÃO -->
     <div class="meeting-modal" id="meetingModal">
         <div class="meeting-room">
             <div class="room-header">
@@ -663,7 +530,6 @@
         </div>
     </div>
 
-    <!-- MODAL VIDEO -->
     <div class="video-modal" id="videoModal">
         <div class="video-wrapper">
             <iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
@@ -671,7 +537,6 @@
         <button class="video-modal-close" onclick="fecharVideo()"><i class="fas fa-times"></i> Fechar</button>
     </div>
 
-    <!-- MODAL ADMIN -->
     <div class="admin-modal" id="modalAdmin">
         <div class="admin-modal-content">
             <h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2>
@@ -730,8 +595,7 @@
                 <div class="campo"><label>Link do YouTube</label><input type="url" id="aulaYoutube" placeholder="https://www.youtube.com/watch?v=..."></div>
                 <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2" placeholder="Breve descrição da aula..."></textarea></div>
                 <div style="background:rgba(46,125,50,.07);padding:10px 14px;border-radius:12px;margin-bottom:14px;font-size:12px;color:var(--texto-sec)">
-                    <i class="fas fa-info-circle" style="color:var(--primaria)"></i>
-                    Cole o link normal do YouTube (público ou não listado). A plataforma incorpora automaticamente.
+                    <i class="fas fa-info-circle" style="color:var(--primaria)"></i> Cole o link normal do YouTube (público ou não listado).
                 </div>
                 <div id="aulaStatus" style="margin:10px 0;font-size:13px"></div>
                 <div style="display:flex;gap:10px">
@@ -744,7 +608,6 @@
 
     <div id="errorTooltip" class="error-tooltip"></div>
 
-    <!-- MASCOTE - ASSISTENTE INTERATIVO -->
     <div class="mascote-assistente" id="mascoteAssistente">
         <div class="mascote-avatar">
             <img src="sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.src='https://via.placeholder.com/70?text=SS'">
@@ -756,8 +619,7 @@
             </div>
             <div class="balao-conteudo" id="balaoConteudo">
                 <div class="balao-mensagem">
-                    <strong>Olá! 👋</strong><br>
-                    Sou seu assistente virtual. Posso ajudar com:
+                    <strong>Olá! 👋</strong><br> Sou seu assistente virtual. Posso ajudar com:
                 </div>
                 <div class="balao-opcoes">
                     <div class="balao-opcao" onclick="ajudaEnvioTrabalho()">📄 Como enviar um trabalho?</div>
@@ -767,9 +629,7 @@
                     <div class="balao-opcao" onclick="abrirAssistenteNR()">🤖 Falar com o Assistente NR (IA)</div>
                 </div>
             </div>
-            <div class="balao-footer">
-                Dica: clique no ícone do mascote para abrir/fechar.
-            </div>
+            <div class="balao-footer">Dica: clique no ícone do mascote para abrir/fechar.</div>
         </div>
     </div>
 
@@ -797,60 +657,28 @@
         let todasAulas = []
         let todosTrabalhos = []
 
-        // UTILS
         function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
 
-  // FUNÇÃO GARANTIR PERFIL - CORRIGIDA (sem duplicação)
-async function garantirPerfil(user) {
-    // Verificar se já existe o perfil
-    const { data: existing, error: queryError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle()
-    
-    if (existing) {
-        console.log('Perfil encontrado:', existing.role)
-        return existing.role
-    }
-    
-    // Se não existe, criar um novo perfil
-    const ADMIN_EMAILS = ['sulsafetreinamentos@gmail.com'];
-    const role = ADMIN_EMAILS.includes(user.email) ? 'admin' : 'aluno'
-    
-    console.log('Criando novo perfil para', user.email, 'com role:', role)
-    
-    const { error: insertError } = await supabase
-        .from('profiles')
-        .insert({
-            id: user.id,
-            email: user.email,
-            role: role
-        })
-    
-    if (insertError) {
-        console.error('Erro ao criar perfil:', insertError)
-        return 'aluno'
-    }
-    
-    return role
-}
-    
+        async function garantirPerfil(user) {
+            const { data: existing, error: queryError } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+            if (existing) return existing.role
+            const ADMIN_EMAILS = ['sulsafetreinamentos@gmail.com'];
+            const role = ADMIN_EMAILS.includes(user.email) ? 'admin' : 'aluno'
+            const { error: insertError } = await supabase.from('profiles').insert({ id: user.id, email: user.email, role: role })
+            if (insertError) console.error('Erro ao criar perfil:', insertError)
+            return role
+        }
 
-        // TROCAR TELAS
         window.mostrarTela = (tela) => {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('active'));
             document.getElementById(`tela${tela.charAt(0).toUpperCase() + tela.slice(1)}`).classList.add('active');
-        };
+        }
 
         window.alternarView = (viewId) => {
-            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos'];
-            views.forEach(v => {
-                const el = document.getElementById(`view${v}`);
-                if (el) el.style.display = 'none';
-            });
+            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio'];
+            views.forEach(v => { const el = document.getElementById(`view${v}`); if (el) el.style.display = 'none' });
             const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
             if (target) target.style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -861,23 +689,19 @@ async function garantirPerfil(user) {
             if(viewId === 'videoaulas') carregarVideoaulas();
             if(viewId === 'trabalhos' && ehProfessor) carregarTrabalhos();
             if(viewId === 'aluno') carregarMeusTrabalhos();
-        };
+            if(viewId === 'relatorio' && ehProfessor) carregarRelatorioAlunos();
+        }
 
-        // AUTH
         window.fazerLogin = async () => {
             const email = document.getElementById('loginEmail').value
             const senha = document.getElementById('loginSenha').value
             const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha })
-            if (error) {
-                alert(traduzirErroAuth(error.message))
-                return
-            }
+            if (error) { alert(traduzirErroAuth(error.message)); return }
             usuarioAtual = data.user.email
             usuarioId = data.user.id
             const role = await garantirPerfil(data.user)
             perfilUsuario = role
             ehProfessor = (role === 'admin' || role === 'professor')
-            console.log('Usuário logado:', usuarioAtual, 'Role:', role, 'É professor:', ehProfessor)
             document.getElementById('dashUserName').innerHTML = usuarioAtual
             atualizarPainelProfessor()
             entrarDashboard()
@@ -888,26 +712,10 @@ async function garantirPerfil(user) {
             const email = document.getElementById('cadEmail').value
             const senha = document.getElementById('cadSenha').value
             const senha2 = document.getElementById('cadSenha2').value
-            if (senha !== senha2) {
-                alert('Senhas não coincidem')
-                return
-            }
-            if (senha.length < 6) {
-                alert('Senha mínimo 6 caracteres')
-                return
-            }
-            const { data, error } = await supabase.auth.signUp({ 
-                email: email.trim(), 
-                password: senha, 
-                options: { 
-                    data: { nome_completo: nome, role: 'aluno' },
-                    emailRedirectTo: CONFIG.authRedirectUrl 
-                } 
-            })
-            if (error) {
-                alert(traduzirErroAuth(error.message))
-                return
-            }
+            if (senha !== senha2) { alert('Senhas não coincidem'); return }
+            if (senha.length < 6) { alert('Senha mínimo 6 caracteres'); return }
+            const { error } = await supabase.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome_completo: nome, role: 'aluno' }, emailRedirectTo: CONFIG.authRedirectUrl } })
+            if (error) { alert(traduzirErroAuth(error.message)); return }
             alert('Conta criada! Confirme seu e-mail e depois faça login.')
             mostrarTela('login')
         }
@@ -915,22 +723,12 @@ async function garantirPerfil(user) {
         window.recuperarSenha = async () => {
             const email = document.getElementById('recEmail').value
             const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: CONFIG.authRedirectUrl })
-            if (error) {
-                alert(traduzirErroAuth(error.message))
-                return
-            }
+            if (error) { alert(traduzirErroAuth(error.message)); return }
             document.getElementById('msgSucessoRec').style.display = 'block'
-            setTimeout(() => {
-                document.getElementById('msgSucessoRec').style.display = 'none'
-                mostrarTela('login')
-            }, 3000)
+            setTimeout(() => { document.getElementById('msgSucessoRec').style.display = 'none'; mostrarTela('login') }, 3000)
         }
 
-        window.fazerLogout = async () => {
-            await supabase.auth.signOut()
-            if (jitsiApi) jitsiApi.dispose()
-            window.location.href = 'index.html'
-        }
+        window.fazerLogout = async () => { await supabase.auth.signOut(); if (jitsiApi) jitsiApi.dispose(); window.location.href = 'index.html' }
 
         function entrarDashboard() {
             document.getElementById('authContainer').classList.add('hidden')
@@ -947,11 +745,9 @@ async function garantirPerfil(user) {
 
         function atualizarPainelProfessor() {
             const btn = document.getElementById('btnPainelProfessor')
-            console.log('Atualizando botão professor:', ehProfessor)
             if (btn) btn.style.display = ehProfessor ? 'inline-block' : 'none'
         }
 
-        // ADMIN MODAL
         window.abrirModalAdmin = () => document.getElementById('modalAdmin').classList.add('active')
         window.fecharModalAdmin = () => document.getElementById('modalAdmin').classList.remove('active')
         window.trocarAbaAdmin = (aba) => {
@@ -961,13 +757,7 @@ async function garantirPerfil(user) {
             document.getElementById('tabAula').classList.toggle('active', aba === 'aula')
         }
 
-        // VIDEOAULAS
-        function extrairYoutubeId(url) {
-            if (!url) return null
-            const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/)
-            return m ? m[1] : null
-        }
-
+        function extrairYoutubeId(url) { if (!url) return null; const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/); return m ? m[1] : null }
         function getAulasLocal() { return JSON.parse(localStorage.getItem('sulsafe_videoaulas') || '[]') }
         function salvarAulasLocal(lista) { localStorage.setItem('sulsafe_videoaulas', JSON.stringify(lista)) }
         function getProgressoLocal() { return JSON.parse(localStorage.getItem(`sulsafe_progresso_${usuarioId || 'anon'}`) || '{}') }
@@ -976,51 +766,20 @@ async function garantirPerfil(user) {
         window.carregarVideoaulas = async (filtroNR = 'todos') => {
             const container = document.getElementById('listaVideoaulas')
             if (!container) return
-            container.innerHTML = '<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin" style="font-size:22px;color:var(--primaria)"></i></p>'
+            container.innerHTML = '<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i></p>'
             let aulas = []
-            try {
-                const { data, error } = await supabase.from('videoaulas').select('*').order('criado_em', { ascending: true })
-                if (!error && data && data.length > 0) {
-                    aulas = data
-                    salvarAulasLocal(data)
-                } else {
-                    aulas = getAulasLocal()
-                }
-            } catch {
-                aulas = getAulasLocal()
-            }
+            try { const { data, error } = await supabase.from('videoaulas').select('*').order('criado_em', { ascending: true }); if (!error && data && data.length > 0) { aulas = data; salvarAulasLocal(data) } else { aulas = getAulasLocal() } } catch { aulas = getAulasLocal() }
             todasAulas = aulas
             atualizarFiltrosNR(aulas)
             const aulasFiltradas = filtroNR === 'todos' ? aulas : aulas.filter(a => a.nr === filtroNR)
-            if (!aulasFiltradas.length) {
-                container.innerHTML = '<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0">Nenhuma videoaula publicada ainda.</p>'
-                renderizarProgressoAulas(aulas)
-                return
-            }
+            if (!aulasFiltradas.length) { container.innerHTML = '<p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0">Nenhuma videoaula publicada ainda.</p>'; renderizarProgressoAulas(aulas); return }
             const progresso = getProgressoLocal()
             container.innerHTML = aulasFiltradas.map(aula => {
                 const ytId = extrairYoutubeId(aula.youtube_url)
                 const thumb = ytId ? `<img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${escapeHtml(aula.titulo)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''
                 const placeholderStyle = ytId ? 'display:none' : 'display:flex'
                 const concluida = !!progresso[aula.id]
-                return `<div class="aula-card">
-                    <div class="aula-thumb" onclick="abrirVideo('${escapeHtml(aula.youtube_url || '')}','${escapeHtml(aula.id)}')">
-                        ${thumb}<div class="aula-thumb-placeholder" style="${placeholderStyle}"><i class="fas fa-play-circle"></i></div>
-                        <div class="aula-play-btn"><i class="fas fa-play-circle"></i></div>
-                        ${concluida ? '<div class="aula-concluida-badge"><i class="fas fa-check"></i> Concluída</div>' : ''}
-                    </div>
-                    <div class="aula-info">
-                        <div class="aula-nr">${escapeHtml(aula.nr || '')}</div>
-                        <div class="aula-titulo">${escapeHtml(aula.titulo)}</div>
-                        <div class="aula-desc">${escapeHtml(aula.descricao || '')}</div>
-                    </div>
-                    <div class="aula-footer">
-                        <button class="btn-concluir ${concluida ? 'concluida' : ''}" onclick="toggleConcluida('${aula.id}',event)">
-                            ${concluida ? '<i class="fas fa-check"></i> Concluída' : 'Marcar como concluída'}
-                        </button>
-                        ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro);padding:6px 10px" onclick="deletarVideoaula('${aula.id}')"><i class="fas fa-trash"></i></button>` : ''}
-                    </div>
-                </div>`
+                return `<div class="aula-card"><div class="aula-thumb" onclick="abrirVideo('${escapeHtml(aula.youtube_url || '')}','${escapeHtml(aula.id)}')">${thumb}<div class="aula-thumb-placeholder" style="${placeholderStyle}"><i class="fas fa-play-circle"></i></div><div class="aula-play-btn"><i class="fas fa-play-circle"></i></div>${concluida ? '<div class="aula-concluida-badge"><i class="fas fa-check"></i> Concluída</div>' : ''}</div><div class="aula-info"><div class="aula-nr">${escapeHtml(aula.nr || '')}</div><div class="aula-titulo">${escapeHtml(aula.titulo)}</div><div class="aula-desc">${escapeHtml(aula.descricao || '')}</div></div><div class="aula-footer"><button class="btn-concluir ${concluida ? 'concluida' : ''}" onclick="toggleConcluida('${aula.id}',event)">${concluida ? '<i class="fas fa-check"></i> Concluída' : 'Marcar como concluída'}</button>${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro);padding:6px 10px" onclick="deletarVideoaula('${aula.id}')"><i class="fas fa-trash"></i></button>` : ''}</div></div>`
             }).join('')
             renderizarProgressoAulas(aulas)
         }
@@ -1031,277 +790,104 @@ async function garantirPerfil(user) {
             const nrs = [...new Set(aulas.map(a => a.nr).filter(Boolean))]
             const ativo = container.querySelector('.filtro-btn.active')?.dataset?.nr || 'todos'
             container.innerHTML = `<button class="filtro-btn ${ativo === 'todos' ? 'active' : ''}" data-nr="todos" onclick="filtrarAulas('todos')">Todas</button>`
-            nrs.forEach(nr => {
-                container.innerHTML += `<button class="filtro-btn ${ativo === nr ? 'active' : ''}" data-nr="${nr}" onclick="filtrarAulas('${nr}')">${nr}</button>`
-            })
+            nrs.forEach(nr => { container.innerHTML += `<button class="filtro-btn ${ativo === nr ? 'active' : ''}" data-nr="${nr}" onclick="filtrarAulas('${nr}')">${nr}</button>` })
         }
 
-        window.filtrarAulas = (nr) => {
-            document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'))
-            document.querySelector(`[data-nr="${nr}"]`)?.classList.add('active')
-            carregarVideoaulas(nr)
-        }
+        window.filtrarAulas = (nr) => { document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active')); document.querySelector(`[data-nr="${nr}"]`)?.classList.add('active'); carregarVideoaulas(nr) }
+        window.abrirVideo = (url, aulaId) => { const ytId = extrairYoutubeId(url); if (!ytId) { mostrarErro('Link do YouTube inválido.'); return } document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`; document.getElementById('videoModal').classList.add('active') }
+        window.fecharVideo = () => { document.getElementById('videoModal').classList.remove('active'); document.getElementById('videoIframe').src = '' }
 
-        window.abrirVideo = (url, aulaId) => {
-            const ytId = extrairYoutubeId(url)
-            if (!ytId) {
-                mostrarErro('Link do YouTube inválido.')
-                return
+        window.toggleConcluida = async (aulaId, e) => {
+            if (e) e.stopPropagation();
+            const progresso = getProgressoLocal();
+            const concluidoAtualmente = progresso[aulaId];
+            if (concluidoAtualmente) { delete progresso[aulaId] } else { progresso[aulaId] = Date.now() }
+            salvarProgressoLocal(progresso);
+            if (usuarioId) {
+                try {
+                    if (!concluidoAtualmente) {
+                        await supabase.from('progresso_aulas').upsert({ user_id: usuarioId, aula_id: aulaId, "concluído": true, ultima_atualizacao: new Date().toISOString() });
+                    } else {
+                        await supabase.from('progresso_aulas').delete().match({ user_id: usuarioId, aula_id: aulaId });
+                    }
+                } catch (err) { console.error('Erro:', err) }
             }
-            document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`
-            document.getElementById('videoModal').classList.add('active')
+            carregarVideoaulas(document.querySelector('.filtro-btn.active')?.dataset?.nr || 'todos');
         }
 
-        window.fecharVideo = () => {
-            document.getElementById('videoModal').classList.remove('active')
-            document.getElementById('videoIframe').src = ''
-        }
-window.toggleConcluida = async (aulaId, e) => {
-    if (e) e.stopPropagation();
-    const progresso = getProgressoLocal();
-    const concluidoAtualmente = progresso[aulaId];
-    
-    if (concluidoAtualmente) {
-        delete progresso[aulaId];
-    } else {
-        progresso[aulaId] = Date.now();
-    }
-    salvarProgressoLocal(progresso);
-    
-    if (usuarioId) {
-        try {
-            if (!concluidoAtualmente) {
-                // CORRIGIDO: coluna 'concluído' com acento
-                const { error } = await supabase
-                    .from('progresso_aulas')
-                    .upsert({ 
-                        user_id: usuarioId, 
-                        aula_id: aulaId, 
-                        "concluído": true, 
-                        ultima_atualizacao: new Date().toISOString() 
-                    });
-                if (error) console.error('Erro ao salvar progresso:', error);
-            } else {
-                const { error } = await supabase
-                    .from('progresso_aulas')
-                    .delete()
-                    .match({ user_id: usuarioId, aula_id: aulaId });
-                if (error) console.error('Erro ao remover progresso:', error);
+        function renderizarProgressoAulas(aulas) {
+            if (!aulas.length) return
+            const progresso = getProgressoLocal()
+            const total = aulas.length
+            const concluidas = aulas.filter(a => progresso[a.id]).length
+            const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0
+            const progressoEl = document.getElementById('progressoVideoaulas')
+            if (progressoEl) {
+                progressoEl.innerHTML = `<div class="progresso-container"><div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-chart-line" style="color:var(--primaria)"></i> Seu progresso</span><span class="progresso-pct">${pct}%</span></div><div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div><div class="progresso-info">${concluidas} de ${total} aulas concluídas</div></div>`
             }
-        } catch (err) {
-            console.error('Erro:', err);
         }
-    }
-    carregarVideoaulas(document.querySelector('.filtro-btn.active')?.dataset?.nr || 'todos');
-}
 
-function renderizarProgressoAulas(aulas) {
-    if (!aulas.length) return
-    const progresso = getProgressoLocal()
-    const total = aulas.length
-    const concluidas = aulas.filter(a => progresso[a.id]).length
-    const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0
-    const progressoEl = document.getElementById('progressoVideoaulas')
-    if (progressoEl) {
-        progressoEl.innerHTML = `
-        <div class="progresso-container">
-            <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-chart-line" style="color:var(--primaria)"></i> Seu progresso</span><span class="progresso-pct">${pct}%</span></div>
-            <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-            <div class="progresso-info">${concluidas} de ${total} aulas concluídas</div>
-        </div>`
-    }
-    // REMOVIDO: Botão de certificado para alunos (agora só admin)
-}
-
-function renderizarProgressoHome() {
-    const aulas = getAulasLocal()
-    const progressoResumo = document.getElementById('progressoResumoHome')
-    if (!progressoResumo) return
-    if (!aulas.length) {
-        progressoResumo.innerHTML = ''
-        return
-    }
-    const progresso = getProgressoLocal()
-    const total = aulas.length
-    const concluidas = aulas.filter(a => progresso[a.id]).length
-    const pct = Math.round((concluidas / total) * 100)
-    progressoResumo.innerHTML = `
-    <div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px">
-        <div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span><span class="progresso-pct">${pct}%</span></div>
-        <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-        <div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div>
-    </div>`
-}
-
-// FUNÇÃO PARA GERAR CERTIFICADO (APENAS ADMIN)
-window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
-    const { data: progresso, error } = await supabase
-        .from('progresso_aulas')
-        .select('aula_id')
-        .eq('user_id', alunoId)
-        .eq("concluído", true);
-    
-    if (error) {
-        mostrarErro('Erro ao buscar progresso: ' + error.message);
-        return;
-    }
-    
-    if (!progresso || progresso.length === 0) {
-        mostrarErro('Aluno não concluiu nenhuma aula ainda.');
-        return;
-    }
-    
-    const aulasIds = progresso.map(p => p.aula_id);
-    const { data: aulas } = await supabase.from('videoaulas').select('nr, titulo').in('id', aulasIds);
-    const nrsConcluidas = [...new Set(aulas.map(a => a.nr).filter(Boolean))];
-    const nome = alunoEmail.split('@')[0];
-    const dataAtual = new Date().toLocaleDateString('pt-BR');
-    
-    if (typeof window.jspdf === 'undefined') {
-        mostrarErro('Biblioteca PDF não carregada.');
-        return;
-    }
-    
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    
-    doc.setFillColor(27, 94, 32);
-    doc.rect(0, 0, 297, 210, 'F');
-    doc.setFillColor(255, 255, 255);
-    doc.roundedRect(15, 15, 267, 180, 8, 8, 'F');
-    doc.setFillColor(46, 125, 50);
-    doc.rect(25, 25, 247, 3, 'F');
-    doc.rect(25, 182, 247, 3, 'F');
-    doc.setTextColor(46, 125, 50);
-    doc.setFontSize(32);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SULSAFE', 148.5, 50, { align: 'center' });
-    doc.setFontSize(15);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(80, 80, 80);
-    doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' });
-    doc.setTextColor(30, 30, 30);
-    doc.setFontSize(13);
-    doc.text('Certificamos que', 148.5, 80, { align: 'center' });
-    doc.setFontSize(22);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(27, 94, 32);
-    doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' });
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(30, 30, 30);
-    doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
-    
-    if (nrsConcluidas.length) {
-        doc.setFontSize(11);
-        doc.setTextColor(60, 60, 60);
-        doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' });
-    }
-    
-    doc.setFontSize(11);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Emitido em ${dataAtual}`, 148.5, 146, { align: 'center' });
-    doc.setFontSize(10);
-    doc.setTextColor(120, 120, 120);
-    doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' });
-    doc.setDrawColor(46, 125, 50);
-    doc.setLineWidth(0.5);
-    doc.line(90, 167, 207, 167);
-    doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' });
-    
-    doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-    mostrarErro(`✅ Certificado gerado para ${nome}!`);
-}
-
-// FUNÇÃO ATUALIZADA DO RELATÓRIO COM BOTÃO DE CERTIFICADO
-        // ============================================
-// FUNÇÕES DO RELATÓRIO DE ALUNOS
-// ============================================
-
-async function carregarRelatorioAlunos() {
-    const container = document.getElementById('relatorioContainer');
-    if (!container) return;
-    
-    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-    
-    try {
-        const { data: alunos, error: alunosError } = await supabase
-            .from('profiles')
-            .select('id, email, role')
-            .eq('role', 'aluno');
-        
-        if (alunosError) throw alunosError;
-        
-        if (!alunos || alunos.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado ainda.</p>';
-            return;
+        function renderizarProgressoHome() {
+            const aulas = getAulasLocal()
+            const progressoResumo = document.getElementById('progressoResumoHome')
+            if (!progressoResumo) return
+            if (!aulas.length) { progressoResumo.innerHTML = ''; return }
+            const progresso = getProgressoLocal()
+            const total = aulas.length
+            const concluidas = aulas.filter(a => progresso[a.id]).length
+            const pct = Math.round((concluidas / total) * 100)
+            progressoResumo.innerHTML = `<div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer;margin-bottom:20px"><div class="progresso-header"><span class="progresso-titulo"><i class="fas fa-play-circle" style="color:var(--primaria)"></i> Progresso das videoaulas</span><span class="progresso-pct">${pct}%</span></div><div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div><div class="progresso-info">${concluidas} de ${total} aulas concluídas — clique para continuar</div></div>`
         }
-        
-        const { data: aulas, error: aulasError } = await supabase
-            .from('videoaulas')
-            .select('id');
-        
-        if (aulasError) throw aulasError;
-        
-        const totalAulas = aulas?.length || 0;
-        
-        const { data: progresso, error: progError } = await supabase
-            .from('progresso_aulas')
-            .select('user_id, aula_id');
-        
-        if (progError) throw progError;
-        
-        const progressoPorAluno = {};
-        progresso?.forEach(p => {
-            if (!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = [];
-            progressoPorAluno[p.user_id].push(p.aula_id);
-        });
-        
-        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th></tr></thead><tbody>';
-        
-        for (const aluno of alunos) {
-            const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
-            const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
-            let statusText = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado');
-            
-            html += `<tr><td style="padding:12px">${aluno.email}</td><td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td><td style="padding:12px"><div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td style="padding:12px">${statusText}</td></tr>`;
+
+        window.gerarCertificado = () => {
+            const aulas = getAulasLocal()
+            const progresso = getProgressoLocal()
+            const nrsConcluidas = [...new Set(aulas.filter(a => progresso[a.id]).map(a => a.nr).filter(Boolean))]
+            const nome = usuarioAtual || 'Aluno'
+            const data = new Date().toLocaleDateString('pt-BR')
+            if (typeof window.jspdf === 'undefined') { mostrarErro('Biblioteca PDF não carregada.'); return }
+            const { jsPDF } = window.jspdf
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
+            doc.setFillColor(27, 94, 32); doc.rect(0, 0, 297, 210, 'F')
+            doc.setFillColor(255, 255, 255); doc.roundedRect(15, 15, 267, 180, 8, 8, 'F')
+            doc.setFillColor(46, 125, 50); doc.rect(25, 25, 247, 3, 'F'); doc.rect(25, 182, 247, 3, 'F')
+            doc.setTextColor(46, 125, 50); doc.setFontSize(32); doc.setFont('helvetica', 'bold'); doc.text('SULSAFE', 148.5, 50, { align: 'center' })
+            doc.setFontSize(15); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80); doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' })
+            doc.setTextColor(30, 30, 30); doc.setFontSize(13); doc.text('Certificamos que', 148.5, 80, { align: 'center' })
+            doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(27, 94, 32); doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' })
+            doc.setFontSize(13); doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30); doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' })
+            if (nrsConcluidas.length) { doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' }) }
+            doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Emitido em ${data}`, 148.5, 146, { align: 'center' })
+            doc.setFontSize(10); doc.setTextColor(120, 120, 120); doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' })
+            doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 167, 207, 167); doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' })
+            doc.save(`Certificado_SulSafe_${nome.replace(/\s+/g, '_')}.pdf`)
         }
-        
-        html += '</tbody></table></div>';
-        container.innerHTML = html;
-        
-    } catch (err) {
-        container.innerHTML = '<p style="text-align:center; color:red">Erro ao carregar: ' + err.message + '</p>';
-    }
-}
-        // MATERIAIS
+
+        window.salvarVideoaula = async () => {
+            const titulo = document.getElementById('aulaTitulo').value.trim()
+            const nr = document.getElementById('aulaNR').value
+            const youtube_url = document.getElementById('aulaYoutube').value.trim()
+            const descricao = document.getElementById('aulaDescricao').value.trim()
+            const statusEl = document.getElementById('aulaStatus')
+            if (!titulo || !youtube_url) { statusEl.innerHTML = '<span style="color:var(--erro)">Informe título e link do YouTube.</span>'; return }
+            if (!extrairYoutubeId(youtube_url)) { statusEl.innerHTML = '<span style="color:var(--erro)">Link do YouTube inválido. Cole a URL completa.</span>'; return }
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'
+            const item = { titulo, nr, descricao, youtube_url, criado_por: usuarioId, criado_em: new Date().toISOString() }
+            if (usuarioId) { const { error } = await supabase.from('videoaulas').insert(item); if (!error) { statusEl.innerHTML = '<span style="color:var(--sucesso)">Videoaula publicada!</span>'; setTimeout(() => { fecharModalAdmin(); carregarVideoaulas() }, 1200); return } }
+            const lista = getAulasLocal(); lista.push({ ...item, id: 'loc-' + Date.now() }); salvarAulasLocal(lista)
+            statusEl.innerHTML = '<span style="color:var(--sucesso)">Salvo localmente.</span>'; setTimeout(() => { fecharModalAdmin(); carregarVideoaulas() }, 1800)
+        }
+
+        window.deletarVideoaula = async (id) => { if (!confirm('Remover esta videoaula?')) return; if (String(id).startsWith('loc-')) { salvarAulasLocal(getAulasLocal().filter(a => a.id !== id)) } else { await supabase.from('videoaulas').delete().eq('id', id) }; carregarVideoaulas() }
+
         window.carregarMateriais = async () => {
             const lista = document.getElementById('listaMateriais')
             if (!lista) return
             lista.innerHTML = 'Carregando...'
             const { data, error } = await supabase.from('materiais').select('*').order('criado_em', { ascending: false })
-            if (error) {
-                lista.innerHTML = `<p style="text-align:center;color:var(--erro)">Erro: ${error.message}</p>`
-                return
-            }
-            if (!data.length) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum material publicado.</p>'
-                return
-            }
-            lista.innerHTML = data.map(m => {
-                const del = ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="deletarMaterial('${m.id}','${m.path}')"><i class="fas fa-trash"></i></button>` : ''
-                return `<div class="material-item">
-                    <div class="material-info">
-                        <h4>${escapeHtml(m.titulo)}</h4>
-                        <p>${escapeHtml(m.descricao || '')}</p>
-                        <span class="badge-nr">${escapeHtml(m.nr || '')}</span>
-                    </div>
-                    <div style="display:flex;gap:7px">
-                        <button class="btn-entrar" onclick="baixarArquivo('${m.url}','${escapeHtml(m.titulo)}.pdf')"><i class="fas fa-download"></i> Baixar</button>
-                        ${del}
-                    </div>
-                </div>`
-            }).join('')
+            if (error) { lista.innerHTML = `<p style="text-align:center;color:var(--erro)">Erro: ${error.message}</p>`; return }
+            if (!data.length) { lista.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum material publicado.</p>'; return }
+            lista.innerHTML = data.map(m => { const del = ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="deletarMaterial('${m.id}','${m.path}')"><i class="fas fa-trash"></i></button>` : ''; return `<div class="material-item"><div class="material-info"><h4>${escapeHtml(m.titulo)}</h4><p>${escapeHtml(m.descricao || '')}</p><span class="badge-nr">${escapeHtml(m.nr || '')}</span></div><div style="display:flex;gap:7px"><button class="btn-entrar" onclick="baixarArquivo('${m.url}','${escapeHtml(m.titulo)}.pdf')"><i class="fas fa-download"></i> Baixar</button>${del}</div></div>` }).join('')
         }
 
         window.salvarMaterial = async () => {
@@ -1310,619 +896,108 @@ async function carregarRelatorioAlunos() {
             const descricao = document.getElementById('matDescricao').value.trim()
             const arquivo = document.getElementById('matArquivo').files[0]
             const status = document.getElementById('adminStatus')
-            if (!titulo || !arquivo) {
-                status.innerHTML = '<span style="color:var(--erro)">Informe título e arquivo.</span>'
-                return
-            }
+            if (!titulo || !arquivo) { status.innerHTML = '<span style="color:var(--erro)">Informe título e arquivo.</span>'; return }
             status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'
-            const ext = arquivo.name.split('.').pop()
             const path = `materiais/${Date.now()}_${arquivo.name.replace(/\s/g, '_')}`
             const { error: upErr } = await supabase.storage.from('sulsafe-assets').upload(path, arquivo, { cacheControl: '3600', upsert: false })
-            if (upErr) {
-                status.innerHTML = `<span style="color:var(--erro)">Erro upload: ${upErr.message}</span>`
-                return
-            }
+            if (upErr) { status.innerHTML = `<span style="color:var(--erro)">Erro upload: ${upErr.message}</span>`; return }
             const { data: { publicUrl } } = supabase.storage.from('sulsafe-assets').getPublicUrl(path)
             const { error: dbErr } = await supabase.from('materiais').insert({ titulo, nr, descricao, url: publicUrl, path, criado_por: usuarioId, criado_em: new Date().toISOString() })
-            if (dbErr) {
-                status.innerHTML = `<span style="color:var(--erro)">Erro ao salvar: ${dbErr.message}</span>`
-                return
-            }
-            status.innerHTML = '<span style="color:var(--sucesso)">Material publicado!</span>'
-            setTimeout(() => {
-                fecharModalAdmin()
-                carregarMateriais()
-            }, 1200)
+            if (dbErr) { status.innerHTML = `<span style="color:var(--erro)">Erro ao salvar: ${dbErr.message}</span>`; return }
+            status.innerHTML = '<span style="color:var(--sucesso)">Material publicado!</span>'; setTimeout(() => { fecharModalAdmin(); carregarMateriais() }, 1200)
         }
 
-        window.deletarMaterial = async (id, path) => {
-            if (!confirm('Remover este material?')) return
-            if (path) await supabase.storage.from('sulsafe-assets').remove([path])
-            await supabase.from('materiais').delete().eq('id', id)
-            carregarMateriais()
-        }
+        window.deletarMaterial = async (id, path) => { if (!confirm('Remover este material?')) return; if (path) await supabase.storage.from('sulsafe-assets').remove([path]); await supabase.from('materiais').delete().eq('id', id); carregarMateriais() }
+        window.baixarArquivo = async (url, nomeArquivo) => { try { const response = await fetch(url); const blob = await response.blob(); const link = document.createElement('a'); link.href = window.URL.createObjectURL(blob); link.download = nomeArquivo; document.body.appendChild(link); link.click(); document.body.removeChild(link) } catch { window.open(url, '_blank') } }
 
-        window.baixarArquivo = async (url, nomeArquivo) => {
-            try {
-                const response = await fetch(url)
-                const blob = await response.blob()
-                const link = document.createElement('a')
-                link.href = window.URL.createObjectURL(blob)
-                link.download = nomeArquivo
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
-            } catch {
-                window.open(url, '_blank')
-            }
-        }
-
-        // TRABALHOS DO ALUNO (MEUS)
         async function carregarMeusTrabalhos() {
             if (!usuarioId) return
             const container = document.getElementById('meusTrabalhosList')
             if (!container) return
             container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            const { data, error } = await supabase
-                .from('trabalhos')
-                .select('*')
-                .eq('aluno_id', usuarioId)
-                .order('data_envio', { ascending: false })
-            if (error) {
-                container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`
-                return
-            }
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px">Você ainda não enviou nenhum trabalho.</p>'
-                return
-            }
-            container.innerHTML = data.map(trab => `
-                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:8px; margin-bottom:12px">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
-                        <div>
-                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
-                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
-                            <div>Status: 
-                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
-                                    ${trab.status === 'pendente' ? 'Aguardando correção' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
-                                </span>
-                            </div>
-                            ${trab.nota ? `<div><strong>Nota:</strong> ${trab.nota}</div>` : ''}
-                            ${trab.comentario ? `<div><strong>Comentário do professor:</strong><br>${escapeHtml(trab.comentario)}</div>` : ''}
-                        </div>
-                        <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'meu_trabalho_${trab.id}.pdf')" style="margin-top:8px">
-                            <i class="fas fa-download"></i> Baixar meu PDF
-                        </button>
-                    </div>
-                </div>
-            `).join('')
+            const { data, error } = await supabase.from('trabalhos').select('*').eq('aluno_id', usuarioId).order('data_envio', { ascending: false })
+            if (error) { container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`; return }
+            if (!data || data.length === 0) { container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px">Você ainda não enviou nenhum trabalho.</p>'; return }
+            container.innerHTML = data.map(trab => `<div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:8px; margin-bottom:12px"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap"><div><div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div><div>Disciplina: ${escapeHtml(trab.disciplina)}</div><div>Status: <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">${trab.status === 'pendente' ? 'Aguardando correção' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}</span></div>${trab.nota ? `<div><strong>Nota:</strong> ${trab.nota}</div>` : ''}${trab.comentario ? `<div><strong>Comentário do professor:</strong><br>${escapeHtml(trab.comentario)}</div>` : ''}</div><button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'meu_trabalho_${trab.id}.pdf')" style="margin-top:8px"><i class="fas fa-download"></i> Baixar meu PDF</button></div></div>`).join('')
         }
 
-       window.enviarTrabalho = async (input) => {
-    const file = input.files[0];
-    const statusDiv = document.getElementById('uploadStatus');
-    
-    if (!file) {
-        statusDiv.innerHTML = '<span style="color:var(--erro)">Selecione um arquivo PDF</span>';
-        return;
-    }
-    
-    if (file.type !== 'application/pdf') {
-        statusDiv.innerHTML = '<span style="color:var(--erro)">Apenas arquivos PDF são permitidos</span>';
-        return;
-    }
-    
-    if (!usuarioId) {
-        statusDiv.innerHTML = '<span style="color:var(--erro)">Você precisa estar logado</span>';
-        return;
-    }
-    
-    statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-    
-    try {
-        // Criar um nome único para o arquivo
-        const timestamp = Date.now();
-        const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const filePath = `${usuarioId}/${timestamp}_${nomeLimpo}`;
-        
-        console.log('Enviando para:', filePath);
-        
-        // Upload direto
-        const { data, error } = await supabase.storage
-            .from('trabalhos-sulsafe')
-            .upload(filePath, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-        
-        if (error) {
-            console.error('Erro detalhado:', error);
-            statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${error.message}</span>`;
-            return;
-        }
-        
-        // Pegar a URL pública
-        const { data: urlData } = supabase.storage
-            .from('trabalhos-sulsafe')
-            .getPublicUrl(filePath);
-        
-        // Salvar no banco
-        const { error: insertError } = await supabase
-            .from('trabalhos')
-            .insert({
-                aluno_id: usuarioId,
-                aluno_email: usuarioAtual,
-                arquivo_url: urlData.publicUrl,
-                arquivo_path: filePath,
-                disciplina: 'Segurança do Trabalho',
-                status: 'pendente',
-                data_envio: new Date().toISOString()
-            });
-        
-        if (insertError) {
-            console.error('Erro ao salvar:', insertError);
-            statusDiv.innerHTML = `<span style="color:var(--erro)">Erro ao salvar: ${insertError.message}</span>`;
-            return;
-        }
-        
-        statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
-        input.value = '';
-        
-        // Recarregar a lista
-        setTimeout(() => {
-            carregarMeusTrabalhos();
-            statusDiv.innerHTML = '';
-        }, 2000);
-        
-    } catch (err) {
-        console.error('Erro inesperado:', err);
-        statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>`;
-    }
-};
-
-        // TRABALHOS (professor)
-        async function carregarTrabalhos() {
-            if (!ehProfessor) return
-            const container = document.getElementById('listaTrabalhos')
-            if (!container) return
-            container.innerHTML = '<p style="text-align:center"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            const { data, error } = await supabase.from('trabalhos').select('*').order('data_envio', { ascending: false })
-            if (error) {
-                container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`
-                return
-            }
-            todosTrabalhos = data || []
-            renderizarListaTrabalhos(todosTrabalhos)
-        }
-
-        function renderizarListaTrabalhos(trabalhos) {
-            const container = document.getElementById('listaTrabalhos')
-            if (!container) return
-            if (!trabalhos.length) {
-                container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>'
-                return
-            }
-            container.innerHTML = trabalhos.map(trab => `
-                <div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap">
-                        <div>
-                            <strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong>
-                            <div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div>
-                            <div>Disciplina: ${escapeHtml(trab.disciplina)}</div>
-                            <div>Status: 
-                                <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">
-                                    ${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}
-                                </span>
-                            </div>
-                            ${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}
-                            ${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}
-                        </div>
-                        <div style="display:flex; gap:8px">
-                            <button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')">
-                                <i class="fas fa-download"></i> Baixar PDF
-                            </button>
-                            <button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})">
-                                <i class="fas fa-edit"></i> Corrigir
-                            </button>
-                            ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="excluirTrabalho('${trab.id}')">
-                                <i class="fas fa-trash"></i> Excluir
-                            </button>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('')
-        }
-
-        window.abrirModalCorrecao = async (trabalhoId) => {
-            const { data: trab, error } = await supabase.from('trabalhos').select('*').eq('id', trabalhoId).single()
-            if (error || !trab) {
-                alert('Trabalho não encontrado')
-                return
-            }
-            const nota = prompt(`Nota para ${trab.aluno_email} (0-10):`, trab.nota ?? '')
-            if (nota === null) return
-            const notaNum = parseFloat(nota)
-            if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) {
-                alert('Nota inválida. Digite entre 0 e 10.')
-                return
-            }
-            const comentario = prompt('Comentário (opcional):', trab.comentario ?? '')
-            const { error: updateError } = await supabase.from('trabalhos').update({
-                nota: notaNum,
-                comentario: comentario || null,
-                status: 'corrigido',
-                corrigido_por: usuarioId,
-                data_correcao: new Date().toISOString()
-            }).eq('id', trabalhoId)
-            if (updateError) {
-                alert('Erro ao salvar correção: ' + updateError.message)
-            } else {
-                alert('Correção salva com sucesso!')
-                carregarTrabalhos()
-                carregarMeusTrabalhos()
-            }
-        }
-
-        window.filtrarTrabalhos = (filtro) => {
-            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'))
-            document.querySelector(`[data-filtro="${filtro}"]`).classList.add('active')
-            const filtrados = filtro === 'todos' ? todosTrabalhos : todosTrabalhos.filter(t => t.status === filtro)
-            renderizarListaTrabalhos(filtrados)
-        }
-
-        window.excluirTrabalho = async (trabalhoId) => {
-            if (!ehProfessor || !trabalhoId) return
-            if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return
-            const { data: trab, error: buscaError } = await supabase
-                .from('trabalhos')
-                .select('arquivo_path')
-                .eq('id', trabalhoId)
-                .single()
-            if (buscaError) {
-                alert('Erro ao localizar trabalho: ' + buscaError.message)
-                return
-            }
-            if (trab && trab.arquivo_path) {
-                const { error: storageError } = await supabase.storage
-                    .from('trabalhos-sulsafe')
-                    .remove([trab.arquivo_path])
-                if (storageError) console.warn('Erro ao excluir arquivo:', storageError)
-            }
-            const { error: deleteError } = await supabase
-                .from('trabalhos')
-                .delete()
-                .eq('id', trabalhoId)
-            if (deleteError) {
-                alert('Erro ao excluir trabalho: ' + deleteError.message)
-            } else {
-                alert('Trabalho excluído com sucesso!')
-                carregarTrabalhos()
-                carregarMeusTrabalhos()
-            }
-        }
-
-        // IA
-        window.enviarPerguntaIA = async () => {
-            const input = document.getElementById('iaChatInput')
-            const pergunta = input.value.trim()
-            if (!pergunta) return
-            const box = document.getElementById('iaChatMessages')
-            box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`
-            input.value = ''
-            const loading = document.createElement('div')
-            loading.className = 'ia-msg bot'
-            loading.textContent = 'Pensando...'
-            box.appendChild(loading)
-            box.scrollTop = box.scrollHeight
+        window.enviarTrabalho = async (input) => {
+            const file = input.files[0];
+            const statusDiv = document.getElementById('uploadStatus');
+            if (!file) { statusDiv.innerHTML = '<span style="color:var(--erro)">Selecione um arquivo PDF</span>'; return }
+            if (file.type !== 'application/pdf') { statusDiv.innerHTML = '<span style="color:var(--erro)">Apenas arquivos PDF são permitidos</span>'; return }
+            if (!usuarioId) { statusDiv.innerHTML = '<span style="color:var(--erro)">Você precisa estar logado</span>'; return }
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             try {
-                const { data, error } = await supabase.functions.invoke('gemini-chat-import', {
-                    body: { prompt: `Você é especialista em Segurança do Trabalho SULSAFE. Responda didaticamente sobre NRs, especialmente NR-18, NR-31, NR-33, NR-35 e NR-10. Pergunta: ${pergunta}` }
-                })
-                loading.remove()
-                const texto = (!error && (data?.response || data?.text)) ? (data.response || data.text) : `Sobre "${pergunta}": consulte o material na aba Materiais ou fale com seu instrutor.`
-                box.innerHTML += `<div class="ia-msg bot">${escapeHtml(texto)}</div>`
-            } catch {
-                loading.remove()
-                box.innerHTML += `<div class="ia-msg bot">Não foi possível contactar a IA agora.</div>`
-            }
-            box.scrollTop = box.scrollHeight
+                const timestamp = Date.now();
+                const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                const filePath = `${usuarioId}/${timestamp}_${nomeLimpo}`;
+                const { error } = await supabase.storage.from('trabalhos-sulsafe').upload(filePath, file, { cacheControl: '3600', upsert: false });
+                if (error) { statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${error.message}</span>`; return }
+                const { data: { publicUrl } } = supabase.storage.from('trabalhos-sulsafe').getPublicUrl(filePath);
+                const { error: insertError } = await supabase.from('trabalhos').insert({ aluno_id: usuarioId, aluno_email: usuarioAtual, arquivo_url: publicUrl, arquivo_path: filePath, disciplina: 'Segurança do Trabalho', status: 'pendente', data_envio: new Date().toISOString() });
+                if (insertError) { statusDiv.innerHTML = `<span style="color:var(--erro)">Erro ao salvar: ${insertError.message}</span>`; return }
+                statusDiv.innerHTML = '<span style="color:var(--sucesso)"><i class="fas fa-check"></i> Trabalho enviado com sucesso!</span>';
+                input.value = '';
+                setTimeout(() => { carregarMeusTrabalhos(); statusDiv.innerHTML = '' }, 2000);
+            } catch (err) { statusDiv.innerHTML = `<span style="color:var(--erro)">Erro: ${err.message}</span>` }
         }
 
-        // SALAS JITSI
+        async function carregarTrabalhos() { if (!ehProfessor) return; const container = document.getElementById('listaTrabalhos'); if (!container) return; container.innerHTML = '<p style="text-align:center"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'; const { data, error } = await supabase.from('trabalhos').select('*').order('data_envio', { ascending: false }); if (error) { container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`; return }; todosTrabalhos = data || []; renderizarListaTrabalhos(todosTrabalhos) }
+        function renderizarListaTrabalhos(trabalhos) { const container = document.getElementById('listaTrabalhos'); if (!container) return; if (!trabalhos.length) { container.innerHTML = '<p style="text-align:center;color:var(--texto-sec)">Nenhum trabalho enviado ainda.</p>'; return }; container.innerHTML = trabalhos.map(trab => `<div class="meeting-card" style="flex-direction:column; align-items:stretch; gap:12px"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap"><div><strong style="font-size:16px">${escapeHtml(trab.aluno_email)}</strong><div class="meeting-id">Enviado em: ${new Date(trab.data_envio).toLocaleString()}</div><div>Disciplina: ${escapeHtml(trab.disciplina)}</div><div>Status: <span style="background:${trab.status === 'pendente' ? '#F44336' : '#4CAF50'}; color:#fff; padding:2px 8px; border-radius:20px; font-size:12px">${trab.status === 'pendente' ? 'Pendente' : (trab.status === 'corrigido' ? 'Corrigido' : 'Reprovado')}</span></div>${trab.nota ? `<div>Nota: ${trab.nota}</div>` : ''}${trab.comentario ? `<div><small>Comentário: ${escapeHtml(trab.comentario)}</small></div>` : ''}</div><div style="display:flex; gap:8px"><button class="btn-entrar" onclick="baixarArquivo('${trab.arquivo_url}', 'trabalho_${trab.id}.pdf')"><i class="fas fa-download"></i> Baixar PDF</button><button class="btn-criar-sala" style="background:var(--accent)" onclick="abrirModalCorrecao(${trab.id})"><i class="fas fa-edit"></i> Corrigir</button>${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="excluirTrabalho('${trab.id}')"><i class="fas fa-trash"></i> Excluir</button>` : ''}</div></div></div>`).join('') }
+        window.abrirModalCorrecao = async (trabalhoId) => { const { data: trab, error } = await supabase.from('trabalhos').select('*').eq('id', trabalhoId).single(); if (error || !trab) { alert('Trabalho não encontrado'); return }; const nota = prompt(`Nota para ${trab.aluno_email} (0-10):`, trab.nota ?? ''); if (nota === null) return; const notaNum = parseFloat(nota); if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) { alert('Nota inválida. Digite entre 0 e 10.'); return }; const comentario = prompt('Comentário (opcional):', trab.comentario ?? ''); const { error: updateError } = await supabase.from('trabalhos').update({ nota: notaNum, comentario: comentario || null, status: 'corrigido', corrigido_por: usuarioId, data_correcao: new Date().toISOString() }).eq('id', trabalhoId); if (updateError) { alert('Erro ao salvar correção: ' + updateError.message) } else { alert('Correção salva com sucesso!'); carregarTrabalhos(); carregarMeusTrabalhos() } }
+        window.filtrarTrabalhos = (filtro) => { document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active')); document.querySelector(`[data-filtro="${filtro}"]`).classList.add('active'); const filtrados = filtro === 'todos' ? todosTrabalhos : todosTrabalhos.filter(t => t.status === filtro); renderizarListaTrabalhos(filtrados) }
+        window.excluirTrabalho = async (trabalhoId) => { if (!ehProfessor || !trabalhoId) return; if (!confirm('Tem certeza que deseja excluir este trabalho permanentemente?')) return; const { data: trab, error: buscaError } = await supabase.from('trabalhos').select('arquivo_path').eq('id', trabalhoId).single(); if (buscaError) { alert('Erro ao localizar trabalho: ' + buscaError.message); return }; if (trab && trab.arquivo_path) await supabase.storage.from('trabalhos-sulsafe').remove([trab.arquivo_path]); const { error: deleteError } = await supabase.from('trabalhos').delete().eq('id', trabalhoId); if (deleteError) { alert('Erro ao excluir trabalho: ' + deleteError.message) } else { alert('Trabalho excluído com sucesso!'); carregarTrabalhos(); carregarMeusTrabalhos() } }
+
+        window.enviarPerguntaIA = async () => { const input = document.getElementById('iaChatInput'); const pergunta = input.value.trim(); if (!pergunta) return; const box = document.getElementById('iaChatMessages'); box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`; input.value = ''; const loading = document.createElement('div'); loading.className = 'ia-msg bot'; loading.textContent = 'Pensando...'; box.appendChild(loading); box.scrollTop = box.scrollHeight; try { const { data, error } = await supabase.functions.invoke('gemini-chat-import', { body: { prompt: `Você é especialista em Segurança do Trabalho SULSAFE. Responda didaticamente sobre NRs, especialmente NR-18, NR-31, NR-33, NR-35 e NR-10. Pergunta: ${pergunta}` } }); loading.remove(); const texto = (!error && (data?.response || data?.text)) ? (data.response || data.text) : `Sobre "${pergunta}": consulte o material na aba Materiais ou fale com seu instrutor.`; box.innerHTML += `<div class="ia-msg bot">${escapeHtml(texto)}</div>` } catch { loading.remove(); box.innerHTML += `<div class="ia-msg bot">Não foi possível contactar a IA agora.</div>` }; box.scrollTop = box.scrollHeight }
+
         function getSalas() { return JSON.parse(localStorage.getItem('sulsafe_salas') || '[]') }
         function salvarSalas(s) { localStorage.setItem('sulsafe_salas', JSON.stringify(s)) }
-        window.atualizarListaSalas = () => {
-            const container = document.getElementById('meetingList')
-            if (!container) return
-            const salas = getSalas()
-            if (!salas.length) {
-                container.innerHTML = '<li style="color:var(--texto-sec);text-align:center;padding:28px">Nenhuma sala ativa. Crie a primeira!</li>'
-                return
-            }
-            container.innerHTML = ''
-            salas.forEach(sala => {
-                const li = document.createElement('li')
-                li.className = 'meeting-card'
-                li.innerHTML = `<div><div class="meeting-topic">${escapeHtml(sala.topic)}</div><div class="meeting-id">${escapeHtml(sala.id)}</div></div><button class="btn-entrar" onclick="entrarSala('${sala.id}','${escapeHtml(sala.topic)}','${escapeHtml(sala.leader)}')">ENTRAR</button>`
-                container.appendChild(li)
-            })
-        }
-        window.criarReuniaoLocal = () => {
-            const nome = document.getElementById('meetingName').value.trim()
-            if (!nome) return alert('Digite um nome para a sala')
-            if (!usuarioAtual) return alert('Usuário não logado')
-            const salas = getSalas()
-            salas.push({ id: 'ss-' + Date.now(), topic: nome, leader: usuarioAtual })
-            salvarSalas(salas)
-            document.getElementById('meetingName').value = ''
-            atualizarListaSalas()
-        }
+        window.atualizarListaSalas = () => { const container = document.getElementById('meetingList'); if (!container) return; const salas = getSalas(); if (!salas.length) { container.innerHTML = '<li style="color:var(--texto-sec);text-align:center;padding:28px">Nenhuma sala ativa. Crie a primeira!</li>'; return }; container.innerHTML = ''; salas.forEach(sala => { const li = document.createElement('li'); li.className = 'meeting-card'; li.innerHTML = `<div><div class="meeting-topic">${escapeHtml(sala.topic)}</div><div class="meeting-id">${escapeHtml(sala.id)}</div></div><button class="btn-entrar" onclick="entrarSala('${sala.id}','${escapeHtml(sala.topic)}','${escapeHtml(sala.leader)}')">ENTRAR</button>`; container.appendChild(li) }) }
+        window.criarReuniaoLocal = () => { const nome = document.getElementById('meetingName').value.trim(); if (!nome) return alert('Digite um nome para a sala'); if (!usuarioAtual) return alert('Usuário não logado'); const salas = getSalas(); salas.push({ id: 'ss-' + Date.now(), topic: nome, leader: usuarioAtual }); salvarSalas(salas); document.getElementById('meetingName').value = ''; atualizarListaSalas() }
         function getChatHistoryLocal(id) { return JSON.parse(localStorage.getItem(`sulsafe_chat_${id}`) || '[]') }
-        function salvarMensagemLocal(id, sender, msg) {
-            const h = getChatHistoryLocal(id)
-            h.push({ sender, message: msg, timestamp: Date.now() })
-            if (h.length > 200) h.shift()
-            localStorage.setItem(`sulsafe_chat_${id}`, JSON.stringify(h))
-        }
-        function adicionarMensagemChatDOM(sender, msg, own) {
-            const div = document.getElementById('chatMessages')
-            const m = document.createElement('div')
-            m.className = `chat-message ${own ? 'own' : ''}`
-            m.innerHTML = `<div class="sender">${escapeHtml(sender)}</div><div class="text">${escapeHtml(msg)}</div>`
-            div.appendChild(m)
-            div.scrollTop = div.scrollHeight
-        }
-        function carregarHistoricoLocal(id) {
-            const h = getChatHistoryLocal(id)
-            const div = document.getElementById('chatMessages')
-            div.innerHTML = '<div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo à sala!</div></div>'
-            h.forEach(m => adicionarMensagemChatDOM(m.sender, m.message, m.sender === usuarioAtual))
-        }
-        window.enviarMensagemChat = () => {
-            const input = document.getElementById('chatInput')
-            const txt = input.value.trim()
-            if (!txt || !salaAtual || !usuarioAtual) return
-            salvarMensagemLocal(salaAtual.id, usuarioAtual, txt)
-            adicionarMensagemChatDOM(usuarioAtual, txt, true)
-            input.value = ''
-            if (jitsiApi) jitsiApi.executeCommand('sendChatMessage', txt)
-        }
-        window.entrarSala = (meetingId, topic, leader) => {
-            if (!usuarioAtual) return alert('Faça login primeiro')
-            salaAtual = { id: meetingId, topic, leader }
-            document.getElementById('roomTitle').innerText = topic
-            document.getElementById('leaderName').innerText = leader
-            document.getElementById('currentUserName').innerHTML = `${usuarioAtual}${usuarioAtual === leader ? ' (Líder)' : ''}`
-            carregarHistoricoLocal(meetingId)
-            document.getElementById('meetingModal').classList.add('active')
-            setTimeout(() => {
-                try {
-                    document.getElementById('videoPlaceholder').style.display = 'none'
-                    if (typeof JitsiMeetExternalAPI === 'undefined') throw new Error('Jitsi não carregado')
-                    jitsiApi = new JitsiMeetExternalAPI('meet.jit.si', {
-                        roomName: meetingId,
-                        width: '100%',
-                        height: '100%',
-                        parentNode: document.querySelector('#jitsiContainer'),
-                        userInfo: { displayName: usuarioAtual },
-                        configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false, prejoinPageEnabled: false },
-                        interfaceConfigOverwrite: { TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen', 'hangup', 'chat'], SHOW_JITSI_WATERMARK: false }
-                    })
-                } catch (err) {
-                    mostrarErro('Falha Jitsi: ' + err.message)
-                }
-            }, 500)
-        }
-        window.fecharSala = () => {
-            if (jitsiApi) jitsiApi.dispose()
-            document.getElementById('meetingModal').classList.remove('active')
-            document.getElementById('videoPlaceholder').style.display = 'flex'
-            document.getElementById('jitsiContainer').innerHTML = ''
-            salaAtual = null
-        }
-        window.toggleRecording = () => {
-            if (!jitsiApi) return
-            if (isRecording) jitsiApi.executeCommand('stopRecording', { mode: 'file' })
-            else jitsiApi.executeCommand('startRecording', { mode: 'file' })
-            isRecording = !isRecording
-        }
-        window.chamarGemini = async () => {
-            const q = prompt('Pergunte à IA:')
-            if (!q || !salaAtual) return
-            adicionarMensagemChatDOM('Você', q, true)
-            salvarMensagemLocal(salaAtual.id, usuarioAtual, q)
-            try {
-                const { data } = await supabase.functions.invoke('gemini-chat-import', { body: { prompt: q } })
-                adicionarMensagemChatDOM('IA', data?.response || data?.text || 'IA em configuração.', false)
-            } catch {
-                adicionarMensagemChatDOM('Sistema', 'Erro na IA.', false)
-            }
-        }
-        window.gerarAtaReuniao = async () => {
-            if (!salaAtual) return
-            const hist = getChatHistoryLocal(salaAtual.id)
-            let ata = `ATA — ${new Date().toLocaleString()}\nSala: ${salaAtual.topic}\nLíder: ${salaAtual.leader}\n\n`
-            hist.slice(-15).forEach(m => ata += `- ${m.sender}: ${m.message}\n`)
-            adicionarMensagemChatDOM('Sistema', '📄 Ata gerada.', false)
-            if (typeof window.jspdf !== 'undefined') {
-                const { jsPDF } = window.jspdf
-                const doc = new jsPDF()
-                doc.text(doc.splitTextToSize(ata, 180), 10, 20)
-                doc.save('ata.pdf')
-            }
-        }
-        window.enviarWhatsApp = () => {
-            const codigo = salaAtual ? salaAtual.id : ''
-            const msg = encodeURIComponent(`Convite SulSafe. Código da sala: ${codigo}`)
-            window.open(`https://wa.me/?text=${msg}`, '_blank')
-        }
+        function salvarMensagemLocal(id, sender, msg) { const h = getChatHistoryLocal(id); h.push({ sender, message: msg, timestamp: Date.now() }); if (h.length > 200) h.shift(); localStorage.setItem(`sulsafe_chat_${id}`, JSON.stringify(h)) }
+        function adicionarMensagemChatDOM(sender, msg, own) { const div = document.getElementById('chatMessages'); const m = document.createElement('div'); m.className = `chat-message ${own ? 'own' : ''}`; m.innerHTML = `<div class="sender">${escapeHtml(sender)}</div><div class="text">${escapeHtml(msg)}</div>`; div.appendChild(m); div.scrollTop = div.scrollHeight }
+        function carregarHistoricoLocal(id) { const h = getChatHistoryLocal(id); const div = document.getElementById('chatMessages'); div.innerHTML = '<div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo à sala!</div></div>'; h.forEach(m => adicionarMensagemChatDOM(m.sender, m.message, m.sender === usuarioAtual)) }
+        window.enviarMensagemChat = () => { const input = document.getElementById('chatInput'); const txt = input.value.trim(); if (!txt || !salaAtual || !usuarioAtual) return; salvarMensagemLocal(salaAtual.id, usuarioAtual, txt); adicionarMensagemChatDOM(usuarioAtual, txt, true); input.value = ''; if (jitsiApi) jitsiApi.executeCommand('sendChatMessage', txt) }
+        window.entrarSala = (meetingId, topic, leader) => { if (!usuarioAtual) return alert('Faça login primeiro'); salaAtual = { id: meetingId, topic, leader }; document.getElementById('roomTitle').innerText = topic; document.getElementById('leaderName').innerText = leader; document.getElementById('currentUserName').innerHTML = `${usuarioAtual}${usuarioAtual === leader ? ' (Líder)' : ''}`; carregarHistoricoLocal(meetingId); document.getElementById('meetingModal').classList.add('active'); setTimeout(() => { try { document.getElementById('videoPlaceholder').style.display = 'none'; if (typeof JitsiMeetExternalAPI === 'undefined') throw new Error('Jitsi não carregado'); jitsiApi = new JitsiMeetExternalAPI('meet.jit.si', { roomName: meetingId, width: '100%', height: '100%', parentNode: document.querySelector('#jitsiContainer'), userInfo: { displayName: usuarioAtual }, configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false, prejoinPageEnabled: false }, interfaceConfigOverwrite: { TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'fullscreen', 'hangup', 'chat'], SHOW_JITSI_WATERMARK: false } }) } catch (err) { mostrarErro('Falha Jitsi: ' + err.message) } }, 500) }
+        window.fecharSala = () => { if (jitsiApi) jitsiApi.dispose(); document.getElementById('meetingModal').classList.remove('active'); document.getElementById('videoPlaceholder').style.display = 'flex'; document.getElementById('jitsiContainer').innerHTML = ''; salaAtual = null }
+        window.toggleRecording = () => { if (!jitsiApi) return; if (isRecording) jitsiApi.executeCommand('stopRecording', { mode: 'file' }); else jitsiApi.executeCommand('startRecording', { mode: 'file' }); isRecording = !isRecording }
+        window.chamarGemini = async () => { const q = prompt('Pergunte à IA:'); if (!q || !salaAtual) return; adicionarMensagemChatDOM('Você', q, true); salvarMensagemLocal(salaAtual.id, usuarioAtual, q); try { const { data } = await supabase.functions.invoke('gemini-chat-import', { body: { prompt: q } }); adicionarMensagemChatDOM('IA', data?.response || data?.text || 'IA em configuração.', false) } catch { adicionarMensagemChatDOM('Sistema', 'Erro na IA.', false) } }
+        window.gerarAtaReuniao = async () => { if (!salaAtual) return; const hist = getChatHistoryLocal(salaAtual.id); let ata = `ATA — ${new Date().toLocaleString()}\nSala: ${salaAtual.topic}\nLíder: ${salaAtual.leader}\n\n`; hist.slice(-15).forEach(m => ata += `- ${m.sender}: ${m.message}\n`); adicionarMensagemChatDOM('Sistema', '📄 Ata gerada.', false); if (typeof window.jspdf !== 'undefined') { const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text(doc.splitTextToSize(ata, 180), 10, 20); doc.save('ata.pdf') } }
+        window.enviarWhatsApp = () => { const codigo = salaAtual ? salaAtual.id : ''; const msg = encodeURIComponent(`Convite SulSafe. Código da sala: ${codigo}`); window.open(`https://wa.me/?text=${msg}`, '_blank') }
 
-        // EQUIPE
-        function getTeamData() {
-            const d = localStorage.getItem(`sulsafe_team_${usuarioAtual}`)
-            return d ? JSON.parse(d) : { members: [{ nome: usuarioAtual, role: 'admin' }], invites: [] }
-        }
+        function getTeamData() { const d = localStorage.getItem(`sulsafe_team_${usuarioAtual}`); return d ? JSON.parse(d) : { members: [{ nome: usuarioAtual, role: 'admin' }], invites: [] } }
         function saveTeamData(d) { localStorage.setItem(`sulsafe_team_${usuarioAtual}`, JSON.stringify(d)) }
-        function carregarEquipe() {
-            if (!usuarioAtual) return
-            const team = getTeamData()
-            const ml = document.getElementById('memberList')
-            if (ml) {
-                ml.innerHTML = ''
-                team.members.forEach(m => {
-                    const d = document.createElement('div')
-                    d.className = 'member-item'
-                    d.innerHTML = `<div class="member-info"><i class="fas fa-user-circle"></i><span>${escapeHtml(m.nome)}</span><span class="member-role">${m.role === 'admin' ? 'Admin' : 'Membro'}</span></div>`
-                    ml.appendChild(d)
-                })
-            }
-            const pl = document.getElementById('pendingInvitesList')
-            if (pl) {
-                pl.innerHTML = ''
-                team.invites.forEach(inv => {
-                    if (!inv.used) {
-                        const d = document.createElement('div')
-                        d.className = 'pending-invite'
-                        d.innerHTML = `<span>Código: ${inv.code}</span><button onclick="removerConvite('${inv.code}')"><i class="fas fa-times"></i></button>`
-                        pl.appendChild(d)
-                    }
-                })
-            }
-        }
-        window.gerarCodigoConvite = () => {
-            const code = Math.random().toString(36).substring(2, 10).toUpperCase()
-            const team = getTeamData()
-            team.invites.push({ code, used: false })
-            saveTeamData(team)
-            document.getElementById('inviteCode').value = code
-            carregarEquipe()
-        }
-        window.copiarLink = () => {
-            const code = document.getElementById('inviteCode').value
-            if (!code) {
-                alert('Gere um código primeiro')
-                return
-            }
-            navigator.clipboard.writeText(`${window.location.href}?invite=${code}`)
-            alert('Link copiado!')
-        }
-        window.removerConvite = (code) => {
-            const team = getTeamData()
-            team.invites = team.invites.filter(i => i.code !== code)
-            saveTeamData(team)
-            carregarEquipe()
-            document.getElementById('inviteCode').value = ''
-        }
-        window.entrarNaEquipe = () => {
-            const code = document.getElementById('joinCode').value.trim()
-            if (!code) return
-            alert(`Código ${code} recebido!`)
-        }
+        function carregarEquipe() { if (!usuarioAtual) return; const team = getTeamData(); const ml = document.getElementById('memberList'); if (ml) { ml.innerHTML = ''; team.members.forEach(m => { const d = document.createElement('div'); d.className = 'member-item'; d.innerHTML = `<div class="member-info"><i class="fas fa-user-circle"></i><span>${escapeHtml(m.nome)}</span><span class="member-role">${m.role === 'admin' ? 'Admin' : 'Membro'}</span></div>`; ml.appendChild(d) }) } const pl = document.getElementById('pendingInvitesList'); if (pl) { pl.innerHTML = ''; team.invites.forEach(inv => { if (!inv.used) { const d = document.createElement('div'); d.className = 'pending-invite'; d.innerHTML = `<span>Código: ${inv.code}</span><button onclick="removerConvite('${inv.code}')"><i class="fas fa-times"></i></button>`; pl.appendChild(d) } }) } }
+        window.gerarCodigoConvite = () => { const code = Math.random().toString(36).substring(2, 10).toUpperCase(); const team = getTeamData(); team.invites.push({ code, used: false }); saveTeamData(team); document.getElementById('inviteCode').value = code; carregarEquipe() }
+        window.copiarLink = () => { const code = document.getElementById('inviteCode').value; if (!code) { alert('Gere um código primeiro'); return }; navigator.clipboard.writeText(`${window.location.href}?invite=${code}`); alert('Link copiado!') }
+        window.removerConvite = (code) => { const team = getTeamData(); team.invites = team.invites.filter(i => i.code !== code); saveTeamData(team); carregarEquipe(); document.getElementById('inviteCode').value = '' }
+        window.entrarNaEquipe = () => { const code = document.getElementById('joinCode').value.trim(); if (!code) return; alert(`Código ${code} recebido!`) }
 
-        // CONFIG
-        async function loadDevices() {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-                const devices = await navigator.mediaDevices.enumerateDevices()
-                const fill = (id, kind) => {
-                    const sel = document.getElementById(id)
-                    if (sel) sel.innerHTML = devices.filter(d => d.kind === kind).map(d => `<option value="${d.deviceId}">${d.label || kind}</option>`).join('')
-                }
-                fill('speakerDevice', 'audiooutput')
-                fill('micDevice', 'audioinput')
-                fill('cameraDevice', 'videoinput')
-            } catch (e) {}
-        }
-
-        document.getElementById('testMic')?.addEventListener('click', async () => {
-            const s = await navigator.mediaDevices.getUserMedia({ audio: true })
-            alert('Microfone OK')
-            setTimeout(() => s.getTracks().forEach(t => t.stop()), 3000)
-        })
-        document.getElementById('testSpeaker')?.addEventListener('click', () => {
-            const a = new (window.AudioContext || window.webkitAudioContext)()
-            const o = a.createOscillator()
-            const g = a.createGain()
-            o.connect(g)
-            g.connect(a.destination)
-            o.frequency.value = 880
-            g.gain.value = 0.3
-            o.start()
-            setTimeout(() => { o.stop(); a.close() }, 400)
-        })
-        document.getElementById('testCamera')?.addEventListener('click', async () => {
-            const s = await navigator.mediaDevices.getUserMedia({ video: true })
-            const v = document.getElementById('cameraPreview')
-            v.srcObject = s
-            v.style.display = 'block'
-        })
+        async function loadDevices() { try { await navigator.mediaDevices.getUserMedia({ audio: true, video: true }); const devices = await navigator.mediaDevices.enumerateDevices(); const fill = (id, kind) => { const sel = document.getElementById(id); if (sel) sel.innerHTML = devices.filter(d => d.kind === kind).map(d => `<option value="${d.deviceId}">${d.label || kind}</option>`).join('') }; fill('speakerDevice', 'audiooutput'); fill('micDevice', 'audioinput'); fill('cameraDevice', 'videoinput') } catch (e) {} }
+        document.getElementById('testMic')?.addEventListener('click', async () => { const s = await navigator.mediaDevices.getUserMedia({ audio: true }); alert('Microfone OK'); setTimeout(() => s.getTracks().forEach(t => t.stop()), 3000) })
+        document.getElementById('testSpeaker')?.addEventListener('click', () => { const a = new (window.AudioContext || window.webkitAudioContext)(); const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 880; g.gain.value = 0.3; o.start(); setTimeout(() => { o.stop(); a.close() }, 400) })
+        document.getElementById('testCamera')?.addEventListener('click', async () => { const s = await navigator.mediaDevices.getUserMedia({ video: true }); const v = document.getElementById('cameraPreview'); v.srcObject = s; v.style.display = 'block' })
         document.getElementById('outputVolume')?.addEventListener('input', e => document.getElementById('volValue').innerText = e.target.value + '%')
         const temaSelect = document.getElementById('temaSelect')
-        function applyTheme(t) {
-            if (t === 'claro') document.body.classList.add('tema-claro')
-            else document.body.classList.remove('tema-claro')
-            localStorage.setItem('sulsafe_tema', t)
-        }
+        function applyTheme(t) { if (t === 'claro') document.body.classList.add('tema-claro'); else document.body.classList.remove('tema-claro'); localStorage.setItem('sulsafe_tema', t) }
         temaSelect?.addEventListener('change', e => applyTheme(e.target.value))
-        const savedTheme = localStorage.getItem('sulsafe_tema') || 'escuro'
-        applyTheme(savedTheme)
-        if (temaSelect) temaSelect.value = savedTheme
-        document.querySelectorAll('.color-option').forEach(opt => opt.addEventListener('click', () => {
-            const c = opt.dataset.color
-            document.documentElement.style.setProperty('--primaria', c)
-            localStorage.setItem('sulsafe_corDestaque', c)
-            document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'))
-            opt.classList.add('selected')
-        }))
-        const savedColor = localStorage.getItem('sulsafe_corDestaque')
-        if (savedColor) {
-            document.documentElement.style.setProperty('--primaria', savedColor)
-            document.querySelectorAll('.color-option').forEach(o => { if (o.dataset.color === savedColor) o.classList.add('selected') })
-        }
-        document.getElementById('limparDados')?.addEventListener('click', () => {
-            localStorage.clear()
-            document.getElementById('clearMsg').style.display = 'inline'
-            setTimeout(() => document.getElementById('clearMsg').style.display = 'none', 2000)
-        })
-        document.querySelectorAll('.config-tab').forEach(tab => tab.addEventListener('click', () => {
-            const t = tab.dataset.config
-            document.querySelectorAll('.config-tab').forEach(x => x.classList.remove('active'))
-            tab.classList.add('active')
-            document.querySelectorAll('.config-section').forEach(x => x.classList.remove('active-section'))
-            document.getElementById(`config-${t}`)?.classList.add('active-section')
-        }))
+        const savedTheme = localStorage.getItem('sulsafe_tema') || 'escuro'; applyTheme(savedTheme); if (temaSelect) temaSelect.value = savedTheme
+        document.querySelectorAll('.color-option').forEach(opt => opt.addEventListener('click', () => { const c = opt.dataset.color; document.documentElement.style.setProperty('--primaria', c); localStorage.setItem('sulsafe_corDestaque', c); document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected')); opt.classList.add('selected') }))
+        const savedColor = localStorage.getItem('sulsafe_corDestaque'); if (savedColor) { document.documentElement.style.setProperty('--primaria', savedColor); document.querySelectorAll('.color-option').forEach(o => { if (o.dataset.color === savedColor) o.classList.add('selected') }) }
+        document.getElementById('limparDados')?.addEventListener('click', () => { localStorage.clear(); document.getElementById('clearMsg').style.display = 'inline'; setTimeout(() => document.getElementById('clearMsg').style.display = 'none', 2000) })
+        document.querySelectorAll('.config-tab').forEach(tab => tab.addEventListener('click', () => { const t = tab.dataset.config; document.querySelectorAll('.config-tab').forEach(x => x.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.config-section').forEach(x => x.classList.remove('active-section')); document.getElementById(`config-${t}`)?.classList.add('active-section') }))
 
-        // ASSISTENTE MASCOTE
-        const mascoteDiv = document.getElementById('mascoteAssistente')
-        const balao = document.getElementById('balaoAjuda')
+        const mascoteDiv = document.getElementById('mascoteAssistente'); const balao = document.getElementById('balaoAjuda')
         window.fecharAssistente = () => { balao.classList.remove('active') }
-        mascoteDiv.addEventListener('click', (e) => {
-            if (e.target.closest('.mascote-avatar')) {
-                balao.classList.toggle('active')
-            }
-        })
-        window.ajudaEnvioTrabalho = () => {
-            alert("📄 Para enviar um trabalho, acesse 'Área do aluno' e clique na área de upload. Selecione um arquivo PDF e aguarde a confirmação.")
-            balao.classList.remove('active')
-        }
-        window.ajudaVideoaula = () => {
-            alert("🎬 As videoaulas estão disponíveis no menu 'Videoaulas'. Clique em qualquer aula para assistir. Seu progresso é salvo automaticamente.")
-            balao.classList.remove('active')
-        }
-        window.ajudaSala = () => {
-            alert("🎥 Para participar de uma aula ao vivo, vá em 'Aulas ao vivo', crie ou entre em uma sala. Você precisará de permissão de microfone e câmera.")
-            balao.classList.remove('active')
-        }
-        window.ajudaMateriais = () => {
-            alert("📚 Os materiais de apoio (PDFs) estão na aba 'Materiais'. Basta clicar em 'Baixar' para obter o arquivo.")
-            balao.classList.remove('active')
-        }
-        window.abrirAssistenteNR = () => {
-            alternarView('ia')
-            balao.classList.remove('active')
-        }
+        mascoteDiv.addEventListener('click', (e) => { if (e.target.closest('.mascote-avatar')) { balao.classList.toggle('active') } })
+        window.ajudaEnvioTrabalho = () => { alert("📄 Para enviar um trabalho, acesse 'Área do aluno' e clique na área de upload."); balao.classList.remove('active') }
+        window.ajudaVideoaula = () => { alert("🎬 As videoaulas estão disponíveis no menu 'Videoaulas'."); balao.classList.remove('active') }
+        window.ajudaSala = () => { alert("🎥 Para participar de uma aula ao vivo, vá em 'Aulas ao vivo'."); balao.classList.remove('active') }
+        window.ajudaMateriais = () => { alert("📚 Os materiais de apoio (PDFs) estão na aba 'Materiais'."); balao.classList.remove('active') }
+        window.abrirAssistenteNR = () => { alternarView('ia'); balao.classList.remove('active') }
 
-        // NAV & INIT
         document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => alternarView(el.getAttribute('data-view'))))
         document.getElementById('chatInput')?.addEventListener('keypress', e => { if (e.key === 'Enter') enviarMensagemChat() })
         document.getElementById('generateInviteBtn')?.addEventListener('click', gerarCodigoConvite)
@@ -1930,137 +1005,79 @@ async function carregarRelatorioAlunos() {
         document.getElementById('joinTeamBtn')?.addEventListener('click', entrarNaEquipe)
         loadDevices()
 
-        // CANVAS HERO
-        const canvas = document.getElementById('canvas-hero')
-        const ctx = canvas.getContext('2d')
-        let w, h, mx = 0, my = 0, tx = 0, ty = 0
+        const canvas = document.getElementById('canvas-hero'); const ctx = canvas.getContext('2d'); let w, h, mx = 0, my = 0, tx = 0, ty = 0
         function resizeCanvas() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight }
-        resizeCanvas()
-        window.addEventListener('resize', resizeCanvas)
+        resizeCanvas(); window.addEventListener('resize', resizeCanvas)
         document.addEventListener('mousemove', e => { mx = (e.clientX / w - 0.5) * 2; my = (e.clientY / h - 0.5) * 2 })
         const stars = Array.from({ length: 80 }, () => ({ x: Math.random() * 1920, y: Math.random() * 1080, z: Math.random() * 1000, size: Math.random() * 1.2 }))
         const lines = Array.from({ length: 8 }, (_, i) => ({ y: (i / 8) * 1080, speed: 0.2 + Math.random() * 0.6 }))
-        function draw() {
-            ctx.fillStyle = '#F4F7F6'
-            ctx.fillRect(0, 0, w, h)
-            tx += (mx - tx) * 0.05
-            ty += (my - ty) * 0.05
-            ctx.fillStyle = '#2E7D32'
-            stars.forEach(s => {
-                s.z -= 1.2
-                if (s.z <= 0) { s.z = 1000; s.x = Math.random() * w; s.y = Math.random() * h }
-                let scale = 1000 / (1000 - s.z)
-                let x = (s.x - w / 2) * scale + w / 2 + tx * 30
-                let y = (s.y - h / 2) * scale + h / 2 + ty * 15
-                ctx.globalAlpha = scale * 0.5
-                ctx.beginPath()
-                ctx.arc(x, y, s.size * scale, 0, Math.PI * 2)
-                ctx.fill()
-            })
-            ctx.globalAlpha = 0.2
-            ctx.strokeStyle = '#2E7D32'
-            lines.forEach(l => {
-                l.y += l.speed
-                if (l.y > h) l.y = 0
-                ctx.beginPath()
-                ctx.moveTo(0, l.y + ty * 12)
-                ctx.lineTo(w, l.y + ty * 12)
-                ctx.stroke()
-            })
-            requestAnimationFrame(draw)
-        }
+        function draw() { ctx.fillStyle = '#F4F7F6'; ctx.fillRect(0, 0, w, h); tx += (mx - tx) * 0.05; ty += (my - ty) * 0.05; ctx.fillStyle = '#2E7D32'; stars.forEach(s => { s.z -= 1.2; if (s.z <= 0) { s.z = 1000; s.x = Math.random() * w; s.y = Math.random() * h } let scale = 1000 / (1000 - s.z); let x = (s.x - w / 2) * scale + w / 2 + tx * 30; let y = (s.y - h / 2) * scale + h / 2 + ty * 15; ctx.globalAlpha = scale * 0.5; ctx.beginPath(); ctx.arc(x, y, s.size * scale, 0, Math.PI * 2); ctx.fill() }); ctx.globalAlpha = 0.2; ctx.strokeStyle = '#2E7D32'; lines.forEach(l => { l.y += l.speed; if (l.y > h) l.y = 0; ctx.beginPath(); ctx.moveTo(0, l.y + ty * 12); ctx.lineTo(w, l.y + ty * 12); ctx.stroke() }); requestAnimationFrame(draw) }
         draw()
 
-        if (window.location.protocol === 'file:') {
-            const a = document.getElementById('avisoFileProtocol')
-            if (a) a.style.display = 'block'
-        }
+        if (window.location.protocol === 'file:') { const a = document.getElementById('avisoFileProtocol'); if (a) a.style.display = 'block' }
         document.getElementById('nomeEmpresa').innerText = CONFIG.nomeEmpresa
         document.getElementById('dashEmpresaNome').innerText = CONFIG.nomeEmpresa
         document.getElementById('logoText').innerText = CONFIG.nomeEmpresa
-        if (CONFIG.logoUrl) {
-            ['logoIcon', 'logoIconCad', 'logoIconRec', 'dashLogoIcon'].forEach(id => {
-                const el = document.getElementById(id)
-                if (!el) return
-                el.classList.add('has-img')
-                el.innerHTML = `<img src="${CONFIG.logoUrl}" alt="logo">`
-            })
-        }
-       if (window.location.hash === '#cadastro') mostrarTela('cadastro');
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) {
-                usuarioAtual = session.user.email
-                usuarioId = session.user.id
-                garantirPerfil(session.user).then(role => {
-                    perfilUsuario = role
-                    ehProfessor = (role === 'admin' || role === 'professor')
-                    console.log('Sessão restaurada:', usuarioAtual, 'Role:', role)
-                    document.getElementById('dashUserName').innerHTML = usuarioAtual
-                    atualizarPainelProfessor()
-                    entrarDashboard()
-                })
-            }
-        })
-        // ============================================
-// FUNÇÕES DO RELATÓRIO DE ALUNOS
-// ============================================
+        if (CONFIG.logoUrl) { ['logoIcon', 'logoIconCad', 'logoIconRec', 'dashLogoIcon'].forEach(id => { const el = document.getElementById(id); if (!el) return; el.classList.add('has-img'); el.innerHTML = `<img src="${CONFIG.logoUrl}" alt="logo">` }) }
+        if (window.location.hash === '#cadastro') mostrarTela('cadastro');
+        supabase.auth.getSession().then(({ data: { session } }) => { if (session?.user) { usuarioAtual = session.user.email; usuarioId = session.user.id; garantirPerfil(session.user).then(role => { perfilUsuario = role; ehProfessor = (role === 'admin' || role === 'professor'); document.getElementById('dashUserName').innerHTML = usuarioAtual; atualizarPainelProfessor(); entrarDashboard() }) } })
 
-async function carregarRelatorioAlunos() {
-    const container = document.getElementById('relatorioContainer');
-    if (!container) return;
-    
-    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-    
-    try {
-        const { data: alunos, error: alunosError } = await supabase
-            .from('profiles')
-            .select('id, email, role')
-            .eq('role', 'aluno');
-        
-        if (alunosError) throw alunosError;
-        
-        if (!alunos || alunos.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado ainda.</p>';
-            return;
+        // FUNÇÃO DO RELATÓRIO DE ALUNOS
+        window.carregarRelatorioAlunos = async () => {
+            const container = document.getElementById('relatorioContainer');
+            if (!container) return;
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            try {
+                const { data: alunos, error: alunosError } = await supabase.from('profiles').select('id, email, role').eq('role', 'aluno');
+                if (alunosError) throw alunosError;
+                if (!alunos || alunos.length === 0) { container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado ainda.</p>'; return }
+                const { data: aulas, error: aulasError } = await supabase.from('videoaulas').select('id');
+                if (aulasError) throw aulasError;
+                const totalAulas = aulas?.length || 0;
+                const { data: progresso, error: progError } = await supabase.from('progresso_aulas').select('user_id, aula_id').eq("concluído", true);
+                if (progError) throw progError;
+                const progressoPorAluno = {};
+                progresso?.forEach(p => { if (!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = []; progressoPorAluno[p.user_id].push(p.aula_id) });
+                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th><th style="padding:12px">Certificado</th></tr></thead><tbody>';
+                for (const aluno of alunos) {
+                    const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
+                    const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
+                    let statusText = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado');
+                    const botaoCertificado = percentual === 100 ? `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}', '${aluno.email}')" style="padding:5px 10px; font-size:11px"><i class="fas fa-award"></i> Certificado</button>` : '<span style="color:gray; font-size:11px">⏳ 100%</span>';
+                    html += `<tr style="border-bottom: 1px solid var(--borda)"><td style="padding:12px">${aluno.email}</td><td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td><td style="padding:12px"><div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td style="padding:12px">${statusText}</td><td style="padding:12px; text-align:center">${botaoCertificado}</td></tr>`;
+                }
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            } catch (err) { container.innerHTML = '<p style="text-align:center; color:red">Erro ao carregar: ' + err.message + '</p>' }
         }
-        
-        const { data: aulas, error: aulasError } = await supabase
-            .from('videoaulas')
-            .select('id');
-        
-        if (aulasError) throw aulasError;
-        
-        const totalAulas = aulas?.length || 0;
-        
-        const { data: progresso, error: progError } = await supabase
-            .from('progresso_aulas')
-            .select('user_id, aula_id');
-        
-        if (progError) throw progError;
-        
-        const progressoPorAluno = {};
-        progresso?.forEach(p => {
-            if (!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = [];
-            progressoPorAluno[p.user_id].push(p.aula_id);
-        });
-        
-        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th></tr></thead><tbody>';
-        
-        for (const aluno of alunos) {
-            const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
-            const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
-            let statusText = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado');
-            
-            html += `<tr><td style="padding:12px">${aluno.email}</td><td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td><td style="padding:12px"><div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td style="padding:12px">${statusText}</td></tr>`;
+
+        window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
+            const { data: progresso, error } = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq("concluído", true);
+            if (error) { mostrarErro('Erro ao buscar progresso: ' + error.message); return }
+            if (!progresso || progresso.length === 0) { mostrarErro('Aluno não concluiu nenhuma aula ainda.'); return }
+            const aulasIds = progresso.map(p => p.aula_id);
+            const { data: aulas } = await supabase.from('videoaulas').select('nr, titulo').in('id', aulasIds);
+            const nrsConcluidas = [...new Set(aulas.map(a => a.nr).filter(Boolean))];
+            const nome = alunoEmail.split('@')[0];
+            const dataAtual = new Date().toLocaleDateString('pt-BR');
+            if (typeof window.jspdf === 'undefined') { mostrarErro('Biblioteca PDF não carregada.'); return }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            doc.setFillColor(27, 94, 32); doc.rect(0, 0, 297, 210, 'F');
+            doc.setFillColor(255, 255, 255); doc.roundedRect(15, 15, 267, 180, 8, 8, 'F');
+            doc.setFillColor(46, 125, 50); doc.rect(25, 25, 247, 3, 'F'); doc.rect(25, 182, 247, 3, 'F');
+            doc.setTextColor(46, 125, 50); doc.setFontSize(32); doc.setFont('helvetica', 'bold'); doc.text('SULSAFE', 148.5, 50, { align: 'center' });
+            doc.setFontSize(15); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80); doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 61, { align: 'center' });
+            doc.setTextColor(30, 30, 30); doc.setFontSize(13); doc.text('Certificamos que', 148.5, 80, { align: 'center' });
+            doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(27, 94, 32); doc.text(nome.toUpperCase(), 148.5, 94, { align: 'center' });
+            doc.setFontSize(13); doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30); doc.text('concluiu com êxito as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
+            if (nrsConcluidas.length) { doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.text(`Normas Regulamentadoras: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' }) }
+            doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Emitido em ${dataAtual}`, 148.5, 146, { align: 'center' });
+            doc.setFontSize(10); doc.setTextColor(120, 120, 120); doc.text('Técnico em Segurança do Trabalho — SulSafe', 148.5, 160, { align: 'center' });
+            doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 167, 207, 167); doc.text('Assinatura do Instrutor', 148.5, 173, { align: 'center' });
+            doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
+            mostrarErro(`✅ Certificado gerado para ${nome}!`);
         }
-        
-        html += '</tbody></table></div>';
-        container.innerHTML = html;
-        
-    } catch (err) {
-        container.innerHTML = '<p style="text-align:center; color:red">Erro ao carregar: ' + err.message + '</p>';
-    }
-}
     </script>    
 </body>
 </html>
