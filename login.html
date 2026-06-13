@@ -1147,7 +1147,13 @@
             if (!container) return;
             container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
             try {
-                const { data: alunos, error: alunosError } = await supabase.from('profiles').select('id, email, role').eq('role', 'aluno');
+              // Buscar todos os perfis primeiro
+const { data: todos, error: profilesError } = await supabase.from('profiles').select('id, email, role');
+
+if (profilesError) throw profilesError;
+
+// Filtrar os alunos no JavaScript
+const alunos = todos?.filter(p => p.role === 'aluno') || [];
                 if (alunosError) throw alunosError;
                 if (!alunos || alunos.length === 0) { container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado ainda.</p>'; return }
                 const { data: aulas, error: aulasError } = await supabase.from('videoaulas').select('id');
@@ -1475,10 +1481,11 @@ window.abrirModalLancarNotas = async () => {
     const selectAluno = document.getElementById('notaAlunoId');
     selectAluno.innerHTML = '<option value="">Carregando alunos...</option>';
     
-    const { data: alunos } = await supabase
-        .from('profiles')
-        .select('id, email')
-        .eq('role', 'aluno');
+   const { data: todos } = await supabase
+    .from('profiles')
+    .select('id, email, role');
+    
+const alunos = todos?.filter(p => p.role === 'aluno') || [];
     
     selectAluno.innerHTML = '<option value="">Selecione um aluno...</option>';
     alunos?.forEach(aluno => {
