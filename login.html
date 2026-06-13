@@ -1214,6 +1214,10 @@ window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
 }
 
 // FUNÇÃO ATUALIZADA DO RELATÓRIO COM BOTÃO DE CERTIFICADO
+        // ============================================
+// FUNÇÕES DO RELATÓRIO DE ALUNOS
+// ============================================
+
 async function carregarRelatorioAlunos() {
     const container = document.getElementById('relatorioContainer');
     if (!container) return;
@@ -1243,8 +1247,7 @@ async function carregarRelatorioAlunos() {
         
         const { data: progresso, error: progError } = await supabase
             .from('progresso_aulas')
-            .select('user_id, aula_id')
-            .eq("concluído", true);
+            .select('user_id, aula_id');
         
         if (progError) throw progError;
         
@@ -1254,34 +1257,17 @@ async function carregarRelatorioAlunos() {
             progressoPorAluno[p.user_id].push(p.aula_id);
         });
         
-        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th><th style="padding:12px">Certificado</th></tr></thead><tbody>';
+        let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th></tr></thead><tbody>';
         
         for (const aluno of alunos) {
             const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0;
             const percentual = totalAulas > 0 ? Math.round((aulasAssistidas / totalAulas) * 100) : 0;
             let statusText = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado');
             
-            const botaoCertificado = percentual === 100 ? 
-                `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}', '${aluno.email}')" style="padding:5px 10px; font-size:11px"><i class="fas fa-award"></i> Certificado</button>` : 
-                '<span style="color:gray; font-size:11px">⏳ 100%</span>';
-            
-            html += `
-                <tr style="border-bottom: 1px solid var(--borda)">
-                    <td style="padding:12px">${aluno.email}</td>
-                    <td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td>
-                    <td style="padding:12px">
-                        <div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%">
-                            <div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div>
-                        </div>
-                        ${percentual}%
-                    </td>
-                    <td style="padding:12px">${statusText}</td>
-                    <td style="padding:12px; text-align:center">${botaoCertificado}</td>
-                </tr>
-            `;
+            html += `<tr><td style="padding:12px">${aluno.email}</td><td style="padding:12px; text-align:center">${aulasAssistidas} / ${totalAulas}</td><td style="padding:12px"><div style="background:#e0e0e0; border-radius:20px; height:8px; width:100%"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td style="padding:12px">${statusText}</td></tr>`;
         }
         
-        html += '</tbody>}</div>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
         
     } catch (err) {
