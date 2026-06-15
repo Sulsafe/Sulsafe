@@ -635,47 +635,242 @@
         let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = [], currentChart = null, relatorioData = []
         let salaRealtimeChannel = null
 
-        // ========== FUNÇÕES DE CHAT EM TEMPO REAL ==========
+   // ========== FUNÇÕES DE EQUIPE COM SUPABASE ==========
+
+let equipeAtualId = null;
+
+async function carregarEquipe() {
+    if(!usuarioId) {
+        console.log("Usuário não logado");
+        return;
+    }
+    
+    const container = document.getElementById('memberList');
+    if(!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando equipe...</p>';
+    
+    try {
+        // Primeiro, buscar a equipe do usuário
+        let { data: membros, error } = await supabase
+            .from('membros_equipe')
+            .select(`
+                usuario_id,
+                papel,
+                convite_pendente,
+                profiles:usuario_id (email, nome_completo)
+            `);
         
-        async function iniciarRealtimeChat(salaId) {
-            if(salaRealtimeChannel) {
-                await supabase.removeChannel(salaRealtimeChannel)
-            }
-            salaRealtimeChannel = supabase.channel(`chat:${salaId}`)
-            salaRealtimeChannel
-                .on('broadcast', { event: 'mensagem' }, (payload) => {
-                    const { sender, message, timestamp } = payload.payload
-                    adicionarMensagemChatDOM(sender, message, sender === usuarioAtual, timestamp)
-                })
-                .subscribe()
+        // Se não tem equipe, criar uma
+        if (!membros || membros.length === 0) {
+            await criarEquipeInicial();
+            return;
         }
         
-        function enviarMensagemRealtime(salaId, mensagem) {
-            if(!salaRealtimeChannel) return
-            salaRealtimeChannel.send({
-                type: 'broadcast',
-                event: 'mensagem',
-                payload: { sender: usuarioAtual, message: mensagem, timestamp: new Date().toISOString() }
-            })
+        // Buscar o ID da equipe
+        const { data: equipeMembro } = await supabase
+            .from('membros_equipe')
+            .select('equipe_id')
+            .eq('usuario_id', usuarioId)
+            .limit(1)
+            .single();
+        
+        if (equipeMembro) {
+            equipeAtualId = equipeMembro.equipe_id;
         }
         
-        function adicionarMensagemChatDOM(sender, msg, own, timestamp = null) {
-            const div = document.getElementById('chatMessages')
-            const m = document.createElement('div')
-            m.className = `chat-message ${own ? 'own' : ''}`
-            const hora = timestamp ? new Date(timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()
-            m.innerHTML = `<div class="sender">${escapeHtml(sender)} • ${hora}</div><div class="text">${escapeHtml(msg)}</div>`
-            div.appendChild(m)
-            div.scrollTop = div.scrollHeight
+        // Buscar todos os membros da equipe
+        const { data: todosMembros, error: membrosError } = await supabase
+            .from('membros_equipe')
+            .select(`
+                usuario_id,
+                papel,
+                convite_pendente,
+                profiles:usuario_id (email, nome_completo)
+            `)
+            .eq('equipe_id', equipeAtualId);
+        
+        if (membrosError) throw membrosError;
+        
+        if (!todosMembros || todosMembros.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:20px">Nenhum membro na equipe.</p>';
+            return;
         }
         
-        window.enviarMensagemChat = () => {
-            const input = document.getElementById('chatInput')
-            const txt = input.value.trim()
-            if(!txt || !salaAtual) return
-            enviarMensagemRealtime(salaAtual.id, txt)
-            input.value = ''
-        }
+        // Renderizar lista de membros
+        container.innerHTML = todosMembros.map(m => {
+            const nomeExibicao = m.profiles?.nome_completo || m.profiles?.email || m.usuario_id?.substring(0, 8);
+            return `
+                <div class="member-item">
+                    <div class="member-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>${escapeHtml(nomeExibicao)}</span>
+                        <span class="member-role">${m.papel === 'admin' ? '👑 Admin' : '👤 Membro'}</span>
+                        ${m.convite_pendente ? '<span class="status-badge" style="background:#FF9800">Convite pendente</span>' : ''}
+                    </div>
+                    ${ehProfessor && m.papel !== 'admin' && !m.convite_pendente && m.usuario_id !== usuarioId ? `
+                        <button class="test-button" style="background:#D32F2F" onclick="removerMembro('${m.usuario_id}')">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        // Carregar convites pendentes
+        await carregarConvitesPendentes();
+        
+    } catch(err) {
+        console.error('Erro ao carregar equipe:', err);
+        container.innerHTML = '<p style="color:red">Erro ao carregar equipe</p>';
+    }
+}
+
+// Criar equipe inicial para o usuário
+async function criarEquipeInicial() {
+    try {
+        // Criar equipe
+        const { data: equipe, error: eError } = await supabase
+            .from('equipes')
+            .insert({ nome: `Equipe de ${usuarioAtual}`, criado_por: usuarioId })
+            .select()
+            .single();
+        
+        if(eError) throw eError;
+        
+        equipeAtualId = equipe.id;
+        
+        // Adicionar usuário como admin
+        await supabase
+            .from('membros_equipe')
+            .insert({ equipe_id: equipe.id, usuario_id: usuarioId, papel: 'admin' });
+        
+        mostrarErro('✅ Equipe criada com sucesso!');
+        await carregarEquipe();
+        
+    } catch(err) {
+        console.error('Erro ao criar equipe:', err);
+        mostrarErro('Erro ao criar equipe: ' + err.message);
+    }
+}
+
+// Gerar convite
+async function gerarConvite() {
+    const codigo = Math.random().toString(36).substring(2, 10).toUpperCase();
+    
+    const { data, error } = await supabase
+        .from('membros_equipe')
+        .insert({
+            equipe_id: equipeAtualId,
+            codigo_convite: codigo,
+            convite_pendente: true,
+            convidado_por: usuarioId
+        })
+        .select()
+        .single();
+    
+    if(error) {
+        mostrarErro('Erro ao gerar convite: ' + error.message);
+        return;
+    }
+    
+    const linkConvite = `${window.location.origin}${window.location.pathname}?convite=${codigo}`;
+    document.getElementById('inviteCode').value = linkConvite;
+    mostrarErro('✅ Convite gerado! Copie o link e envie.');
+    await carregarConvitesPendentes();
+}
+
+// Carregar convites pendentes
+async function carregarConvitesPendentes() {
+    const container = document.getElementById('pendingInvitesList');
+    if(!container) return;
+    
+    const { data, error } = await supabase
+        .from('membros_equipe')
+        .select('codigo_convite, data_convite')
+        .eq('equipe_id', equipeAtualId)
+        .eq('convite_pendente', true)
+        .is('usuario_id', null);
+    
+    if(error) {
+        console.error('Erro:', error);
+        container.innerHTML = '<p>Erro ao carregar convites</p>';
+        return;
+    }
+    
+    if(!data || data.length === 0) {
+        container.innerHTML = '<p style="color:gray">Nenhum convite pendente</p>';
+        return;
+    }
+    
+    container.innerHTML = data.map(inv => `
+        <div class="pending-invite">
+            <span><i class="fas fa-link"></i> Código: ${inv.codigo_convite}</span>
+            <button onclick="cancelarConvite('${inv.codigo_convite}')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+// Cancelar convite
+async function cancelarConvite(codigo) {
+    if(!confirm('Cancelar este convite?')) return;
+    
+    await supabase
+        .from('membros_equipe')
+        .delete()
+        .eq('codigo_convite', codigo)
+        .eq('convite_pendente', true);
+    
+    mostrarErro('Convite cancelado!');
+    await carregarEquipe();
+}
+
+// Remover membro da equipe
+async function removerMembro(usuarioIdRemover) {
+    if(!confirm('Remover este membro da equipe?')) return;
+    
+    await supabase
+        .from('membros_equipe')
+        .delete()
+        .eq('equipe_id', equipeAtualId)
+        .eq('usuario_id', usuarioIdRemover);
+    
+    mostrarErro('Membro removido!');
+    await carregarEquipe();
+}
+
+// Aceitar convite via código
+async function aceitarConvite() {
+    const codigo = document.getElementById('joinCode').value.trim();
+    if(!codigo) {
+        mostrarErro('Digite o código de convite');
+        return;
+    }
+    
+    const { data, error } = await supabase
+        .from('membros_equipe')
+        .update({ 
+            usuario_id: usuarioId, 
+            convite_pendente: false, 
+            data_aceite: new Date().toISOString(),
+            papel: 'membro'
+        })
+        .eq('codigo_convite', codigo)
+        .eq('convite_pendente', true)
+        .select()
+        .single();
+    
+    if(error || !data) {
+        mostrarErro('Convite inválido ou expirado!');
+        return;
+    }
+    
+    mostrarErro('✅ Você entrou na equipe com sucesso!');
+    document.getElementById('joinCode').value = '';
+    await carregarEquipe();
+}
         
         // ========== FUNÇÕES DE RELATÓRIO COM GRÁFICOS E EXPORTAÇÃO ==========
         
@@ -880,46 +1075,67 @@
         
         // ========== FUNÇÕES DE BOLETIM (FUNDO BRANCO E LETRAS VERDES) ==========
         
-        async function carregarBoletimAdmin() {
-            const container = document.getElementById('boletimContainer')
-            if(!container) return
-            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            try {
-                const { data: alunos } = await supabase.from('profiles').select('id,email')
-                const { data: disciplinas } = await supabase.from('disciplinas').select('*').eq('ativa', true)
-                const { data: notas } = await supabase.from('notas').select('*')
-                const notasPorAluno = {}
-                notas?.forEach(nota => { if(!notasPorAluno[nota.aluno_id]) notasPorAluno[nota.aluno_id] = {}; notasPorAluno[nota.aluno_id][nota.disciplina_id] = nota })
-                
-                let html = `<table class="boletim-tabela"><thead><tr><th>Aluno</th>${disciplinas?.map(d => `<th>${escapeHtml(d.nome)}</th>`).join('')}<th>Média Final</th><th>Situação</th></tr></thead><tbody>`
-                for(const aluno of alunos) {
-                    let somaMedias = 0, disciplinasContadas = 0
-                    html += `<tr><td>${escapeHtml(aluno.email)}</td>`
-                    for(const disc of disciplinas || []) {
-                        const nota = notasPorAluno[aluno.id]?.[disc.id]
-                        let media = '-'
-                        if(nota) {
-                            const n1 = parseFloat(nota.nota1)||0, n2 = parseFloat(nota.nota2)||0, n3 = parseFloat(nota.nota3)||0
-                            let m = (n1+n2+n3)/3
-                            if(nota.recuperacao > m) m = (m + parseFloat(nota.recuperacao))/2
-                            media = m.toFixed(1); somaMedias += m; disciplinasContadas++
-                        }
-                        html += `<td><strong>${media}</strong></td>`
-                    }
-                    const mediaFinal = disciplinasContadas > 0 ? (somaMedias/disciplinasContadas).toFixed(1) : '-'
-                    let situacaoClass = 'status-pendente', situacaoText = '⏳ PENDENTE'
-                    if(mediaFinal !== '-') {
-                        const mf = parseFloat(mediaFinal)
-                        if(mf >= 6) { situacaoClass = 'status-aprovado'; situacaoText = '✅ APROVADO' }
-                        else if(mf >= 4) { situacaoClass = 'status-recuperacao'; situacaoText = '🟡 RECUPERAÇÃO' }
-                        else { situacaoClass = 'status-reprovado'; situacaoText = '❌ REPROVADO' }
-                    }
-                    html += `<td><strong>${mediaFinal}</strong></td><td class="${situacaoClass}">${situacaoText}</td></tr>`
-                }
-                html += `</tbody></table><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
-                container.innerHTML = html
-            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
+   async function carregarBoletimAdmin() {
+    const container = document.getElementById('boletimContainer')
+    if(!container) return
+    container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
+    try {
+        const { data: alunos } = await supabase.from('profiles').select('id,email')
+        const { data: disciplinas } = await supabase.from('disciplinas').select('*').eq('ativa', true)
+        const { data: notas } = await supabase.from('notas').select('*')
+        const notasPorAluno = {}
+        notas?.forEach(nota => { if(!notasPorAluno[nota.aluno_id]) notasPorAluno[nota.aluno_id] = {}; notasPorAluno[nota.aluno_id][nota.disciplina_id] = nota })
+        
+        // Adicionado overflow-x: auto para barra de rolagem horizontal
+        let html = `<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">`;
+        html += `<table style="min-width: 600px; width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden;">`;
+        html += `<thead><tr style="background: #f5f5f5; border-bottom: 2px solid #2E7D32;">`;
+        html += `<th style="padding:12px; text-align:center; color: #2E7D32;">Aluno</th>`;
+        
+        for(const disc of disciplinas || []) {
+            html += `<th style="padding:12px; text-align:center; color: #2E7D32;">${escapeHtml(disc.nome)}</th>`;
         }
+        
+        html += `<th style="padding:12px; text-align:center; color: #2E7D32;">Média Final</th>`;
+        html += `<th style="padding:12px; text-align:center; color: #2E7D32;">Situação</th>`;
+        html += `</tr></thead><tbody>`;
+        
+        for(const aluno of alunos) {
+            let somaMedias = 0, disciplinasContadas = 0
+            html += `<tr style="border-bottom: 1px solid #e0e0e0;">`;
+            html += `<td style="padding:12px; text-align:center; color: #333;">${escapeHtml(aluno.email)}</td>`;
+            
+            for(const disc of disciplinas || []) {
+                const nota = notasPorAluno[aluno.id]?.[disc.id]
+                let media = '-'
+                if(nota) {
+                    const n1 = parseFloat(nota.nota1)||0, n2 = parseFloat(nota.nota2)||0, n3 = parseFloat(nota.nota3)||0
+                    let m = (n1+n2+n3)/3
+                    if(nota.recuperacao > m) m = (m + parseFloat(nota.recuperacao))/2
+                    media = m.toFixed(1); somaMedias += m; disciplinasContadas++
+                }
+                html += `<td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${media}</td>`;
+            }
+            
+            const mediaFinal = disciplinasContadas > 0 ? (somaMedias/disciplinasContadas).toFixed(1) : '-'
+            let situacaoClass = 'status-pendente', situacaoText = '⏳ PENDENTE'
+            if(mediaFinal !== '-') {
+                const mf = parseFloat(mediaFinal)
+                if(mf >= 6) { situacaoClass = 'status-aprovado'; situacaoText = '✅ APROVADO' }
+                else if(mf >= 4) { situacaoClass = 'status-recuperacao'; situacaoText = '🟡 RECUPERAÇÃO' }
+                else { situacaoClass = 'status-reprovado'; situacaoText = '❌ REPROVADO' }
+            }
+            html += `<td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${mediaFinal}</td>`;
+            html += `<td style="padding:12px; text-align:center; color: ${situacaoClass === 'status-aprovado' ? '#2E7D32' : (situacaoClass === 'status-recuperacao' ? '#FF9800' : '#D32F2F')}; font-weight: bold;">${situacaoText}</td>`;
+            html += `</tr>`;
+        }
+        
+        html += `</tbody></table></div>`;
+        html += `<div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`;
+        
+        container.innerHTML = html
+    } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
+}
         
         async function carregarBoletimAluno() {
             const container = document.getElementById('boletimAlunoContainer')
