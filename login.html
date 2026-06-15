@@ -1451,8 +1451,9 @@ async function carregarEquipe() {
         window.filtrarTrabalhos=(filtro)=>{const filtrados=filtro==='todos'?todosTrabalhos:todosTrabalhos.filter(t=>t.status===filtro);renderizarListaTrabalhos(filtrados)}
         window.enviarPerguntaIA=async()=>{const input=document.getElementById('iaChatInput');const pergunta=input.value.trim();if(!pergunta)return;const box=document.getElementById('iaChatMessages');box.innerHTML+=`<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;input.value='';const loading=document.createElement('div');loading.className='ia-msg bot';loading.textContent='Pensando...';box.appendChild(loading);try{const{data}=await supabase.functions.invoke('gemini-chat-import',{body:{prompt:`Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}`}});loading.remove();box.innerHTML+=`<div class="ia-msg bot">${escapeHtml(data?.response||data?.text||'Sem resposta')}</div>`}catch{loading.remove();box.innerHTML+=`<div class="ia-msg bot">Erro na IA.</div>`}}
         
-        function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
-       window.atualizarListaSalas = () => {
+  function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
+
+window.atualizarListaSalas = () => {
     const container = document.getElementById('meetingList');
     if(!container) return;
     
@@ -1480,27 +1481,28 @@ async function carregarEquipe() {
         container.appendChild(li);
     });
 };
-            // Verificar se é professor ou admin
-            if(!ehProfessor) {
-                mostrarErro('Apenas professores e administradores podem criar salas.');
-                return;
-            }
-            const nome = document.getElementById('meetingName').value.trim();
-            if(!nome) {
-                mostrarErro('Digite um nome para a sala');
-                return;
-            }
-            if(!usuarioAtual) {
-                mostrarErro('Usuário não logado');
-                return;
-            }
-            const salas = getSalas();
-            salas.push({ id: 'ss-' + Date.now(), topic: nome, leader: usuarioAtual });
-            localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
-            document.getElementById('meetingName').value = '';
-            atualizarListaSalas();
-            mostrarErro('✅ Sala criada com sucesso!');
-        };
+
+window.criarReuniaoLocal = () => {
+    if(!ehProfessor) {
+        mostrarErro('Apenas professores e administradores podem criar salas.');
+        return;
+    }
+    const nome = document.getElementById('meetingName').value.trim();
+    if(!nome) {
+        mostrarErro('Digite um nome para a sala');
+        return;
+    }
+    if(!usuarioAtual) {
+        mostrarErro('Usuário não logado');
+        return;
+    }
+    const salas = getSalas();
+    salas.push({ id: 'ss-' + Date.now(), topic: nome, leader: usuarioAtual });
+    localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
+    document.getElementById('meetingName').value = '';
+    atualizarListaSalas();
+    mostrarErro('✅ Sala criada com sucesso!');
+};
         
         function carregarHistoricoLocal(id){const h=JSON.parse(localStorage.getItem(`sulsafe_chat_${id}`)||'[]');const div=document.getElementById('chatMessages');div.innerHTML='<div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo!</div></div>';h.forEach(m=>adicionarMensagemChatDOM(m.sender,m.message,m.sender===usuarioAtual,m.timestamp))}
         
