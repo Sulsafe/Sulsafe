@@ -550,6 +550,7 @@
                 </div>
             </div>
 
+            <!-- VIEW BOLETIM (ADMIN) - FUNDO BRANCO E LETRAS VERDES -->
             <div id="viewBoletim" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
                 <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
@@ -564,6 +565,7 @@
                 </div>
             </div>
 
+            <!-- VIEW BOLETIM DO ALUNO - FUNDO BRANCO E LETRAS VERDES -->
             <div id="viewBoletimAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
                 <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
@@ -661,9 +663,8 @@
         
         // Função para gerar pagamento via Stripe (para alunos)
         window.iniciarAssinaturaStripe = async () => {
-            // PRICE ID - Substitua pelo seu Price ID do Stripe
-            // Você encontra no Dashboard do Stripe > Produtos > Plano SulSafe > Preços
-            const PRICE_ID = 'price_prod_UhoAh9XLvq7O5P; // ⚠️ SUBSTITUA PELO SEU PRICE ID REAL
+            // ⚠️ IMPORTANTE: Substitua pelo seu Price ID real do Stripe
+            const PRICE_ID = 'price_1R5jX9KY6XfInCdDC7MfSFlJ';
             
             const statusDiv = document.getElementById('stripeStatus');
             if(statusDiv) statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecionando para pagamento...';
@@ -679,15 +680,9 @@
                     }
                 });
                 
-                if (error) {
-                    throw new Error(error.message);
-                }
-                
-                if (data?.url) {
-                    window.location.href = data.url;
-                } else {
-                    throw new Error('Resposta inválida do servidor');
-                }
+                if (error) throw new Error(error.message);
+                if (data?.url) window.location.href = data.url;
+                else throw new Error('Resposta inválida do servidor');
             } catch (err) {
                 if(statusDiv) statusDiv.innerHTML = `<span style="color:var(--erro)">❌ Erro: ${err.message}</span>`;
                 mostrarErro('Erro ao iniciar assinatura: ' + err.message);
@@ -698,273 +693,207 @@
         async function carregarMinhasTransacoes() {
             const container = document.getElementById('minhasTransacoesContainer');
             if(!container) return;
-            
             container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-            
             try {
                 let query = supabase.from('transacoes').select('*').order('data_criacao', {ascending: false});
-                
-                // Se não for admin, mostra só as transações do usuário
-                if(perfilUsuario !== 'admin') {
-                    query = query.eq('aluno_id', usuarioId);
-                } else {
-                    // Admin vê todas, mas vamos mostrar separado
-                    carregarTodasTransacoes();
-                }
-                
+                if(perfilUsuario !== 'admin') query = query.eq('aluno_id', usuarioId);
+                else carregarTodasTransacoes();
                 const {data, error} = await query;
-                
                 if(error) throw error;
-                
                 if(!data || data.length === 0) {
                     container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
                     return;
                 }
-                
-                // Filtra só as do usuário se não for admin
                 const transacoesFiltradas = perfilUsuario !== 'admin' ? data : data.filter(t => t.aluno_id === usuarioId);
-                
                 if(transacoesFiltradas.length === 0) {
                     container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
                     return;
                 }
-                
                 let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
-                
                 for(const t of transacoesFiltradas) {
                     let statusStyle = '', statusText = '';
-                    if(t.status === 'PAGO') {
-                        statusStyle = 'background:#4CAF50; color:white';
-                        statusText = '✅ PAGO';
-                    } else if(t.status === 'PENDENTE') {
-                        statusStyle = 'background:#FF9800; color:white';
-                        statusText = '⏳ PENDENTE';
-                    } else {
-                        statusStyle = 'background:#F44336; color:white';
-                        statusText = '❌ ' + t.status;
-                    }
-                    
+                    if(t.status === 'PAGO') { statusStyle = 'background:#4CAF50; color:white'; statusText = '✅ PAGO'; }
+                    else if(t.status === 'PENDENTE') { statusStyle = 'background:#FF9800; color:white'; statusText = '⏳ PENDENTE'; }
+                    else { statusStyle = 'background:#F44336; color:white'; statusText = '❌ ' + t.status; }
                     let acoes = '';
-                    if(t.tipo === 'PIX' && t.qr_code) {
-                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
-                    } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
-                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
-                    }
-                    
+                    if(t.tipo === 'PIX' && t.qr_code) acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
+                    else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
                     html += `<tr style="border-bottom: 1px solid var(--borda)">
-                        <td style="padding:12px">${t.tipo}</td>
-                        <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
+                        <td style="padding:12px">${t.tipo}</td><td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
                         <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
-                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
-                        <td style="padding:12px">${acoes}</td>
+                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td><td style="padding:12px">${acoes}</td>
                     </tr>`;
                 }
-                
                 html += '</tbody>}</table></div>';
                 container.innerHTML = html;
-            } catch(err) {
-                container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
-            }
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>'; }
         }
         
-        // Carregar todas as transações (apenas ADMIN)
         async function carregarTodasTransacoes() {
             if(perfilUsuario !== 'admin') return;
-            
             const container = document.getElementById('todasTransacoesContainer');
             if(!container) return;
-            
             container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-            
             try {
                 const {data, error} = await supabase.from('transacoes').select('*').order('data_criacao', {ascending: false});
-                
                 if(error) throw error;
-                
-                if(!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>';
-                    return;
-                }
-                
+                if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>'; return; }
                 let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
-                
                 for(const t of data) {
                     let statusStyle = '', statusText = '';
-                    if(t.status === 'PAGO') {
-                        statusStyle = 'background:#4CAF50; color:white';
-                        statusText = '✅ PAGO';
-                    } else if(t.status === 'PENDENTE') {
-                        statusStyle = 'background:#FF9800; color:white';
-                        statusText = '⏳ PENDENTE';
-                    } else {
-                        statusStyle = 'background:#F44336; color:white';
-                        statusText = '❌ ' + t.status;
-                    }
-                    
+                    if(t.status === 'PAGO') { statusStyle = 'background:#4CAF50; color:white'; statusText = '✅ PAGO'; }
+                    else if(t.status === 'PENDENTE') { statusStyle = 'background:#FF9800; color:white'; statusText = '⏳ PENDENTE'; }
+                    else { statusStyle = 'background:#F44336; color:white'; statusText = '❌ ' + t.status; }
                     let acoes = '';
-                    if(t.tipo === 'PIX' && t.qr_code) {
-                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
-                    } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
-                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
-                    }
-                    
-                    if(t.status === 'PENDENTE') {
-                        acoes += `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; margin-left:5px; padding:4px 12px">Confirmar</button>`;
-                    }
-                    
+                    if(t.tipo === 'PIX' && t.qr_code) acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
+                    else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
+                    if(t.status === 'PENDENTE') acoes += `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; margin-left:5px; padding:4px 12px">Confirmar</button>`;
                     html += `<tr style="border-bottom: 1px solid var(--borda)">
-                        <td style="padding:12px">${escapeHtml(t.aluno_email)}</td>
-                        <td style="padding:12px">${t.tipo}</td>
-                        <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
-                        <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
-                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
-                        <td style="padding:12px">${acoes}</td>
+                        <td style="padding:12px">${escapeHtml(t.aluno_email)}</td><td style="padding:12px">${t.tipo}</td>
+                        <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td><td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
+                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td><td style="padding:12px">${acoes}</tr>
                     </tr>`;
                 }
-                
                 html += '</tbody>}</table></div>';
                 container.innerHTML = html;
-            } catch(err) {
-                container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
-            }
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>'; }
         }
         
-        // Variável para controle do tipo de pagamento manual
         let tipoPagamentoManualAtual = '';
-        
-        // Abrir modal para gerar pagamento manual (apenas ADMIN)
         window.abrirModalGerarPagamentoManual = async (tipo) => {
-            if(perfilUsuario !== 'admin') {
-                mostrarErro('Apenas administradores podem gerar pagamentos manuais');
-                return;
-            }
-            
+            if(perfilUsuario !== 'admin') { mostrarErro('Apenas administradores podem gerar pagamentos manuais'); return; }
             tipoPagamentoManualAtual = tipo;
             const titulo = document.getElementById('modalPagamentoManualTitulo');
             if(titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX Manual' : '📄 Gerar Boleto Manual';
-            
             const select = document.getElementById('pagamentoManualAlunoId');
             if(!select) return;
-            
             select.innerHTML = '<option value="">Carregando alunos...</option>';
-            
             const {data: alunos, error} = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
-            
-            if(error) {
-                select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
-                mostrarErro('Erro: ' + error.message);
-                return;
-            }
-            
+            if(error) { select.innerHTML = '<option value="">Erro ao carregar alunos</option>'; mostrarErro('Erro: ' + error.message); return; }
             select.innerHTML = '<option value="">Selecione um aluno...</option>';
-            alunos.forEach(aluno => {
-                select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
-            });
-            
+            alunos.forEach(aluno => { select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`; });
             const valorInput = document.getElementById('pagamentoManualValor');
             const descricaoInput = document.getElementById('pagamentoManualDescricao');
             if(valorInput) valorInput.value = '';
             if(descricaoInput) descricaoInput.value = '';
-            
             const modal = document.getElementById('modalPagamentoManual');
             if(modal) modal.style.display = 'flex';
         };
-        
-        // Fechar modal de pagamento manual
-        window.fecharModalPagamentoManual = () => {
-            const modal = document.getElementById('modalPagamentoManual');
-            if(modal) modal.style.display = 'none';
-        };
-        
-        // Gerar pagamento manual (apenas ADMIN)
+        window.fecharModalPagamentoManual = () => { const modal = document.getElementById('modalPagamentoManual'); if(modal) modal.style.display = 'none'; };
         window.gerarPagamentoManual = async () => {
-            if(perfilUsuario !== 'admin') {
-                mostrarErro('Apenas administradores podem gerar pagamentos manuais');
-                return;
-            }
-            
+            if(perfilUsuario !== 'admin') { mostrarErro('Apenas administradores podem gerar pagamentos manuais'); return; }
             const alunoId = document.getElementById('pagamentoManualAlunoId')?.value;
             const valor = parseFloat(document.getElementById('pagamentoManualValor')?.value || '0');
             const descricao = document.getElementById('pagamentoManualDescricao')?.value || `${tipoPagamentoManualAtual} - ${new Date().toLocaleString()}`;
-            
-            if(!alunoId) {
-                mostrarErro('Selecione um aluno');
-                return;
-            }
-            
-            if(!valor || valor <= 0) {
-                mostrarErro('Digite um valor válido');
-                return;
-            }
-            
+            if(!alunoId) { mostrarErro('Selecione um aluno'); return; }
+            if(!valor || valor <= 0) { mostrarErro('Digite um valor válido'); return; }
             const {data: aluno, error: erroAluno} = await supabase.from('profiles').select('email').eq('id', alunoId).single();
-            
-            if(erroAluno || !aluno) {
-                mostrarErro('Aluno não encontrado');
-                return;
-            }
-            
+            if(erroAluno || !aluno) { mostrarErro('Aluno não encontrado'); return; }
             const codigoSimulado = `${tipoPagamentoManualAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase();
-            
-            const dadosInserir = {
-                aluno_id: alunoId,
-                aluno_email: aluno.email,
-                tipo: tipoPagamentoManualAtual,
-                valor: valor,
-                status: 'PENDENTE',
-                descricao: descricao,
-                data_criacao: new Date().toISOString(),
-                data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-            };
-            
-            if(tipoPagamentoManualAtual === 'PIX') {
-                dadosInserir.qr_code = codigoSimulado;
-                dadosInserir.qr_code_image = null;
-            } else {
-                dadosInserir.boleto_url = '#';
-                dadosInserir.boleto_linha_digitavel = codigoSimulado;
-            }
-            
+            const dadosInserir = { aluno_id: alunoId, aluno_email: aluno.email, tipo: tipoPagamentoManualAtual, valor: valor, status: 'PENDENTE', descricao: descricao, data_criacao: new Date().toISOString(), data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() };
+            if(tipoPagamentoManualAtual === 'PIX') { dadosInserir.qr_code = codigoSimulado; dadosInserir.qr_code_image = null; }
+            else { dadosInserir.boleto_url = '#'; dadosInserir.boleto_linha_digitavel = codigoSimulado; }
             const {error} = await supabase.from('transacoes').insert(dadosInserir);
-            
-            if(error) {
-                mostrarErro('Erro ao gerar: ' + error.message);
-            } else {
-                mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado! Código: ${codigoSimulado}`);
-                window.fecharModalPagamentoManual();
-                carregarMinhasTransacoes();
-                if(perfilUsuario === 'admin') carregarTodasTransacoes();
-            }
+            if(error) { mostrarErro('Erro ao gerar: ' + error.message); }
+            else { mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado! Código: ${codigoSimulado}`); window.fecharModalPagamentoManual(); carregarMinhasTransacoes(); if(perfilUsuario === 'admin') carregarTodasTransacoes(); }
         };
-        
-        // Confirmar pagamento simulado (apenas ADMIN)
         window.confirmarPagamentoSimulado = async (transacaoId) => {
-            if(perfilUsuario !== 'admin') {
-                mostrarErro('Apenas administradores podem confirmar pagamentos');
-                return;
-            }
-            
+            if(perfilUsuario !== 'admin') { mostrarErro('Apenas administradores podem confirmar pagamentos'); return; }
             if(!confirm('Confirmar pagamento desta transação?')) return;
-            
             const {error} = await supabase.from('transacoes').update({status: 'PAGO', data_pagamento: new Date().toISOString()}).eq('id', transacaoId);
-            
-            if(error) {
-                mostrarErro('Erro ao confirmar: ' + error.message);
-            } else {
-                mostrarErro('✅ Pagamento confirmado!');
-                carregarMinhasTransacoes();
-                carregarTodasTransacoes();
-            }
+            if(error) { mostrarErro('Erro ao confirmar: ' + error.message); } else { mostrarErro('✅ Pagamento confirmado!'); carregarMinhasTransacoes(); carregarTodasTransacoes(); }
         };
-        
-        // Função para copiar texto
-        window.copiarTexto = (texto) => {
-            navigator.clipboard.writeText(texto);
-            mostrarErro('📋 Código copiado!');
-        };
+        window.copiarTexto = (texto) => { navigator.clipboard.writeText(texto); mostrarErro('📋 Código copiado!'); };
 
-        // ========== FUNÇÕES EXISTENTES (mantidas) ==========
+        // ========== FUNÇÕES DE BOLETIM (COM FUNDO BRANCO E LETRAS VERDES) ==========
         
+        async function carregarBoletimAdmin() {
+            const container = document.getElementById('boletimContainer');
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>';
+            try {
+                const {data: alunos} = await supabase.from('profiles').select('id,email');
+                if(!alunos || alunos.length === 0) { container.innerHTML = '<p style="text-align:center; color:gray">Nenhum aluno cadastrado.</p>'; return; }
+                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true);
+                const {data: notas} = await supabase.from('notas').select('*');
+                const notasPorAluno = {};
+                notas?.forEach(nota => { if(!notasPorAluno[nota.aluno_id]) notasPorAluno[nota.aluno_id] = {}; notasPorAluno[nota.aluno_id][nota.disciplina_id] = nota; });
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden;"><thead><tr style="background: #f5f5f5; border-bottom: 2px solid #2E7D32;"><th style="padding:12px; text-align:center; color: #2E7D32;">Aluno</th>${disciplinas?.map(d => `<th style="padding:12px; text-align:center; color: #2E7D32;">${escapeHtml(d.nome)}</th>`).join('')}<th style="padding:12px; text-align:center; color: #2E7D32;">Média Final</th><th style="padding:12px; text-align:center; color: #2E7D32;">Situação</th></tr></thead><tbody>`;
+                for(const aluno of alunos) {
+                    let somaMedias = 0, disciplinasContadas = 0, situacaoGeral = 'EM_ANDAMENTO';
+                    html += `<tr style="border-bottom: 1px solid #e0e0e0;"><td style="padding:12px; text-align:center; color: #333;">${escapeHtml(aluno.email)}</td>`;
+                    for(const disc of disciplinas || []) {
+                        const nota = notasPorAluno[aluno.id]?.[disc.id];
+                        let media = 0, notaExibicao = '-';
+                        if(nota) {
+                            const n1 = parseFloat(nota.nota1)||0, n2 = parseFloat(nota.nota2)||0, n3 = parseFloat(nota.nota3)||0;
+                            media = (n1+n2+n3)/3;
+                            if(nota.recuperacao > media) media = (media + parseFloat(nota.recuperacao))/2;
+                            notaExibicao = media.toFixed(1);
+                            somaMedias += media;
+                            disciplinasContadas++;
+                        }
+                        html += `<td style="padding:12px; text-align:center; color: #2E7D32; font-weight: bold;">${notaExibicao}</td>`;
+                    }
+                    const mediaFinal = disciplinasContadas > 0 ? (somaMedias/disciplinasContadas).toFixed(1) : '-';
+                    let situacaoText = '', situacaoColor = '';
+                    if(mediaFinal !== '-') {
+                        const mf = parseFloat(mediaFinal);
+                        if(mf >= 6) { situacaoText = '✅ APROVADO'; situacaoColor = '#2E7D32'; }
+                        else if(mf >= 4) { situacaoText = '🟡 RECUPERAÇÃO'; situacaoColor = '#FF9800'; }
+                        else { situacaoText = '❌ REPROVADO'; situacaoColor = '#D32F2F'; }
+                    } else { situacaoText = '⏳ PENDENTE'; situacaoColor = '#999'; }
+                    html += `<td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${mediaFinal}</td>`;
+                    html += `<td style="padding:12px; text-align:center; color: ${situacaoColor}; font-weight: bold;">${situacaoText}</td></tr>`;
+                }
+                html += '</tbody>}</div>';
+                container.innerHTML = html;
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>'; }
+        }
+        
+        async function carregarBoletimAluno() {
+            const container = document.getElementById('boletimAlunoContainer');
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>';
+            try {
+                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true);
+                const {data: notas} = await supabase.from('notas').select('*').eq('aluno_id', usuarioId);
+                if(!disciplinas || disciplinas.length === 0) { container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma disciplina cadastrada.</p>'; return; }
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden;"><thead><tr style="background: #f5f5f5; border-bottom: 2px solid #2E7D32;"><th style="padding:12px; text-align:center; color: #2E7D32;">Disciplina</th><th style="padding:12px; text-align:center; color: #2E7D32;">Nota 1</th><th style="padding:12px; text-align:center; color: #2E7D32;">Nota 2</th><th style="padding:12px; text-align:center; color: #2E7D32;">Nota 3</th><th style="padding:12px; text-align:center; color: #2E7D32;">Média</th><th style="padding:12px; text-align:center; color: #2E7D32;">Faltas</th><th style="padding:12px; text-align:center; color: #2E7D32;">Situação</th></tr></thead><tbody>`;
+                let somaMedias = 0, disciplinasContadas = 0;
+                for(const disc of disciplinas) {
+                    const nota = notas?.find(n => n.disciplina_id === disc.id);
+                    let n1 = '-', n2 = '-', n3 = '-', media = '-', faltas = '-', situacao = '⏳ Pendente', situacaoColor = '#999';
+                    if(nota) {
+                        n1 = nota.nota1 || '-'; n2 = nota.nota2 || '-'; n3 = nota.nota3 || '-';
+                        faltas = nota.faltas || 0;
+                        if(nota.media_final) {
+                            media = nota.media_final.toFixed(1);
+                            somaMedias += nota.media_final;
+                            disciplinasContadas++;
+                            if(nota.media_final >= 6) { situacao = '✅ Aprovado'; situacaoColor = '#2E7D32'; }
+                            else if(nota.media_final >= 4) { situacao = '🟡 Recuperação'; situacaoColor = '#FF9800'; }
+                            else { situacao = '❌ Reprovado'; situacaoColor = '#D32F2F'; }
+                        }
+                    }
+                    html += `<tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding:12px; text-align:center; color: #333;">${escapeHtml(disc.nome)}</td>
+                        <td style="padding:12px; text-align:center; color: #2E7D32;">${n1}</td>
+                        <td style="padding:12px; text-align:center; color: #2E7D32;">${n2}</td>
+                        <td style="padding:12px; text-align:center; color: #2E7D32;">${n3}</td>
+                        <td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${media}</td>
+                        <td style="padding:12px; text-align:center; color: #333;">${faltas}</td>
+                        <td style="padding:12px; text-align:center; color: ${situacaoColor}; font-weight: bold;">${situacao}</td>
+                     </tr>`;
+                }
+                const mediaGeral = disciplinasContadas > 0 ? (somaMedias / disciplinasContadas).toFixed(1) : '-';
+                html += `<tr style="background: #f9f9f9; border-top: 2px solid #2E7D32;"><td colspan="4" style="padding:12px; text-align:right; font-weight: bold; color: #2E7D32;">Média Geral:</td><td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${mediaGeral}</td><td colspan="2"></td></tr>`;
+                html += '</tbody>}</div>';
+                container.innerHTML = html;
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>'; }
+        }
+
+        // ========== FUNÇÕES EXISTENTES ==========
         function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
@@ -990,18 +919,12 @@
             if(viewId==='salas')atualizarListaSalas()
             if(viewId==='equipe')carregarEquipe()
             if(viewId==='materiais')carregarMateriais()
-            if(viewId==='financeiro') {
-                carregarMinhasTransacoes();
-                if(perfilUsuario === 'admin') carregarTodasTransacoes();
-            }
+            if(viewId==='financeiro') { carregarMinhasTransacoes(); if(perfilUsuario === 'admin') carregarTodasTransacoes(); }
             if(viewId==='videoaulas')carregarVideoaulas()
             if(viewId==='trabalhos'&&ehProfessor)carregarTrabalhos()
             if(viewId==='aluno')carregarMeusTrabalhos()
             if(viewId==='relatorio'&&ehProfessor)carregarRelatorioAlunos()
-            if(viewId==='boletim') {
-                if(ehProfessor) carregarBoletimAdmin();
-                else carregarBoletimAluno();
-            }
+            if(viewId==='boletim') { if(ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno(); }
         }
 
         window.fazerLogin=async()=>{
@@ -1019,89 +942,21 @@
             const isAdmin = perfilUsuario === 'admin';
             const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin';
             const isAluno = perfilUsuario === 'aluno';
-
-            document.getElementById('navFinanceiro').style.display = 'flex'; // Todos veem financeiro agora
+            document.getElementById('navFinanceiro').style.display = 'flex';
             document.getElementById('navConfig').style.display = isAdmin ? 'flex' : 'none';
             document.getElementById('navRelatorio').style.display = isProfessor ? 'flex' : 'none';
             document.getElementById('navTrabalhos').style.display = isProfessor ? 'flex' : 'none';
             document.getElementById('btnLancarNotas').style.display = isProfessor ? 'inline-block' : 'none';
-            
             const btn = document.getElementById('btnPainelProfessor');
             if(btn) btn.style.display = isProfessor ? 'inline-block' : 'none';
-
             const alunoItem = document.getElementById('navAreaAluno');
             if(alunoItem) alunoItem.style.display = isAluno ? 'flex' : 'none';
-            
-            // Mostrar/esconder cards de admin no financeiro
             const adminPagamentoCard = document.getElementById('adminPagamentoCard');
             if(adminPagamentoCard) adminPagamentoCard.style.display = isAdmin ? 'block' : 'none';
-            
             const adminTransacoesCard = document.getElementById('adminTransacoesCard');
             if(adminTransacoesCard) adminTransacoesCard.style.display = isAdmin ? 'block' : 'none';
-            
-            // Botão de assinatura Stripe - mostra para todos que não são admin (alunos)
             const assinaturaCard = document.getElementById('assinaturaStripeCard');
             if(assinaturaCard) assinaturaCard.style.display = !isAdmin ? 'block' : 'none';
-        }
-        
-        // Carregar boletim do aluno logado
-        async function carregarBoletimAluno() {
-            const container = document.getElementById('boletimAlunoContainer');
-            if(!container) return;
-            
-            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>';
-            
-            try {
-                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true);
-                const {data: notas} = await supabase.from('notas').select('*').eq('aluno_id', usuarioId);
-                
-                if(!disciplinas || disciplinas.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma disciplina cadastrada.</p>';
-                    return;
-                }
-                
-                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Disciplina</th><th style="padding:12px">Nota 1</th><th style="padding:12px">Nota 2</th><th style="padding:12px">Nota 3</th><th style="padding:12px">Média</th><th style="padding:12px">Faltas</th><th style="padding:12px">Situação</th></tr></thead><tbody>`;
-                
-                let somaMedias = 0, disciplinasContadas = 0;
-                
-                for(const disc of disciplinas) {
-                    const nota = notas?.find(n => n.disciplina_id === disc.id);
-                    let n1 = '-', n2 = '-', n3 = '-', media = '-', faltas = '-', situacao = '⏳ Pendente';
-                    
-                    if(nota) {
-                        n1 = nota.nota1 || '-';
-                        n2 = nota.nota2 || '-';
-                        n3 = nota.nota3 || '-';
-                        faltas = nota.faltas || 0;
-                        
-                        if(nota.media_final) {
-                            media = nota.media_final.toFixed(1);
-                            somaMedias += nota.media_final;
-                            disciplinasContadas++;
-                            if(nota.media_final >= 6) situacao = '✅ Aprovado';
-                            else if(nota.media_final >= 4) situacao = '🟡 Recuperação';
-                            else situacao = '❌ Reprovado';
-                        }
-                    }
-                    
-                    html += `<tr style="border-bottom: 1px solid var(--borda)">
-                        <td style="padding:12px">${escapeHtml(disc.nome)}</td>
-                        <td style="padding:12px; text-align:center">${n1}</td>
-                        <td style="padding:12px; text-align:center">${n2}</td>
-                        <td style="padding:12px; text-align:center">${n3}</td>
-                        <td style="padding:12px; text-align:center"><strong>${media}</strong></td>
-                        <td style="padding:12px; text-align:center">${faltas}</td>
-                        <td style="padding:12px; text-align:center">${situacao}</td>
-                    </tr>`;
-                }
-                
-                const mediaGeral = disciplinasContadas > 0 ? (somaMedias / disciplinasContadas).toFixed(1) : '-';
-                html += `<tr style="background: rgba(46,125,50,0.1);"><td colspan="4" style="padding:12px; text-align:right"><strong>Média Geral:</strong></td><td style="padding:12px; text-align:center"><strong>${mediaGeral}</strong></td><td colspan="2"></td></tr>`;
-                html += '</tbody>}</div>';
-                container.innerHTML = html;
-            } catch(err) {
-                container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>';
-            }
         }
 
         window.fazerCadastro=async()=>{
@@ -1134,16 +989,9 @@
             renderizarProgressoHome();
             const navTrabalhos=document.getElementById('navTrabalhos');
             if(navTrabalhos)navTrabalhos.style.display=ehProfessor?'flex':'none';
-            
-            // Verificar se veio com parâmetro de sucesso do pagamento
             const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('payment') === 'success') {
-                mostrarErro('✅ Pagamento realizado com sucesso! Sua assinatura foi ativada.');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else if(urlParams.get('payment') === 'cancel') {
-                mostrarErro('❌ Pagamento cancelado. Você pode tentar novamente quando quiser.');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            if(urlParams.get('payment') === 'success') { mostrarErro('✅ Pagamento realizado com sucesso! Sua assinatura foi ativada.'); window.history.replaceState({}, document.title, window.location.pathname); }
+            else if(urlParams.get('payment') === 'cancel') { mostrarErro('❌ Pagamento cancelado. Você pode tentar novamente quando quiser.'); window.history.replaceState({}, document.title, window.location.pathname); }
         }
         
         window.abrirModalAdmin=()=>document.getElementById('modalAdmin').classList.add('active')
@@ -1245,7 +1093,6 @@
         document.getElementById('joinTeamBtn')?.addEventListener('click',entrarNaEquipe)
         loadDevices()
         
-        // Adicionar evento do botão de assinatura Stripe
         const btnAssinar = document.getElementById('btnAssinarPlano');
         if(btnAssinar) btnAssinar.addEventListener('click', iniciarAssinaturaStripe);
         
@@ -1277,7 +1124,7 @@
                 const{data:progresso}=await supabase.from('progresso_aulas').select('user_id,aula_id').eq("concluído",true)
                 const progressoPorAluno={}
                 progresso?.forEach(p=>{if(!progressoPorAluno[p.user_id])progressoPorAluno[p.user_id]=[];progressoPorAluno[p.user_id].push(p.aula_id)})
-                let html='<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th><th style="padding:12px">Certificado</th></tr></thead><tbody>'
+                let html='<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Aulas</th><th style="padding:12px">Progresso</th><th style="padding:12px">Status</th><th style="padding:12px">Certificado</th><tr></thead><tbody>'
                 for(const aluno of alunos){
                     const aulasAssistidas=progressoPorAluno[aluno.id]?.length||0
                     const percentual=totalAulas>0?Math.round((aulasAssistidas/totalAulas)*100):0
@@ -1316,38 +1163,6 @@
             mostrarErro(`✅ Certificado gerado para ${nome}!`)
         }
         
-        window.carregarBoletimAdmin=async()=>{
-            const container=document.getElementById('boletimContainer');if(!container)return
-            container.innerHTML='<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            try{
-                const{data:alunos}=await supabase.from('profiles').select('id,email')
-                if(!alunos||alunos.length===0){container.innerHTML='<p style="text-align:center; color:gray">Nenhum aluno cadastrado.</p>';return}
-                const{data:disciplinas}=await supabase.from('disciplinas').select('*').eq('ativa',true)
-                const{data:notas}=await supabase.from('notas').select('*')
-                const notasPorAluno={}
-                notas?.forEach(nota=>{if(!notasPorAluno[nota.aluno_id])notasPorAluno[nota.aluno_id]={};notasPorAluno[nota.aluno_id][nota.disciplina_id]=nota})
-                let html=`<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th>${disciplinas?.map(d=>`<th style="padding:12px">${escapeHtml(d.nome)}</th>`).join('')}<th style="padding:12px">Média Final</th><th style="padding:12px">Situação</th></tr></thead><tbody>`
-                for(const aluno of alunos){
-                    let somaMedias=0,disciplinasContadas=0,situacaoGeral='EM_ANDAMENTO'
-                    html+=`<tr style="border-bottom: 1px solid var(--borda)"><td style="padding:12px">${escapeHtml(aluno.email)}</td>`
-                    for(const disc of disciplinas||[]){
-                        const nota=notasPorAluno[aluno.id]?.[disc.id]
-                        let media=0,notaExibicao='-'
-                        if(nota){
-                            const n1=parseFloat(nota.nota1)||0,n2=parseFloat(nota.nota2)||0,n3=parseFloat(nota.nota3)||0
-                            media=(n1+n2+n3)/3
-                            if(nota.recuperacao>media)media=(media+parseFloat(nota.recuperacao))/2
-                            notaExibicao=media.toFixed(1);somaMedias+=media;disciplinasContadas++
-                        }
-                        html+=`<td style="padding:12px; text-align:center">${notaExibicao}</td>`
-                    }
-                    const mediaFinal=disciplinasContadas>0?(somaMedias/disciplinasContadas).toFixed(1):'-'
-                    if(mediaFinal!=='-'){situacaoGeral=parseFloat(mediaFinal)>=6?'✅ APROVADO':(parseFloat(mediaFinal)>=4?'🟡 RECUPERAÇÃO':'❌ REPROVADO')}
-                    html+=`<td style="padding:12px; text-align:center"><strong>${mediaFinal}</strong></td><td style="padding:12px; text-align:center">${situacaoGeral}</td></tr>`
-                }
-                html+='</tbody>}</div>';container.innerHTML=html
-            }catch(err){container.innerHTML='<p style="color:red">Erro: '+err.message+'</p>'}
-        }
         window.abrirModalLancarNotas=async()=>{
             const selectAluno=document.getElementById('notaAlunoId');if(!selectAluno)return
             selectAluno.innerHTML='<option value="">Carregando alunos...</option>'
