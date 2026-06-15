@@ -801,58 +801,303 @@
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>'; }
         }
         
-        async function carregarTodasTransacoes() {
-            if(perfilUsuario !== 'admin') return
-            const container = document.getElementById('todasTransacoesContainer')
-            if(!container) return
-            container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            try {
-                const { data, error } = await supabase.from('transacoes').select('*').order('data_criacao', { ascending: false })
-                if(error) throw error
-                if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>'; return }
-                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th></tr></thead><tbody>'
-                for(const t of data) {
-                    let statusText = t.status === 'PAGO' ? '✅ PAGO' : (t.status === 'PENDENTE' ? '⏳ PENDENTE' : '❌ ' + t.status)
-                    html += `<tr><td>${escapeHtml(t.aluno_email)}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td><td><span style="background:${t.status==='PAGO'?'#4CAF50':'#FF9800'}; color:white; padding:4px 12px; border-radius:20px">${statusText}</span></td><td>${new Date(t.data_criacao).toLocaleString()}</td></tr>`
-                }
-                html += '</tbody></table></div>'
-                container.innerHTML = html
-            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>'; }
+       // ========== FUNÇÕES DE TRANSAÇÕES CORRIGIDAS COM PAGAMENTO ==========
+
+async function carregarMinhasTransacoes() {
+    const container = document.getElementById('minhasTransacoesContainer');
+    if(!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando suas transações...</p>';
+    
+    try {
+        const { data, error } = await supabase
+            .from('transacoes')
+            .select('*')
+            .eq('aluno_id', usuarioId)
+            .order('data_criacao', { ascending: false });
+        
+        if(error) throw error;
+        
+        if(!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
+            return;
         }
         
-        let tipoPagamentoManualAtual = ''
-        window.abrirModalGerarPagamentoManual = async (tipo) => {
-            if(perfilUsuario !== 'admin') { mostrarErro('Apenas administradores podem gerar pagamentos manuais'); return; }
-            tipoPagamentoManualAtual = tipo
-            document.getElementById('modalPagamentoManualTitulo').innerHTML = tipo === 'PIX' ? '💰 Gerar PIX Manual' : '📄 Gerar Boleto Manual'
-            const select = document.getElementById('pagamentoManualAlunoId')
-            select.innerHTML = '<option value="">Carregando alunos...</option>'
-            const {data: alunos} = await supabase.from('profiles').select('id,email').eq('role', 'aluno')
-            select.innerHTML = '<option value="">Selecione um aluno...</option>'
-            alunos.forEach(aluno => { select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>` })
-            document.getElementById('modalPagamentoManual').style.display = 'flex'
+        let html = `<div style="overflow-x: auto;">
+            <table style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #2E7D32; color: white;">
+                        <th style="padding:12px">Tipo</th>
+                        <th style="padding:12px">Valor</th>
+                        <th style="padding:12px">Status</th>
+                        <th style="padding:12px">Data</th>
+                        <th style="padding:12px">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        for(const t of data) {
+            let statusStyle = '', statusText = '';
+            if(t.status === 'PAGO') {
+                statusStyle = 'background:#4CAF50; color:white';
+                statusText = '✅ PAGO';
+            } else if(t.status === 'PENDENTE') {
+                statusStyle = 'background:#FF9800; color:white';
+                statusText = '⏳ PENDENTE';
+            } else {
+                statusStyle = 'background:#F44336; color:white';
+                statusText = '❌ ' + t.status;
+            }
+            
+            let acoes = '';
+            
+            // Botão de pagamento para transações pendentes
+            if(t.status === 'PENDENTE') {
+                if(t.tipo === 'PIX' && t.qr_code) {
+                    acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:8px 12px; margin-right:5px">
+                        <i class="fab fa-pix"></i> Copiar PIX
+                    </button>
+                    <button class="btn-entrar" onclick="gerarQRCodePagamento('${t.qr_code}', '${t.valor}')" style="background:#00875A; padding:8px 12px">
+                        <i class="fas fa-qrcode"></i> Ver QR Code
+                    </button>`;
+                } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                    acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:8px 12px; margin-right:5px">
+                        <i class="fas fa-barcode"></i> Copiar Linha Digitável
+                    </button>
+                    <button class="btn-entrar" onclick="gerarBoletoPDF('${t.boleto_linha_digitavel}', '${t.valor}', '${t.id}')" style="background:#D32F2F; padding:8px 12px">
+                        <i class="fas fa-file-pdf"></i> Ver Boleto PDF
+                    </button>`;
+                } else if(t.tipo === 'CARTÃO') {
+                    acoes = `<button class="btn-entrar" onclick="pagarComCartao('${t.id}', '${t.valor}')" style="background:#635BFF; padding:8px 12px">
+                        <i class="fab fa-stripe"></i> Pagar com Cartão
+                    </button>`;
+                } else {
+                    acoes = `<button class="btn-entrar" onclick="simularPagamento('${t.id}')" style="background:#4CAF50; padding:8px 12px">
+                        <i class="fas fa-check"></i> Simular Pagamento
+                    </button>`;
+                }
+            } else {
+                acoes = `<span style="color:green"><i class="fas fa-check-circle"></i> Pago</span>`;
+            }
+            
+            html += `<tr style="border-bottom: 1px solid var(--borda);">
+                <td style="padding:12px">${t.tipo}</td>
+                <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
+                <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
+                <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
+                <td style="padding:12px">${acoes}</td>
+              </tr>`;
         }
-        window.fecharModalPagamentoManual = () => { document.getElementById('modalPagamentoManual').style.display = 'none' }
-        window.gerarPagamentoManual = async () => {
-            if(perfilUsuario !== 'admin') return
-            const alunoId = document.getElementById('pagamentoManualAlunoId')?.value
-            const valor = parseFloat(document.getElementById('pagamentoManualValor')?.value || '0')
-            const descricao = document.getElementById('pagamentoManualDescricao')?.value || `${tipoPagamentoManualAtual} - ${new Date().toLocaleString()}`
-            if(!alunoId || !valor) { mostrarErro('Preencha todos os campos'); return }
-            const {data: aluno} = await supabase.from('profiles').select('email').eq('id', alunoId).single()
-            const codigoSimulado = `${tipoPagamentoManualAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase()
-            const dadosInserir = { aluno_id: alunoId, aluno_email: aluno.email, tipo: tipoPagamentoManualAtual, valor: valor, status: 'PENDENTE', descricao: descricao, data_criacao: new Date().toISOString() }
-            if(tipoPagamentoManualAtual === 'PIX') dadosInserir.qr_code = codigoSimulado
-            else dadosInserir.boleto_linha_digitavel = codigoSimulado
-            const {error} = await supabase.from('transacoes').insert(dadosInserir)
-            if(error) mostrarErro('Erro: ' + error.message)
-            else { mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado!`); window.fecharModalPagamentoManual(); carregarMinhasTransacoes(); carregarTodasTransacoes() }
+        
+        html += `</tbody>
+            </table>
+            <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--texto-sec);">
+                <i class="fas fa-clock"></i> Última atualização: ${new Date().toLocaleTimeString()}
+                <button class="btn-criar-sala" onclick="carregarMinhasTransacoes()" style="margin-left: 15px; padding: 5px 12px; font-size: 12px;">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </div>`;
+        
+        container.innerHTML = html;
+        
+    } catch(err) {
+        console.error('Erro:', err);
+        container.innerHTML = '<p style="color:red">Erro ao carregar transações: ' + err.message + '</p>';
+        mostrarErro('Erro ao carregar transações: ' + err.message);
+    }
+}
+
+async function carregarTodasTransacoes() {
+    if(perfilUsuario !== 'admin') return;
+    
+    const container = document.getElementById('todasTransacoesContainer');
+    if(!container) return;
+    
+    container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando todas as transações...</p>';
+    
+    try {
+        const { data, error } = await supabase
+            .from('transacoes')
+            .select('*')
+            .order('data_criacao', { ascending: false });
+        
+        if(error) throw error;
+        
+        if(!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>';
+            return;
         }
-        window.confirmarPagamentoSimulado = async (transacaoId) => {
-            await supabase.from('transacoes').update({status: 'PAGO', data_pagamento: new Date().toISOString()}).eq('id', transacaoId)
-            mostrarErro('✅ Pagamento confirmado!'); carregarMinhasTransacoes(); carregarTodasTransacoes()
+        
+        let html = `<div style="overflow-x: auto;">
+            <table style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #2E7D32; color: white;">
+                        <th style="padding:12px">Aluno</th>
+                        <th style="padding:12px">Tipo</th>
+                        <th style="padding:12px">Valor</th>
+                        <th style="padding:12px">Status</th>
+                        <th style="padding:12px">Data</th>
+                        <th style="padding:12px">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        for(const t of data) {
+            let statusStyle = '', statusText = '';
+            if(t.status === 'PAGO') {
+                statusStyle = 'background:#4CAF50; color:white';
+                statusText = '✅ PAGO';
+            } else if(t.status === 'PENDENTE') {
+                statusStyle = 'background:#FF9800; color:white';
+                statusText = '⏳ PENDENTE';
+            } else {
+                statusStyle = 'background:#F44336; color:white';
+                statusText = '❌ ' + t.status;
+            }
+            
+            let acoes = '';
+            if(t.status === 'PENDENTE') {
+                acoes = `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; padding:4px 12px">Confirmar Pagamento</button>`;
+            } else {
+                acoes = `<span style="color:green">✅ Pago</span>`;
+            }
+            
+            html += `<tr style="border-bottom: 1px solid var(--borda);">
+                <td style="padding:12px">${escapeHtml(t.aluno_email)}</td>
+                <td style="padding:12px">${t.tipo}</td>
+                <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
+                <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
+                <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
+                <td style="padding:12px">${acoes}</td>
+              </tr>`;
         }
-        window.copiarTexto = (texto) => { navigator.clipboard.writeText(texto); mostrarErro('📋 Código copiado!') }
+        
+        html += `</tbody>
+            <table>
+            <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--texto-sec);">
+                <i class="fas fa-clock"></i> Última atualização: ${new Date().toLocaleTimeString()}
+                <button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="margin-left: 15px; padding: 5px 12px; font-size: 12px;">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </div>`;
+        
+        container.innerHTML = html;
+        
+    } catch(err) {
+        console.error('Erro:', err);
+        container.innerHTML = '<p style="color:red">Erro ao carregar transações: ' + err.message + '</p>';
+        mostrarErro('Erro ao carregar transações: ' + err.message);
+    }
+}
+
+// Função para gerar QR Code do PIX
+window.gerarQRCodePagamento = (codigoPix, valor) => {
+    // Criar modal para mostrar QR Code
+    const modalHtml = `
+        <div id="modalQRCode" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; justify-content:center; align-items:center;">
+            <div style="background:white; border-radius:20px; padding:24px; max-width:400px; text-align:center;">
+                <h3 style="margin-bottom:20px; color:#2E7D32;">💰 Pagamento via PIX</h3>
+                <p style="margin-bottom:10px">Valor: <strong>R$ ${parseFloat(valor).toFixed(2)}</strong></p>
+                <p style="margin-bottom:20px">Copie o código PIX abaixo:</p>
+                <div style="background:#f5f5f5; padding:15px; border-radius:10px; margin-bottom:20px; word-break:break-all; font-size:12px; font-family:monospace;">
+                    ${codigoPix}
+                </div>
+                <button class="btn-criar-sala" onclick="navigator.clipboard.writeText('${codigoPix}'); alert('Código PIX copiado!');" style="margin-bottom:10px; width:100%">
+                    <i class="fas fa-copy"></i> Copiar Código PIX
+                </button>
+                <button class="botao botao-secundario" onclick="document.getElementById('modalQRCode').remove()" style="width:100%">
+                    Fechar
+                </button>
+                <p style="margin-top:15px; font-size:11px; color:#666;">Após o pagamento, a confirmação pode levar até 2 dias úteis.</p>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+// Função para gerar Boleto PDF
+window.gerarBoletoPDF = async (linhaDigitavel, valor, transacaoId) => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFillColor(46, 125, 50);
+    doc.rect(0, 0, 210, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text('SulSafe - Boleto Bancário', 105, 13, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.text('Documento de Arrecadação', 105, 30, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 50);
+    doc.text(`Data de Vencimento: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}`, 20, 60);
+    doc.text(`Linha Digitável:`, 20, 80);
+    
+    doc.setFontSize(8);
+    doc.text(linhaDigitavel, 20, 90);
+    
+    doc.setFontSize(10);
+    doc.text('Instruções:', 20, 110);
+    doc.setFontSize(8);
+    doc.text('1. Copie a linha digitável acima', 25, 120);
+    doc.text('2. Pague em qualquer banco ou internet banking', 25, 128);
+    doc.text('3. O pagamento pode levar até 2 dias úteis para ser confirmado', 25, 136);
+    
+    doc.save(`boleto_sulsafe_${transacaoId}.pdf`);
+    mostrarErro('📄 Boleto gerado! Faça o download do PDF.');
+};
+
+// Função para simular pagamento (teste)
+window.simularPagamento = async (transacaoId) => {
+    if(!confirm('Simular pagamento desta transação?')) return;
+    
+    const { error } = await supabase
+        .from('transacoes')
+        .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
+        .eq('id', transacaoId);
+    
+    if(error) {
+        mostrarErro('Erro: ' + error.message);
+    } else {
+        mostrarErro('✅ Pagamento simulado com sucesso!');
+        carregarMinhasTransacoes();
+        if(perfilUsuario === 'admin') carregarTodasTransacoes();
+    }
+};
+
+// Função para confirmar pagamento (admin)
+window.confirmarPagamentoSimulado = async (transacaoId) => {
+    if(perfilUsuario !== 'admin') {
+        mostrarErro('Apenas administradores podem confirmar pagamentos');
+        return;
+    }
+    
+    if(!confirm('Confirmar pagamento desta transação?')) return;
+    
+    const { error } = await supabase
+        .from('transacoes')
+        .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
+        .eq('id', transacaoId);
+    
+    if(error) {
+        mostrarErro('Erro: ' + error.message);
+    } else {
+        mostrarErro('✅ Pagamento confirmado!');
+        carregarMinhasTransacoes();
+        carregarTodasTransacoes();
+    }
+};
+
+// Função para pagar com cartão (Stripe)
+window.pagarComCartao = async (transacaoId, valor) => {
+    mostrarErro(`Redirecionando para pagamento de R$ ${valor}...`);
+    // Aqui você chamaria a função do Stripe
+    iniciarAssinaturaStripe();
+};
         
         // ========== FUNÇÕES DE BOLETIM ==========
         
