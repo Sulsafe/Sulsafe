@@ -221,6 +221,15 @@
         .btn-export{background:#2E7D32;color:white;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;margin-left:10px}
         .btn-export:hover{opacity:0.9}
         .chart-container{max-width:500px;margin:20px auto}
+        /* Estilos do boletim - fundo branco e letras verdes */
+        .boletim-tabela { width:100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+        .boletim-tabela th { background: #f5f5f5; border-bottom: 2px solid #2E7D32; padding: 12px; text-align: center; color: #2E7D32; }
+        .boletim-tabela td { border-bottom: 1px solid #e0e0e0; padding: 12px; text-align: center; color: #333; }
+        .boletim-tabela td strong { color: #2E7D32; }
+        .status-aprovado { color: #2E7D32; font-weight: bold; }
+        .status-reprovado { color: #D32F2F; font-weight: bold; }
+        .status-recuperacao { color: #FF9800; font-weight: bold; }
+        .status-pendente { color: #999; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -546,6 +555,7 @@
                 </div>
             </div>
 
+            <!-- VIEW BOLETIM (ADMIN) - FUNDO BRANCO E LETRAS VERDES -->
             <div id="viewBoletim" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
                 <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
@@ -558,6 +568,7 @@
                 </div>
             </div>
 
+            <!-- VIEW BOLETIM DO ALUNO - FUNDO BRANCO E LETRAS VERDES -->
             <div id="viewBoletimAluno" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
                 <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
@@ -617,23 +628,20 @@
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-        import { RealtimeChannel } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
         
         const supabase = createClient('https://dhhvhiyoxadcwsfqlndw.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ')
         
         const CONFIG = {nomeEmpresa:"SulSafe",logoUrl:"https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-assets/logo1.png",authRedirectUrl:window.location.origin + window.location.pathname}
-        let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = [], chartInstance = null, relatorioData = []
+        let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = [], currentChart = null, relatorioData = []
         let salaRealtimeChannel = null
 
-        // ========== FUNÇÕES DE CHAT EM TEMPO REAL (REALTIME) ==========
+        // ========== FUNÇÕES DE CHAT EM TEMPO REAL ==========
         
         async function iniciarRealtimeChat(salaId) {
             if(salaRealtimeChannel) {
                 await supabase.removeChannel(salaRealtimeChannel)
             }
-            
             salaRealtimeChannel = supabase.channel(`chat:${salaId}`)
-            
             salaRealtimeChannel
                 .on('broadcast', { event: 'mensagem' }, (payload) => {
                     const { sender, message, timestamp } = payload.payload
@@ -647,11 +655,7 @@
             salaRealtimeChannel.send({
                 type: 'broadcast',
                 event: 'mensagem',
-                payload: { 
-                    sender: usuarioAtual, 
-                    message: mensagem,
-                    timestamp: new Date().toISOString()
-                }
+                payload: { sender: usuarioAtual, message: mensagem, timestamp: new Date().toISOString() }
             })
         }
         
@@ -675,41 +679,21 @@
         
         // ========== FUNÇÕES DE RELATÓRIO COM GRÁFICOS E EXPORTAÇÃO ==========
         
-        let currentChart = null
-        
         function renderizarGraficoProgresso(alunos, progressos) {
             const ctx = document.getElementById('progressoChart')?.getContext('2d')
             if(!ctx) return
             if(currentChart) currentChart.destroy()
-            
             currentChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: alunos,
-                    datasets: [{
-                        label: 'Progresso (%)',
-                        data: progressos,
-                        backgroundColor: '#2E7D32',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Progresso (%)' } },
-                        x: { ticks: { autoSkip: true, maxRotation: 45 } }
-                    }
-                }
+                data: { labels: alunos, datasets: [{ label: 'Progresso (%)', data: progressos, backgroundColor: '#2E7D32', borderRadius: 8 }] },
+                options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, max: 100 } } }
             })
         }
         
         window.exportarRelatorioCSV = () => {
             if(!relatorioData.length) { mostrarErro('Nenhum dado para exportar'); return }
             let csv = 'Aluno,Aulas Assistidas,Total Aulas,Progresso (%),Status\n'
-            relatorioData.forEach(r => {
-                csv += `"${r.aluno}",${r.aulasAssistidas},${r.totalAulas},${r.percentual},${r.status}\n`
-            })
+            relatorioData.forEach(r => { csv += `"${r.aluno}",${r.aulasAssistidas},${r.totalAulas},${r.percentual},${r.status}\n` })
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
             const link = document.createElement('a')
             link.href = URL.createObjectURL(blob)
@@ -721,9 +705,7 @@
         window.exportarRelatorioExcel = () => {
             if(!relatorioData.length) { mostrarErro('Nenhum dado para exportar'); return }
             const wsData = [['Aluno', 'Aulas Assistidas', 'Total Aulas', 'Progresso (%)', 'Status']]
-            relatorioData.forEach(r => {
-                wsData.push([r.aluno, r.aulasAssistidas, r.totalAulas, r.percentual, r.status])
-            })
+            relatorioData.forEach(r => { wsData.push([r.aluno, r.aulasAssistidas, r.totalAulas, r.percentual, r.status]) })
             const ws = XLSX.utils.aoa_to_sheet(wsData)
             const wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, 'Relatório SulSafe')
@@ -769,19 +751,21 @@
         window.iniciarAssinaturaStripe = async () => {
             const PRICE_ID = 'price_1TiQI7KY6XfInCdDFDG5XKKJ'
             const statusDiv = document.getElementById('stripeStatus')
-            if(statusDiv) statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecionando para pagamento...'
+            if(statusDiv) statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecionando...'
             try {
                 const { data, error } = await supabase.functions.invoke('stripe-checkout', {
                     body: { priceId: PRICE_ID, userId: usuarioId, userEmail: usuarioAtual, successUrl: window.location.origin + window.location.pathname + '?payment=success', cancelUrl: window.location.origin + window.location.pathname + '?payment=cancel' }
                 })
                 if (error) throw new Error(error.message)
                 if (data?.url) window.location.href = data.url
-                else throw new Error('Resposta inválida do servidor')
+                else throw new Error('Resposta inválida')
             } catch (err) {
                 if(statusDiv) statusDiv.innerHTML = `<span style="color:var(--erro)">❌ Erro: ${err.message}</span>`
-                mostrarErro('Erro ao iniciar assinatura: ' + err.message)
+                mostrarErro('Erro: ' + err.message)
             }
         }
+        
+        // ========== TRANSAÇÕES CORRIGIDAS ==========
         
         async function carregarMinhasTransacoes() {
             const container = document.getElementById('minhasTransacoesContainer')
@@ -791,327 +775,123 @@
                 const { data, error } = await supabase.from('transacoes').select('*').eq('aluno_id', usuarioId).order('data_criacao', { ascending: false })
                 if(error) throw error
                 if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>'; return }
-                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th></tr></thead><tbody>'
+                
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>`
+                
                 for(const t of data) {
-                    let statusText = t.status === 'PAGO' ? '✅ PAGO' : (t.status === 'PENDENTE' ? '⏳ PENDENTE' : '❌ ' + t.status)
-                    html += `<tr><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td><td><span style="background:${t.status==='PAGO'?'#4CAF50':'#FF9800'}; color:white; padding:4px 12px; border-radius:20px">${statusText}</span></td><td>${new Date(t.data_criacao).toLocaleString()}</td></tr>`
+                    let statusStyle = '', statusText = ''
+                    if(t.status === 'PAGO') { statusStyle = 'background:#4CAF50; color:white'; statusText = '✅ PAGO' }
+                    else if(t.status === 'PENDENTE') { statusStyle = 'background:#FF9800; color:white'; statusText = '⏳ PENDENTE' }
+                    else { statusStyle = 'background:#F44336; color:white'; statusText = '❌ ' + t.status }
+                    
+                    let acoes = ''
+                    if(t.status === 'PENDENTE') {
+                        if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                            acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Boleto</button>`
+                        } else if(t.tipo === 'PIX' && t.qr_code) {
+                            acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`
+                        } else {
+                            acoes = `<button class="btn-entrar" onclick="simularPagamento('${t.id}')" style="background:#4CAF50; padding:4px 12px">Simular Pagamento</button>`
+                        }
+                    } else {
+                        acoes = `<span style="color:green"><i class="fas fa-check-circle"></i> Pago</span>`
+                    }
+                    
+                    html += `<tr><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td><td><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td>${new Date(t.data_criacao).toLocaleString()}</td><td>${acoes}</td></tr>`
                 }
-                html += '</tbody></table></div>'
+                html += `</tbody></table></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarMinhasTransacoes()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
                 container.innerHTML = html
-            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>'; }
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
         
-       // ========== FUNÇÕES DE TRANSAÇÕES CORRIGIDAS COM PAGAMENTO ==========
-
-async function carregarMinhasTransacoes() {
-    const container = document.getElementById('minhasTransacoesContainer');
-    if(!container) return;
-    
-    container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando suas transações...</p>';
-    
-    try {
-        const { data, error } = await supabase
-            .from('transacoes')
-            .select('*')
-            .eq('aluno_id', usuarioId)
-            .order('data_criacao', { ascending: false });
-        
-        if(error) throw error;
-        
-        if(!data || data.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
-            return;
-        }
-        
-        let html = `<div style="overflow-x: auto;">
-            <table style="width:100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background: #2E7D32; color: white;">
-                        <th style="padding:12px">Tipo</th>
-                        <th style="padding:12px">Valor</th>
-                        <th style="padding:12px">Status</th>
-                        <th style="padding:12px">Data</th>
-                        <th style="padding:12px">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-        
-        for(const t of data) {
-            let statusStyle = '', statusText = '';
-            if(t.status === 'PAGO') {
-                statusStyle = 'background:#4CAF50; color:white';
-                statusText = '✅ PAGO';
-            } else if(t.status === 'PENDENTE') {
-                statusStyle = 'background:#FF9800; color:white';
-                statusText = '⏳ PENDENTE';
-            } else {
-                statusStyle = 'background:#F44336; color:white';
-                statusText = '❌ ' + t.status;
-            }
-            
-            let acoes = '';
-            
-            // Botão de pagamento para transações pendentes
-            if(t.status === 'PENDENTE') {
-                if(t.tipo === 'PIX' && t.qr_code) {
-                    acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:8px 12px; margin-right:5px">
-                        <i class="fab fa-pix"></i> Copiar PIX
-                    </button>
-                    <button class="btn-entrar" onclick="gerarQRCodePagamento('${t.qr_code}', '${t.valor}')" style="background:#00875A; padding:8px 12px">
-                        <i class="fas fa-qrcode"></i> Ver QR Code
-                    </button>`;
-                } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
-                    acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:8px 12px; margin-right:5px">
-                        <i class="fas fa-barcode"></i> Copiar Linha Digitável
-                    </button>
-                    <button class="btn-entrar" onclick="gerarBoletoPDF('${t.boleto_linha_digitavel}', '${t.valor}', '${t.id}')" style="background:#D32F2F; padding:8px 12px">
-                        <i class="fas fa-file-pdf"></i> Ver Boleto PDF
-                    </button>`;
-                } else if(t.tipo === 'CARTÃO') {
-                    acoes = `<button class="btn-entrar" onclick="pagarComCartao('${t.id}', '${t.valor}')" style="background:#635BFF; padding:8px 12px">
-                        <i class="fab fa-stripe"></i> Pagar com Cartão
-                    </button>`;
-                } else {
-                    acoes = `<button class="btn-entrar" onclick="simularPagamento('${t.id}')" style="background:#4CAF50; padding:8px 12px">
-                        <i class="fas fa-check"></i> Simular Pagamento
-                    </button>`;
+        async function carregarTodasTransacoes() {
+            if(perfilUsuario !== 'admin') return
+            const container = document.getElementById('todasTransacoesContainer')
+            if(!container) return
+            container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
+            try {
+                const { data, error } = await supabase.from('transacoes').select('*').order('data_criacao', { ascending: false })
+                if(error) throw error
+                if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação.</p>'; return }
+                
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>`
+                
+                for(const t of data) {
+                    let statusStyle = '', statusText = ''
+                    if(t.status === 'PAGO') { statusStyle = 'background:#4CAF50; color:white'; statusText = '✅ PAGO' }
+                    else if(t.status === 'PENDENTE') { statusStyle = 'background:#FF9800; color:white'; statusText = '⏳ PENDENTE' }
+                    else { statusStyle = 'background:#F44336; color:white'; statusText = '❌ ' + t.status }
+                    
+                    let acoes = ''
+                    if(t.status === 'PENDENTE') {
+                        acoes = `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; padding:4px 12px">Confirmar</button>`
+                    }
+                    
+                    html += `<tr><td>${escapeHtml(t.aluno_email)}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td><td><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td>${new Date(t.data_criacao).toLocaleString()}</td><td>${acoes}</td></tr>`
                 }
-            } else {
-                acoes = `<span style="color:green"><i class="fas fa-check-circle"></i> Pago</span>`;
-            }
-            
-            html += `<tr style="border-bottom: 1px solid var(--borda);">
-                <td style="padding:12px">${t.tipo}</td>
-                <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
-                <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
-                <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
-                <td style="padding:12px">${acoes}</td>
-              </tr>`;
+                html += `</tbody></table></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
+                container.innerHTML = html
+            } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
         
-        html += `</tbody>
-            </table>
-            <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--texto-sec);">
-                <i class="fas fa-clock"></i> Última atualização: ${new Date().toLocaleTimeString()}
-                <button class="btn-criar-sala" onclick="carregarMinhasTransacoes()" style="margin-left: 15px; padding: 5px 12px; font-size: 12px;">
-                    <i class="fas fa-sync-alt"></i> Atualizar
-                </button>
-            </div>
-        </div>`;
-        
-        container.innerHTML = html;
-        
-    } catch(err) {
-        console.error('Erro:', err);
-        container.innerHTML = '<p style="color:red">Erro ao carregar transações: ' + err.message + '</p>';
-        mostrarErro('Erro ao carregar transações: ' + err.message);
-    }
-}
-
-async function carregarTodasTransacoes() {
-    if(perfilUsuario !== 'admin') return;
-    
-    const container = document.getElementById('todasTransacoesContainer');
-    if(!container) return;
-    
-    container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando todas as transações...</p>';
-    
-    try {
-        const { data, error } = await supabase
-            .from('transacoes')
-            .select('*')
-            .order('data_criacao', { ascending: false });
-        
-        if(error) throw error;
-        
-        if(!data || data.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>';
-            return;
+        window.simularPagamento = async (transacaoId) => {
+            if(!confirm('Simular pagamento?')) return
+            const { error } = await supabase.from('transacoes').update({ status: 'PAGO', data_pagamento: new Date().toISOString() }).eq('id', transacaoId)
+            if(error) mostrarErro('Erro: ' + error.message)
+            else { mostrarErro('✅ Pagamento simulado!'); carregarMinhasTransacoes(); if(perfilUsuario === 'admin') carregarTodasTransacoes() }
         }
         
-        let html = `<div style="overflow-x: auto;">
-            <table style="width:100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background: #2E7D32; color: white;">
-                        <th style="padding:12px">Aluno</th>
-                        <th style="padding:12px">Tipo</th>
-                        <th style="padding:12px">Valor</th>
-                        <th style="padding:12px">Status</th>
-                        <th style="padding:12px">Data</th>
-                        <th style="padding:12px">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-        
-        for(const t of data) {
-            let statusStyle = '', statusText = '';
-            if(t.status === 'PAGO') {
-                statusStyle = 'background:#4CAF50; color:white';
-                statusText = '✅ PAGO';
-            } else if(t.status === 'PENDENTE') {
-                statusStyle = 'background:#FF9800; color:white';
-                statusText = '⏳ PENDENTE';
-            } else {
-                statusStyle = 'background:#F44336; color:white';
-                statusText = '❌ ' + t.status;
-            }
-            
-            let acoes = '';
-            if(t.status === 'PENDENTE') {
-                acoes = `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; padding:4px 12px">Confirmar Pagamento</button>`;
-            } else {
-                acoes = `<span style="color:green">✅ Pago</span>`;
-            }
-            
-            html += `<tr style="border-bottom: 1px solid var(--borda);">
-                <td style="padding:12px">${escapeHtml(t.aluno_email)}</td>
-                <td style="padding:12px">${t.tipo}</td>
-                <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
-                <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
-                <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
-                <td style="padding:12px">${acoes}</td>
-              </tr>`;
+        window.confirmarPagamentoSimulado = async (transacaoId) => {
+            if(perfilUsuario !== 'admin') { mostrarErro('Apenas admin'); return }
+            if(!confirm('Confirmar pagamento?')) return
+            const { error } = await supabase.from('transacoes').update({ status: 'PAGO', data_pagamento: new Date().toISOString() }).eq('id', transacaoId)
+            if(error) mostrarErro('Erro: ' + error.message)
+            else { mostrarErro('✅ Pagamento confirmado!'); carregarMinhasTransacoes(); carregarTodasTransacoes() }
         }
         
-        html += `</tbody>
-            <table>
-            <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--texto-sec);">
-                <i class="fas fa-clock"></i> Última atualização: ${new Date().toLocaleTimeString()}
-                <button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="margin-left: 15px; padding: 5px 12px; font-size: 12px;">
-                    <i class="fas fa-sync-alt"></i> Atualizar
-                </button>
-            </div>
-        </div>`;
+        window.copiarTexto = (texto) => { navigator.clipboard.writeText(texto); mostrarErro('📋 Código copiado!') }
         
-        container.innerHTML = html;
+        let tipoPagamentoManualAtual = ''
+        window.abrirModalGerarPagamentoManual = async (tipo) => {
+            if(perfilUsuario !== 'admin') { mostrarErro('Apenas admin'); return; }
+            tipoPagamentoManualAtual = tipo
+            document.getElementById('modalPagamentoManualTitulo').innerHTML = tipo === 'PIX' ? '💰 Gerar PIX' : '📄 Gerar Boleto'
+            const select = document.getElementById('pagamentoManualAlunoId')
+            const { data: alunos } = await supabase.from('profiles').select('id,email').eq('role', 'aluno')
+            select.innerHTML = '<option value="">Selecione...</option>'
+            alunos.forEach(aluno => { select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>` })
+            document.getElementById('modalPagamentoManual').style.display = 'flex'
+        }
+        window.fecharModalPagamentoManual = () => { document.getElementById('modalPagamentoManual').style.display = 'none' }
+        window.gerarPagamentoManual = async () => {
+            const alunoId = document.getElementById('pagamentoManualAlunoId')?.value
+            const valor = parseFloat(document.getElementById('pagamentoManualValor')?.value || '0')
+            const descricao = document.getElementById('pagamentoManualDescricao')?.value || `${tipoPagamentoManualAtual} - ${new Date().toLocaleString()}`
+            if(!alunoId || !valor) { mostrarErro('Preencha os campos'); return }
+            const { data: aluno } = await supabase.from('profiles').select('email').eq('id', alunoId).single()
+            const codigoSimulado = `${tipoPagamentoManualAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase()
+            const dadosInserir = { aluno_id: alunoId, aluno_email: aluno.email, tipo: tipoPagamentoManualAtual, valor: valor, status: 'PENDENTE', descricao: descricao, data_criacao: new Date().toISOString() }
+            if(tipoPagamentoManualAtual === 'PIX') dadosInserir.qr_code = codigoSimulado
+            else dadosInserir.boleto_linha_digitavel = codigoSimulado
+            const { error } = await supabase.from('transacoes').insert(dadosInserir)
+            if(error) mostrarErro('Erro: ' + error.message)
+            else { mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado!`); window.fecharModalPagamentoManual(); carregarMinhasTransacoes(); carregarTodasTransacoes() }
+        }
         
-    } catch(err) {
-        console.error('Erro:', err);
-        container.innerHTML = '<p style="color:red">Erro ao carregar transações: ' + err.message + '</p>';
-        mostrarErro('Erro ao carregar transações: ' + err.message);
-    }
-}
-
-// Função para gerar QR Code do PIX
-window.gerarQRCodePagamento = (codigoPix, valor) => {
-    // Criar modal para mostrar QR Code
-    const modalHtml = `
-        <div id="modalQRCode" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; justify-content:center; align-items:center;">
-            <div style="background:white; border-radius:20px; padding:24px; max-width:400px; text-align:center;">
-                <h3 style="margin-bottom:20px; color:#2E7D32;">💰 Pagamento via PIX</h3>
-                <p style="margin-bottom:10px">Valor: <strong>R$ ${parseFloat(valor).toFixed(2)}</strong></p>
-                <p style="margin-bottom:20px">Copie o código PIX abaixo:</p>
-                <div style="background:#f5f5f5; padding:15px; border-radius:10px; margin-bottom:20px; word-break:break-all; font-size:12px; font-family:monospace;">
-                    ${codigoPix}
-                </div>
-                <button class="btn-criar-sala" onclick="navigator.clipboard.writeText('${codigoPix}'); alert('Código PIX copiado!');" style="margin-bottom:10px; width:100%">
-                    <i class="fas fa-copy"></i> Copiar Código PIX
-                </button>
-                <button class="botao botao-secundario" onclick="document.getElementById('modalQRCode').remove()" style="width:100%">
-                    Fechar
-                </button>
-                <p style="margin-top:15px; font-size:11px; color:#666;">Após o pagamento, a confirmação pode levar até 2 dias úteis.</p>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-};
-
-// Função para gerar Boleto PDF
-window.gerarBoletoPDF = async (linhaDigitavel, valor, transacaoId) => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    doc.setFillColor(46, 125, 50);
-    doc.rect(0, 0, 210, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.text('SulSafe - Boleto Bancário', 105, 13, { align: 'center' });
-    
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(12);
-    doc.text('Documento de Arrecadação', 105, 30, { align: 'center' });
-    
-    doc.setFontSize(10);
-    doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 50);
-    doc.text(`Data de Vencimento: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}`, 20, 60);
-    doc.text(`Linha Digitável:`, 20, 80);
-    
-    doc.setFontSize(8);
-    doc.text(linhaDigitavel, 20, 90);
-    
-    doc.setFontSize(10);
-    doc.text('Instruções:', 20, 110);
-    doc.setFontSize(8);
-    doc.text('1. Copie a linha digitável acima', 25, 120);
-    doc.text('2. Pague em qualquer banco ou internet banking', 25, 128);
-    doc.text('3. O pagamento pode levar até 2 dias úteis para ser confirmado', 25, 136);
-    
-    doc.save(`boleto_sulsafe_${transacaoId}.pdf`);
-    mostrarErro('📄 Boleto gerado! Faça o download do PDF.');
-};
-
-// Função para simular pagamento (teste)
-window.simularPagamento = async (transacaoId) => {
-    if(!confirm('Simular pagamento desta transação?')) return;
-    
-    const { error } = await supabase
-        .from('transacoes')
-        .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
-        .eq('id', transacaoId);
-    
-    if(error) {
-        mostrarErro('Erro: ' + error.message);
-    } else {
-        mostrarErro('✅ Pagamento simulado com sucesso!');
-        carregarMinhasTransacoes();
-        if(perfilUsuario === 'admin') carregarTodasTransacoes();
-    }
-};
-
-// Função para confirmar pagamento (admin)
-window.confirmarPagamentoSimulado = async (transacaoId) => {
-    if(perfilUsuario !== 'admin') {
-        mostrarErro('Apenas administradores podem confirmar pagamentos');
-        return;
-    }
-    
-    if(!confirm('Confirmar pagamento desta transação?')) return;
-    
-    const { error } = await supabase
-        .from('transacoes')
-        .update({ status: 'PAGO', data_pagamento: new Date().toISOString() })
-        .eq('id', transacaoId);
-    
-    if(error) {
-        mostrarErro('Erro: ' + error.message);
-    } else {
-        mostrarErro('✅ Pagamento confirmado!');
-        carregarMinhasTransacoes();
-        carregarTodasTransacoes();
-    }
-};
-
-// Função para pagar com cartão (Stripe)
-window.pagarComCartao = async (transacaoId, valor) => {
-    mostrarErro(`Redirecionando para pagamento de R$ ${valor}...`);
-    // Aqui você chamaria a função do Stripe
-    iniciarAssinaturaStripe();
-};
-        
-        // ========== FUNÇÕES DE BOLETIM ==========
+        // ========== FUNÇÕES DE BOLETIM (FUNDO BRANCO E LETRAS VERDES) ==========
         
         async function carregarBoletimAdmin() {
             const container = document.getElementById('boletimContainer')
             if(!container) return
-            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>'
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
             try {
-                const {data: alunos} = await supabase.from('profiles').select('id,email')
-                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true)
-                const {data: notas} = await supabase.from('notas').select('*')
+                const { data: alunos } = await supabase.from('profiles').select('id,email')
+                const { data: disciplinas } = await supabase.from('disciplinas').select('*').eq('ativa', true)
+                const { data: notas } = await supabase.from('notas').select('*')
                 const notasPorAluno = {}
                 notas?.forEach(nota => { if(!notasPorAluno[nota.aluno_id]) notasPorAluno[nota.aluno_id] = {}; notasPorAluno[nota.aluno_id][nota.disciplina_id] = nota })
-                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th>' + (disciplinas?.map(d => `<th>${escapeHtml(d.nome)}</th>`).join('')) + '<th>Média Final</th><th>Situação</th></tr></thead><tbody>'
+                
+                let html = `<table class="boletim-tabela"><thead><tr><th>Aluno</th>${disciplinas?.map(d => `<th>${escapeHtml(d.nome)}</th>`).join('')}<th>Média Final</th><th>Situação</th></tr></thead><tbody>`
                 for(const aluno of alunos) {
                     let somaMedias = 0, disciplinasContadas = 0
                     html += `<tr><td>${escapeHtml(aluno.email)}</td>`
@@ -1124,13 +904,19 @@ window.pagarComCartao = async (transacaoId, valor) => {
                             if(nota.recuperacao > m) m = (m + parseFloat(nota.recuperacao))/2
                             media = m.toFixed(1); somaMedias += m; disciplinasContadas++
                         }
-                        html += `<td>${media}</td>`
+                        html += `<td><strong>${media}</strong></td>`
                     }
                     const mediaFinal = disciplinasContadas > 0 ? (somaMedias/disciplinasContadas).toFixed(1) : '-'
-                    const situacao = mediaFinal !== '-' ? (parseFloat(mediaFinal) >= 6 ? '✅ APROVADO' : (parseFloat(mediaFinal) >= 4 ? '🟡 RECUPERAÇÃO' : '❌ REPROVADO')) : '⏳ PENDENTE'
-                    html += `<td><strong>${mediaFinal}</strong></td><td>${situacao}</td></tr>`
+                    let situacaoClass = 'status-pendente', situacaoText = '⏳ PENDENTE'
+                    if(mediaFinal !== '-') {
+                        const mf = parseFloat(mediaFinal)
+                        if(mf >= 6) { situacaoClass = 'status-aprovado'; situacaoText = '✅ APROVADO' }
+                        else if(mf >= 4) { situacaoClass = 'status-recuperacao'; situacaoText = '🟡 RECUPERAÇÃO' }
+                        else { situacaoClass = 'status-reprovado'; situacaoText = '❌ REPROVADO' }
+                    }
+                    html += `<td><strong>${mediaFinal}</strong></td><td class="${situacaoClass}">${situacaoText}</td></tr>`
                 }
-                html += '</tbody></table></div>'
+                html += `</tbody></table><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
                 container.innerHTML = html
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
@@ -1138,28 +924,32 @@ window.pagarComCartao = async (transacaoId, valor) => {
         async function carregarBoletimAluno() {
             const container = document.getElementById('boletimAlunoContainer')
             if(!container) return
-            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>'
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
             try {
-                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true)
-                const {data: notas} = await supabase.from('notas').select('*').eq('aluno_id', usuarioId)
-                if(!disciplinas?.length) { container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma disciplina cadastrada.</p>'; return }
-                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Disciplina</th><th>Nota 1</th><th>Nota 2</th><th>Nota 3</th><th>Média</th><th>Faltas</th><th>Situação</th></tr></thead><tbody>'
+                const { data: disciplinas } = await supabase.from('disciplinas').select('*').eq('ativa', true)
+                const { data: notas } = await supabase.from('notas').select('*').eq('aluno_id', usuarioId)
+                if(!disciplinas?.length) { container.innerHTML = '<p>Nenhuma disciplina.</p>'; return }
+                
+                let html = `<table class="boletim-tabela"><thead><tr><th>Disciplina</th><th>Nota 1</th><th>Nota 2</th><th>Nota 3</th><th>Média</th><th>Faltas</th><th>Situação</th></tr></thead><tbody>`
                 let somaMedias = 0, disciplinasContadas = 0
                 for(const disc of disciplinas) {
                     const nota = notas?.find(n => n.disciplina_id === disc.id)
-                    let n1 = '-', n2 = '-', n3 = '-', media = '-', faltas = '-', situacao = '⏳ Pendente'
+                    let n1 = '-', n2 = '-', n3 = '-', media = '-', faltas = '-'
+                    let situacaoClass = 'status-pendente', situacaoText = '⏳ Pendente'
                     if(nota && nota.media_final) {
                         n1 = nota.nota1 || '-'; n2 = nota.nota2 || '-'; n3 = nota.nota3 || '-'
                         faltas = nota.faltas || 0
                         media = nota.media_final.toFixed(1)
                         somaMedias += nota.media_final; disciplinasContadas++
-                        situacao = nota.media_final >= 6 ? '✅ Aprovado' : (nota.media_final >= 4 ? '🟡 Recuperação' : '❌ Reprovado')
+                        if(nota.media_final >= 6) { situacaoClass = 'status-aprovado'; situacaoText = '✅ Aprovado' }
+                        else if(nota.media_final >= 4) { situacaoClass = 'status-recuperacao'; situacaoText = '🟡 Recuperação' }
+                        else { situacaoClass = 'status-reprovado'; situacaoText = '❌ Reprovado' }
                     }
-                    html += `<tr><td>${escapeHtml(disc.nome)}</td><td>${n1}</td><td>${n2}</td><td>${n3}</td><td><strong>${media}</strong></td><td>${faltas}</td><td>${situacao}</td></tr>`
+                    html += `<tr><td>${escapeHtml(disc.nome)}</td><td>${n1}</td><td>${n2}</td><td>${n3}</td><td><strong>${media}</strong></td><td>${faltas}</td><td class="${situacaoClass}">${situacaoText}</td></tr>`
                 }
                 const mediaGeral = disciplinasContadas > 0 ? (somaMedias / disciplinasContadas).toFixed(1) : '-'
                 html += `<tr style="background:#f5f5f5"><td colspan="4"><strong>Média Geral:</strong></td><td><strong>${mediaGeral}</strong></td><td colspan="2"></td></tr>`
-                html += '</tbody></table></div>'
+                html += `</tbody></table><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarBoletimAluno()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
                 container.innerHTML = html
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
@@ -1171,45 +961,41 @@ window.pagarComCartao = async (transacaoId, valor) => {
             if(!container) return
             container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
             try {
-                const {data: alunos} = await supabase.from('profiles').select('id,email,role')
+                const { data: alunos } = await supabase.from('profiles').select('id,email,role')
                 const alunosList = alunos?.filter(p => p.role === 'aluno') || []
-                const {data: aulas} = await supabase.from('videoaulas').select('id')
+                const { data: aulas } = await supabase.from('videoaulas').select('id')
                 const totalAulas = aulas?.length || 0
-                const {data: progresso} = await supabase.from('progresso_aulas').select('user_id,aula_id').eq("concluído", true)
+                const { data: progresso } = await supabase.from('progresso_aulas').select('user_id,aula_id').eq("concluído", true)
                 const progressoPorAluno = {}
                 progresso?.forEach(p => { if(!progressoPorAluno[p.user_id]) progressoPorAluno[p.user_id] = []; progressoPorAluno[p.user_id].push(p.aula_id) })
                 
                 relatorioData = []
-                const alunosNomes = []
-                const alunosProgressos = []
-                
+                const alunosNomes = [], alunosProgressos = []
                 for(const aluno of alunosList) {
                     const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0
                     const percentual = totalAulas > 0 ? Math.round((aulasAssistidas/totalAulas)*100) : 0
-                    const status = percentual === 100 ? '✅ Concluído' : (percentual > 0 ? '🟡 Em andamento' : '🔴 Não iniciado')
                     alunosNomes.push(aluno.email.split('@')[0])
                     alunosProgressos.push(percentual)
-                    relatorioData.push({ aluno: aluno.email.split('@')[0], aulasAssistidas, totalAulas, percentual, status })
+                    relatorioData.push({ aluno: aluno.email.split('@')[0], aulasAssistidas, totalAulas, percentual, status: percentual === 100 ? 'Concluído' : (percentual > 0 ? 'Em andamento' : 'Não iniciado') })
                 }
-                
                 renderizarGraficoProgresso(alunosNomes, alunosProgressos)
                 
                 let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th><th>Aulas</th><th>Progresso</th><th>Status</th><th>Certificado</th></tr></thead><tbody>'
                 for(const aluno of alunosList) {
                     const aulasAssistidas = progressoPorAluno[aluno.id]?.length || 0
                     const percentual = totalAulas > 0 ? Math.round((aulasAssistidas/totalAulas)*100) : 0
-                    const botaoCertificado = percentual === 100 ? `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}','${aluno.email}')" style="padding:4px 8px; font-size:11px">Certificado</button>` : '<span style="color:gray">⏳ Aguarde 100%</span>'
-                    html += `<tr><td>${aluno.email}</td><td style="text-align:center">${aulasAssistidas} / ${totalAulas}</td><td><div style="background:#e0e0e0; border-radius:20px; height:8px"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td>${percentual===100?'✅ Concluído':(percentual>0?'🟡 Em andamento':'🔴 Não iniciado')}</td><td style="text-align:center">${botaoCertificado}</td></tr>`
+                    const botaoCertificado = percentual === 100 ? `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}','${aluno.email}')" style="padding:4px 8px">Certificado</button>` : '<span style="color:gray">⏳ 100%</span>'
+                    html += `<tr><td>${aluno.email}</td><td style="text-align:center">${aulasAssistidas}/${totalAulas}</td><td><div style="background:#e0e0e0; border-radius:20px; height:8px"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td>${percentual===100?'✅ Concluído':(percentual>0?'🟡 Em andamento':'🔴 Não iniciado')}</td><td style="text-align:center">${botaoCertificado}</td></tr>`
                 }
-                html += '</tbody>}</div>'
+                html += '</tbody>}</div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>'
                 container.innerHTML = html
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
         
         window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
-            const {data: progresso} = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq("concluído", true)
+            const { data: progresso } = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq("concluído", true)
             if(!progresso?.length) { mostrarErro('Aluno não concluiu nenhuma aula.'); return }
-            const {data: aulas} = await supabase.from('videoaulas').select('nr').in('id', progresso.map(p => p.aula_id))
+            const { data: aulas } = await supabase.from('videoaulas').select('nr').in('id', progresso.map(p => p.aula_id))
             const nrs = [...new Set(aulas.map(a => a.nr).filter(Boolean))]
             const nome = alunoEmail.split('@')[0]
             const { jsPDF } = window.jspdf
@@ -1300,7 +1086,7 @@ window.pagarComCartao = async (transacaoId, valor) => {
             if(senha.length<6){alert('Senha mínimo 6 caracteres');return}
             const {error}=await supabase.auth.signUp({email:email.trim(),password:senha,options:{data:{nome_completo:nome,role:'aluno'},emailRedirectTo:CONFIG.authRedirectUrl}})
             if(error){alert(traduzirErroAuth(error.message));return}
-            alert('Conta criada! Confirme seu e-mail e depois faça login.');mostrarTela('login')
+            alert('Conta criada! Confirme seu e-mail.');mostrarTela('login')
         }
         
         window.recuperarSenha=async()=>{
@@ -1323,7 +1109,7 @@ window.pagarComCartao = async (transacaoId, valor) => {
             carregarEquipe()
             renderizarProgressoHome()
             const urlParams = new URLSearchParams(window.location.search)
-            if(urlParams.get('payment') === 'success') { mostrarErro('✅ Pagamento realizado com sucesso!'); window.history.replaceState({}, document.title, window.location.pathname) }
+            if(urlParams.get('payment') === 'success') { mostrarErro('✅ Pagamento realizado!'); window.history.replaceState({}, document.title, window.location.pathname) }
             else if(urlParams.get('payment') === 'cancel') { mostrarErro('❌ Pagamento cancelado.'); window.history.replaceState({}, document.title, window.location.pathname) }
         }
         
@@ -1343,7 +1129,7 @@ window.pagarComCartao = async (transacaoId, valor) => {
             try{const{data}=await supabase.from('videoaulas').select('*').order('criado_em',{ascending:true});if(data?.length)aulas=data;else aulas=getAulasLocal()}catch{aulas=getAulasLocal()}
             todasAulas=aulas
             const aulasFiltradas=filtroNR==='todos'?aulas:aulas.filter(a=>a.nr===filtroNR)
-            if(!aulasFiltradas.length){container.innerHTML='<p>Nenhuma videoaula publicada ainda.</p>';renderizarProgressoAulas(aulas);return}
+            if(!aulasFiltradas.length){container.innerHTML='<p>Nenhuma videoaula.</p>';renderizarProgressoAulas(aulas);return}
             const progresso=getProgressoLocal()
             container.innerHTML=aulasFiltradas.map(aula=>{const ytId=extrairYoutubeId(aula.youtube_url);const concluida=!!progresso[aula.id];return`
                 <div class="aula-card"><div class="aula-thumb" onclick="abrirVideo('${escapeHtml(aula.youtube_url||'')}')">
