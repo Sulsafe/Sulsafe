@@ -352,7 +352,9 @@
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
                 <div class="salas-controls">
                     <input type="text" id="meetingName" placeholder="Ex: Aula NR-35 — Trabalho em Altura">
-                    <button class="btn-criar-sala" onclick="criarReuniaoLocal()"><i class="fas fa-plus-circle"></i> CRIAR SALA</button>
+                    <button class="btn-criar-sala" id="btnCriarSala" onclick="criarReuniaoLocal()">
+                        <i class="fas fa-plus-circle"></i> CRIAR SALA
+                    </button>
                 </div>
                 <ul class="meeting-list" id="meetingList"></ul>
             </div>
@@ -631,7 +633,7 @@
         let salaRealtimeChannel = null
         let equipeAtualId = null
 
-        // ========== FUNÇÕES DE EQUIPE COM SUPABASE ==========
+        // ========== FUNÇÕES DE EQUIPE COM SUPABASE (CORRIGIDA) ==========
 
         async function carregarEquipe() {
             if(!usuarioId) {
@@ -1070,7 +1072,7 @@
                 if(error) throw error
                 if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação.</p>'; return }
                 
-                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>`
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th>Aluno</th><th>Tipo</th><th>Valor</th><th>Status</th><th>Data</th><th>Ações</th><tr></thead><tbody>`
                 
                 for(const t of data) {
                     let statusStyle = '', statusText = ''
@@ -1085,7 +1087,7 @@
                     
                     html += `<tr><td>${escapeHtml(t.aluno_email)}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td><td><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td>${new Date(t.data_criacao).toLocaleString()}</td><td>${acoes}</td></tr>`
                 }
-                html += `</tbody></tr></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
+                html += `</tbody></table></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
                 container.innerHTML = html
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
@@ -1151,7 +1153,7 @@
                 
                 for(const aluno of alunos) {
                     let somaMedias = 0, disciplinasContadas = 0
-                    html += `<tr style="border-bottom: 1px solid #e0e0e0;"><td style="padding:12px; text-align:center; color: #333;">${escapeHtml(aluno.email)}</td>`
+                    html += `<tr style="border-bottom: 1px solid #e0e0e0;"><td style="padding:12px; text-align:center; color: #333;">${escapeHtml(aluno.email)}<td>`
                     
                     for(const disc of disciplinas || []) {
                         const nota = notasPorAluno[aluno.id]?.[disc.id]
@@ -1174,7 +1176,8 @@
                         else { situacaoClass = 'status-reprovado'; situacaoText = '❌ REPROVADO' }
                     }
                     html += `<td style="padding:12px; text-align:center; font-weight: bold; color: #2E7D32;">${mediaFinal}</td>`
-                    html += `<td style="padding:12px; text-align:center; color: ${situacaoClass === 'status-aprovado' ? '#2E7D32' : (situacaoClass === 'status-recuperacao' ? '#FF9800' : '#D32F2F')}; font-weight: bold;">${situacaoText}</td></tr>`
+                    html += `<td style="padding:12px; text-align:center; color: ${situacaoClass === 'status-aprovado' ? '#2E7D32' : (situacaoClass === 'status-recuperacao' ? '#FF9800' : '#D32F2F')}; font-weight: bold;">${situacaoText}</td>`
+                    html += `<tr>`
                 }
                 
                 html += `</tbody></table></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>`
@@ -1248,7 +1251,7 @@
                     const botaoCertificado = percentual === 100 ? `<button class="btn-criar-sala" onclick="gerarCertificadoAluno('${aluno.id}','${aluno.email}')" style="padding:4px 8px">Certificado</button>` : '<span style="color:gray">⏳ 100%</span>'
                     html += `<tr><td>${aluno.email}</td><td style="text-align:center">${aulasAssistidas}/${totalAulas}</td><td><div style="background:#e0e0e0; border-radius:20px; height:8px"><div style="background:#2E7D32; border-radius:20px; height:8px; width:${percentual}%"></div></div>${percentual}%</td><td>${percentual===100?'✅ Concluído':(percentual>0?'🟡 Em andamento':'🔴 Não iniciado')}</td><td style="text-align:center">${botaoCertificado}</td></tr>`
                 }
-                html += '</tbody></table></div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>'
+                html += '</tbody>}</div><div style="margin-top:15px; text-align:center"><button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:5px 12px"><i class="fas fa-sync-alt"></i> Atualizar</button></div>'
                 container.innerHTML = html
             } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
         }
@@ -1339,6 +1342,12 @@
             if(adminTransacoesCard) adminTransacoesCard.style.display = isAdmin ? 'block' : 'none'
             const assinaturaCard = document.getElementById('assinaturaStripeCard')
             if(assinaturaCard) assinaturaCard.style.display = !isAdmin ? 'block' : 'none'
+            
+            // Ocultar botão criar sala para alunos
+            const btnCriarSala = document.getElementById('btnCriarSala');
+            if(btnCriarSala) {
+                btnCriarSala.style.display = isProfessor ? 'inline-flex' : 'none';
+            }
         }
         
         window.fazerCadastro=async()=>{
@@ -1431,7 +1440,28 @@
         
         function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
         window.atualizarListaSalas=()=>{const container=document.getElementById('meetingList');const salas=getSalas();if(!salas.length){container.innerHTML='<li>Nenhuma sala ativa.</li>';return};container.innerHTML='';salas.forEach(sala=>{const li=document.createElement('li');li.className='meeting-card';li.innerHTML=`<div><div class="meeting-topic">${escapeHtml(sala.topic)}</div><div class="meeting-id">${escapeHtml(sala.id)}</div></div><button class="btn-entrar" onclick="entrarSala('${sala.id}','${escapeHtml(sala.topic)}','${escapeHtml(sala.leader)}')">ENTRAR</button>`;container.appendChild(li)})}
-        window.criarReuniaoLocal=()=>{const nome=document.getElementById('meetingName').value.trim();if(!nome)return;const salas=getSalas();salas.push({id:'ss-'+Date.now(),topic:nome,leader:usuarioAtual});localStorage.setItem('sulsafe_salas',JSON.stringify(salas));document.getElementById('meetingName').value='';atualizarListaSalas()}
+        window.criarReuniaoLocal = () => {
+            // Verificar se é professor ou admin
+            if(!ehProfessor) {
+                mostrarErro('Apenas professores e administradores podem criar salas.');
+                return;
+            }
+            const nome = document.getElementById('meetingName').value.trim();
+            if(!nome) {
+                mostrarErro('Digite um nome para a sala');
+                return;
+            }
+            if(!usuarioAtual) {
+                mostrarErro('Usuário não logado');
+                return;
+            }
+            const salas = getSalas();
+            salas.push({ id: 'ss-' + Date.now(), topic: nome, leader: usuarioAtual });
+            localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
+            document.getElementById('meetingName').value = '';
+            atualizarListaSalas();
+            mostrarErro('✅ Sala criada com sucesso!');
+        };
         
         function carregarHistoricoLocal(id){const h=JSON.parse(localStorage.getItem(`sulsafe_chat_${id}`)||'[]');const div=document.getElementById('chatMessages');div.innerHTML='<div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo!</div></div>';h.forEach(m=>adicionarMensagemChatDOM(m.sender,m.message,m.sender===usuarioAtual,m.timestamp))}
         
