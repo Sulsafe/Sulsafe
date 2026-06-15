@@ -295,7 +295,7 @@
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
                 <div class="nav-item" id="navRelatorio" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
-                <div class="nav-item" id="navFinanceiro" data-view="financeiro" style="display:none"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
+                <div class="nav-item" id="navFinanceiro" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
                 <div class="nav-item" id="navBoletim" data-view="boletim"><i class="fas fa-chart-simple"></i><span>Boletim</span></div>
                 <div class="nav-item" id="navConfig" data-view="config" style="display:none"><i class="fas fa-cog"></i><span>Configurações</span></div>
             </div>
@@ -316,6 +316,7 @@
                     <div class="dash-card" onclick="alternarView('materiais')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Materiais</div><div class="dash-card-desc">Apostilas e PDFs das NRs.</div></div>
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
                     <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
+                    <div class="dash-card" onclick="alternarView('financeiro')"><div class="dash-card-icon"><i class="fas fa-credit-card"></i></div><div class="dash-card-title">Financeiro</div><div class="dash-card-desc">Pagamentos e assinaturas.</div></div>
                 </div>
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
@@ -482,46 +483,73 @@
                 </div>
             </div>
 
-            <!-- VIEW FINANCEIRO (ADMIN) -->
+            <!-- VIEW FINANCEIRO - FUNCIONAL PARA ALUNO E ADMIN -->
             <div id="viewFinanceiro" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
-                <p class="dash-subtitle">Gerencie pagamentos e transações</p>
-                <div class="painel-card">
-                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
-                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
-                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamento('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
-                        <button class="btn-criar-sala" onclick="carregarTransacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                <p class="dash-subtitle">Gerencie pagamentos e assinaturas</p>
+                
+                <!-- Seção de Assinatura Stripe (para alunos) -->
+                <div class="painel-card" id="assinaturaStripeCard">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fab fa-stripe"></i> Assinatura Mensal - Stripe</h3>
+                    <p style="margin-bottom:12px">Acesso completo a todas as videoaulas, materiais e aulas ao vivo.</p>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" id="btnAssinarPlano" style="background:#635BFF"><i class="fab fa-stripe"></i> Assinar por R$ 49,90/mês</button>
                     </div>
-                    <div id="transacoesContainer">
-                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando transações...</p>
+                    <div id="stripeStatus" style="margin-top:12px; font-size:13px"></div>
+                </div>
+
+                <!-- Seção de Pagamento Manual (para ADMIN) -->
+                <div class="painel-card" id="adminPagamentoCard" style="display:none">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-hand-holding-usd"></i> Gerar Pagamento Manual</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamentoManual('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamentoManual('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
+                    </div>
+                </div>
+
+                <!-- Lista de Transações do Usuário -->
+                <div class="painel-card">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-history"></i> Minhas Transações</h3>
+                    <div id="minhasTransacoesContainer">
+                        <p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Lista de Transações Geral (somente ADMIN) -->
+                <div class="painel-card" id="adminTransacoesCard" style="display:none">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-chart-line"></i> Todas as Transações (Admin)</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="carregarTodasTransacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    <div id="todasTransacoesContainer">
+                        <p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- MODAL PARA GERAR PAGAMENTO -->
-            <div id="modalPagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+            <!-- MODAL PARA GERAR PAGAMENTO MANUAL (ADMIN) -->
+            <div id="modalPagamentoManual" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
                 <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:400px">
-                    <h3 style="margin-bottom:20px" id="modalPagamentoTitulo">Gerar PIX</h3>
+                    <h3 style="margin-bottom:20px" id="modalPagamentoManualTitulo">Gerar PIX</h3>
                     <div class="campo">
                         <label>Aluno</label>
-                        <select id="pagamentoAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select>
+                        <select id="pagamentoManualAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select>
                     </div>
                     <div class="campo">
                         <label>Valor (R$)</label>
-                        <input type="number" id="pagamentoValor" step="0.01" placeholder="Ex: 99.90">
+                        <input type="number" id="pagamentoManualValor" step="0.01" placeholder="Ex: 99.90">
                     </div>
                     <div class="campo">
                         <label>Descrição</label>
-                        <input type="text" id="pagamentoDescricao" placeholder="Ex: Mensalidade - Mês 01">
+                        <input type="text" id="pagamentoManualDescricao" placeholder="Ex: Mensalidade - Mês 01">
                     </div>
                     <div style="display:flex; gap:10px; margin-top:20px">
-                        <button class="btn-criar-sala" onclick="gerarPagamento()" style="flex:1">Confirmar</button>
-                        <button class="botao botao-secundario" onclick="fecharModalPagamento()" style="flex:1">Cancelar</button>
+                        <button class="btn-criar-sala" onclick="gerarPagamentoManual()" style="flex:1">Confirmar</button>
+                        <button class="botao botao-secundario" onclick="fecharModalPagamentoManual()" style="flex:1">Cancelar</button>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW BOLETIM (ADMIN) -->
             <div id="viewBoletim" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
                 <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
@@ -531,6 +559,16 @@
                         <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
                     </div>
                     <div id="boletimContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="viewBoletimAluno" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
+                <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
+                <div class="painel-card">
+                    <div id="boletimAlunoContainer">
                         <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>
                     </div>
                 </div>
@@ -619,81 +657,314 @@
         const CONFIG = {nomeEmpresa:"SulSafe",logoUrl:"https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-assets/logo1.png",authRedirectUrl:window.location.origin + window.location.pathname}
         let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = []
 
-// Função pra filtrar e carregar trabalhos
-window.filtrarTrabalhos = async function(status) {
-  // Marca botão ativo
-  document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`[data-filtro="${status}"]`).classList.add('active');
-  
-  const container = document.getElementById('listaTrabalhos');
-  container.innerHTML = '<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-  
-  try {
-    let query = supabase.from('trabalhos').select('*').order('data_envio', {ascending: false});
-    
-    if(status !== 'todos') {
-      query = query.eq('status', status);
-    }
-    
-    const {data, error} = await query;
-    
-    if(error) {
-      container.innerHTML = `<p style="color:var(--erro)">Erro: ${error.message}</p>`;
-      return;
-    }
-    
-    if(!data || data.length === 0) {
-      container.innerHTML = '<p style="text-align:center;padding:40px">Nenhum trabalho encontrado</p>';
-      return;
-    }
-    
-    todosTrabalhos = data;
-    
-    container.innerHTML = data.map(t => `
-      <div class="painel-card" style="margin-bottom:12px">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
-          <div>
-            <h4 style="margin-bottom:4px">${escapeHtml(t.aluno_nome || 'Aluno')}</h4>
-            <p style="font-size:13px; color:var(--texto-sec); margin-bottom:4px">
-              ${escapeHtml(t.titulo)} - <span class="badge-nr">${t.nr}</span>
-            </p>
-            <p style="font-size:12px; color:var(--texto-sec)">
-              Enviado: ${new Date(t.data_envio).toLocaleDateString('pt-BR')}
-            </p>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center">
-            <span class="status-badge" style="background:${t.status==='corrigido'?'rgba(46,125,50,.1)':'rgba(255,193,7,.1)'}; color:${t.status==='corrigido'?'var(--primaria)':'#FF9800'}">
-              ${t.status}
-            </span>
-            ${t.arquivo_url ? `<a href="${t.arquivo_url}" target="_blank" class="btn-entrar"><i class="fas fa-download"></i> Baixar</a>` : ''}
-            ${t.status === 'pendente' ? `<button class="btn-criar-sala" style="padding:6px 14px; font-size:12px" onclick="corrigirTrabalho('${t.id}')"><i class="fas fa-check"></i> Corrigir</button>` : ''}
-          </div>
-        </div>
-      </div>
-    `).join('');
-    
-  } catch(e) {
-    container.innerHTML = `<p style="color:var(--erro)">Erro ao carregar: ${e.message}</p>`;
-  }
-}
+        // ========== FUNÇÕES DE PAGAMENTO / STRIPE ==========
+        
+        // Função para gerar pagamento via Stripe (para alunos)
+        window.iniciarAssinaturaStripe = async () => {
+            // PRICE ID - Substitua pelo seu Price ID do Stripe
+            // Você encontra no Dashboard do Stripe > Produtos > Plano SulSafe > Preços
+            const PRICE_ID = 'price_prod_UhoAh9XLvq7O5P; // ⚠️ SUBSTITUA PELO SEU PRICE ID REAL
+            
+            const statusDiv = document.getElementById('stripeStatus');
+            if(statusDiv) statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecionando para pagamento...';
+            
+            try {
+                const { data, error } = await supabase.functions.invoke('stripe-checkout', {
+                    body: {
+                        priceId: PRICE_ID,
+                        userId: usuarioId,
+                        userEmail: usuarioAtual,
+                        successUrl: window.location.origin + window.location.pathname + '?payment=success',
+                        cancelUrl: window.location.origin + window.location.pathname + '?payment=cancel'
+                    }
+                });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                if (data?.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error('Resposta inválida do servidor');
+                }
+            } catch (err) {
+                if(statusDiv) statusDiv.innerHTML = `<span style="color:var(--erro)">❌ Erro: ${err.message}</span>`;
+                mostrarErro('Erro ao iniciar assinatura: ' + err.message);
+            }
+        };
+        
+        // Carregar transações do usuário logado
+        async function carregarMinhasTransacoes() {
+            const container = document.getElementById('minhasTransacoesContainer');
+            if(!container) return;
+            
+            container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            
+            try {
+                let query = supabase.from('transacoes').select('*').order('data_criacao', {ascending: false});
+                
+                // Se não for admin, mostra só as transações do usuário
+                if(perfilUsuario !== 'admin') {
+                    query = query.eq('aluno_id', usuarioId);
+                } else {
+                    // Admin vê todas, mas vamos mostrar separado
+                    carregarTodasTransacoes();
+                }
+                
+                const {data, error} = await query;
+                
+                if(error) throw error;
+                
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
+                    return;
+                }
+                
+                // Filtra só as do usuário se não for admin
+                const transacoesFiltradas = perfilUsuario !== 'admin' ? data : data.filter(t => t.aluno_id === usuarioId);
+                
+                if(transacoesFiltradas.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação encontrada.</p>';
+                    return;
+                }
+                
+                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
+                
+                for(const t of transacoesFiltradas) {
+                    let statusStyle = '', statusText = '';
+                    if(t.status === 'PAGO') {
+                        statusStyle = 'background:#4CAF50; color:white';
+                        statusText = '✅ PAGO';
+                    } else if(t.status === 'PENDENTE') {
+                        statusStyle = 'background:#FF9800; color:white';
+                        statusText = '⏳ PENDENTE';
+                    } else {
+                        statusStyle = 'background:#F44336; color:white';
+                        statusText = '❌ ' + t.status;
+                    }
+                    
+                    let acoes = '';
+                    if(t.tipo === 'PIX' && t.qr_code) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
+                    } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
+                    }
+                    
+                    html += `<tr style="border-bottom: 1px solid var(--borda)">
+                        <td style="padding:12px">${t.tipo}</td>
+                        <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
+                        <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
+                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
+                        <td style="padding:12px">${acoes}</td>
+                    </tr>`;
+                }
+                
+                html += '</tbody>}</table></div>';
+                container.innerHTML = html;
+            } catch(err) {
+                container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
+            }
+        }
+        
+        // Carregar todas as transações (apenas ADMIN)
+        async function carregarTodasTransacoes() {
+            if(perfilUsuario !== 'admin') return;
+            
+            const container = document.getElementById('todasTransacoesContainer');
+            if(!container) return;
+            
+            container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
+            
+            try {
+                const {data, error} = await supabase.from('transacoes').select('*').order('data_criacao', {ascending: false});
+                
+                if(error) throw error;
+                
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px">Nenhuma transação registrada.</p>';
+                    return;
+                }
+                
+                let html = '<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>';
+                
+                for(const t of data) {
+                    let statusStyle = '', statusText = '';
+                    if(t.status === 'PAGO') {
+                        statusStyle = 'background:#4CAF50; color:white';
+                        statusText = '✅ PAGO';
+                    } else if(t.status === 'PENDENTE') {
+                        statusStyle = 'background:#FF9800; color:white';
+                        statusText = '⏳ PENDENTE';
+                    } else {
+                        statusStyle = 'background:#F44336; color:white';
+                        statusText = '❌ ' + t.status;
+                    }
+                    
+                    let acoes = '';
+                    if(t.tipo === 'PIX' && t.qr_code) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366; padding:4px 12px"><i class="fab fa-pix"></i> Copiar PIX</button>`;
+                    } else if(t.tipo === 'BOLETO' && t.boleto_linha_digitavel) {
+                        acoes = `<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0; padding:4px 12px"><i class="fas fa-barcode"></i> Copiar Linha</button>`;
+                    }
+                    
+                    if(t.status === 'PENDENTE') {
+                        acoes += `<button class="btn-entrar" onclick="confirmarPagamentoSimulado('${t.id}')" style="background:#4CAF50; margin-left:5px; padding:4px 12px">Confirmar</button>`;
+                    }
+                    
+                    html += `<tr style="border-bottom: 1px solid var(--borda)">
+                        <td style="padding:12px">${escapeHtml(t.aluno_email)}</td>
+                        <td style="padding:12px">${t.tipo}</td>
+                        <td style="padding:12px">R$ ${t.valor.toFixed(2)}</td>
+                        <td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td>
+                        <td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td>
+                        <td style="padding:12px">${acoes}</td>
+                    </tr>`;
+                }
+                
+                html += '</tbody>}</table></div>';
+                container.innerHTML = html;
+            } catch(err) {
+                container.innerHTML = '<p style="color:red">Erro ao carregar: ' + err.message + '</p>';
+            }
+        }
+        
+        // Variável para controle do tipo de pagamento manual
+        let tipoPagamentoManualAtual = '';
+        
+        // Abrir modal para gerar pagamento manual (apenas ADMIN)
+        window.abrirModalGerarPagamentoManual = async (tipo) => {
+            if(perfilUsuario !== 'admin') {
+                mostrarErro('Apenas administradores podem gerar pagamentos manuais');
+                return;
+            }
+            
+            tipoPagamentoManualAtual = tipo;
+            const titulo = document.getElementById('modalPagamentoManualTitulo');
+            if(titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX Manual' : '📄 Gerar Boleto Manual';
+            
+            const select = document.getElementById('pagamentoManualAlunoId');
+            if(!select) return;
+            
+            select.innerHTML = '<option value="">Carregando alunos...</option>';
+            
+            const {data: alunos, error} = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
+            
+            if(error) {
+                select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
+                mostrarErro('Erro: ' + error.message);
+                return;
+            }
+            
+            select.innerHTML = '<option value="">Selecione um aluno...</option>';
+            alunos.forEach(aluno => {
+                select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
+            });
+            
+            const valorInput = document.getElementById('pagamentoManualValor');
+            const descricaoInput = document.getElementById('pagamentoManualDescricao');
+            if(valorInput) valorInput.value = '';
+            if(descricaoInput) descricaoInput.value = '';
+            
+            const modal = document.getElementById('modalPagamentoManual');
+            if(modal) modal.style.display = 'flex';
+        };
+        
+        // Fechar modal de pagamento manual
+        window.fecharModalPagamentoManual = () => {
+            const modal = document.getElementById('modalPagamentoManual');
+            if(modal) modal.style.display = 'none';
+        };
+        
+        // Gerar pagamento manual (apenas ADMIN)
+        window.gerarPagamentoManual = async () => {
+            if(perfilUsuario !== 'admin') {
+                mostrarErro('Apenas administradores podem gerar pagamentos manuais');
+                return;
+            }
+            
+            const alunoId = document.getElementById('pagamentoManualAlunoId')?.value;
+            const valor = parseFloat(document.getElementById('pagamentoManualValor')?.value || '0');
+            const descricao = document.getElementById('pagamentoManualDescricao')?.value || `${tipoPagamentoManualAtual} - ${new Date().toLocaleString()}`;
+            
+            if(!alunoId) {
+                mostrarErro('Selecione um aluno');
+                return;
+            }
+            
+            if(!valor || valor <= 0) {
+                mostrarErro('Digite um valor válido');
+                return;
+            }
+            
+            const {data: aluno, error: erroAluno} = await supabase.from('profiles').select('email').eq('id', alunoId).single();
+            
+            if(erroAluno || !aluno) {
+                mostrarErro('Aluno não encontrado');
+                return;
+            }
+            
+            const codigoSimulado = `${tipoPagamentoManualAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase();
+            
+            const dadosInserir = {
+                aluno_id: alunoId,
+                aluno_email: aluno.email,
+                tipo: tipoPagamentoManualAtual,
+                valor: valor,
+                status: 'PENDENTE',
+                descricao: descricao,
+                data_criacao: new Date().toISOString(),
+                data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            
+            if(tipoPagamentoManualAtual === 'PIX') {
+                dadosInserir.qr_code = codigoSimulado;
+                dadosInserir.qr_code_image = null;
+            } else {
+                dadosInserir.boleto_url = '#';
+                dadosInserir.boleto_linha_digitavel = codigoSimulado;
+            }
+            
+            const {error} = await supabase.from('transacoes').insert(dadosInserir);
+            
+            if(error) {
+                mostrarErro('Erro ao gerar: ' + error.message);
+            } else {
+                mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado! Código: ${codigoSimulado}`);
+                window.fecharModalPagamentoManual();
+                carregarMinhasTransacoes();
+                if(perfilUsuario === 'admin') carregarTodasTransacoes();
+            }
+        };
+        
+        // Confirmar pagamento simulado (apenas ADMIN)
+        window.confirmarPagamentoSimulado = async (transacaoId) => {
+            if(perfilUsuario !== 'admin') {
+                mostrarErro('Apenas administradores podem confirmar pagamentos');
+                return;
+            }
+            
+            if(!confirm('Confirmar pagamento desta transação?')) return;
+            
+            const {error} = await supabase.from('transacoes').update({status: 'PAGO', data_pagamento: new Date().toISOString()}).eq('id', transacaoId);
+            
+            if(error) {
+                mostrarErro('Erro ao confirmar: ' + error.message);
+            } else {
+                mostrarErro('✅ Pagamento confirmado!');
+                carregarMinhasTransacoes();
+                carregarTodasTransacoes();
+            }
+        };
+        
+        // Função para copiar texto
+        window.copiarTexto = (texto) => {
+            navigator.clipboard.writeText(texto);
+            mostrarErro('📋 Código copiado!');
+        };
 
-// Função pra marcar como corrigido
-window.corrigirTrabalho = async function(id) {
-  if(!confirm('Marcar este trabalho como corrigido?')) return;
-  
-  const {error} = await supabase.from('trabalhos').update({status: 'corrigido'}).eq('id', id);
-  
-  if(error) {
-    alert('Erro: ' + error.message);
-    return;
-  }
-  
-  alert('Trabalho marcado como corrigido!');
-  filtrarTrabalhos('pendente'); // Recarrega lista
-}
-
-// Carrega quando abre a aba Trabalhos
-// Isso já tá no teu alternarView(), então quando clica no menu ele chama
+        // ========== FUNÇÕES EXISTENTES (mantidas) ==========
+        
         function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorretos.';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado. Faça login.';if(m.includes('rate limit'))return 'Muitas tentativas. Aguarde alguns minutos.';return msg}
@@ -708,8 +979,9 @@ window.corrigirTrabalho = async function(id) {
         }
 
         window.mostrarTela=(tela)=>{document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')}
+        
         window.alternarView=(viewId)=>{
-            const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim']
+            const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno']
             views.forEach(v=>{const el=document.getElementById(`view${v}`);if(el)el.style.display='none'})
             const target=document.getElementById(`view${viewId.charAt(0).toUpperCase()+viewId.slice(1)}`)
             if(target)target.style.display='block'
@@ -718,12 +990,18 @@ window.corrigirTrabalho = async function(id) {
             if(viewId==='salas')atualizarListaSalas()
             if(viewId==='equipe')carregarEquipe()
             if(viewId==='materiais')carregarMateriais()
-            if(viewId==='boletim')carregarBoletimAdmin()
+            if(viewId==='financeiro') {
+                carregarMinhasTransacoes();
+                if(perfilUsuario === 'admin') carregarTodasTransacoes();
+            }
             if(viewId==='videoaulas')carregarVideoaulas()
             if(viewId==='trabalhos'&&ehProfessor)carregarTrabalhos()
             if(viewId==='aluno')carregarMeusTrabalhos()
             if(viewId==='relatorio'&&ehProfessor)carregarRelatorioAlunos()
-            if(viewId==='financeiro')carregarTransacoes()
+            if(viewId==='boletim') {
+                if(ehProfessor) carregarBoletimAdmin();
+                else carregarBoletimAluno();
+            }
         }
 
         window.fazerLogin=async()=>{
@@ -737,29 +1015,95 @@ window.corrigirTrabalho = async function(id) {
             atualizarPainelProfessor();entrarDashboard()
         }
 
-function atualizarPainelProfessor(){
-    const isAdmin = perfilUsuario === 'admin';
-    const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin'; // admin herda tudo
-    const isAluno = perfilUsuario === 'aluno';
+        function atualizarPainelProfessor(){
+            const isAdmin = perfilUsuario === 'admin';
+            const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin';
+            const isAluno = perfilUsuario === 'aluno';
 
-    // 1. Só Admin vê Financeiro e Config
-    document.getElementById('navFinanceiro').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('navConfig').style.display = isAdmin ? 'flex' : 'none';
+            document.getElementById('navFinanceiro').style.display = 'flex'; // Todos veem financeiro agora
+            document.getElementById('navConfig').style.display = isAdmin ? 'flex' : 'none';
+            document.getElementById('navRelatorio').style.display = isProfessor ? 'flex' : 'none';
+            document.getElementById('navTrabalhos').style.display = isProfessor ? 'flex' : 'none';
+            document.getElementById('btnLancarNotas').style.display = isProfessor ? 'inline-block' : 'none';
+            
+            const btn = document.getElementById('btnPainelProfessor');
+            if(btn) btn.style.display = isProfessor ? 'inline-block' : 'none';
 
-    // 2. Admin e Professor veem isso
-    document.getElementById('navRelatorio').style.display = isProfessor ? 'flex' : 'none';
-    document.getElementById('navTrabalhos').style.display = isProfessor ? 'flex' : 'none';
-    document.getElementById('navBoletim').style.display = isProfessor ? 'flex' : 'none';
-    document.getElementById('btnLancarNotas').style.display = isProfessor ? 'inline-block' : 'none';
-    
-    // 3. Botão adicionar conteúdo - admin e professor
-    const btn = document.getElementById('btnPainelProfessor');
-    if(btn) btn.style.display = isProfessor ? 'inline-block' : 'none';
+            const alunoItem = document.getElementById('navAreaAluno');
+            if(alunoItem) alunoItem.style.display = isAluno ? 'flex' : 'none';
+            
+            // Mostrar/esconder cards de admin no financeiro
+            const adminPagamentoCard = document.getElementById('adminPagamentoCard');
+            if(adminPagamentoCard) adminPagamentoCard.style.display = isAdmin ? 'block' : 'none';
+            
+            const adminTransacoesCard = document.getElementById('adminTransacoesCard');
+            if(adminTransacoesCard) adminTransacoesCard.style.display = isAdmin ? 'block' : 'none';
+            
+            // Botão de assinatura Stripe - mostra para todos que não são admin (alunos)
+            const assinaturaCard = document.getElementById('assinaturaStripeCard');
+            if(assinaturaCard) assinaturaCard.style.display = !isAdmin ? 'block' : 'none';
+        }
+        
+        // Carregar boletim do aluno logado
+        async function carregarBoletimAluno() {
+            const container = document.getElementById('boletimAlunoContainer');
+            if(!container) return;
+            
+            container.innerHTML = '<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p>';
+            
+            try {
+                const {data: disciplinas} = await supabase.from('disciplinas').select('*').eq('ativa', true);
+                const {data: notas} = await supabase.from('notas').select('*').eq('aluno_id', usuarioId);
+                
+                if(!disciplinas || disciplinas.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:gray">Nenhuma disciplina cadastrada.</p>';
+                    return;
+                }
+                
+                let html = `<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Disciplina</th><th style="padding:12px">Nota 1</th><th style="padding:12px">Nota 2</th><th style="padding:12px">Nota 3</th><th style="padding:12px">Média</th><th style="padding:12px">Faltas</th><th style="padding:12px">Situação</th></tr></thead><tbody>`;
+                
+                let somaMedias = 0, disciplinasContadas = 0;
+                
+                for(const disc of disciplinas) {
+                    const nota = notas?.find(n => n.disciplina_id === disc.id);
+                    let n1 = '-', n2 = '-', n3 = '-', media = '-', faltas = '-', situacao = '⏳ Pendente';
+                    
+                    if(nota) {
+                        n1 = nota.nota1 || '-';
+                        n2 = nota.nota2 || '-';
+                        n3 = nota.nota3 || '-';
+                        faltas = nota.faltas || 0;
+                        
+                        if(nota.media_final) {
+                            media = nota.media_final.toFixed(1);
+                            somaMedias += nota.media_final;
+                            disciplinasContadas++;
+                            if(nota.media_final >= 6) situacao = '✅ Aprovado';
+                            else if(nota.media_final >= 4) situacao = '🟡 Recuperação';
+                            else situacao = '❌ Reprovado';
+                        }
+                    }
+                    
+                    html += `<tr style="border-bottom: 1px solid var(--borda)">
+                        <td style="padding:12px">${escapeHtml(disc.nome)}</td>
+                        <td style="padding:12px; text-align:center">${n1}</td>
+                        <td style="padding:12px; text-align:center">${n2}</td>
+                        <td style="padding:12px; text-align:center">${n3}</td>
+                        <td style="padding:12px; text-align:center"><strong>${media}</strong></td>
+                        <td style="padding:12px; text-align:center">${faltas}</td>
+                        <td style="padding:12px; text-align:center">${situacao}</td>
+                    </tr>`;
+                }
+                
+                const mediaGeral = disciplinasContadas > 0 ? (somaMedias / disciplinasContadas).toFixed(1) : '-';
+                html += `<tr style="background: rgba(46,125,50,0.1);"><td colspan="4" style="padding:12px; text-align:right"><strong>Média Geral:</strong></td><td style="padding:12px; text-align:center"><strong>${mediaGeral}</strong></td><td colspan="2"></td></tr>`;
+                html += '</tbody>}</div>';
+                container.innerHTML = html;
+            } catch(err) {
+                container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>';
+            }
+        }
 
-    // 4. Aluno
-    const alunoItem = document.getElementById('navAreaAluno');
-    if(alunoItem) alunoItem.style.display = isAluno ? 'flex' : 'none';
-}
         window.fazerCadastro=async()=>{
             const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value,senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
             if(senha!==senha2){alert('Senhas não coincidem');return}
@@ -778,10 +1122,34 @@ function atualizarPainelProfessor(){
         }
 
         window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();window.location.href='index.html'}
-        function entrarDashboard(){document.getElementById('authContainer').classList.add('hidden');document.getElementById('heroContainer').classList.add('hidden');document.getElementById('heroTexto').classList.add('hidden');document.getElementById('overlay').classList.add('hidden');document.getElementById('dashboard').classList.add('active');atualizarListaSalas();carregarEquipe();renderizarProgressoHome();const navTrabalhos=document.getElementById('navTrabalhos');if(navTrabalhos)navTrabalhos.style.display=ehProfessor?'flex':'none'}
+        
+        function entrarDashboard(){
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('heroContainer').classList.add('hidden');
+            document.getElementById('heroTexto').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            atualizarListaSalas();
+            carregarEquipe();
+            renderizarProgressoHome();
+            const navTrabalhos=document.getElementById('navTrabalhos');
+            if(navTrabalhos)navTrabalhos.style.display=ehProfessor?'flex':'none';
+            
+            // Verificar se veio com parâmetro de sucesso do pagamento
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('payment') === 'success') {
+                mostrarErro('✅ Pagamento realizado com sucesso! Sua assinatura foi ativada.');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if(urlParams.get('payment') === 'cancel') {
+                mostrarErro('❌ Pagamento cancelado. Você pode tentar novamente quando quiser.');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
         window.abrirModalAdmin=()=>document.getElementById('modalAdmin').classList.add('active')
         window.fecharModalAdmin=()=>document.getElementById('modalAdmin').classList.remove('active')
         window.trocarAbaAdmin=(aba)=>{document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none';document.getElementById('tabMaterial').classList.toggle('active',aba==='material');document.getElementById('tabAula').classList.toggle('active',aba==='aula')}
+        
         function extrairYoutubeId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null}
         function getAulasLocal(){return JSON.parse(localStorage.getItem('sulsafe_videoaulas')||'[]')}
         function salvarAulasLocal(lista){localStorage.setItem('sulsafe_videoaulas',JSON.stringify(lista))}
@@ -876,6 +1244,11 @@ function atualizarPainelProfessor(){
         document.getElementById('copyInviteBtn')?.addEventListener('click',copiarLink)
         document.getElementById('joinTeamBtn')?.addEventListener('click',entrarNaEquipe)
         loadDevices()
+        
+        // Adicionar evento do botão de assinatura Stripe
+        const btnAssinar = document.getElementById('btnAssinarPlano');
+        if(btnAssinar) btnAssinar.addEventListener('click', iniciarAssinaturaStripe);
+        
         const canvas=document.getElementById('canvas-hero');const ctx=canvas.getContext('2d');let w,h,mx=0,my=0,tx=0,ty=0
         function resizeCanvas(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
         resizeCanvas();window.addEventListener('resize',resizeCanvas)
@@ -942,140 +1315,7 @@ function atualizarPainelProfessor(){
             doc.save(`Certificado_${nome.replace(/\s+/g,'_')}.pdf`)
             mostrarErro(`✅ Certificado gerado para ${nome}!`)
         }
-        let tipoPagamentoAtual=''
-        window.carregarTransacoes=async()=>{
-            const container=document.getElementById('transacoesContainer');if(!container)return
-            container.innerHTML='<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
-            try{
-                const{data,error}=await supabase.from('transacoes').select('*').order('data_criacao',{ascending:false})
-                if(error)throw error
-                if(!data||data.length===0){container.innerHTML='<p style="text-align:center; color:gray">Nenhuma transação registrada.</p>';return}
-                let html='<div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse;"><thead><tr style="background: #2E7D32; color: white;"><th style="padding:12px">Aluno</th><th style="padding:12px">Tipo</th><th style="padding:12px">Valor</th><th style="padding:12px">Status</th><th style="padding:12px">Data</th><th style="padding:12px">Ações</th></tr></thead><tbody>'
-                for(const t of data){
-                    let statusStyle='',statusText=''
-                    if(t.status==='PAGO'){statusStyle='background:#4CAF50; color:white';statusText='✅ PAGO'}
-                    else if(t.status==='PENDENTE'){statusStyle='background:#FF9800; color:white';statusText='⏳ PENDENTE'}
-                    else{statusStyle='background:#F44336; color:white';statusText='❌ '+t.status}
-                    let acoes=''
-                    if(t.tipo==='PIX'&&t.qr_code){acoes=`<button class="btn-entrar" onclick="copiarTexto('${t.qr_code}')" style="background:#25D366">Copiar PIX</button>`}
-                    else if(t.tipo==='BOLETO'&&t.boleto_url&&t.boleto_url!=='#'){acoes=`<button class="btn-entrar" onclick="window.open('${t.boleto_url}','_blank')" style="background:#1565C0">Ver Boleto</button>`}
-                    else if(t.tipo==='BOLETO'&&t.boleto_linha_digitavel){acoes=`<button class="btn-entrar" onclick="copiarTexto('${t.boleto_linha_digitavel}')" style="background:#1565C0">Copiar Linha Digitável</button>`}
-                    if(t.status==='PENDENTE'){acoes+=`<button class="btn-entrar" onclick="confirmarPagamentoSimulado(${t.id})" style="background:#4CAF50">Confirmar</button>`}
-                    html+=`<tr style="border-bottom: 1px solid var(--borda)"><td style="padding:12px">${escapeHtml(t.aluno_email)}</td><td style="padding:12px">${t.tipo}</td><td style="padding:12px">R$ ${t.valor.toFixed(2)}</td><td style="padding:12px"><span style="${statusStyle}; padding:4px 12px; border-radius:20px">${statusText}</span></td><td style="padding:12px">${new Date(t.data_criacao).toLocaleString()}</td><td style="padding:12px">${acoes}</td></tr>`
-                }
-                html+='</tbody></table></div>';container.innerHTML=html
-            }catch(err){container.innerHTML='<p style="color:red">Erro ao carregar: '+err.message+'</p>'}
-        }
-       // Gera modal de pagamento - SÓ ADMIN
-window.abrirModalGerarPagamento = async (tipo) => {
-    // Bloqueio: só admin acessa
-    if(perfilUsuario !== 'admin') {
-        mostrarErro('Apenas administradores podem gerar pagamentos');
-        return;
-    }
-    
-    tipoPagamentoAtual = tipo;
-    const titulo = document.getElementById('modalPagamentoTitulo');
-    if(titulo) titulo.innerHTML = tipo === 'PIX' ? '💰 Gerar PIX' : '📄 Gerar Boleto';
-    
-    const select = document.getElementById('pagamentoAlunoId');
-    if(!select) return;
-    
-    select.innerHTML = '<option value="">Carregando alunos...</option>';
-    
-    const {data: alunos, error} = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
-    
-    if(error) {
-        select.innerHTML = '<option value="">Erro ao carregar alunos</option>';
-        mostrarErro('Erro: ' + error.message);
-        return;
-    }
-    
-    select.innerHTML = '<option value="">Selecione um aluno...</option>';
-    alunos.forEach(aluno => {
-        select.innerHTML += `<option value="${aluno.id}">${escapeHtml(aluno.email)}</option>`;
-    });
-    
-    const valorInput = document.getElementById('pagamentoValor');
-    const descricaoInput = document.getElementById('pagamentoDescricao');
-    if(valorInput) valorInput.value = '';
-    if(descricaoInput) descricaoInput.value = '';
-    
-    const modal = document.getElementById('modalPagamento');
-    if(modal) modal.style.display = 'flex';
-}
-
-window.fecharModalPagamento = () => {
-    const modal = document.getElementById('modalPagamento');
-    if(modal) modal.style.display = 'none';
-}
-
-// Gera pagamento - SÓ ADMIN
-window.gerarPagamento = async () => {
-    // Bloqueio: só admin gera
-    if(perfilUsuario !== 'admin') {
-        mostrarErro('Apenas administradores podem gerar pagamentos');
-        return;
-    }
-    
-    const alunoId = document.getElementById('pagamentoAlunoId')?.value;
-    const valor = parseFloat(document.getElementById('pagamentoValor')?.value || '0');
-    const descricao = document.getElementById('pagamentoDescricao')?.value || `${tipoPagamentoAtual} - ${new Date().toLocaleString()}`;
-    
-    if(!alunoId) {
-        mostrarErro('Selecione um aluno');
-        return;
-    }
-    
-    if(!valor || valor <= 0) {
-        mostrarErro('Digite um valor válido');
-        return;
-    }
-    
-    const {data: aluno, error: erroAluno} = await supabase.from('profiles').select('email').eq('id', alunoId).single();
-    
-    if(erroAluno || !aluno) {
-        mostrarErro('Aluno não encontrado');
-        return;
-    }
-    
-    const codigoSimulado = `${tipoPagamentoAtual}-${Date.now()}-${Math.random().toString(36).substring(2,8)}`.toUpperCase();
-    
-    const dadosInserir = {
-        aluno_id: alunoId,
-        aluno_email: aluno.email,
-        tipo: tipoPagamentoAtual,
-        valor: valor,
-        status: 'PENDENTE',
-        descricao: descricao,
-        data_criacao: new Date().toISOString(),
-        data_expiracao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-    };
-    
-    if(tipoPagamentoAtual === 'PIX') {
-        dadosInserir.qr_code = codigoSimulado;
-        dadosInserir.qr_code_image = null;
-    } else {
-        dadosInserir.boleto_url = '#';
-        dadosInserir.boleto_linha_digitavel = codigoSimulado;
-    }
-    
-    const {error} = await supabase.from('transacoes').insert(dadosInserir);
-    
-    if(error) {
-        mostrarErro('Erro ao gerar: ' + error.message);
-    } else {
-        mostrarErro(`✅ ${tipoPagamentoAtual} gerado! Código: ${codigoSimulado}`);
-        window.fecharModalPagamento();
-        window.carregarTransacoes();
-    }
-}
-        window.confirmarPagamentoSimulado=async(transacaoId)=>{
-            if(!confirm('Confirmar pagamento desta transação?'))return
-            const{error}=await supabase.from('transacoes').update({status:'PAGO',data_pagamento:new Date().toISOString()}).eq('id',transacaoId)
-            if(error){mostrarErro('Erro ao confirmar: '+error.message)}else{mostrarErro('✅ Pagamento confirmado!');window.carregarTransacoes()}
-        }
-        window.copiarTexto=(texto)=>{navigator.clipboard.writeText(texto);mostrarErro('📋 Código copiado!')}
+        
         window.carregarBoletimAdmin=async()=>{
             const container=document.getElementById('boletimContainer');if(!container)return
             container.innerHTML='<p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'
@@ -1105,7 +1345,7 @@ window.gerarPagamento = async () => {
                     if(mediaFinal!=='-'){situacaoGeral=parseFloat(mediaFinal)>=6?'✅ APROVADO':(parseFloat(mediaFinal)>=4?'🟡 RECUPERAÇÃO':'❌ REPROVADO')}
                     html+=`<td style="padding:12px; text-align:center"><strong>${mediaFinal}</strong></td><td style="padding:12px; text-align:center">${situacaoGeral}</td></tr>`
                 }
-                html+='</tbody></table></div>';container.innerHTML=html
+                html+='</tbody>}</div>';container.innerHTML=html
             }catch(err){container.innerHTML='<p style="color:red">Erro: '+err.message+'</p>'}
         }
         window.abrirModalLancarNotas=async()=>{
