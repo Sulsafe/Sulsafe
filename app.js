@@ -1121,19 +1121,88 @@ window.abrirModalLancarNotas=async()=>{
     document.getElementById('modalLancarNotas').style.display='flex'
 }
 window.fecharModalLancarNotas=()=>{document.getElementById('modalLancarNotas').style.display='none'}
-window.salvarNotas=async()=>{
-    const alunoId=document.getElementById('notaAlunoId').value
-    const disciplinaId=document.getElementById('notaDisciplinaId').value
-    const semestre=document.getElementById('notaSemestre').value
-    const nota1=parseFloat(document.getElementById('nota1').value)||0
-    const nota2=parseFloat(document.getElementById('nota2').value)||0
-    const nota3=parseFloat(document.getElementById('nota3').value)||0
-    const recuperacao=parseFloat(document.getElementById('notaRec').value)||0
-    const faltas=parseInt(document.getElementById('notaFaltas').value)||0
-    let media=(nota1+nota2+nota3)/3
-    if(recuperacao>media)media=(media+recuperacao)/2
-    const situacao=media>=6?'APROVADO':(media>=4?'RECUPERACAO':'REPROVADO')
-    const{data:aluno}=await supabase.from('profiles').select('email').eq('id',alunoId).single()
-    await supabase.from('notas').upsert({aluno_id:alunoId,aluno_email:aluno.email,disciplina_id:parseInt(disciplinaId),nota1,nota2,nota3,recuperacao,faltas,media_final:media,situacao,semestre},{onConflict:'aluno_id,disciplina_id,semestre'})
-    mostrarErro('Notas salvas!');fecharModalLancarNotas();carregarBoletimAdmin()
-}
+
+// ===== FUNÇÃO SALVAR NOTAS CORRIGIDA =====
+window.salvarNotas = async () => {
+    try {
+        const alunoId = document.getElementById('notaAlunoId').value;
+        const disciplinaId = document.getElementById('notaDisciplinaId').value;
+        const semestre = document.getElementById('notaSemestre').value;
+        const nota1 = parseFloat(document.getElementById('nota1').value) || 0;
+        const nota2 = parseFloat(document.getElementById('nota2').value) || 0;
+        const nota3 = parseFloat(document.getElementById('nota3').value) || 0;
+        const recuperacao = parseFloat(document.getElementById('notaRec').value) || 0;
+        const faltas = parseInt(document.getElementById('notaFaltas').value) || 0;
+        
+        // Validar campos obrigatórios
+        if (!alunoId || !disciplinaId) {
+            mostrarErro('Selecione aluno e disciplina!');
+            return;
+        }
+        
+        // Calcular média
+        let media = (nota1 + nota2 + nota3) / 3;
+        if (recuperacao > media) {
+            media = (media + recuperacao) / 2;
+        }
+        
+        // Definir situação
+        let situacao;
+        if (media >= 6) {
+            situacao = 'APROVADO';
+        } else if (media >= 4) {
+            situacao = 'RECUPERACAO';
+        } else {
+            situacao = 'REPROVADO';
+        }
+        
+        // Buscar dados do aluno
+        const { data: aluno, error: alunoError } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', alunoId)
+            .single();
+        
+        if (alunoError) {
+            mostrarErro('Erro ao buscar aluno: ' + alunoError.message);
+            return;
+        }
+        
+        if (!aluno) {
+            mostrarErro('Aluno não encontrado!');
+            return;
+        }
+        
+        // Salvar notas
+        const { error } = await supabase
+            .from('notas')
+            .upsert({
+                aluno_id: alunoId,
+                aluno_email: aluno.email,
+                disciplina_id: parseInt(disciplinaId),
+                nota1: nota1,
+                nota2: nota2,
+                nota3: nota3,
+                recuperacao: recuperacao,
+                faltas: faltas,
+                media_final: media,
+                situacao: situacao,
+                semestre: semestre
+            }, {
+                onConflict: 'aluno_id,disciplina_id,semestre'
+            });
+        
+        if (error) {
+            mostrarErro('Erro ao salvar notas: ' + error.message);
+            return;
+        }
+        
+        mostrarErro('✅ Notas salvas com sucesso!');
+        fecharModalLancarNotas();
+        carregarBoletimAdmin();
+        
+    } catch (err) {
+        console.error('Erro em salvarNotas:', err);
+        mostrarErro('Erro: ' + err.message);
+    }
+};
