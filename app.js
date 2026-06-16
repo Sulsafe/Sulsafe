@@ -682,7 +682,7 @@ async function garantirPerfil(user){
 window.mostrarTela=(tela)=>{document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')}
         
 window.alternarView=(viewId)=>{
-    const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno']
+    const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno','Nrs']
     views.forEach(v=>{const el=document.getElementById(`view${v}`);if(el)el.style.display='none'})
     const target=document.getElementById(`view${viewId.charAt(0).toUpperCase()+viewId.slice(1)}`)
     if(target)target.style.display='block'
@@ -697,6 +697,7 @@ window.alternarView=(viewId)=>{
     if(viewId==='aluno')carregarMeusTrabalhos()
     if(viewId==='relatorio'&&ehProfessor)carregarRelatorioAlunos()
     if(viewId==='boletim') { if(ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno() }
+    if(viewId==='nrs') { renderizarNrs() }
 }
         
 window.fazerLogin=async()=>{
