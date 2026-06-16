@@ -78,10 +78,7 @@
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
-                <div class="nav-item" data-view="nrs">
-    <i class="fas fa-book"></i>
-    <span>Normas NRs</span>
-</div>
+                <div class="nav-item" data-view="nrs"><i class="fas fa-book"></i><span>Normas NRs</span></div>
                 <div class="nav-item" id="navAreaAluno" data-view="aluno" style="display:none"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
@@ -357,58 +354,29 @@
                 <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
             </div>
 
-            <div id="modalLancarNotas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
-                <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto">
-                    <h3 style="margin-bottom:20px">📝 Lançar Notas</h3>
-                    <div class="campo"><label>Aluno</label><select id="notaAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select></div>
-                    <div class="campo"><label>Disciplina</label><select id="notaDisciplinaId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione uma disciplina...</option></select></div>
-                    <div class="campo"><label>Semestre</label><input type="text" id="notaSemestre" value="2025/1"></div>
-                    <div class="campo"><label>Nota 1 (0-10)</label><input type="number" id="nota1" step="0.1" min="0" max="10"></div>
-                    <div class="campo"><label>Nota 2 (0-10)</label><input type="number" id="nota2" step="0.1" min="0" max="10"></div>
-                    <div class="campo"><label>Nota 3 (0-10)</label><input type="number" id="nota3" step="0.1" min="0" max="10"></div>
-                    <div class="campo"><label>Recuperação (0-10)</label><input type="number" id="notaRec" step="0.1" min="0" max="10"></div>
-                    <div class="campo"><label>Faltas</label><input type="number" id="notaFaltas" value="0"></div>
-                    <div style="display:flex; gap:10px; margin-top:20px">
-                        <button class="btn-criar-sala" onclick="salvarNotas()" style="flex:1">Salvar Notas</button>
-                        <button class="botao botao-secundario" onclick="fecharModalLancarNotas()" style="flex:1">Cancelar</button>
+            <!-- ===== VIEW NRS ===== -->
+            <div id="viewNrs" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px">
+                    <i class="fas fa-book"></i> Normas Regulamentadoras
+                </h2>
+                <p class="dash-subtitle">Consulte todas as NRs de Segurança do Trabalho</p>
+                
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-val">38</div>
+                        <div class="stat-lab">Normas ativas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val">1978</div>
+                        <div class="stat-lab">Ano de criação</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val">MTE</div>
+                        <div class="stat-lab">Órgão regulador</div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    </div>
+                <input class="search-box" id="searchNrs" type="text" placeholder="🔍 Buscar norma ou palavra-chave..." oninput="filtrarNrs()">
 
-    <div class="meeting-modal" id="meetingModal">
-        <div class="meeting-room">
-            <div class="room-header">
-                <span class="room-title" id="roomTitle">Sala de Reunião</span>
-                <div class="room-actions">
-                    <button class="btn-ia-assistente" onclick="chamarGemini()"><i class="fas fa-robot"></i> IA</button>
-                    <button class="btn-gerar-ata" onclick="gerarAtaReuniao()"><i class="fas fa-file-alt"></i> Ata</button>
-                    <button class="btn-whatsapp" onclick="enviarWhatsApp()"><i class="fab fa-whatsapp"></i></button>
-                    <button id="btnRecord" onclick="toggleRecording()"><i class="fas fa-circle"></i> Gravar</button>
-                    <button class="close-room" onclick="fecharSala()"><i class="fas fa-times"></i> Sair</button>
-                </div>
-            </div>
-            <div class="room-content">
-                <div class="video-area"><div id="jitsiContainer"></div><div class="video-placeholder" id="videoPlaceholder"><i class="fas fa-video" style="font-size:28px"></i><p>Carregando Jitsi...</p></div></div>
-                <div class="chat-area">
-                    <div class="chat-messages" id="chatMessages"><div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo à sala!</div></div></div>
-                    <div class="chat-input"><input type="text" id="chatInput" placeholder="Mensagem..."><button onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="video-modal" id="videoModal"><div class="video-wrapper"><iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe></div><button class="video-modal-close" onclick="fecharVideo()"><i class="fas fa-times"></i> Fechar</button></div>
-
-    <div class="admin-modal" id="modalAdmin"><div class="admin-modal-content"><h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2><div class="admin-tabs"><div class="admin-tab active" onclick="trocarAbaAdmin('material')" id="tabMaterial">📄 Material / PDF</div><div class="admin-tab" onclick="trocarAbaAdmin('aula')" id="tabAula">🎬 Videoaula (YouTube)</div></div><div id="abaAdminMaterial"><div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div><div class="campo"><label>NR</label><select id="matNR"><option value="NR-01">NR-01 — Disposições Gerais</option><option value="NR-05">NR-05 — CIPA</option><option value="NR-06">NR-06 — EPI</option><option value="NR-07">NR-07 — PCMSO</option><option value="NR-09">NR-09 — Riscos Ambientais</option><option value="NR-10">NR-10 — Instalações Elétricas</option><option value="NR-11">NR-11 — Transporte e Movimentação</option><option value="NR-12">NR-12 — Máquinas e Equipamentos</option><option value="NR-17">NR-17 — Ergonomia</option><option value="NR-18">NR-18 — Construção Civil</option><option value="NR-20">NR-20 — Inflamáveis e Combustíveis</option><option value="NR-23">NR-23 — Proteção Contra Incêndios</option><option value="NR-25">NR-25 — Resíduos Industriais</option><option value="NR-31">NR-31 — Trabalho Rural / Silos</option><option value="NR-33" selected>NR-33 — Espaços Confinados</option><option value="NR-35">NR-35 — Trabalho em Altura</option><option value="NR-36">NR-36 — Abate e Processamento</option><option value="Geral">Geral / Outros</option></select></div><div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3" placeholder="Descreva o conteúdo..."></textarea></div><div class="campo"><label>Arquivo (PDF ou imagem)</label><input type="file" id="matArquivo" accept=".pdf,.jpg,.jpeg,.png"></div><div id="adminStatus" style="margin:10px 0;font-size:13px"></div><div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarMaterial()">Publicar</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div></div><div id="abaAdminAula" style="display:none"><div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura: Introdução"></div><div class="campo"><label>NR</label><select id="aulaNR"><option value="NR-01">NR-01 — Disposições Gerais</option><option value="NR-05">NR-05 — CIPA</option><option value="NR-06">NR-06 — EPI</option><option value="NR-07">NR-07 — PCMSO</option><option value="NR-09">NR-09 — Riscos Ambientais</option><option value="NR-10">NR-10 — Instalações Elétricas</option><option value="NR-12">NR-12 — Máquinas e Equipamentos</option><option value="NR-17">NR-17 — Ergonomia</option><option value="NR-18">NR-18 — Construção Civil</option><option value="NR-23">NR-23 — Proteção Contra Incêndios</option><option value="NR-31">NR-31 — Trabalho Rural / Silos</option><option value="NR-33" selected>NR-33 — Espaços Confinados</option><option value="NR-35">NR-35 — Trabalho em Altura</option><option value="Geral">Geral / Outros</option></select></div><div class="campo"><label>Link do YouTube</label><input type="url" id="aulaYoutube" placeholder="https://www.youtube.com/watch?v=..."></div><div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2" placeholder="Breve descrição da aula..."></textarea></div><div style="background:rgba(46,125,50,.07);padding:10px 14px;border-radius:12px;margin-bottom:14px;font-size:12px;color:var(--texto-sec)"><i class="fas fa-info-circle" style="color:var(--primaria)"></i> Cole o link normal do YouTube (público ou não listado).</div><div id="aulaStatus" style="margin:10px 0;font-size:13px"></div><div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarVideoaula()">Publicar aula</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div></div></div></div>
-
-    <div id="errorTooltip" class="error-tooltip"></div>
-
-    <div class="mascote-assistente" id="mascoteAssistente"><div class="mascote-avatar"><img src="sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.src='https://via.placeholder.com/70?text=SS'"></div><div class="balao-ajuda" id="balaoAjuda"><div class="balao-header"><span><i class="fas fa-robot"></i> Assistente SulSafe</span><i class="fas fa-times" onclick="fecharAssistente()"></i></div><div class="balao-conteudo" id="balaoConteudo"><div class="balao-mensagem"><strong>Olá! 👋</strong><br> Sou seu assistente virtual. Posso ajudar com:</div><div class="balao-opcoes"><div class="balao-opcao" onclick="ajudaEnvioTrabalho()">📄 Como enviar um trabalho?</div><div class="balao-opcao" onclick="ajudaVideoaula()">🎬 Como acessar videoaulas?</div><div class="balao-opcao" onclick="ajudaSala()">🎥 Como entrar em uma aula ao vivo?</div><div class="balao-opcao" onclick="ajudaMateriais()">📚 Onde encontro os materiais?</div><div class="balao-opcao" onclick="abrirAssistenteNR()">🤖 Falar com o Assistente NR (IA)</div></div></div><div class="balao-footer">Dica: clique no ícone do mascote para abrir/fechar.</div></div></div>
-
-    <script type="module" src="app.js"></script>
-</body>
-</html>
-
+                <div class="filter-bar" id="filterBarNrs">
+                    <button class="filter-btn active" onclick="setFiltroNr('todos',this)
