@@ -992,9 +992,75 @@ async function carregarTrabalhos(){if(!ehProfessor)return;const{data}=await supa
 function renderizarListaTrabalhos(trabalhos){const container=document.getElementById('listaTrabalhos');if(!trabalhos.length){container.innerHTML='<p>Nenhum trabalho.</p>';return}container.innerHTML=trabalhos.map(t=>`<div class="meeting-card"><div><strong>${escapeHtml(t.aluno_email)}</strong><br>Status: ${t.status}<br>${t.nota?`Nota: ${t.nota}`:''}</div><button class="btn-entrar" onclick="baixarArquivo('${t.arquivo_url}')">PDF</button><button class="btn-criar-sala" onclick="abrirModalCorrecao('${t.id}')">Corrigir</button></div>`).join('')}
 window.abrirModalCorrecao=async(id)=>{const nota=prompt('Nota (0-10):');if(nota===null)return;await supabase.from('trabalhos').update({nota:parseFloat(nota),status:'corrigido'}).eq('id',id);carregarTrabalhos();carregarMeusTrabalhos()}
 window.filtrarTrabalhos=(filtro)=>{const filtrados=filtro==='todos'?todosTrabalhos:todosTrabalhos.filter(t=>t.status===filtro);renderizarListaTrabalhos(filtrados)}
-window.enviarPerguntaIA=async()=>{const input=document.getElementById('iaChatInput');const pergunta=input.value.trim();if(!pergunta)return;const box=document.getElementById('iaChatMessages');box.innerHTML+=`<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;input.value='';const loading=document.createElement('div');loading.className='ia-msg bot';loading.textContent='Pensando...';box.appendChild(loading);try{const{data}=await supabase.functions.invoke('gemini-chat-import',{body:{prompt:`Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}`}});loading.remove();box.innerHTML+=`<div class="ia-msg bot">${escapeHtml(data?.response||data?.text||'Sem resposta')}</div>`}catch{loading.remove();box.innerHTML+=`<div class="ia-msg bot">Erro na IA.</div>`}}
+window.enviarPerguntaIA = async () => {
+    const input = document.getElementById('iaChatInput');
+    const pergunta = input.value.trim();
+    if (!pergunta) return;
+    
+    const box = document.getElementById('iaChatMessages');
+    box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
+    input.value = '';
+    
+    const loading = document.createElement('div');
+    loading.className = 'ia-msg bot';
+    loading.textContent = '⏳ Buscando resposta...';
+    box.appendChild(loading);
+    box.scrollTop = box.scrollHeight;
+    
+    try {
+        // Tenta usar a Edge Function do Supabase
+        const { data, error } = await supabase.functions.invoke('gemini-chat-import', {
+            body: { prompt: `Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}` }
+        });
         
-function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
+        loading.remove();
+        
+        if (data?.response) {
+            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.response)}</div>`;
+        } else if (data?.text) {
+            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.text)}</div>`;
+        } else {
+            // Fallback com informações úteis
+            box.innerHTML += `
+                <div class="ia-msg bot">
+                    <strong>📚 Assistente SulSafe</strong><br><br>
+                    <em>"${escapeHtml(pergunta)}"</em><br><br>
+                    <strong>📖 Recursos para encontrar sua resposta:</strong><br><br>
+                    🔗 <strong>Texto oficial das NRs:</strong><br>
+                    <a href="https://www.gov.br/trabalho-e-previdencia/pt-br/assuntos/seguranca-e-saude-no-trabalho/normas-regulamentadoras" target="_blank">Ministério do Trabalho - NRs</a><br><br>
+                    📚 <strong>Materiais da plataforma:</strong><br>
+                    👉 Clique em <strong>"Materiais"</strong> no menu lateral<br><br>
+                    🎬 <strong>Videoaulas:</strong><br>
+                    👉 Clique em <strong>"Videoaulas"</strong> no menu lateral<br><br>
+                    💬 <strong>Pergunte ao professor:</strong><br>
+                    👉 Utilize o chat durante as <strong>aulas ao vivo</strong><br><br>
+                    <hr>
+                    <small>🔧 Dica: Configure a chave da API Gemini no Supabase para respostas automáticas!</small>
+                </div>
+            `;
+        }
+        box.scrollTop = box.scrollHeight;
+        
+    } catch (err) {
+        loading.remove();
+        box.innerHTML += `
+            <div class="ia-msg bot">
+                <strong>❌ Erro ao conectar com a IA</strong><br><br>
+                <em>"${escapeHtml(pergunta)}"</em><br><br>
+                <strong>📖 Recursos para encontrar sua resposta:</strong><br><br>
+                🔗 <strong>Texto oficial das NRs:</strong><br>
+                <a href="https://www.gov.br/trabalho-e-previdencia/pt-br/assuntos/seguranca-e-saude-no-trabalho/normas-regulamentadoras" target="_blank">Ministério do Trabalho - NRs</a><br><br>
+                📚 <strong>Materiais da plataforma:</strong><br>
+                👉 Clique em <strong>"Materiais"</strong> no menu lateral<br><br>
+                🎬 <strong>Videoaulas:</strong><br>
+                👉 Clique em <strong>"Videoaulas"</strong> no menu lateral<br><br>
+                <hr>
+                <small>🔧 Dica: Configure a chave da API Gemini no Supabase para respostas automáticas!</small>
+            </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+    }
+};
 
 window.atualizarListaSalas = () => {
     const container = document.getElementById('meetingList');
