@@ -1277,17 +1277,22 @@ window.salvarNotas = async () => {
 // ============================================================
 // ===== EXPORTA FUNÇÕES PARA O ESCOPO GLOBAL =====
 // ============================================================
-// ============================================================
-// ===== EXPORTA FUNÇÕES PARA O ESCOPO GLOBAL =====
-// ============================================================
 window.setFiltroNr = setFiltroNr;
 window.filtrarNrs = filtrarNrs;
 window.abrirModalNr = abrirModalNr;
 window.fecharModalNr = fecharModalNr;
 window.perguntarSobreNR = perguntarSobreNR;
 window.renderizarNrs = renderizarNrs;
+window.getSalas = getSalas;                    // <-- ADICIONADO
+window.atualizarListaSalas = atualizarListaSalas; // <-- ADICIONADO
+window.criarReuniaoLocal = criarReuniaoLocal;  // <-- ADICIONADO
+window.entrarSala = entrarSala;                // <-- ADICIONADO
+window.fecharSala = fecharSala;                // <-- ADICIONADO
 
 console.log('✅ Funções das NRs exportadas globalmente!');
 console.log('✅ setFiltroNr:', typeof setFiltroNr);
 console.log('✅ abrirModalNr:', typeof abrirModalNr);
 console.log('✅ filtrarNrs:', typeof filtrarNrs);
+console.log('✅ getSalas:', typeof getSalas);
+console.log('✅ atualizarListaSalas:', typeof atualizarListaSalas);
+console.log('✅ criarReuniaoLocal:', typeof criarReuniaoLocal);
