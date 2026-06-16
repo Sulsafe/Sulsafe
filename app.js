@@ -1123,6 +1123,7 @@ window.abrirModalLancarNotas=async()=>{
 window.fecharModalLancarNotas=()=>{document.getElementById('modalLancarNotas').style.display='none'}
 
 // ===== FUNÇÃO SALVAR NOTAS CORRIGIDA =====
+// ===== FUNÇÃO SALVAR NOTAS CORRIGIDA =====
 window.salvarNotas = async () => {
     try {
         const alunoId = document.getElementById('notaAlunoId').value;
@@ -1197,7 +1198,7 @@ window.salvarNotas = async () => {
             return;
         }
         
-        mostrarErro('✅ Notas salvas com sucesso!');
+        mostrarErro('✅ Notas salvas com sucesso!'); // <- CORRIGIDO: usar mostrarErro
         fecharModalLancarNotas();
         carregarBoletimAdmin();
         
@@ -1206,3 +1207,15 @@ window.salvarNotas = async () => {
         mostrarErro('Erro: ' + err.message);
     }
 };
+
+// ============================================================
+// ===== EXPORTA FUNÇÕES PARA O ESCOPO GLOBAL =====
+// ============================================================
+window.setFiltroNr = setFiltroNr;       // <- CORRIGIDO
+window.filtrarNrs = filtrarNrs;         // <- CORRIGIDO
+window.abrirModalNr = abrirModalNr;     // <- CORRIGIDO
+window.fecharModalNr = fecharModalNr;   // <- CORRIGIDO
+window.perguntarSobreNR = perguntarSobreNR;
+window.renderizarNrs = renderizarNrs;   // <- CORRIGIDO
+
+console.log('✅ Funções das NRs exportadas globalmente!');
