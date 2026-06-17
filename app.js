@@ -224,7 +224,7 @@ function perguntarSobreNR() {
 // ============================================================
 // ===== FUNÇÃO DA IA =====
 // ============================================================
-window.enviarPerguntaIA = async () => {
+async function enviarPerguntaIA() {
     const input = document.getElementById('iaChatInput')
     const pergunta = input.value.trim()
     if (!pergunta) return
@@ -438,7 +438,7 @@ window.abrirModalNr = abrirModalNr
 window.fecharModalNr = fecharModalNr
 window.perguntarSobreNR = perguntarSobreNR
 window.renderizarNrs = renderizarNrs
-window.enviarPerguntaIA = window.enviarPerguntaIA
+window.enviarPerguntaIA = enviarPerguntaIA
 window.getSalas = getSalas
 window.atualizarListaSalas = window.atualizarListaSalas
 window.criarReuniaoLocal = window.criarReuniaoLocal
@@ -446,4 +446,4 @@ window.getAulasLocal = getAulasLocal
 window.getProgressoLocal = getProgressoLocal
 window.salvarProgressoLocal = salvarProgressoLocal
 
-console.log('App.js carregado com sucesso!')
+console.log('✅ App.js carregado com sucesso!')
