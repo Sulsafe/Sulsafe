@@ -348,19 +348,27 @@ window.fazerLogout = async () => {
 }
 
 function entrarDashboard() {
-    document.getElementById('authContainer').classList.add('hidden')
-    document.getElementById('heroContainer').classList.add('hidden')
-    document.getElementById('heroTexto').classList.add('hidden')
-    document.getElementById('overlay').classList.add('hidden')
-    const dash = document.getElementById('dashboard')
-    dash.classList.add('active')
-    // requestAnimationFrame garante que display:flex já foi aplicado pelo browser
-    // antes de adicionar .visible, disparando a transição de opacity corretamente
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            dash.classList.add('visible')
-        })
-    })
+    const authContainer = document.getElementById('authContainer')
+    const heroContainer = document.getElementById('heroContainer')
+    const heroTexto    = document.getElementById('heroTexto')
+    const overlay      = document.getElementById('overlay')
+    const dash         = document.getElementById('dashboard')
+
+    // Primeiro: anima a saída dos elementos de login (transition: .5s no CSS)
+    authContainer.classList.add('hidden')
+    heroContainer.classList.add('hidden')
+    heroTexto.classList.add('hidden')
+    overlay.classList.add('hidden')
+
+    // Depois de 300ms (metade da transição de saída do login) inicia o dashboard
+    // void dash.offsetHeight força reflow para que display:flex seja processado
+    // antes do setTimeout adicionar .visible e disparar o fade-in
+    setTimeout(() => {
+        dash.classList.add('active')
+        void dash.offsetHeight
+        setTimeout(() => dash.classList.add('visible'), 20)
+    }, 300)
+
     window.atualizarListaSalas()
 }
 
@@ -462,3 +470,60 @@ window.getProgressoLocal = getProgressoLocal
 window.salvarProgressoLocal = salvarProgressoLocal
 
 console.log('App.js carregado com sucesso!')
+
+// ============================================================
+// ===== INICIALIZAÇÃO — event listeners e setup do app =====
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ----- Navegação lateral (sidebar) -----
+    // Event delegation: um único listener no container captura cliques
+    // em qualquer .nav-item, lê o data-view e chama alternarView()
+    const nav = document.querySelector('.dash-nav')
+    if (nav) {
+        nav.addEventListener('click', (e) => {
+            const item = e.target.closest('.nav-item')
+            if (!item) return
+            const view = item.dataset.view
+            if (view) window.alternarView(view)
+        })
+    }
+
+    // ----- Fechar modal NR clicando fora -----
+    const modalNrBg = document.getElementById('modalNrBg')
+    if (modalNrBg) {
+        modalNrBg.addEventListener('click', (e) => {
+            if (e.target === modalNrBg) {
+                modalNrBg.classList.remove('open')
+                nrSelecionadaAtual = null
+            }
+        })
+    }
+
+    // ----- Fechar modais inline (notas, pagamento) clicando fora -----
+    ;['modalLancarNotas', 'modalPagamentoManual'].forEach(id => {
+        const el = document.getElementById(id)
+        if (el) {
+            el.addEventListener('click', (e) => {
+                if (e.target === el) el.style.display = 'none'
+            })
+        }
+    })
+
+    // ----- Verificar protocolo file:// -----
+    if (window.location.protocol === 'file:') {
+        const aviso = document.getElementById('avisoFileProtocol')
+        if (aviso) aviso.style.display = 'block'
+    }
+
+    // ----- Restaurar sessão ativa se já logado -----
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+            usuarioAtual = session.user.email
+            usuarioId = session.user.id
+            const el = document.getElementById('dashUserName')
+            if (el) el.textContent = usuarioAtual
+            entrarDashboard()
+        }
+    })
+})
