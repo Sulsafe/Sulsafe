@@ -352,7 +352,25 @@ function salvarProgressoLocal(obj) {
     localStorage.setItem(`sulsafe_progresso_${usuarioId || 'anon'}`, JSON.stringify(obj))
 }
 
+// ===== ============================================================
+// ===== EVENT LISTENERS DO MENU (FIX) =====
+// ===== ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar evento de clique a todos os itens do menu
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const view = this.getAttribute('data-view')
+            if (view) {
+                window.alternarView(view)
+            }
+        })
+    })
+    console.log('✅ Event listeners do menu configurados!')
+})
+
+// ============================================================
 // ===== EXPORTA FUNÇÕES =====
+// ============================================================
 window.setFiltroNr = setFiltroNr
 window.filtrarNrs = filtrarNrs
 window.abrirModalNr = abrirModalNr
