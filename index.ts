@@ -55,8 +55,9 @@ serve(async (req) => {
             maxOutputTokens: 1000,
           }
         })
-      } catch {
-        // Se falhar, tenta gemini-pro
+      } catch (flashError) {
+        // Se gemini-1.5-flash falhar, tenta gemini-pro como fallback
+        console.warn('⚠️ gemini-1.5-flash indisponível, tentando gemini-pro:', flashError.message)
         model = genAI.getGenerativeModel({ 
           model: "gemini-pro",
           generationConfig: {
