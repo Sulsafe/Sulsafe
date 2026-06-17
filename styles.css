@@ -40,8 +40,9 @@ body.tema-claro{--bg-pagina:#FFF;--fundo-dash:#F9F9F9;--texto:#1A1A1A;--borda:#E
 .social-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.05);border-radius:50%;color:var(--texto-sec);transition:.2s;text-decoration:none;font-size:20px;cursor:pointer;position:relative;z-index:999}
 .social-btn:hover{color:var(--primaria);background:rgba(46,125,50,.1);transform:translateY(-2px)}
 .link-voltar-inicio{display:inline-block;margin-bottom:14px;font-size:13px;color:var(--texto-sec);text-decoration:none}
-.dashboard{position:fixed;inset:0;background:var(--fundo-dash);z-index:20;display:none;opacity:0;transition:opacity .4s}
-.dashboard.active{display:flex;opacity:1}
+.dashboard{position:fixed;inset:0;background:var(--fundo-dash);z-index:20;display:none;opacity:0;transition:opacity .4s ease}
+.dashboard.active{display:flex}
+.dashboard.visible{opacity:1}
 .dash-sidebar{width:270px;background:var(--sidebar-bg);border-right:1px solid var(--borda);padding:28px 18px;display:flex;flex-direction:column;gap:32px;transition:.3s;flex-shrink:0}
 .dash-logo{display:flex;align-items:center;gap:10px}
 .dash-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--primaria),var(--accent));border-radius:12px;flex-shrink:0}
@@ -318,7 +319,7 @@ body.tema-claro{--bg-pagina:#FFF;--fundo-dash:#F9F9F9;--texto:#1A1A1A;--borda:#E
     inset: 0;
     background: rgba(0,0,0,0.5);
     backdrop-filter: blur(4px);
-    z-index: 100;
+    z-index: 1200;
     align-items: center;
     justify-content: center;
 }
