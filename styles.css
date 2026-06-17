@@ -318,7 +318,6 @@ body.tema-claro{--bg-pagina:#FFF;--fundo-dash:#F9F9F9;--texto:#1A1A1A;--borda:#E
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
     z-index: 1200;
     align-items: center;
     justify-content: center;
