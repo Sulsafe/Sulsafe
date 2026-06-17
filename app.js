@@ -341,6 +341,9 @@ window.fazerLogout = async () => {
     await supabase.auth.signOut()
     if (jitsiApi) jitsiApi.dispose()
     if (salaRealtimeChannel) await supabase.removeChannel(salaRealtimeChannel)
+    const dash = document.getElementById('dashboard')
+    dash.classList.remove('visible')
+    dash.classList.remove('active')
     window.location.href = 'index.html'
 }
 
@@ -349,7 +352,15 @@ function entrarDashboard() {
     document.getElementById('heroContainer').classList.add('hidden')
     document.getElementById('heroTexto').classList.add('hidden')
     document.getElementById('overlay').classList.add('hidden')
-    document.getElementById('dashboard').classList.add('active')
+    const dash = document.getElementById('dashboard')
+    dash.classList.add('active')
+    // requestAnimationFrame garante que display:flex já foi aplicado pelo browser
+    // antes de adicionar .visible, disparando a transição de opacity corretamente
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            dash.classList.add('visible')
+        })
+    })
     window.atualizarListaSalas()
 }
 
