@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        /* ===== TODOS OS ESTILOS EXISTENTES (MANTIDOS) ===== */
+        /* ===== TODOS OS ESTILOS EXISTENTES ===== */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primaria:#2E7D32;--accent:#1B5E20;--primaria-glow:rgba(46,125,50,0.3);--fundo-dash:#F4F7F6;--texto:#1A1A1A;--texto-sec:#555;--borda:#E0E0E0;--input-bg:#FAFAFA;--sucesso:#2E7D32;--erro:#D32F2F;--sala-btn:linear-gradient(95deg,#2E7D32,#1B5E20);--sala-vibrante:linear-gradient(135deg,#2E7D32,#1B5E20);--bg-pagina:#F4F7F6;--card-bg:#FFFFFF;--sidebar-bg:#FFFFFF;--fundo-sidebar:#FFFFFF}
         body{font-family:'Inter',sans-serif;height:100vh;overflow:hidden;background:var(--bg-pagina);color:var(--texto);transition:background .3s,color .3s}
@@ -343,7 +343,7 @@
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
             <div class="dash-logo">
-                <div class="dash-logo-icon" id="dashLogoIcon">SS</div>
+                <div class="dash-logo-icon" id="dashLogoIcon"></div>
                 <div class="dash-logo-text" id="dashEmpresaNome">SulSafe</div>
             </div>
             <div class="dash-nav">
@@ -351,6 +351,7 @@
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
+                <!-- ===== NOVO: MENU NORMAS NRS ===== -->
                 <div class="nav-item" data-view="nrs"><i class="fas fa-book"></i><span>Normas NRs</span></div>
                 <div class="nav-item" id="navAreaAluno" data-view="aluno" style="display:none"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
@@ -375,6 +376,7 @@
                     <div class="dash-card" onclick="alternarView('videoaulas')"><div class="dash-card-icon"><i class="fas fa-play-circle"></i></div><div class="dash-card-title">Videoaulas</div><div class="dash-card-desc">Aulas gravadas por NR com acompanhamento de progresso.</div></div>
                     <div class="dash-card" onclick="alternarView('salas')"><div class="dash-card-icon"><i class="fas fa-video"></i></div><div class="dash-card-title">Aula ao vivo</div><div class="dash-card-desc">Entre na videoconferência via Jitsi Meet.</div></div>
                     <div class="dash-card" onclick="alternarView('materiais')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Materiais</div><div class="dash-card-desc">Apostilas e PDFs das NRs.</div></div>
+                    <!-- ===== NOVO: CARD NORMAS NRS ===== -->
                     <div class="dash-card" onclick="alternarView('nrs')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Normas NRs</div><div class="dash-card-desc">Consulte todas as NRs com detalhes.</div></div>
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
                     <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
@@ -1159,7 +1161,7 @@
         }
 
         // ================================================================
-        // ===== FUNÇÕES GERAIS (MANTIDAS DO ORIGINAL) =====
+        // ===== FUNÇÕES GERAIS (MANTIDAS) =====
         // ================================================================
         function alternarView(viewId) {
             const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno','Nrs'];
@@ -1185,9 +1187,6 @@
             if (viewId === 'boletim') { if(window.ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno(); }
         }
 
-        // ================================================================
-        // ===== FUNÇÕES DE LOGIN E DASHBOARD =====
-        // ================================================================
         function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
         
         function fazerLogin() {
@@ -1200,7 +1199,6 @@
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('dashUserName').innerHTML = email || 'Usuário';
             
-            // Inicializa views
             carregarVideoaulas();
             atualizarListaSalas();
             renderizarNrsExpandidas();
@@ -1411,7 +1409,6 @@
         // ===== INICIALIZAÇÃO =====
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Entra no dashboard direto (sem login)
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('heroContainer').classList.add('hidden');
@@ -1419,7 +1416,6 @@
             document.getElementById('overlay').classList.add('hidden');
             document.getElementById('dashUserName').textContent = 'Usuário Demo';
             
-            // Inicializa todas as views
             alternarView('home');
             carregarVideoaulas();
             atualizarListaSalas();
