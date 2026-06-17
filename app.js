@@ -5,7 +5,20 @@ const supabase = createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 )
 
-const CONFIG = {nomeEmpresa:"SulSafe",logoUrl:"https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-assets/logo1.png",authRedirectUrl:window.location.origin + window.location.pathname}
+// ============================================================
+// ===== EXPORTA SUPABASE PARA O ESCOPO GLOBAL =====
+// ============================================================
+window.supabase = supabase;  // <-- ADICIONE ESTA LINHA!
+
+console.log('✅ Supabase inicializado!');
+console.log('✅ supabase disponível?', typeof window.supabase);
+
+const CONFIG = {
+    nomeEmpresa: "SulSafe",
+    logoUrl: "https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-assets/logo1.png",
+    authRedirectUrl: window.location.origin + window.location.pathname
+}
+
 let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = false, salaAtual = null, jitsiApi = null, isRecording = false, todasAulas = [], todosTrabalhos = [], currentChart = null, relatorioData = []
 let salaRealtimeChannel = null
 let equipeAtualId = null
