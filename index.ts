@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai"
 
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || ''
 
@@ -24,97 +25,76 @@ serve(async (req) => {
       )
     }
 
-    // ============================================================
-    // TENTA USAR O GEMINI PRIMEIRO
-    // ============================================================
-    if (GEMINI_API_KEY) {
-      try {
-        const { GoogleGenerativeAI } = await import("https://esm.sh/@google/generative-ai")
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
-        const model = genAI.getGenerativeModel({ 
-          model: "gemini-pro",
-          generationConfig: { temperature: 0.7, maxOutputTokens: 1000 }
-        })
-        const result = await model.generateContent(prompt)
-        const response = await result.response
-        const text = response.text()
-        
-        return new Response(
-          JSON.stringify({ response: text }),
-          { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
-        )
-      } catch (geminiError) {
-        console.error('Erro no Gemini:', geminiError)
-        // Se o Gemini falhar, continua para o fallback
-      }
+    console.log('🔑 Chave configurada?', GEMINI_API_KEY ? '✅ SIM' : '❌ NÃO');
+    console.log('📝 Prompt:', prompt);
+
+    // Se não tiver chave da API
+    if (!GEMINI_API_KEY) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Chave da API Gemini não configurada',
+          response: '⚠️ Configure a chave no Supabase: supabase secrets set GEMINI_API_KEY=sua_chave'
+        }),
+        { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, status: 200 }
+      )
     }
 
     // ============================================================
-    // FALLBACK: USAR API GRATUITA DO HUGGING FACE
+    // TENTA USAR O GEMINI
     // ============================================================
     try {
-      const hfResponse = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inputs: prompt })
-      })
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
       
-      const hfData = await hfResponse.json()
-      
-      if (hfData?.generated_text) {
-        return new Response(
-          JSON.stringify({ response: hfData.generated_text }),
-          { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
-        )
+      // Tenta com gemini-1.5-flash primeiro
+      let model
+      try {
+        model = genAI.getGenerativeModel({ 
+          model: "gemini-1.5-flash",
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1000,
+          }
+        })
+      } catch {
+        // Se falhar, tenta gemini-pro
+        model = genAI.getGenerativeModel({ 
+          model: "gemini-pro",
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1000,
+          }
+        })
       }
-    } catch (hfError) {
-      console.error('Erro no Hugging Face:', hfError)
+      
+      const result = await model.generateContent(prompt)
+      const response = await result.response
+      const text = response.text()
+      
+      console.log('✅ Gemini respondeu com sucesso!');
+      
+      return new Response(
+        JSON.stringify({ response: text }),
+        { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+      )
+      
+    } catch (geminiError) {
+      console.error('❌ Erro no Gemini:', geminiError.message)
+      
+      // Se o Gemini falhar, retorna o erro
+      return new Response(
+        JSON.stringify({ 
+          error: geminiError.message,
+          response: `⚠️ Erro ao acessar o Gemini: ${geminiError.message}\n\nVerifique se sua chave API é válida e tem acesso aos modelos.`
+        }),
+        { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, status: 200 }
+      )
     }
-
-    // ============================================================
-    // ÚLTIMO RECURSO: RESPOSTA PRÉ-DEFINIDA
-    // ============================================================
-    const respostaFallback = gerarRespostaOffline(prompt)
-    
-    return new Response(
-      JSON.stringify({ response: respostaFallback }),
-      { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
-    )
     
   } catch (error) {
-    console.error('Erro:', error)
+    console.error('❌ Erro geral:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, status: 500 }
     )
   }
 })
-
-// ============================================================
-// RESPOSTAS PRÉ-DEFINIDAS (ÚLTIMO RECURSO)
-// ============================================================
-function gerarRespostaOffline(prompt) {
-  const p = prompt.toLowerCase()
-  
-  if (p.includes('nr-01') || p.includes('nr 01')) {
-    return `📋 NR-01 - Disposições Gerais e Gerenciamento de Riscos\n\nObjetivo: Estabelecer os requisitos para o gerenciamento de riscos ocupacionais.\n\nPrincipais pontos:\n- PGR - Programa de Gerenciamento de Riscos\n- GRO - Gerenciamento de Riscos Ocupacionais\n- Hierarquia de controles\n- Inventário de riscos`
-  }
-  
-  if (p.includes('nr-03') || p.includes('nr 03')) {
-    return `🚫 NR-03 - Embargo ou Interdição\n\nObjetivo: Estabelecer critérios para embargo e interdição quando houver risco grave e iminente.\n\nPrincipais pontos:\n- Embargo: paralisação de obra\n- Interdição: paralisação de estabelecimento\n- Risco grave e iminente\n- Ação do Auditor Fiscal`
-  }
-  
-  if (p.includes('nr-05') || p.includes('nr 05') || p.includes('cipa')) {
-    return `🤝 NR-05 - CIPA\n\nObjetivo: Prevenir acidentes e doenças do trabalho.\n\nPrincipais pontos:\n- Composição paritária\n- Eleição dos representantes\n- SIPAT\n- Estabilidade do cipeiro`
-  }
-  
-  if (p.includes('nr-35') || p.includes('nr 35')) {
-    return `🧗 NR-35 - Trabalho em Altura\n\nObjetivo: Estabelecer requisitos para atividades acima de 2,0m.\n\nPrincipais pontos:\n- Altura mínima: 2,0m\n- PTA - Permissão de Trabalho\n- Cinto de segurança\n- Treinamento obrigatório`
-  }
-  
-  if (p.includes('nr-33') || p.includes('nr 33')) {
-    return `🕳️ NR-33 - Espaços Confinados\n\nObjetivo: Estabelecer requisitos para trabalho em espaços confinados.\n\nPrincipais pontos:\n- PET - Permissão de Entrada\n- Supervisor e vigias\n- Monitoramento da atmosfera\n- Treinamento e resgate`
-  }
-  
-  return `📚 NRs disponíveis: NR-01, NR-03, NR-05, NR-06, NR-10, NR-18, NR-33, NR-35\n\nDigite o número da NR para mais informações.`
-}
