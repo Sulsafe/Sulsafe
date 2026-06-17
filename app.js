@@ -7,7 +7,92 @@ let usuarioAtual = null, usuarioId = null, perfilUsuario = null, ehProfessor = f
 let salaRealtimeChannel = null
 let equipeAtualId = null
 
-// ========== FUNÇÕES DE EQUIPE COM SUPABASE (CORRIGIDA) ==========
+// ============================================================
+// ===== DADOS DAS NORMAS REGULAMENTADORAS =====
+// ============================================================
+const todasNrs = [
+    { num: "NR-01", nome: "Disposições Gerais e Gerenciamento de Riscos", icon: "📋", cat: "geral", tag: "geral",
+        desc: "Estabelece as disposições gerais, o campo de aplicação, os termos e definições das NRs, e o Programa de Gerenciamento de Riscos (PGR) para identificar e controlar riscos no ambiente de trabalho.",
+        objs: ["Gerenciar riscos ocupacionais", "Elaborar o PGR", "Definir responsabilidades de empregadores e empregados", "Inventariar fontes de risco"] },
+    { num: "NR-03", nome: "Embargo ou Interdição", icon: "🚫", cat: "geral", tag: "geral",
+        desc: "Estabelece os critérios para embargo de obra e interdição de estabelecimento, setor de serviço, máquina ou equipamento quando houver risco grave e iminente.",
+        objs: ["Embargo de obras com risco grave", "Interdição de máquinas perigosas", "Ação fiscal do Auditor do Trabalho"] },
+    { num: "NR-04", nome: "SESMT", icon: "🏥", cat: "saude", tag: "saude",
+        desc: "Obriga empresas com mais de 50 trabalhadores a manter o SESMT, composto por médico do trabalho, engenheiro de segurança, técnico de segurança, auxiliar de enfermagem e enfermeiro do trabalho.",
+        objs: ["Dimensionamento do SESMT por grau de risco", "Médico e engenheiro de segurança obrigatórios", "Prevenção de doenças e acidentes"] },
+    { num: "NR-05", nome: "CIPA", icon: "🤝", cat: "geral", tag: "geral",
+        desc: "Trata da CIPA, organismo paritário formado por representantes do empregador e dos empregados para prevenir acidentes e doenças do trabalho.",
+        objs: ["Eleição dos membros da CIPA", "Mapas de riscos ambientais", "Realização da SIPAT", "Estabilidade do cipeiro eleito"] },
+    { num: "NR-06", nome: "Equipamentos de Proteção Individual (EPI)", icon: "🦺", cat: "geral", tag: "geral",
+        desc: "Define os EPIs como todo dispositivo de uso individual destinado a proteger a saúde e integridade física do trabalhador.",
+        objs: ["Fornecimento gratuito pelo empregador", "Certificado de Aprovação (CA)", "Treinamento para uso do EPI", "Higienização e substituição"] },
+    { num: "NR-07", nome: "PCMSO", icon: "🩺", cat: "saude", tag: "saude",
+        desc: "Exige que os empregadores elaborem e implementem o PCMSO, com objetivo de promoção e preservação da saúde.",
+        objs: ["Exame admissional obrigatório", "Exames periódicos", "Emissão do ASO", "Monitoramento de saúde"] },
+    { num: "NR-08", nome: "Edificações", icon: "🏗️", cat: "especifico", tag: "especifico",
+        desc: "Estabelece requisitos técnicos mínimos para garantir segurança nos locais de trabalho em edificações.",
+        objs: ["Pisos antiderrapantes", "Altura mínima do pé-direito", "Escadas e rampas seguras", "Iluminação e ventilação"] },
+    { num: "NR-09", nome: "Exposições Ocupacionais", icon: "⚗️", cat: "saude", tag: "saude",
+        desc: "Estabelece a obrigatoriedade de identificar, avaliar e controlar as exposições a agentes físicos, químicos e biológicos.",
+        objs: ["Identificação de agentes nocivos", "Avaliação quantitativa e qualitativa", "Medidas de controle coletivo", "Inventário de riscos"] },
+    { num: "NR-10", nome: "Segurança em Eletricidade", icon: "⚡", cat: "especifico", tag: "especifico",
+        desc: "Estabelece requisitos e condições mínimas para segurança e saúde de trabalhadores que interagem com instalações elétricas.",
+        objs: ["Treinamento obrigatório em eletricidade", "Uso de EPE e EPI específicos", "Prontuário de instalações elétricas", "Sinalização de segurança"] },
+    { num: "NR-11", nome: "Movimentação de Materiais", icon: "🏭", cat: "especifico", tag: "especifico",
+        desc: "Estabelece requisitos de segurança para operações de transporte de cargas, incluindo equipamentos de elevação.",
+        objs: ["Habilitação para operadores de empilhadeiras", "Capacidade máxima dos equipamentos", "Armazenamento seguro de cargas", "Manutenção periódica"] },
+    { num: "NR-12", nome: "Máquinas e Equipamentos", icon: "⚙️", cat: "especifico", tag: "especifico",
+        desc: "Define referências técnicas e medidas de proteção para garantir a saúde e integridade física dos trabalhadores que trabalham com máquinas.",
+        objs: ["Proteção de partes móveis", "Distâncias seguras", "Manual de instruções em português", "Manutenção e inspeção"] },
+    { num: "NR-13", nome: "Caldeiras e Vasos de Pressão", icon: "♨️", cat: "especifico", tag: "especifico",
+        desc: "Estabelece requisitos de segurança para projeto, construção, instalação, operação, manutenção, inspeção de caldeiras e vasos de pressão.",
+        objs: ["Inspeção periódica obrigatória", "Profissional Habilitado (PH)", "Prontuário do equipamento", "Válvulas de segurança"] },
+    { num: "NR-15", nome: "Insalubridade", icon: "☣️", cat: "saude", tag: "saude",
+        desc: "Define as atividades e operações insalubres que expõem os trabalhadores a agentes nocivos à saúde acima dos limites de tolerância.",
+        objs: ["Adicional de insalubridade de 10% a 40%", "Limites de tolerância por agente", "Eliminação ou neutralização", "Laudo técnico (LTCAT)"] },
+    { num: "NR-16", nome: "Periculosidade", icon: "💥", cat: "especifico", tag: "especifico",
+        desc: "Define as atividades e operações perigosas que geram direito ao adicional de periculosidade de 30% sobre o salário-base.",
+        objs: ["Adicional de periculosidade de 30%", "Inflamáveis e explosivos", "Energia elétrica e radiações", "Segurança pessoal e patrimonial"] },
+    { num: "NR-17", nome: "Ergonomia", icon: "🪑", cat: "saude", tag: "saude",
+        desc: "Estabelece parâmetros que permitem a adaptação das condições de trabalho às características psicofisiológicas dos trabalhadores.",
+        objs: ["Peso máximo para levantamento manual", "Altura e inclinação dos postos", "Pausas e jornada de trabalho", "Análise Ergonômica do Trabalho (AET)"] },
+    { num: "NR-18", nome: "Construção Civil", icon: "🏚️", cat: "especifico", tag: "especifico",
+        desc: "Estabelece diretrizes de ordem administrativa, de planejamento e de organização para implementação de medidas de controle nos canteiros de obras.",
+        objs: ["PCMAT — Programa de Condições de Trabalho", "Andaimes e escadas seguras", "EPI para trabalho em altura", "Sinalização do canteiro"] },
+    { num: "NR-20", nome: "Inflamáveis e Combustíveis", icon: "⛽", cat: "especifico", tag: "especifico",
+        desc: "Estabelece os requisitos mínimos de segurança e saúde para atividades com inflamáveis e combustíveis.",
+        objs: ["Aterramento elétrico de tanques", "Proibição de fontes de ignição", "Treinamento para operadores", "Plano de emergência"] },
+    { num: "NR-23", nome: "Proteção Contra Incêndios", icon: "🔥", cat: "geral", tag: "geral",
+        desc: "Estabelece as medidas de proteção contra incêndio que os locais de trabalho devem possuir.",
+        objs: ["Saídas de emergência sinalizadas", "Extintores e hidrantes", "Brigada de incêndio treinada", "Plano de evacuação"] },
+    { num: "NR-24", nome: "Condições Sanitárias", icon: "🚻", cat: "saude", tag: "saude",
+        desc: "Determina os requisitos de higiene, conforto, instalações sanitárias, bebedouros, refeitórios e alojamentos nos locais de trabalho.",
+        objs: ["Banheiros por número de trabalhadores", "Vestiários com armários individuais", "Bebedouros e refeitórios", "Alojamentos salubres"] },
+    { num: "NR-26", nome: "Sinalização de Segurança", icon: "🚦", cat: "geral", tag: "geral",
+        desc: "Fixa as cores a serem usadas nos locais de trabalho para identificação de equipamentos de segurança, delimitação de áreas e advertência de perigos.",
+        objs: ["Vermelho = combate a incêndio", "Amarelo = atenção e risco", "Verde = segurança e saídas", "Azul = obrigação de usar EPI"] },
+    { num: "NR-28", nome: "Fiscalização e Penalidades", icon: "⚖️", cat: "geral", tag: "geral",
+        desc: "Estabelece os procedimentos de fiscalização do cumprimento das NRs, os critérios de autuação, as infrações e as penalidades.",
+        objs: ["Auditores Fiscais do Trabalho", "Gradação das penalidades", "Auto de infração", "Recurso administrativo"] },
+    { num: "NR-32", nome: "Serviços de Saúde", icon: "🏥", cat: "saude", tag: "saude",
+        desc: "Estabelece as diretrizes básicas para a implementação de medidas de proteção à segurança e à saúde dos trabalhadores em serviços de saúde.",
+        objs: ["Prevenção de acidentes com perfurocortantes", "Gestão de resíduos hospitalares", "Proteção contra agentes biológicos", "Vacinação dos profissionais"] },
+    { num: "NR-33", nome: "Espaços Confinados", icon: "🕳️", cat: "especifico", tag: "especifico",
+        desc: "Estabelece os requisitos mínimos para identificação de espaços confinados e trabalho nesses locais.",
+        objs: ["Permissão de Entrada e Trabalho (PET)", "Supervisor, vigias e trabalhadores autorizados", "Monitoramento da atmosfera", "Resgate em espaço confinado"] },
+    { num: "NR-35", nome: "Trabalho em Altura", icon: "🧗", cat: "especifico", tag: "especifico",
+        desc: "Estabelece os requisitos mínimos e as medidas de proteção para o trabalho em altura acima de 2,0 m.",
+        objs: ["Altura mínima: acima de 2,0 m", "Permissão de Trabalho em Altura (PTA)", "Cinto de segurança tipo paraquedista", "Treinamento teórico e prático obrigatório"] },
+    { num: "NR-36", nome: "Frigoríficos", icon: "🥩", cat: "especifico", tag: "especifico",
+        desc: "Estabelece os requisitos mínimos de segurança e saúde para os trabalhadores em atividades de abate e processamento de carnes.",
+        objs: ["Pausas para recuperação térmica", "Rotação de tarefas", "Proteção contra cortes", "Monitoramento de DORT/LER"] }
+];
+
+let filtroNrAtivo = 'todos';
+let termoBuscaNr = '';
+let nrSelecionadaAtual = null;
+
+// ========== FUNÇÕES DE EQUIPE COM SUPABASE ==========
 async function carregarEquipe() {
     if(!usuarioId) {
         console.log("Usuário não logado");
@@ -20,7 +105,6 @@ async function carregarEquipe() {
     container.innerHTML = '<p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando equipe...</p>';
     
     try {
-        // Buscar o ID da equipe do usuário atual (query simples, sem joins recursivos)
         const { data: membroAtual, error: membroError } = await supabase
             .from('membros_equipe')
             .select('equipe_id')
@@ -32,7 +116,6 @@ async function carregarEquipe() {
             console.error('Erro ao buscar membro:', membroError);
         }
         
-        // Se não está em nenhuma equipe, criar uma
         if (!membroAtual || !membroAtual.equipe_id) {
             await criarEquipeInicial();
             return;
@@ -40,7 +123,6 @@ async function carregarEquipe() {
         
         equipeAtualId = membroAtual.equipe_id;
         
-        // Buscar todos os membros da equipe (query separada para evitar recursão)
         const { data: todosMembros, error: membrosError } = await supabase
             .from('membros_equipe')
             .select('usuario_id, papel, convite_pendente')
@@ -53,7 +135,6 @@ async function carregarEquipe() {
             return;
         }
         
-        // Buscar os dados dos usuários separadamente (para evitar recursão)
         const userIds = todosMembros.map(m => m.usuario_id).filter(id => id);
         let userProfiles = {};
         
@@ -68,7 +149,6 @@ async function carregarEquipe() {
             }
         }
         
-        // Renderizar lista de membros
         container.innerHTML = todosMembros.map(m => {
             const profile = userProfiles[m.usuario_id];
             const nomeExibicao = profile?.nome_completo || profile?.email || m.usuario_id?.substring(0, 8);
@@ -205,26 +285,14 @@ async function carregarConvitesPendentes() {
 
 async function cancelarConvite(codigo) {
     if(!confirm('Cancelar este convite?')) return;
-    
-    await supabase
-        .from('membros_equipe')
-        .delete()
-        .eq('codigo_convite', codigo)
-        .eq('convite_pendente', true);
-    
+    await supabase.from('membros_equipe').delete().eq('codigo_convite', codigo).eq('convite_pendente', true);
     mostrarErro('Convite cancelado!');
     await carregarEquipe();
 }
 
 async function removerMembro(usuarioIdRemover) {
     if(!confirm('Remover este membro da equipe?')) return;
-    
-    await supabase
-        .from('membros_equipe')
-        .delete()
-        .eq('equipe_id', equipeAtualId)
-        .eq('usuario_id', usuarioIdRemover);
-    
+    await supabase.from('membros_equipe').delete().eq('equipe_id', equipeAtualId).eq('usuario_id', usuarioIdRemover);
     mostrarErro('Membro removido!');
     await carregarEquipe();
 }
@@ -279,9 +347,8 @@ window.copiarLinkConvite = () => {
     navigator.clipboard.writeText(input.value);
     mostrarErro('✅ Link copiado!');
 };
-        
+
 // ========== FUNÇÕES DE CHAT EM TEMPO REAL ==========
-        
 async function iniciarRealtimeChat(salaId) {
     if(salaRealtimeChannel) {
         await supabase.removeChannel(salaRealtimeChannel)
@@ -294,7 +361,7 @@ async function iniciarRealtimeChat(salaId) {
         })
         .subscribe()
 }
-        
+
 function enviarMensagemRealtime(salaId, mensagem) {
     if(!salaRealtimeChannel) return
     salaRealtimeChannel.send({
@@ -303,7 +370,7 @@ function enviarMensagemRealtime(salaId, mensagem) {
         payload: { sender: usuarioAtual, message: mensagem, timestamp: new Date().toISOString() }
     })
 }
-        
+
 function adicionarMensagemChatDOM(sender, msg, own, timestamp = null) {
     const div = document.getElementById('chatMessages')
     const m = document.createElement('div')
@@ -313,7 +380,7 @@ function adicionarMensagemChatDOM(sender, msg, own, timestamp = null) {
     div.appendChild(m)
     div.scrollTop = div.scrollHeight
 }
-        
+
 window.enviarMensagemChat = () => {
     const input = document.getElementById('chatInput')
     const txt = input.value.trim()
@@ -321,9 +388,8 @@ window.enviarMensagemChat = () => {
     enviarMensagemRealtime(salaAtual.id, txt)
     input.value = ''
 }
-        
+
 // ========== FUNÇÕES DE RELATÓRIO COM GRÁFICOS E EXPORTAÇÃO ==========
-        
 function renderizarGraficoProgresso(alunos, progressos) {
     const ctx = document.getElementById('progressoChart')?.getContext('2d')
     if(!ctx) return
@@ -334,7 +400,7 @@ function renderizarGraficoProgresso(alunos, progressos) {
         options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, max: 100 } } }
     })
 }
-        
+
 window.exportarRelatorioCSV = () => {
     if(!relatorioData.length) { mostrarErro('Nenhum dado para exportar'); return }
     let csv = 'Aluno,Aulas Assistidas,Total Aulas,Progresso (%),Status\n'
@@ -346,7 +412,7 @@ window.exportarRelatorioCSV = () => {
     link.click()
     mostrarErro('✅ CSV exportado com sucesso!')
 }
-        
+
 window.exportarRelatorioExcel = () => {
     if(!relatorioData.length) { mostrarErro('Nenhum dado para exportar'); return }
     const wsData = [['Aluno', 'Aulas Assistidas', 'Total Aulas', 'Progresso (%)', 'Status']]
@@ -357,7 +423,7 @@ window.exportarRelatorioExcel = () => {
     XLSX.writeFile(wb, `relatorio_sulsafe_${new Date().toISOString().split('T')[0]}.xlsx`)
     mostrarErro('✅ Excel exportado com sucesso!')
 }
-        
+
 window.exportarRelatorioPDF = async () => {
     if(!relatorioData.length) { mostrarErro('Nenhum dado para exportar'); return }
     const { jsPDF } = window.jspdf
@@ -390,9 +456,8 @@ window.exportarRelatorioPDF = async () => {
     doc.save(`relatorio_sulsafe_${new Date().toISOString().split('T')[0]}.pdf`)
     mostrarErro('✅ PDF exportado com sucesso!')
 }
-        
+
 // ========== FUNÇÕES DE PAGAMENTO ==========
-        
 window.iniciarAssinaturaStripe = async () => {
     const PRICE_ID = 'price_1TiQI7KY6XfInCdDFDG5XKKJ'
     const statusDiv = document.getElementById('stripeStatus')
@@ -409,9 +474,8 @@ window.iniciarAssinaturaStripe = async () => {
         mostrarErro('Erro: ' + err.message)
     }
 }
-        
+
 // ========== TRANSAÇÕES ==========
-        
 async function carregarMinhasTransacoes() {
     const container = document.getElementById('minhasTransacoesContainer')
     if(!container) return
@@ -448,7 +512,7 @@ async function carregarMinhasTransacoes() {
         container.innerHTML = html
     } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
 }
-        
+
 async function carregarTodasTransacoes() {
     if(perfilUsuario !== 'admin') return
     const container = document.getElementById('todasTransacoesContainer')
@@ -478,14 +542,14 @@ async function carregarTodasTransacoes() {
         container.innerHTML = html
     } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
 }
-        
+
 window.simularPagamento = async (transacaoId) => {
     if(!confirm('Simular pagamento?')) return
     const { error } = await supabase.from('transacoes').update({ status: 'PAGO', data_pagamento: new Date().toISOString() }).eq('id', transacaoId)
     if(error) mostrarErro('Erro: ' + error.message)
     else { mostrarErro('✅ Pagamento simulado!'); carregarMinhasTransacoes(); if(perfilUsuario === 'admin') carregarTodasTransacoes() }
 }
-        
+
 window.confirmarPagamentoSimulado = async (transacaoId) => {
     if(perfilUsuario !== 'admin') { mostrarErro('Apenas admin'); return }
     if(!confirm('Confirmar pagamento?')) return
@@ -493,9 +557,9 @@ window.confirmarPagamentoSimulado = async (transacaoId) => {
     if(error) mostrarErro('Erro: ' + error.message)
     else { mostrarErro('✅ Pagamento confirmado!'); carregarMinhasTransacoes(); carregarTodasTransacoes() }
 }
-        
+
 window.copiarTexto = (texto) => { navigator.clipboard.writeText(texto); mostrarErro('📋 Código copiado!') }
-        
+
 let tipoPagamentoManualAtual = ''
 window.abrirModalGerarPagamentoManual = async (tipo) => {
     if(perfilUsuario !== 'admin') { mostrarErro('Apenas admin'); return; }
@@ -522,9 +586,8 @@ window.gerarPagamentoManual = async () => {
     if(error) mostrarErro('Erro: ' + error.message)
     else { mostrarErro(`✅ ${tipoPagamentoManualAtual} gerado!`); window.fecharModalPagamentoManual(); carregarMinhasTransacoes(); carregarTodasTransacoes() }
 }
-        
+
 // ========== FUNÇÕES DE BOLETIM ==========
-        
 async function carregarBoletimAdmin() {
     const container = document.getElementById('boletimContainer')
     if(!container) return
@@ -571,7 +634,7 @@ async function carregarBoletimAdmin() {
         container.innerHTML = html
     } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
 }
-        
+
 async function carregarBoletimAluno() {
     const container = document.getElementById('boletimAlunoContainer')
     if(!container) return
@@ -604,9 +667,8 @@ async function carregarBoletimAluno() {
         container.innerHTML = html
     } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
 }
-        
+
 // ========== FUNÇÕES DE RELATÓRIO ==========
-        
 window.carregarRelatorioAlunos = async () => {
     const container = document.getElementById('relatorioContainer')
     if(!container) return
@@ -642,7 +704,7 @@ window.carregarRelatorioAlunos = async () => {
         container.innerHTML = html
     } catch(err) { container.innerHTML = '<p style="color:red">Erro: ' + err.message + '</p>' }
 }
-        
+
 window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
     const { data: progresso } = await supabase.from('progresso_aulas').select('aula_id').eq('user_id', alunoId).eq("concluído", true)
     if(!progresso?.length) { mostrarErro('Aluno não concluiu nenhuma aula.'); return }
@@ -663,13 +725,91 @@ window.gerarCertificadoAluno = async (alunoId, alunoEmail) => {
     doc.save(`Certificado_${nome}.pdf`)
     mostrarErro(`✅ Certificado gerado!`)
 }
-        
+
+// ========== FUNÇÕES DAS NRS ==========
+function renderizarNrs() {
+    const grid = document.getElementById('gridNrs')
+    const noRes = document.getElementById('noResultsNrs')
+    if (!grid) return
+
+    let filtradas = todasNrs.filter(nr => {
+        const matchFilter = filtroNrAtivo === 'todos' || nr.cat === filtroNrAtivo
+        const matchSearch = termoBuscaNr === '' ||
+            nr.nome.toLowerCase().includes(termoBuscaNr) ||
+            nr.num.toLowerCase().includes(termoBuscaNr) ||
+            nr.desc.toLowerCase().includes(termoBuscaNr)
+        return matchFilter && matchSearch
+    })
+
+    if (filtradas.length === 0) {
+        grid.innerHTML = ''
+        if (noRes) noRes.style.display = 'block'
+        return
+    }
+    if (noRes) noRes.style.display = 'none'
+
+    grid.innerHTML = filtradas.map(nr => `
+        <div class="nr-card" onclick="window.abrirModalNr('${nr.num}')">
+            <span class="tag tag-${nr.tag}">${nr.tag === 'geral' ? 'Geral' : nr.tag === 'saude' ? 'Saúde' : 'Setorial'}</span>
+            <span class="card-icon">${nr.icon}</span>
+            <span class="nr-num">${nr.num}</span>
+            <h3>${escapeHtml(nr.nome)}</h3>
+            <p>${escapeHtml(nr.desc.substring(0, 80))}...</p>
+        </div>
+    `).join('')
+}
+
+function setFiltroNr(f, btn) {
+    filtroNrAtivo = f
+    document.querySelectorAll('#filterBarNrs .filter-btn').forEach(b => b.classList.remove('active'))
+    if (btn) btn.classList.add('active')
+    renderizarNrs()
+}
+
+function filtrarNrs() {
+    const input = document.getElementById('searchNrs')
+    termoBuscaNr = input ? input.value.toLowerCase().trim() : ''
+    renderizarNrs()
+}
+
+function abrirModalNr(num) {
+    const nr = todasNrs.find(n => n.num === num)
+    if (!nr) return
+    nrSelecionadaAtual = nr
+    document.getElementById('mNrIcon').textContent = nr.icon
+    document.getElementById('mNrNum').textContent = nr.num
+    document.getElementById('mNrTitle').textContent = nr.nome
+    document.getElementById('mNrDesc').textContent = nr.desc
+    document.getElementById('mNrObjs').innerHTML = nr.objs.map(o => `<li>${escapeHtml(o)}</li>`).join('')
+    document.getElementById('modalNrBg').classList.add('open')
+}
+
+function fecharModalNr(e) {
+    if (e.target === document.getElementById('modalNrBg')) {
+        document.getElementById('modalNrBg').classList.remove('open')
+        nrSelecionadaAtual = null
+    }
+}
+
+function perguntarSobreNR() {
+    if (!nrSelecionadaAtual) return
+    const { num, nome } = nrSelecionadaAtual
+    document.getElementById('modalNrBg').classList.remove('open')
+    window.alternarView('ia')
+    setTimeout(() => {
+        const input = document.getElementById('iaChatInput')
+        if (input) {
+            input.value = `Explique a ${num} - ${nome} de forma resumida e dê exemplos práticos para estudantes de segurança do trabalho.`
+            window.enviarPerguntaIA()
+        }
+    }, 400)
+}
+
 // ========== FUNÇÕES EXISTENTES ==========
-        
 function escapeHtml(s){return String(s||'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
 function traduzirErroAuth(msg){const m=(msg||'').toLowerCase();if(m.includes('invalid login'))return 'E-mail ou senha incorreto...';if(m.includes('not confirmed'))return 'Confirme seu e-mail antes de entrar.';if(m.includes('already registered'))return 'E-mail já cadastrado.';return msg}
-        
+
 async function garantirPerfil(user){
     const {data:existing}=await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle()
     if(existing) return existing.role
@@ -678,11 +818,12 @@ async function garantirPerfil(user){
     await supabase.from('profiles').insert({id:user.id,email:user.email,role:role})
     return role
 }
-        
+
 window.mostrarTela=(tela)=>{document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')}
-        
+
+// ========== FUNÇÃO ALTERNAR VIEW (ATUALIZADA) ==========
 window.alternarView=(viewId)=>{
-    const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno']
+    const views=['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno','Nrs']
     views.forEach(v=>{const el=document.getElementById(`view${v}`);if(el)el.style.display='none'})
     const target=document.getElementById(`view${viewId.charAt(0).toUpperCase()+viewId.slice(1)}`)
     if(target)target.style.display='block'
@@ -697,8 +838,9 @@ window.alternarView=(viewId)=>{
     if(viewId==='aluno')carregarMeusTrabalhos()
     if(viewId==='relatorio'&&ehProfessor)carregarRelatorioAlunos()
     if(viewId==='boletim') { if(ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno() }
+    if(viewId==='nrs') { renderizarNrs() }
 }
-        
+
 window.fazerLogin=async()=>{
     const email=document.getElementById('loginEmail').value,senha=document.getElementById('loginSenha').value
     const {data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password:senha})
@@ -709,7 +851,7 @@ window.fazerLogin=async()=>{
     document.getElementById('dashUserName').innerHTML=usuarioAtual
     atualizarPainelProfessor();entrarDashboard()
 }
-        
+
 function atualizarPainelProfessor(){
     const isAdmin = perfilUsuario === 'admin'
     const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin'
@@ -729,14 +871,12 @@ function atualizarPainelProfessor(){
     if(adminTransacoesCard) adminTransacoesCard.style.display = isAdmin ? 'block' : 'none'
     const assinaturaCard = document.getElementById('assinaturaStripeCard')
     if(assinaturaCard) assinaturaCard.style.display = !isAdmin ? 'block' : 'none'
-            
-    // Ocultar botão criar sala para alunos
     const btnCriarSala = document.getElementById('btnCriarSala');
     if(btnCriarSala) {
         btnCriarSala.style.display = isProfessor ? 'inline-flex' : 'none';
     }
 }
-        
+
 window.fazerCadastro=async()=>{
     const nome=document.getElementById('cadNome').value,email=document.getElementById('cadEmail').value,senha=document.getElementById('cadSenha').value,senha2=document.getElementById('cadSenha2').value
     if(senha!==senha2){alert('Senhas não coincidem');return}
@@ -745,7 +885,7 @@ window.fazerCadastro=async()=>{
     if(error){alert(traduzirErroAuth(error.message));return}
     alert('Conta criada! Confirme seu e-mail.');mostrarTela('login')
 }
-        
+
 window.recuperarSenha=async()=>{
     const email=document.getElementById('recEmail').value
     const {error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo:CONFIG.authRedirectUrl})
@@ -753,9 +893,9 @@ window.recuperarSenha=async()=>{
     document.getElementById('msgSucessoRec').style.display='block'
     setTimeout(()=>{document.getElementById('msgSucessoRec').style.display='none';mostrarTela('login')},3000)
 }
-        
+
 window.fazerLogout=async()=>{await supabase.auth.signOut();if(jitsiApi)jitsiApi.dispose();if(salaRealtimeChannel)await supabase.removeChannel(salaRealtimeChannel);window.location.href='index.html'}
-        
+
 function entrarDashboard(){
     document.getElementById('authContainer').classList.add('hidden')
     document.getElementById('heroContainer').classList.add('hidden')
@@ -765,20 +905,21 @@ function entrarDashboard(){
     atualizarListaSalas()
     carregarEquipe()
     renderizarProgressoHome()
+    renderizarNrs()
     const urlParams = new URLSearchParams(window.location.search)
     if(urlParams.get('payment') === 'success') { mostrarErro('✅ Pagamento realizado!'); window.history.replaceState({}, document.title, window.location.pathname) }
     else if(urlParams.get('payment') === 'cancel') { mostrarErro('❌ Pagamento cancelado.'); window.history.replaceState({}, document.title, window.location.pathname) }
 }
-        
+
 window.abrirModalAdmin=()=>document.getElementById('modalAdmin').classList.add('active')
 window.fecharModalAdmin=()=>document.getElementById('modalAdmin').classList.remove('active')
 window.trocarAbaAdmin=(aba)=>{document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none'}
-        
+
 function extrairYoutubeId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null}
 function getAulasLocal(){return JSON.parse(localStorage.getItem('sulsafe_videoaulas')||'[]')}
 function getProgressoLocal(){return JSON.parse(localStorage.getItem(`sulsafe_progresso_${usuarioId||'anon'}`)||'{}')}
 function salvarProgressoLocal(obj){localStorage.setItem(`sulsafe_progresso_${usuarioId||'anon'}`,JSON.stringify(obj))}
-        
+
 window.carregarVideoaulas=async(filtroNR='todos')=>{
     const container=document.getElementById('listaVideoaulas');if(!container)return
     container.innerHTML='<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i></p>'
@@ -800,18 +941,18 @@ window.carregarVideoaulas=async(filtroNR='todos')=>{
         ${ehProfessor?`<button class="btn-entrar" style="background:var(--erro)" onclick="deletarVideoaula('${aula.id}')"><i class="fas fa-trash"></i></button>`:''}</div></div>`}).join('')
     renderizarProgressoAulas(aulas)
 }
-        
+
 window.filtrarAulas=(nr)=>carregarVideoaulas(nr)
 window.abrirVideo=(url)=>{const ytId=extrairYoutubeId(url);if(!ytId){mostrarErro('Link inválido');return};document.getElementById('videoIframe').src=`https://www.youtube.com/embed/${ytId}?autoplay=1`;document.getElementById('videoModal').classList.add('active')}
 window.fecharVideo=()=>{document.getElementById('videoModal').classList.remove('active');document.getElementById('videoIframe').src=''}
-        
+
 window.toggleConcluida=async(aulaId,e)=>{if(e)e.stopPropagation();const progresso=getProgressoLocal();if(progresso[aulaId])delete progresso[aulaId];else progresso[aulaId]=Date.now();salvarProgressoLocal(progresso);if(usuarioId){if(!progresso[aulaId])await supabase.from('progresso_aulas').upsert({user_id:usuarioId,aula_id:aulaId,concluído:true,ultima_atualizacao:new Date().toISOString()});else await supabase.from('progresso_aulas').delete().match({user_id:usuarioId,aula_id:aulaId})}carregarVideoaulas()}
-        
+
 function renderizarProgressoAulas(aulas){if(!aulas.length)return;const progresso=getProgressoLocal();const concluidas=aulas.filter(a=>progresso[a.id]).length;const pct=aulas.length>0?Math.round((concluidas/aulas.length)*100):0;const progressoEl=document.getElementById('progressoVideoaulas');if(progressoEl)progressoEl.innerHTML=`<div class="progresso-container"><div class="progresso-header"><span>Seu progresso</span><span class="progresso-pct">${pct}%</span></div><div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div><div>${concluidas} de ${aulas.length} aulas</div></div>`}
 function renderizarProgressoHome(){const aulas=getAulasLocal();if(!aulas.length)return;const progresso=getProgressoLocal();const concluidas=aulas.filter(a=>progresso[a.id]).length;const pct=Math.round((concluidas/aulas.length)*100);document.getElementById('progressoResumoHome').innerHTML=`<div class="progresso-container" onclick="alternarView('videoaulas')" style="cursor:pointer"><div class="progresso-header"><span>Progresso</span><span class="progresso-pct">${pct}%</span></div><div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div><div>${concluidas} de ${aulas.length} aulas</div></div>`}
-        
+
 window.gerarCertificado=()=>{const aulas=getAulasLocal();const progresso=getProgressoLocal();const nrsConcluidas=[...new Set(aulas.filter(a=>progresso[a.id]).map(a=>a.nr).filter(Boolean))];const nome=usuarioAtual||'Aluno';const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});doc.setFillColor(27,94,32);doc.rect(0,0,297,210,'F');doc.setFillColor(255,255,255);doc.roundedRect(15,15,267,180,8,8,'F');doc.setTextColor(46,125,50);doc.setFontSize(32);doc.text('SULSAFE',148.5,50,{align:'center'});doc.setFontSize(15);doc.text('CERTIFICADO DE CONCLUSÃO',148.5,61,{align:'center'});doc.setFontSize(13);doc.text('Certificamos que',148.5,80,{align:'center'});doc.setFontSize(22);doc.setTextColor(27,94,32);doc.text(nome.toUpperCase(),148.5,94,{align:'center'});doc.setFontSize(13);doc.setTextColor(30,30,30);doc.text('concluiu as videoaulas de Segurança do Trabalho da plataforma SulSafe.',148.5,108,{align:'center'});if(nrsConcluidas.length)doc.text(`Normas: ${nrsConcluidas.join(', ')}`,148.5,120,{align:'center'});doc.text(`Emitido em ${new Date().toLocaleDateString()}`,148.5,146,{align:'center'});doc.save(`Certificado_${nome.replace(/\s+/g,'_')}.pdf`)}
-        
+
 window.salvarVideoaula=async()=>{const titulo=document.getElementById('aulaTitulo').value.trim();const nr=document.getElementById('aulaNR').value;const youtube_url=document.getElementById('aulaYoutube').value.trim();const descricao=document.getElementById('aulaDescricao').value.trim();if(!titulo||!youtube_url){mostrarErro('Preencha título e link');return}if(!extrairYoutubeId(youtube_url)){mostrarErro('Link inválido');return}await supabase.from('videoaulas').insert({titulo,nr,descricao,youtube_url,criado_por:usuarioId,criado_em:new Date().toISOString()});fecharModalAdmin();carregarVideoaulas()}
 window.deletarVideoaula=async(id)=>{if(!confirm('Remover?'))return;await supabase.from('videoaulas').delete().eq('id',id);carregarVideoaulas()}
 window.carregarMateriais=async()=>{const lista=document.getElementById('listaMateriais');const{data}=await supabase.from('materiais').select('*').order('criado_em',{ascending:false});if(!data?.length){lista.innerHTML='<p>Nenhum material.</p>';return}lista.innerHTML=data.map(m=>`<div class="material-item"><div><h4>${escapeHtml(m.titulo)}</h4><p>${escapeHtml(m.descricao||'')}</p><span class="badge-nr">${escapeHtml(m.nr||'')}</span></div><button class="btn-entrar" onclick="baixarArquivo('${m.url}')">Baixar</button></div>`).join('')}
@@ -823,8 +964,31 @@ async function carregarTrabalhos(){if(!ehProfessor)return;const{data}=await supa
 function renderizarListaTrabalhos(trabalhos){const container=document.getElementById('listaTrabalhos');if(!trabalhos.length){container.innerHTML='<p>Nenhum trabalho.</p>';return}container.innerHTML=trabalhos.map(t=>`<div class="meeting-card"><div><strong>${escapeHtml(t.aluno_email)}</strong><br>Status: ${t.status}<br>${t.nota?`Nota: ${t.nota}`:''}</div><button class="btn-entrar" onclick="baixarArquivo('${t.arquivo_url}')">PDF</button><button class="btn-criar-sala" onclick="abrirModalCorrecao('${t.id}')">Corrigir</button></div>`).join('')}
 window.abrirModalCorrecao=async(id)=>{const nota=prompt('Nota (0-10):');if(nota===null)return;await supabase.from('trabalhos').update({nota:parseFloat(nota),status:'corrigido'}).eq('id',id);carregarTrabalhos();carregarMeusTrabalhos()}
 window.filtrarTrabalhos=(filtro)=>{const filtrados=filtro==='todos'?todosTrabalhos:todosTrabalhos.filter(t=>t.status===filtro);renderizarListaTrabalhos(filtrados)}
-window.enviarPerguntaIA=async()=>{const input=document.getElementById('iaChatInput');const pergunta=input.value.trim();if(!pergunta)return;const box=document.getElementById('iaChatMessages');box.innerHTML+=`<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;input.value='';const loading=document.createElement('div');loading.className='ia-msg bot';loading.textContent='Pensando...';box.appendChild(loading);try{const{data}=await supabase.functions.invoke('gemini-chat-import',{body:{prompt:`Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}`}});loading.remove();box.innerHTML+=`<div class="ia-msg bot">${escapeHtml(data?.response||data?.text||'Sem resposta')}</div>`}catch{loading.remove();box.innerHTML+=`<div class="ia-msg bot">Erro na IA.</div>`}}
-        
+
+// ========== FUNÇÃO DA IA ==========
+window.enviarPerguntaIA=async()=>{
+    const input=document.getElementById('iaChatInput');
+    const pergunta=input.value.trim();
+    if(!pergunta)return;
+    const box=document.getElementById('iaChatMessages');
+    box.innerHTML+=`<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
+    input.value='';
+    const loading=document.createElement('div');
+    loading.className='ia-msg bot';
+    loading.textContent='Pensando...';
+    box.appendChild(loading);
+    try{
+        const{data}=await supabase.functions.invoke('gemini-chat-import',{
+            body:{prompt:`Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}`}
+        });
+        loading.remove();
+        box.innerHTML+=`<div class="ia-msg bot">${escapeHtml(data?.response||data?.text||'Sem resposta')}</div>`
+    }catch{
+        loading.remove();
+        box.innerHTML+=`<div class="ia-msg bot">Erro na IA.</div>`
+    }
+}
+
 function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
 
 window.atualizarListaSalas = () => {
@@ -877,34 +1041,34 @@ window.criarReuniaoLocal = () => {
     atualizarListaSalas();
     mostrarErro('✅ Sala criada com sucesso!');
 };
-        
+
 function carregarHistoricoLocal(id){const h=JSON.parse(localStorage.getItem(`sulsafe_chat_${id}`)||'[]');const div=document.getElementById('chatMessages');div.innerHTML='<div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo!</div></div>';h.forEach(m=>adicionarMensagemChatDOM(m.sender,m.message,m.sender===usuarioAtual,m.timestamp))}
-        
+
 window.entrarSala=async(meetingId,topic,leader)=>{if(!usuarioAtual)return;salaAtual={id:meetingId,topic,leader};document.getElementById('roomTitle').innerText=topic;carregarHistoricoLocal(meetingId);await iniciarRealtimeChat(meetingId);document.getElementById('meetingModal').classList.add('active');setTimeout(()=>{try{document.getElementById('videoPlaceholder').style.display='none';jitsiApi=new JitsiMeetExternalAPI('meet.jit.si',{roomName:meetingId,width:'100%',height:'100%',parentNode:document.querySelector('#jitsiContainer'),userInfo:{displayName:usuarioAtual},configOverwrite:{startWithAudioMuted:false,startWithVideoMuted:false}})}catch(err){mostrarErro('Erro Jitsi')}},500)}
 window.fecharSala=()=>{if(jitsiApi)jitsiApi.dispose();if(salaRealtimeChannel)supabase.removeChannel(salaRealtimeChannel);document.getElementById('meetingModal').classList.remove('active');document.getElementById('jitsiContainer').innerHTML='';salaAtual=null}
 window.toggleRecording=()=>{if(!jitsiApi)return;if(isRecording)jitsiApi.executeCommand('stopRecording',{mode:'file'});else jitsiApi.executeCommand('startRecording',{mode:'file'});isRecording=!isRecording}
 window.chamarGemini=async()=>{const q=prompt('Pergunta:');if(!q||!salaAtual)return;adicionarMensagemChatDOM('Você',q,true);const{data}=await supabase.functions.invoke('gemini-chat-import',{body:{prompt:q}});adicionarMensagemChatDOM('IA',data?.response||data?.text||'Sem resposta',false)}
 window.gerarAtaReuniao=()=>{const hist=JSON.parse(localStorage.getItem(`sulsafe_chat_${salaAtual?.id}`)||'[]');let ata=`ATA ${new Date().toLocaleString()}\nSala: ${salaAtual?.topic}\n\n`;hist.slice(-20).forEach(m=>ata+=`${m.sender}: ${m.message}\n`);const{jsPDF}=window.jspdf;const doc=new jsPDF();doc.text(doc.splitTextToSize(ata,180),10,20);doc.save('ata.pdf')}
 window.enviarWhatsApp=()=>{const msg=encodeURIComponent(`Convite SulSafe. Sala: ${salaAtual?.id}`);window.open(`https://wa.me/?text=${msg}`,'_blank')}
-        
+
 async function loadDevices(){try{await navigator.mediaDevices.getUserMedia({audio:true,video:true})}catch(e){}}
 loadDevices()
 document.getElementById('testMic')?.addEventListener('click',async()=>{await navigator.mediaDevices.getUserMedia({audio:true});alert('Microfone OK')})
 document.getElementById('testSpeaker')?.addEventListener('click',()=>{const a=new AudioContext();const o=a.createOscillator();o.connect(a.destination);o.start();setTimeout(()=>o.stop(),400)})
 document.getElementById('testCamera')?.addEventListener('click',async()=>{const s=await navigator.mediaDevices.getUserMedia({video:true});document.getElementById('cameraPreview').srcObject=s;document.getElementById('cameraPreview').style.display='block'})
-        
+
 const temaSelect=document.getElementById('temaSelect')
 function applyTheme(t){if(t==='claro')document.body.classList.add('tema-claro');else document.body.classList.remove('tema-claro');localStorage.setItem('sulsafe_tema',t)}
 temaSelect?.addEventListener('change',e=>applyTheme(e.target.value))
 applyTheme(localStorage.getItem('sulsafe_tema')||'escuro')
 if(temaSelect)temaSelect.value=localStorage.getItem('sulsafe_tema')||'escuro'
-        
+
 document.querySelectorAll('.color-option').forEach(opt=>opt.addEventListener('click',()=>{const c=opt.dataset.color;document.documentElement.style.setProperty('--primaria',c);localStorage.setItem('sulsafe_corDestaque',c)}))
 const savedColor=localStorage.getItem('sulsafe_corDestaque');if(savedColor)document.documentElement.style.setProperty('--primaria',savedColor)
 document.getElementById('limparDados')?.addEventListener('click',()=>{localStorage.clear();document.getElementById('clearMsg').style.display='inline';setTimeout(()=>document.getElementById('clearMsg').style.display='none',2000)})
-        
+
 document.querySelectorAll('.config-tab').forEach(tab=>tab.addEventListener('click',()=>{const t=tab.dataset.config;document.querySelectorAll('.config-tab').forEach(x=>x.classList.remove('active'));tab.classList.add('active');document.querySelectorAll('.config-section').forEach(x=>x.classList.remove('active-section'));document.getElementById(`config-${t}`)?.classList.add('active-section')}))
-        
+
 const mascoteDiv=document.getElementById('mascoteAssistente');const balao=document.getElementById('balaoAjuda')
 window.fecharAssistente=()=>{balao.classList.remove('active')}
 mascoteDiv.addEventListener('click',(e)=>{if(e.target.closest('.mascote-avatar')){balao.classList.toggle('active')}})
@@ -913,18 +1077,18 @@ window.ajudaVideoaula=()=>{alert("🎬 Acesse 'Videoaulas'");balao.classList.rem
 window.ajudaSala=()=>{alert("🎥 Acesse 'Aulas ao vivo'");balao.classList.remove('active')}
 window.ajudaMateriais=()=>{alert("📚 Acesse 'Materiais'");balao.classList.remove('active')}
 window.abrirAssistenteNR=()=>{alternarView('ia');balao.classList.remove('active')}
-        
+
 document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click',()=>alternarView(el.getAttribute('data-view'))))
 document.getElementById('chatInput')?.addEventListener('keypress',e=>{if(e.key==='Enter')enviarMensagemChat()})
-        
-// Botões da equipe (corrigidos)
+
+// Botões da equipe
 document.getElementById('generateInviteBtn')?.addEventListener('click', gerarConvite)
 document.getElementById('copyInviteBtn')?.addEventListener('click', window.copiarLinkConvite)
 document.getElementById('joinTeamBtn')?.addEventListener('click', aceitarConvite)
-        
+
 const btnAssinar = document.getElementById('btnAssinarPlano');
 if(btnAssinar) btnAssinar.addEventListener('click', iniciarAssinaturaStripe);
-        
+
 const canvas=document.getElementById('canvas-hero');const ctx=canvas.getContext('2d');let w,h,mx=0,my=0,tx=0,ty=0
 function resizeCanvas(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
 resizeCanvas();window.addEventListener('resize',resizeCanvas)
@@ -932,14 +1096,14 @@ document.addEventListener('mousemove',e=>{mx=(e.clientX/w-0.5)*2;my=(e.clientY/h
 const stars=Array.from({length:80},()=>({x:Math.random()*1920,y:Math.random()*1080,z:Math.random()*1000,size:Math.random()*1.2}))
 function draw(){ctx.fillStyle='#F4F7F6';ctx.fillRect(0,0,w,h);tx+=(mx-tx)*0.05;ty+=(my-ty)*0.05;ctx.fillStyle='#2E7D32';stars.forEach(s=>{s.z-=1.2;if(s.z<=0){s.z=1000;s.x=Math.random()*w;s.y=Math.random()*h}let scale=1000/(1000-s.z);let x=(s.x-w/2)*scale+w/2+tx*30;let y=(s.y-h/2)*scale+h/2+ty*15;ctx.globalAlpha=scale*0.5;ctx.beginPath();ctx.arc(x,y,s.size*scale,0,Math.PI*2);ctx.fill()});requestAnimationFrame(draw)}
 draw()
-        
+
 document.getElementById('nomeEmpresa').innerText=CONFIG.nomeEmpresa
 document.getElementById('dashEmpresaNome').innerText=CONFIG.nomeEmpresa
 document.getElementById('logoText').innerText=CONFIG.nomeEmpresa
 if(CONFIG.logoUrl){['logoIcon','logoIconCad','logoIconRec','dashLogoIcon'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('has-img');el.innerHTML=`<img src="${CONFIG.logoUrl}" alt="logo">`}})}
-        
+
 supabase.auth.getSession().then(({data:{session}})=>{if(session?.user){usuarioAtual=session.user.email;usuarioId=session.user.id;garantirPerfil(session.user).then(role=>{perfilUsuario=role;ehProfessor=(role==='admin'||role==='professor');document.getElementById('dashUserName').innerHTML=usuarioAtual;atualizarPainelProfessor();entrarDashboard()})}})
-        
+
 window.abrirModalLancarNotas=async()=>{
     const selectAluno=document.getElementById('notaAlunoId')
     const{data:perfis}=await supabase.from('profiles').select('id,email')
@@ -968,3 +1132,16 @@ window.salvarNotas=async()=>{
     await supabase.from('notas').upsert({aluno_id:alunoId,aluno_email:aluno.email,disciplina_id:parseInt(disciplinaId),nota1,nota2,nota3,recuperacao,faltas,media_final:media,situacao,semestre},{onConflict:'aluno_id,disciplina_id,semestre'})
     mostrarErro('Notas salvas!');fecharModalLancarNotas();carregarBoletimAdmin()
 }
+
+// ============================================================
+// ===== EXPORTA FUNÇÕES PARA O ESCOPO GLOBAL =====
+// ============================================================
+window.setFiltroNr = setFiltroNr;
+window.filtrarNrs = filtrarNrs;
+window.abrirModalNr = abrirModalNr;
+window.fecharModalNr = fecharModalNr;
+window.perguntarSobreNR = perguntarSobreNR;
+window.renderizarNrs = renderizarNrs;
+
+console.log('✅ App.js carregado com sucesso!')
+console.log('✅ Funções das NRs exportadas globalmente!')
