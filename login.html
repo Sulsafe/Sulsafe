@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SulSafe | Plataforma de Segurança do Trabalho</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
+        /* ===== TODOS OS ESTILOS EXISTENTES (MANTIDOS) ===== */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primaria:#2E7D32;--accent:#1B5E20;--primaria-glow:rgba(46,125,50,0.3);--fundo-dash:#F4F7F6;--texto:#1A1A1A;--texto-sec:#555;--borda:#E0E0E0;--input-bg:#FAFAFA;--sucesso:#2E7D32;--erro:#D32F2F;--sala-btn:linear-gradient(95deg,#2E7D32,#1B5E20);--sala-vibrante:linear-gradient(135deg,#2E7D32,#1B5E20);--bg-pagina:#F4F7F6;--card-bg:#FFFFFF;--sidebar-bg:#FFFFFF;--fundo-sidebar:#FFFFFF}
         body{font-family:'Inter',sans-serif;height:100vh;overflow:hidden;background:var(--bg-pagina);color:var(--texto);transition:background .3s,color .3s}
@@ -226,245 +231,58 @@
         .status-recuperacao { color: #FF9800; font-weight: bold; }
         .status-pendente { color: #999; font-weight: bold; }
 
-        /* ===== ESTILOS DAS NRS EXPANSÍVEIS ===== */
-        .grid-nrs { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
-        .nr-card { background: var(--card-bg); border: 1.5px solid #c8e6c9; border-radius: 16px; padding: 1rem; cursor: pointer; transition: all 0.15s; position: relative; }
-        .nr-card:hover { border-color: #1a6b2e; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(46,125,50,0.12); }
-        .nr-card .card-icon { font-size: 34px; margin-bottom: 8px; display: block; text-align: center; }
-        .nr-card .nr-num { font-size: 10px; font-weight: 600; color: #1a6b2e; background: #e8f5e9; border-radius: 10px; padding: 2px 10px; display: inline-block; margin-bottom: 6px; }
-        .nr-card h3 { font-size: 13px; font-weight: 600; color: #1b5e20; line-height: 1.4; margin-bottom: 4px; }
-        .nr-card p { font-size: 11px; color: #555; line-height: 1.5; }
-        .nr-card .tag { position: absolute; top: 8px; right: 8px; font-size: 8px; padding: 2px 8px; border-radius: 8px; font-weight: 600; text-transform: uppercase; }
-        .tag-geral { background: #e8f5e9; color: #2e7d32; }
-        .tag-especifico { background: #fff9c4; color: #f57f17; }
-        .tag-saude { background: #e3f2fd; color: #1565c0; }
-        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
-        .stat-card { background: #e8f5e9; border-radius: 12px; padding: 10px 12px; text-align: center; }
-        .stat-card .stat-val { font-size: 22px; font-weight: 600; color: #1a6b2e; }
-        .stat-card .stat-lab { font-size: 11px; color: #388e3c; }
-        .search-box { width: 100%; padding: 10px 18px; border: 1.5px solid #c8e6c9; border-radius: 40px; font-size: 13px; margin-bottom: 12px; background: #fff; }
-        .search-box:focus { outline: none; border-color: #1a6b2e; }
-        .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
-        .filter-btn { background: #e8f5e9; border: 1.5px solid #4caf50; color: #1a6b2e; border-radius: 20px; padding: 5px 16px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-        .filter-btn.active, .filter-btn:hover { background: #1a6b2e; color: #fff; border-color: #1a6b2e; }
-        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; }
-        .modal-bg.open { display: flex; }
-        .modal { background: #fff; border-radius: 20px; padding: 1.8rem; max-width: 440px; width: 92%; border-top: 6px solid #1a6b2e; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-icon { font-size: 48px; text-align: center; display: block; margin-bottom: 10px; }
-        .modal h2 { font-size: 17px; font-weight: 600; color: #1b5e20; }
-        .modal .modal-num { font-size: 12px; color: #1a6b2e; font-weight: 600; margin-bottom: 6px; }
-        .modal p { font-size: 13px; color: #333; line-height: 1.7; margin-bottom: 14px; }
-        .modal .obj-list { list-style: none; padding: 0; }
-        .modal .obj-list li { font-size: 12px; color: #444; padding: 5px 0; border-bottom: 0.5px solid #e8f5e9; display: flex; gap: 10px; align-items: flex-start; }
-        .modal .obj-list li::before { content: '✔'; color: #2e7d32; flex-shrink: 0; font-weight: 700; }
-        .modal-close { position: absolute; top: 10px; right: 10px; background: #e8f5e9; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; color: #1a6b2e; display: flex; align-items: center; justify-content: center; }
-        .modal-close:hover { background: #1a6b2e; color: #fff; }
-        .ask-btn { display: block; width: 100%; margin-top: 14px; background: #1a6b2e; color: #fff; border: none; padding: 10px; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .ask-btn:hover { background: #145a25; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,107,46,0.3); }
-        .no-results { text-align: center; color: #888; font-size: 13px; padding: 2rem 0; }
-        @media(max-width:600px){ .grid-nrs { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } .stats-bar { grid-template-columns: 1fr 1fr; } .stats-bar .stat-card:last-child { grid-column: span 2; } .modal { padding: 1.2rem; max-width: 95%; } }
+        /* ===== ESTILOS DAS NRS EXPANSÍVEIS (NOVO) ===== */
+        .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+        .stat-card{background:#e8f5e9;border-radius:12px;padding:10px 12px;text-align:center}
+        .stat-card .stat-val{font-size:22px;font-weight:600;color:#1a6b2e}
+        .stat-card .stat-lab{font-size:11px;color:#388e3c}
+        .search-box{width:100%;padding:10px 18px;border:1.5px solid #c8e6c9;border-radius:40px;font-size:13px;margin-bottom:12px;background:#fff}
+        .search-box:focus{outline:none;border-color:#1a6b2e}
+        .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+        .filter-btn{background:#e8f5e9;border:1.5px solid #4caf50;color:#1a6b2e;border-radius:20px;padding:5px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+        .filter-btn.active,.filter-btn:hover{background:#1a6b2e;color:#fff;border-color:#1a6b2e}
+        .no-results{text-align:center;color:#888;font-size:13px;padding:2rem 0}
 
-        /* ===== ESTILO DAS NRS EXPANSÍVEIS (DENTRO DO MODAL) ===== */
-        .nr-expand-card {
-            background: var(--card-bg);
-            border: 1.5px solid #c8e6c9;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.2s;
-            margin-bottom: 12px;
-        }
-        .nr-expand-card:hover { border-color: #1a6b2e; }
-        .nr-expand-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 18px;
-            cursor: pointer;
-            transition: background 0.2s;
-            gap: 12px;
-            background: #fafffa;
-        }
-        .nr-expand-header:hover { background: #e8f5e9; }
-        .nr-expand-header .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-        }
-        .nr-expand-header .nr-icon { font-size: 24px; flex-shrink: 0; }
-        .nr-expand-header .nr-info { flex: 1; min-width: 0; }
-        .nr-expand-header .nr-num {
-            font-size: 10px;
-            font-weight: 700;
-            color: #1a6b2e;
-            background: #e8f5e9;
-            border-radius: 10px;
-            padding: 2px 10px;
-            display: inline-block;
-            margin-bottom: 2px;
-        }
-        .nr-expand-header .nr-titulo {
-            font-size: 13px;
-            font-weight: 600;
-            color: #1b5e20;
-            line-height: 1.3;
-        }
-        .nr-expand-header .nr-desc {
-            font-size: 11px;
-            color: #555;
-            line-height: 1.4;
-            margin-top: 2px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .nr-expand-header .tag {
-            font-size: 8px;
-            padding: 2px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-        .arrow-nr-expand {
-            color: #2e7d32;
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-            user-select: none;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .arrow-nr-expand.active { transform: rotate(90deg); }
+        .nr-expand-card{background:var(--card-bg);border:1.5px solid #c8e6c9;border-radius:16px;overflow:hidden;transition:all .2s;margin-bottom:12px}
+        .nr-expand-card:hover{border-color:#1a6b2e}
+        .nr-expand-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;transition:background .2s;gap:12px;background:#fafffa}
+        .nr-expand-header:hover{background:#e8f5e9}
+        .nr-expand-header .left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+        .nr-expand-header .nr-icon{font-size:24px;flex-shrink:0}
+        .nr-expand-header .nr-info{flex:1;min-width:0}
+        .nr-expand-header .nr-num{font-size:10px;font-weight:700;color:#1a6b2e;background:#e8f5e9;border-radius:10px;padding:2px 10px;display:inline-block;margin-bottom:2px}
+        .nr-expand-header .nr-titulo{font-size:13px;font-weight:600;color:#1b5e20;line-height:1.3}
+        .nr-expand-header .nr-desc{font-size:11px;color:#555;line-height:1.4;margin-top:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+        .nr-expand-header .tag{font-size:8px;padding:2px 10px;border-radius:8px;font-weight:600;text-transform:uppercase;flex-shrink:0}
+        .tag-geral{background:#e8f5e9;color:#2e7d32}
+        .tag-especifico{background:#fff9c4;color:#f57f17}
+        .tag-saude{background:#e3f2fd;color:#1565c0}
+        .arrow-nr-expand{color:#2e7d32;font-size:1.1rem;transition:transform .3s ease;user-select:none;font-weight:700;flex-shrink:0}
+        .arrow-nr-expand.active{transform:rotate(90deg)}
 
-        .nr-expand-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out, padding 0.3s ease;
-            padding: 0 18px;
-            background: #fafffa;
-            border-top: 1px solid #c8e6c9;
-        }
-        .nr-expand-content.open {
-            max-height: 5000px;
-            padding: 14px 18px 18px;
-        }
-        .nr-expand-content .nr-desc-full {
-            color: #2d4a2d;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e8f5e9;
-        }
+        .nr-expand-content{max-height:0;overflow:hidden;transition:max-height .4s ease-in-out,padding .3s ease;padding:0 18px;background:#fafffa;border-top:1px solid #c8e6c9}
+        .nr-expand-content.open{max-height:5000px;padding:14px 18px 18px}
+        .nr-expand-content .nr-desc-full{color:#2d4a2d;font-size:.9rem;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e8f5e9}
 
-        /* Sub-itens */
-        .nr-sub-item {
-            background: #fff;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border: 1px solid #c8e6c9;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-        .nr-sub-item:hover { border-color: #81c784; }
-        .nr-sub-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .nr-sub-header:hover { background: #e8f5e9; }
-        .nr-sub-header .left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .nr-sub-header .checkbox-custom {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            background: #2e7d32;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .nr-sub-header .label {
-            color: #1b3a1b;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .arrow-sub-nr {
-            color: #388e3c;
-            font-size: 0.9rem;
-            transition: transform 0.3s ease;
-            user-select: none;
-            font-weight: bold;
-        }
-        .arrow-sub-nr.active { transform: rotate(90deg); }
+        .nr-sub-item{background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid #c8e6c9;overflow:hidden;transition:all .2s}
+        .nr-sub-item:hover{border-color:#81c784}
+        .nr-sub-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;transition:background .2s}
+        .nr-sub-header:hover{background:#e8f5e9}
+        .nr-sub-header .left{display:flex;align-items:center;gap:10px}
+        .nr-sub-header .checkbox-custom{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#2e7d32;border-radius:4px;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+        .nr-sub-header .label{color:#1b3a1b;font-size:.9rem;font-weight:500}
+        .arrow-sub-nr{color:#388e3c;font-size:.9rem;transition:transform .3s ease;user-select:none;font-weight:700}
+        .arrow-sub-nr.active{transform:rotate(90deg)}
 
-        .nr-sub-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out, padding 0.3s ease;
-            padding: 0 14px 0 44px;
-            background: #fff;
-            border-top: 1px solid #c8e6c9;
-        }
-        .nr-sub-content.open {
-            max-height: 3000px;
-            padding: 14px 14px 18px 44px;
-        }
-        .nr-sub-content p {
-            color: #1b3a1b;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-        .nr-sub-content ul, .nr-sub-content ol {
-            padding-left: 22px;
-            margin-bottom: 10px;
-            color: #1b3a1b;
-            line-height: 1.7;
-            font-size: 0.9rem;
-        }
-        .nr-sub-content li { margin-bottom: 4px; }
-        .nr-sub-content strong { color: #1b5e20; }
-        .nr-sub-content .highlight-box {
-            background: #e8f5e9;
-            padding: 10px 14px;
-            border-radius: 6px;
-            border-left: 4px solid #2e7d32;
-            margin: 10px 0;
-            font-size: 0.9rem;
-            color: #1b3a1b;
-        }
-        .ask-btn-expand {
-            display: block;
-            width: 100%;
-            margin-top: 14px;
-            background: #1a6b2e;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .ask-btn-expand:hover {
-            background: #145a25;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26,107,46,0.3);
-        }
+        .nr-sub-content{max-height:0;overflow:hidden;transition:max-height .4s ease-in-out,padding .3s ease;padding:0 14px 0 44px;background:#fff;border-top:1px solid #c8e6c9}
+        .nr-sub-content.open{max-height:3000px;padding:14px 14px 18px 44px}
+        .nr-sub-content p{color:#1b3a1b;font-size:.9rem;line-height:1.7;margin-bottom:10px}
+        .nr-sub-content ul,.nr-sub-content ol{padding-left:22px;margin-bottom:10px;color:#1b3a1b;line-height:1.7;font-size:.9rem}
+        .nr-sub-content li{margin-bottom:4px}
+        .nr-sub-content strong{color:#1b5e20}
+        .nr-sub-content .highlight-box{background:#e8f5e9;padding:10px 14px;border-radius:6px;border-left:4px solid #2e7d32;margin:10px 0;font-size:.9rem;color:#1b3a1b}
+        .ask-btn-expand{display:block;width:100%;margin-top:14px;background:#1a6b2e;color:#fff;border:none;padding:10px;border-radius:40px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+        .ask-btn-expand:hover{background:#145a25;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,107,46,.3)}
     </style>
 </head>
 <body>
@@ -534,8 +352,8 @@
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
                 <div class="nav-item" data-view="nrs"><i class="fas fa-book"></i><span>Normas NRs</span></div>
-                <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navAreaAluno" data-view="aluno" style="display:none"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
+                <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
                 <div class="nav-item" id="navRelatorio" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
                 <div class="nav-item" id="navFinanceiro" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
@@ -559,6 +377,8 @@
                     <div class="dash-card" onclick="alternarView('materiais')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Materiais</div><div class="dash-card-desc">Apostilas e PDFs das NRs.</div></div>
                     <div class="dash-card" onclick="alternarView('nrs')"><div class="dash-card-icon"><i class="fas fa-book"></i></div><div class="dash-card-title">Normas NRs</div><div class="dash-card-desc">Consulte todas as NRs com detalhes.</div></div>
                     <div class="dash-card" onclick="alternarView('ia')"><div class="dash-card-icon"><i class="fas fa-robot"></i></div><div class="dash-card-title">Assistente NR</div><div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div></div>
+                    <div class="dash-card" onclick="alternarView('equipe')"><div class="dash-card-icon"><i class="fas fa-users"></i></div><div class="dash-card-title">Equipe</div><div class="dash-card-desc">Gerenciar membros e convites.</div></div>
+                    <div class="dash-card" onclick="alternarView('financeiro')"><div class="dash-card-icon"><i class="fas fa-credit-card"></i></div><div class="dash-card-title">Financeiro</div><div class="dash-card-desc">Pagamentos e assinaturas.</div></div>
                 </div>
                 <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
@@ -738,6 +558,7 @@
             <div id="viewFinanceiro" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
                 <p class="dash-subtitle">Gerencie pagamentos e assinaturas</p>
+                
                 <div class="painel-card" id="assinaturaStripeCard">
                     <h3 style="font-size:16px; margin-bottom:12px"><i class="fab fa-stripe"></i> Assinatura Mensal - Stripe</h3>
                     <p style="margin-bottom:12px">Acesso completo a todas as videoaulas, materiais e aulas ao vivo.</p>
@@ -746,6 +567,7 @@
                     </div>
                     <div id="stripeStatus" style="margin-top:12px; font-size:13px"></div>
                 </div>
+
                 <div class="painel-card" id="adminPagamentoCard" style="display:none">
                     <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-hand-holding-usd"></i> Gerar Pagamento Manual</h3>
                     <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
@@ -753,6 +575,7 @@
                         <button class="btn-criar-sala" onclick="abrirModalGerarPagamentoManual('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
                     </div>
                 </div>
+
                 <div class="painel-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
                         <h3 style="font-size:16px; margin:0"><i class="fas fa-history"></i> Minhas Transações</h3>
@@ -762,6 +585,7 @@
                         <p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
                     </div>
                 </div>
+
                 <div class="painel-card" id="adminTransacoesCard" style="display:none">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
                         <h3 style="font-size:16px; margin:0"><i class="fas fa-chart-line"></i> Todas as Transações (Admin)</h3>
@@ -798,7 +622,13 @@
                 </div>
             </div>
 
-            <!-- ===== VIEW NRS ===== -->
+            <div id="viewBoletimAluno" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
+                <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
+                <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
+            </div>
+
+            <!-- ===== VIEW NRS (NOVO) ===== -->
             <div id="viewNrs" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px">
                     <i class="fas fa-book"></i> Normas Regulamentadoras
@@ -822,19 +652,6 @@
 
                 <div id="containerNrsExpandidas"></div>
                 <p class="no-results" id="noResultsNrs" style="display:none">Nenhuma NR encontrada.</p>
-            </div>
-
-            <!-- ===== MODAL NR ===== -->
-            <div class="modal-bg" id="modalNrBg" onclick="fecharModalNr(event)">
-                <div class="modal" id="modalNrBox">
-                    <button class="modal-close" onclick="document.getElementById('modalNrBg').classList.remove('open')">✕</button>
-                    <span class="modal-icon" id="mNrIcon"></span>
-                    <div class="modal-num" id="mNrNum"></div>
-                    <h2 id="mNrTitle"></h2>
-                    <p id="mNrDesc"></p>
-                    <ul class="obj-list" id="mNrObjs"></ul>
-                    <button class="ask-btn" onclick="perguntarSobreNR()">🤖 Perguntar ao Assistente</button>
-                </div>
             </div>
 
             <div id="modalLancarNotas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
@@ -1341,33 +1158,11 @@
             }, 400);
         }
 
-        function perguntarSobreNR() {
-            const num = document.getElementById('mNrNum')?.textContent || '';
-            const nr = todasNrs.find(n => n.num === num);
-            if (!nr) return;
-            document.getElementById('modalNrBg').classList.remove('open');
-            document.getElementById('viewNrs').style.display = 'none';
-            alternarView('ia');
-            setTimeout(() => {
-                const input = document.getElementById('iaChatInput');
-                if (input) {
-                    input.value = `Explique a ${nr.num} - ${nr.nome} de forma resumida.`;
-                    enviarPerguntaIA();
-                }
-            }, 400);
-        }
-
-        function fecharModalNr(e) {
-            if (e.target === document.getElementById('modalNrBg')) {
-                document.getElementById('modalNrBg').classList.remove('open');
-            }
-        }
-
         // ================================================================
-        // ===== FUNÇÕES GERAIS =====
+        // ===== FUNÇÕES GERAIS (MANTIDAS DO ORIGINAL) =====
         // ================================================================
         function alternarView(viewId) {
-            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','Nrs'];
+            const views = ['Home','Videoaulas','Salas','Materiais','Aluno','Ia','Equipe','Config','Trabalhos','Relatorio','Financeiro','Boletim','BoletimAluno','Nrs'];
             views.forEach(v => {
                 const el = document.getElementById(`view${v}`);
                 if (el) el.style.display = 'none';
@@ -1380,37 +1175,60 @@
             
             if (viewId === 'nrs') renderizarNrsExpandidas();
             if (viewId === 'salas') atualizarListaSalas();
+            if (viewId === 'equipe') carregarEquipe();
+            if (viewId === 'materiais') carregarMateriais();
+            if (viewId === 'financeiro') { carregarMinhasTransacoes(); if(window.perfilUsuario === 'admin') carregarTodasTransacoes(); }
+            if (viewId === 'videoaulas') carregarVideoaulas();
+            if (viewId === 'trabalhos' && window.ehProfessor) carregarTrabalhos();
+            if (viewId === 'aluno') carregarMeusTrabalhos();
+            if (viewId === 'relatorio' && window.ehProfessor) carregarRelatorioAlunos();
+            if (viewId === 'boletim') { if(window.ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno(); }
         }
 
-        function mostrarErro(msg) {
-            const el = document.getElementById('errorTooltip');
-            el.innerText = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 4000);
+        // ================================================================
+        // ===== FUNÇÕES DE LOGIN E DASHBOARD =====
+        // ================================================================
+        function mostrarErro(msg){const el=document.getElementById('errorTooltip');el.innerText=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
+        
+        function fazerLogin() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) { mostrarErro('Digite um email'); return; }
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('heroContainer').classList.add('hidden');
+            document.getElementById('heroTexto').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('dashUserName').innerHTML = email || 'Usuário';
+            
+            // Inicializa views
+            carregarVideoaulas();
+            atualizarListaSalas();
+            renderizarNrsExpandidas();
+            carregarMateriais();
+            carregarMinhasTransacoes();
         }
 
         function fazerLogout() {
             document.getElementById('dashboard').classList.remove('active');
-            window.location.href = 'index.html';
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('heroContainer').classList.remove('hidden');
+            document.getElementById('heroTexto').classList.remove('hidden');
+            document.getElementById('overlay').classList.remove('hidden');
         }
 
         // ================================================================
-        // ===== SALAS =====
+        // ===== FUNÇÕES DE SALAS =====
         // ================================================================
-        function getSalas() {
-            return JSON.parse(localStorage.getItem('sulsafe_salas') || '[]');
-        }
+        function getSalas(){return JSON.parse(localStorage.getItem('sulsafe_salas')||'[]')}
 
         function atualizarListaSalas() {
             const container = document.getElementById('meetingList');
-            if (!container) return;
-            
+            if(!container) return;
             const salas = getSalas();
-            if (!salas.length) {
+            if(!salas.length) {
                 container.innerHTML = '<li style="color:var(--texto-sec);text-align:center;padding:28px;list-style:none;">📭 Nenhuma sala ativa no momento.</li>';
                 return;
             }
-            
             container.innerHTML = '';
             salas.forEach(sala => {
                 const li = document.createElement('li');
@@ -1430,10 +1248,7 @@
 
         function criarReuniaoLocal() {
             const nome = document.getElementById('meetingName').value.trim();
-            if (!nome) {
-                mostrarErro('Digite um nome para a sala');
-                return;
-            }
+            if (!nome) { mostrarErro('Digite um nome para a sala'); return; }
             const salas = getSalas();
             salas.push({ id: 'ss-' + Date.now(), topic: nome });
             localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
@@ -1443,49 +1258,18 @@
         }
 
         // ================================================================
-        // ===== IA =====
-        // ================================================================
-        function enviarPerguntaIA() {
-            const input = document.getElementById('iaChatInput');
-            const pergunta = input.value.trim();
-            if (!pergunta) return;
-            
-            const box = document.getElementById('iaChatMessages');
-            box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
-            input.value = '';
-            
-            const loading = document.createElement('div');
-            loading.className = 'ia-msg bot';
-            loading.textContent = 'Pensando...';
-            box.appendChild(loading);
-            box.scrollTop = box.scrollHeight;
-            
-            setTimeout(() => {
-                loading.remove();
-                const respostas = [
-                    `A ${pergunta} é um tema importante na Segurança do Trabalho. Recomendo consultar a NR específica para mais detalhes.`,
-                    `Sobre "${pergunta}", é essencial seguir as diretrizes da NR aplicável ao caso. Consulte um profissional habilitado.`,
-                    `A NR relacionada a "${pergunta}" estabelece requisitos claros para garantir a segurança dos trabalhadores.`,
-                    `Para "${pergunta}", verifique a legislação vigente e as boas práticas de segurança.`
-                ];
-                box.innerHTML += `<div class="ia-msg bot">${respostas[Math.floor(Math.random() * respostas.length)]}</div>`;
-                box.scrollTop = box.scrollHeight;
-            }, 800);
-        }
-
-        // ================================================================
-        // ===== FUNÇÕES DE VIDEOAULAS (SIMPLIFICADAS) =====
+        // ===== FUNÇÕES DE VIDEOAULAS =====
         // ================================================================
         function getAulasLocal(){return JSON.parse(localStorage.getItem('sulsafe_videoaulas')||'[]')}
-        function getProgressoLocal(){return JSON.parse(localStorage.getItem(`sulsafe_progresso_${'anon'}`)||'{}')}
-        function salvarProgressoLocal(obj){localStorage.setItem(`sulsafe_progresso_${'anon'}`,JSON.stringify(obj))}
+        function getProgressoLocal(){return JSON.parse(localStorage.getItem('sulsafe_progresso_anon')||'{}')}
+        function salvarProgressoLocal(obj){localStorage.setItem('sulsafe_progresso_anon',JSON.stringify(obj))}
 
         function carregarVideoaulas(filtroNR='todos') {
             const container=document.getElementById('listaVideoaulas');
             if(!container)return;
             const aulas=getAulasLocal();
-            const progresso=getProgressoLocal();
             if(!aulas.length){container.innerHTML='<p style="color:var(--texto-sec);text-align:center;padding:40px 0">Nenhuma videoaula disponível.</p>';return}
+            const progresso=getProgressoLocal();
             const aulasFiltradas=filtroNR==='todos'?aulas:aulas.filter(a=>a.nr===filtroNR);
             container.innerHTML=aulasFiltradas.map(aula=>{
                 const concluida=!!progresso[aula.id];
@@ -1500,7 +1284,7 @@
             }).join('');
         }
 
-        function abrirVideo(url){mostrarErro('Link: '+url)}
+        function abrirVideo(url){mostrarErro('Abrindo vídeo: '+url)}
         function toggleConcluida(aulaId,e){if(e)e.stopPropagation();const p=getProgressoLocal();if(p[aulaId])delete p[aulaId];else p[aulaId]=Date.now();salvarProgressoLocal(p);carregarVideoaulas()}
         function filtrarAulas(nr){carregarVideoaulas(nr)}
         function gerarCertificado(){mostrarErro('✅ Certificado gerado!')}
@@ -1510,29 +1294,94 @@
         // ================================================================
         function carregarMateriais() {
             const lista=document.getElementById('listaMateriais');
-            lista.innerHTML='<p>Nenhum material disponível.</p>';
+            lista.innerHTML='<p style="color:var(--texto-sec);text-align:center;padding:20px">Nenhum material disponível.</p>';
         }
 
         // ================================================================
-        // ===== FUNÇÕES DE LOGIN (SIMPLIFICADAS) =====
+        // ===== FUNÇÕES DE IA =====
         // ================================================================
-        function fazerLogin() {
-            document.getElementById('authContainer').classList.add('hidden');
-            document.getElementById('dashboard').classList.add('active');
-            document.getElementById('dashUserName').textContent = document.getElementById('loginEmail').value || 'Usuário';
-            document.getElementById('viewHome').style.display = 'block';
-            carregarVideoaulas();
-            atualizarListaSalas();
-            renderizarNrsExpandidas();
+        function enviarPerguntaIA() {
+            const input = document.getElementById('iaChatInput');
+            const pergunta = input.value.trim();
+            if (!pergunta) return;
+            const box = document.getElementById('iaChatMessages');
+            box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
+            input.value = '';
+            const loading = document.createElement('div');
+            loading.className = 'ia-msg bot';
+            loading.textContent = 'Pensando...';
+            box.appendChild(loading);
+            setTimeout(() => {
+                loading.remove();
+                const respostas = [
+                    `A ${pergunta} é um tema importante na Segurança do Trabalho. Recomendo consultar a NR específica.`,
+                    `Sobre "${pergunta}", é essencial seguir as diretrizes da NR aplicável ao caso.`,
+                    `Para "${pergunta}", verifique a legislação vigente e as boas práticas de segurança.`
+                ];
+                box.innerHTML += `<div class="ia-msg bot">${respostas[Math.floor(Math.random() * respostas.length)]}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 800);
         }
-        function mostrarTela(tela){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')}
-        function fazerCadastro(){alert('Cadastro realizado!');mostrarTela('login')}
-        function recuperarSenha(){alert('Link enviado!');mostrarTela('login')}
-        function abrirModalAdmin(){document.getElementById('modalAdmin').classList.add('active')}
-        function fecharModalAdmin(){document.getElementById('modalAdmin').classList.remove('active')}
-        function trocarAbaAdmin(aba){document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none'}
-        function salvarMaterial(){mostrarErro('✅ Material publicado!');fecharModalAdmin()}
-        function salvarVideoaula(){mostrarErro('✅ Videoaula publicada!');fecharModalAdmin();carregarVideoaulas()}
+
+        // ================================================================
+        // ===== FUNÇÕES DE EQUIPE (SIMPLIFICADAS) =====
+        // ================================================================
+        function carregarEquipe() {
+            const container = document.getElementById('memberList');
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center;padding:20px">👥 Nenhum membro na equipe.</p>';
+        }
+
+        // ================================================================
+        // ===== FUNÇÕES DE TRABALHOS (SIMPLIFICADAS) =====
+        // ================================================================
+        function carregarMeusTrabalhos() {
+            const container = document.getElementById('meusTrabalhosList');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">📄 Nenhum trabalho enviado.</p>';
+        }
+        function carregarTrabalhos() {
+            const container = document.getElementById('listaTrabalhos');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">📋 Nenhum trabalho.</p>';
+        }
+        function filtrarTrabalhos(f) { mostrarErro('Filtro: '+f); }
+
+        // ================================================================
+        // ===== FUNÇÕES DE RELATÓRIO (SIMPLIFICADAS) =====
+        // ================================================================
+        function carregarRelatorioAlunos() { mostrarErro('📊 Relatório carregado!'); }
+        function exportarRelatorioCSV() { mostrarErro('📄 CSV exportado!'); }
+        function exportarRelatorioExcel() { mostrarErro('📊 Excel exportado!'); }
+        function exportarRelatorioPDF() { mostrarErro('📄 PDF exportado!'); }
+
+        // ================================================================
+        // ===== FUNÇÕES DE FINANCEIRO (SIMPLIFICADAS) =====
+        // ================================================================
+        function carregarMinhasTransacoes() {
+            const container = document.getElementById('minhasTransacoesContainer');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">💳 Nenhuma transação.</p>';
+        }
+        function carregarTodasTransacoes() {
+            const container = document.getElementById('todasTransacoesContainer');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">💳 Nenhuma transação.</p>';
+        }
+        function abrirModalGerarPagamentoManual(tipo){document.getElementById('modalPagamentoManual').style.display='flex'}
+        function fecharModalPagamentoManual(){document.getElementById('modalPagamentoManual').style.display='none'}
+        function gerarPagamentoManual(){mostrarErro('✅ Pagamento gerado!');fecharModalPagamentoManual()}
+
+        // ================================================================
+        // ===== FUNÇÕES DE BOLETIM (SIMPLIFICADAS) =====
+        // ================================================================
+        function carregarBoletimAdmin() {
+            const container = document.getElementById('boletimContainer');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">📊 Nenhum boletim disponível.</p>';
+        }
+        function carregarBoletimAluno() {
+            const container = document.getElementById('boletimAlunoContainer');
+            if(container) container.innerHTML = '<p style="text-align:center;padding:20px">📊 Nenhum boletim disponível.</p>';
+        }
+        function abrirModalLancarNotas(){document.getElementById('modalLancarNotas').style.display='flex'}
+        function fecharModalLancarNotas(){document.getElementById('modalLancarNotas').style.display='none'}
+        function salvarNotas(){mostrarErro('✅ Notas salvas!');fecharModalLancarNotas()}
 
         // ================================================================
         // ===== FUNÇÕES DO MASCOTE =====
@@ -1550,25 +1399,40 @@
         function abrirAssistenteNR(){alternarView('ia');fecharAssistente()}
 
         // ================================================================
+        // ===== FUNÇÕES ADMIN =====
+        // ================================================================
+        function abrirModalAdmin(){document.getElementById('modalAdmin').classList.add('active')}
+        function fecharModalAdmin(){document.getElementById('modalAdmin').classList.remove('active')}
+        function trocarAbaAdmin(aba){document.getElementById('abaAdminMaterial').style.display=aba==='material'?'block':'none';document.getElementById('abaAdminAula').style.display=aba==='aula'?'block':'none'}
+        function salvarMaterial(){mostrarErro('✅ Material publicado!');fecharModalAdmin()}
+        function salvarVideoaula(){mostrarErro('✅ Videoaula publicada!');fecharModalAdmin();carregarVideoaulas()}
+
+        // ================================================================
         // ===== INICIALIZAÇÃO =====
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializa dashboard
+            // Entra no dashboard direto (sem login)
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('heroContainer').classList.add('hidden');
+            document.getElementById('heroTexto').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
             document.getElementById('dashUserName').textContent = 'Usuário Demo';
             
-            // Mostra view padrão
-            alternarView('nrs');
-            
-            // Carrega dados
+            // Inicializa todas as views
+            alternarView('home');
             carregarVideoaulas();
             atualizarListaSalas();
             renderizarNrsExpandidas();
+            carregarMateriais();
+            carregarMinhasTransacoes();
         });
 
+        // ================================================================
         // ===== EXPORTA FUNÇÕES GLOBAIS =====
+        // ================================================================
         window.alternarView = alternarView;
+        window.fazerLogin = fazerLogin;
         window.fazerLogout = fazerLogout;
         window.mostrarErro = mostrarErro;
         window.criarReuniaoLocal = criarReuniaoLocal;
@@ -1580,10 +1444,9 @@
         window.toggleConcluida = toggleConcluida;
         window.gerarCertificado = gerarCertificado;
         window.carregarMateriais = carregarMateriais;
-        window.fazerLogin = fazerLogin;
-        window.mostrarTela = mostrarTela;
-        window.fazerCadastro = fazerCadastro;
-        window.recuperarSenha = recuperarSenha;
+        window.mostrarTela = function(tela){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('active'));document.getElementById(`tela${tela.charAt(0).toUpperCase()+tela.slice(1)}`).classList.add('active')};
+        window.fazerCadastro = function(){alert('Cadastro realizado!');window.mostrarTela('login')};
+        window.recuperarSenha = function(){alert('Link enviado!');window.mostrarTela('login')};
         window.abrirModalAdmin = abrirModalAdmin;
         window.fecharModalAdmin = fecharModalAdmin;
         window.trocarAbaAdmin = trocarAbaAdmin;
@@ -1600,32 +1463,29 @@
         window.setFiltroNrExpandido = setFiltroNrExpandido;
         window.filtrarNrsExpandidas = filtrarNrsExpandidas;
         window.perguntarSobreNRExpand = perguntarSobreNRExpand;
-        window.perguntarSobreNR = perguntarSobreNR;
-        window.fecharModalNr = fecharModalNr;
         window.renderizarNrsExpandidas = renderizarNrsExpandidas;
+        window.carregarEquipe = carregarEquipe;
+        window.carregarMeusTrabalhos = carregarMeusTrabalhos;
+        window.carregarTrabalhos = carregarTrabalhos;
+        window.filtrarTrabalhos = filtrarTrabalhos;
+        window.carregarRelatorioAlunos = carregarRelatorioAlunos;
+        window.exportarRelatorioCSV = exportarRelatorioCSV;
+        window.exportarRelatorioExcel = exportarRelatorioExcel;
+        window.exportarRelatorioPDF = exportarRelatorioPDF;
+        window.carregarMinhasTransacoes = carregarMinhasTransacoes;
+        window.carregarTodasTransacoes = carregarTodasTransacoes;
+        window.abrirModalGerarPagamentoManual = abrirModalGerarPagamentoManual;
+        window.fecharModalPagamentoManual = fecharModalPagamentoManual;
+        window.gerarPagamentoManual = gerarPagamentoManual;
+        window.carregarBoletimAdmin = carregarBoletimAdmin;
+        window.carregarBoletimAluno = carregarBoletimAluno;
+        window.abrirModalLancarNotas = abrirModalLancarNotas;
+        window.fecharModalLancarNotas = fecharModalLancarNotas;
+        window.salvarNotas = salvarNotas;
         window.escapeHtml = escapeHtml;
-        
-        // Funções adicionais para compatibilidade
-        window.gerarCertificadoAluno = (id, email) => { mostrarErro(`✅ Certificado gerado para ${email}`); };
-        window.carregarRelatorioAlunos = () => { mostrarErro('📊 Relatório carregado!'); };
-        window.exportarRelatorioCSV = () => { mostrarErro('📄 CSV exportado!'); };
-        window.exportarRelatorioExcel = () => { mostrarErro('📊 Excel exportado!'); };
-        window.exportarRelatorioPDF = () => { mostrarErro('📄 PDF exportado!'); };
-        window.carregarMinhasTransacoes = () => { document.getElementById('minhasTransacoesContainer').innerHTML = '<p style="text-align:center;padding:20px">Nenhuma transação.</p>'; };
-        window.carregarTodasTransacoes = () => { document.getElementById('todasTransacoesContainer').innerHTML = '<p style="text-align:center;padding:20px">Nenhuma transação.</p>'; };
-        window.abrirModalGerarPagamentoManual = (tipo) => { document.getElementById('modalPagamentoManual').style.display = 'flex'; };
-        window.fecharModalPagamentoManual = () => { document.getElementById('modalPagamentoManual').style.display = 'none'; };
-        window.gerarPagamentoManual = () => { mostrarErro('✅ Pagamento gerado!'); window.fecharModalPagamentoManual(); };
-        window.abrirModalLancarNotas = () => { document.getElementById('modalLancarNotas').style.display = 'flex'; };
-        window.fecharModalLancarNotas = () => { document.getElementById('modalLancarNotas').style.display = 'none'; };
-        window.salvarNotas = () => { mostrarErro('✅ Notas salvas!'); window.fecharModalLancarNotas(); };
-        window.carregarBoletimAdmin = () => { document.getElementById('boletimContainer').innerHTML = '<p style="text-align:center;padding:20px">Nenhum boletim disponível.</p>'; };
-        window.enviarTrabalho = () => { mostrarErro('✅ Trabalho enviado!'); };
-        window.carregarMeusTrabalhos = () => { document.getElementById('meusTrabalhosList').innerHTML = '<p style="text-align:center;padding:20px">Nenhum trabalho enviado.</p>'; };
-        window.carregarTrabalhos = () => { document.getElementById('listaTrabalhos').innerHTML = '<p style="text-align:center;padding:20px">Nenhum trabalho.</p>'; };
-        window.filtrarTrabalhos = (f) => { mostrarErro('Filtro: '+f); };
-        window.abrirModalCorrecao = () => { mostrarErro('✏️ Correção'); };
-        window.baixarArquivo = (url) => { window.open(url,'_blank'); };
+        window.baixarArquivo = function(url){window.open(url,'_blank')};
+        window.enviarTrabalho = function(){mostrarErro('✅ Trabalho enviado!')};
+        window.gerarCertificadoAluno = function(id,email){mostrarErro(`✅ Certificado gerado para ${email}`)};
 
         console.log('✅ Sistema SulSafe carregado com NRS expansíveis!');
     </script>
