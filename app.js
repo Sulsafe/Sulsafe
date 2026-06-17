@@ -235,18 +235,18 @@ window.enviarPerguntaIA = async () => {
 
     const loading = document.createElement('div')
     loading.className = 'ia-msg bot'
-    loading.textContent = '⏳ Buscando resposta...'
+    loading.textContent = 'Buscando resposta...'
     box.appendChild(loading)
     box.scrollTop = box.scrollHeight
 
     try {
-        console.log('📤 Enviando pergunta para a Edge Function...')
+        console.log('Enviando pergunta para a Edge Function...')
 
         const { data, error } = await supabase.functions.invoke('gemini-chat-import', {
             body: { prompt: `Você é especialista em Segurança do Trabalho. ${pergunta}` }
         })
 
-        console.log('📥 Resposta recebida:', data)
+        console.log('Resposta recebida:', data)
 
         loading.remove()
 
@@ -259,7 +259,7 @@ window.enviarPerguntaIA = async () => {
         if (data && data.error) {
             box.innerHTML += `
                 <div class="ia-msg bot">
-                    <strong>❌ Erro na IA</strong><br><br>
+                    <strong>Erro na IA</strong><br><br>
                     ${escapeHtml(data.error)}
                 </div>
             `
@@ -269,18 +269,18 @@ window.enviarPerguntaIA = async () => {
 
         box.innerHTML += `
             <div class="ia-msg bot">
-                <strong>⚠️ Não foi possível obter uma resposta da IA</strong><br><br>
+                <strong>Não foi possivel obter uma resposta da IA</strong><br><br>
                 Tente novamente mais tarde.
             </div>
         `
         box.scrollTop = box.scrollHeight
 
     } catch (err) {
-        console.error('❌ Erro ao chamar a Edge Function:', err)
+        console.error('Erro ao chamar a Edge Function:', err)
         loading.remove()
         box.innerHTML += `
             <div class="ia-msg bot">
-                <strong>❌ Erro ao conectar com a IA</strong><br><br>
+                <strong>Erro ao conectar com a IA</strong><br><br>
                 ${escapeHtml(err.message || 'Erro desconhecido')}
             </div>
         `
@@ -308,7 +308,7 @@ window.fazerCadastro = async () => {
     const senha = document.getElementById('cadSenha').value
     const senha2 = document.getElementById('cadSenha2').value
     if (senha !== senha2) { alert('Senhas não coincidem'); return }
-    if (senha.length < 6) { alert('Senha mínimo 6 caracteres'); return }
+    if (senha.length < 6) { alert('Senha minimo 6 caracteres'); return }
     const { error } = await supabase.auth.signUp({
         email: email.trim(),
         password: senha,
@@ -380,7 +380,7 @@ window.atualizarListaSalas = () => {
     if (!container) return
     const salas = getSalas()
     if (!salas.length) {
-        container.innerHTML = '<li style="color:var(--texto-sec); text-align:center; padding:28px; list-style:none;">📭 Nenhuma sala ativa no momento.</li>'
+        container.innerHTML = '<li style="color:var(--texto-sec); text-align:center; padding:28px; list-style:none;">Nenhuma sala ativa no momento.</li>'
         return
     }
     container.innerHTML = ''
@@ -393,7 +393,7 @@ window.atualizarListaSalas = () => {
                 <div class="meeting-id">ID: ${escapeHtml(sala.id)}</div>
                 <div><small>Criada por: ${escapeHtml(sala.leader || 'Professor')}</small></div>
             </div>
-            <button class="btn-entrar" onclick="alert('Função entrarSala em desenvolvimento')">ENTRAR</button>
+            <button class="btn-entrar" onclick="alert('Funcao entrarSala em desenvolvimento')">ENTRAR</button>
         `
         container.appendChild(li)
     })
@@ -411,7 +411,7 @@ window.criarReuniaoLocal = () => {
     localStorage.setItem('sulsafe_salas', JSON.stringify(salas))
     document.getElementById('meetingName').value = ''
     window.atualizarListaSalas()
-    mostrarErro('✅ Sala criada com sucesso!')
+    mostrarErro('Sala criada com sucesso!')
 }
 
 // ============================================================
@@ -446,4 +446,4 @@ window.getAulasLocal = getAulasLocal
 window.getProgressoLocal = getProgressoLocal
 window.salvarProgressoLocal = salvarProgressoLocal
 
-console.log('✅ App.js carregado com sucesso!')
+console.log('App.js carregado com sucesso!')
