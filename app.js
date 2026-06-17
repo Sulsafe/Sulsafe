@@ -1008,37 +1008,59 @@ window.enviarPerguntaIA = async () => {
     box.scrollTop = box.scrollHeight;
     
     try {
-        // Tenta usar a Edge Function do Supabase
+        console.log('📤 Enviando pergunta para a Edge Function...');
+        
         const { data, error } = await supabase.functions.invoke('gemini-chat-import', {
-            body: { prompt: `Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}` }
+            body: { prompt: `Você é especialista em Segurança do Trabalho. ${pergunta}` }
         });
+        
+        console.log('📥 Resposta recebida:', data);
         
         loading.remove();
         
-        if (data?.response) {
-            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.response)}</div>`;
-        } else if (data?.text) {
-            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.text)}</div>`;
-        } else {
-            // Fallback com informações úteis
-            box.innerHTML += `
-                <div class="ia-msg bot">
-                    <strong>📚 Assistente SulSafe</strong><br><br>
-                    <em>"${escapeHtml(pergunta)}"</em><br><br>
-                    <strong>📖 Recursos para encontrar sua resposta:</strong><br><br>
-                    🔗 <strong>Texto oficial das NRs:</strong><br>
-                    <a href="https://www.gov.br/trabalho-e-previdencia/pt-br/assuntos/seguranca-e-saude-no-trabalho/normas-regulamentadoras" target="_blank">Ministério do Trabalho - NRs</a><br><br>
-                    📚 <strong>Materiais da plataforma:</strong><br>
-                    👉 Clique em <strong>"Materiais"</strong> no menu lateral<br><br>
-                    🎬 <strong>Videoaulas:</strong><br>
-                    👉 Clique em <strong>"Videoaulas"</strong> no menu lateral<br><br>
-                    💬 <strong>Pergunte ao professor:</strong><br>
-                    👉 Utilize o chat durante as <strong>aulas ao vivo</strong><br><br>
-                    <hr>
-                    <small>🔧 Dica: Configure a chave da API Gemini no Supabase para respostas automáticas!</small>
-                </div>
-            `;
+        // Se a Edge Function retornou uma resposta
+        if (data) {
+            // Se tiver resposta do Gemini
+            if (data.response) {
+                box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.response)}</div>`;
+                box.scrollTop = box.scrollHeight;
+                return;
+            }
+            
+            // Se tiver erro
+            if (data.error) {
+                box.innerHTML += `
+                    <div class="ia-msg bot">
+                        <strong>❌ Erro na IA</strong><br><br>
+                        ${escapeHtml(data.error)}
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+                return;
+            }
         }
+        
+        // Se chegou aqui, algo deu errado
+        box.innerHTML += `
+            <div class="ia-msg bot">
+                <strong>⚠️ Não foi possível obter uma resposta da IA</strong><br><br>
+                Tente novamente mais tarde.
+            </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+        
+    } catch (err) {
+        console.error('❌ Erro ao chamar a Edge Function:', err);
+        loading.remove();
+        box.innerHTML += `
+            <div class="ia-msg bot">
+                <strong>❌ Erro ao conectar com a IA</strong><br><br>
+                ${escapeHtml(err.message || 'Erro desconhecido')}
+            </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+    }
+};
         box.scrollTop = box.scrollHeight;
         
     } catch (err) {
