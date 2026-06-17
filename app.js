@@ -816,9 +816,57 @@ function perguntarSobreNR() {
         const input = document.getElementById('iaChatInput')
         if (input) {
             input.value = `Explique a ${num} - ${nome} de forma resumida e dê exemplos práticos para estudantes de segurança do trabalho.`
-            window.enviarPerguntaIA()
+     // ============================================================
+// ===== FUNÇÃO IA CORRIGIDA =====
+// ============================================================
+window.enviarPerguntaIA = async () => {
+    const input = document.getElementById('iaChatInput')
+    const pergunta = input.value.trim()
+    if (!pergunta) return
+
+    const box = document.getElementById('iaChatMessages')
+    box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`
+    input.value = ''
+
+    const loading = document.createElement('div')
+    loading.className = 'ia-msg bot'
+    loading.textContent = '⏳ Buscando resposta...'
+    box.appendChild(loading)
+    box.scrollTop = box.scrollHeight
+
+    try {
+        console.log('📤 Enviando pergunta para a Edge Function...')
+        console.log('🔑 Supabase disponível?', typeof window.supabase)
+        
+        // USAR window.supabase EM VEZ DE supabase
+        const { data, error } = await window.supabase.functions.invoke('gemini-chat-import', {
+            body: { prompt: `Você é especialista em Segurança do Trabalho. ${pergunta}` }
+        })
+        
+        loading.remove()
+        
+        if (error) {
+            console.error('❌ Erro na Edge Function:', error)
+            box.innerHTML += `<div class="ia-msg bot">❌ Erro: ${escapeHtml(error.message)}</div>`
+            box.scrollTop = box.scrollHeight
+            return
         }
-    }, 400)
+        
+        if (data && data.response) {
+            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data.response)}</div>`
+        } else if (data && data.error) {
+            box.innerHTML += `<div class="ia-msg bot">❌ ${escapeHtml(data.error)}</div>`
+        } else {
+            box.innerHTML += `<div class="ia-msg bot">⚠️ Não foi possível obter uma resposta.</div>`
+        }
+        box.scrollTop = box.scrollHeight
+        
+    } catch (err) {
+        console.error('❌ Erro ao chamar a Edge Function:', err)
+        loading.remove()
+        box.innerHTML += `<div class="ia-msg bot">❌ Erro ao conectar: ${escapeHtml(err.message)}</div>`
+        box.scrollTop = box.scrollHeight
+    }
 }
 
 // ========== FUNÇÕES EXISTENTES ==========
