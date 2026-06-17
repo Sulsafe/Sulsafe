@@ -1485,5 +1485,17 @@
 
         console.log('✅ Sistema SulSafe carregado com NRS expansíveis!');
     </script>
+    <!-- ===== MODAL NR ===== -->
+<div class="modal-bg" id="modalNrBg" onclick="window.fecharModalNr(event)">
+    <div class="modal" id="modalNrBox">
+        <button class="modal-close" onclick="document.getElementById('modalNrBg').classList.remove('open')">✕</button>
+        <span class="modal-icon" id="mNrIcon"></span>
+        <div class="modal-num" id="mNrNum"></div>
+        <h2 id="mNrTitle"></h2>
+        <p id="mNrDesc"></p>
+        <div id="mNrObjs"></div>
+        <button class="ask-btn" onclick="window.perguntarSobreNR()">🤖 Perguntar ao Assistente</button>
+    </div>
+</div>
 </body>
 </html>
