@@ -1,73 +1,596 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SulSafe - Gestão de Segurança do Trabalho</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 
-    html, body {
-      width: 100%;
-      height: 100dvh;
-      background-color: #f3f4f4;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow: hidden;
-    }
-
-    .layout-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .area-topo-direita {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-    }
-
-    .btn-acessar {
-      display: inline-block;
-      background-color: #2E7D32;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 10px 22px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Efeito hover para melhor experiência */
-    .btn-acessar:hover {
-      background-color: #1B5E20;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .logo-principal {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  </style>
 </head>
 <body>
-  <div class="layout-container">
-    <div class="area-topo-direita">
-      <a href="login.html" class="btn-acessar">Acessar a Plataforma</a>
+    <!-- HERO -->
+    <div class="hero-container" id="heroContainer">
+        <canvas id="canvas-hero"></canvas>
     </div>
-    <img src="sulsafe.png" alt="SulSafe Segurança do Trabalho" class="logo-principal">
-  </div>
+    <div class="hero-texto" id="heroTexto">
+        <h1>BEM VINDO À<span class="empresa" id="nomeEmpresa"></span></h1>
+        <p>GESTÃO DE SEGURANÇA</p>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- AUTH -->
+    <div class="auth-container" id="authContainer">
+        <div id="avisoFileProtocol" style="display:none;margin-bottom:10px;padding:10px;background:#FFF3E0;border:1px solid #FFB74D;border-radius:12px;font-size:12px;line-height:1.4;color:#E65100;">
+            <strong>Login não funciona abrindo o arquivo direto.</strong> Hospede em um servidor (Netlify, Vercel ou localhost).
+        </div>
+
+        <div class="tela active" id="telaLogin">
+            <a class="link-voltar-inicio" href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
+            <div class="logo">
+                <div class="logo-icon" id="logoIcon"></div>
+                <div class="logo-text" id="logoText">SulSafe</div>
+            </div>
+            <p class="subtitulo">Acesse sua conta para continuar</p>
+            <form onsubmit="event.preventDefault();fazerLogin()">
+                <div class="campo">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" autocomplete="email" required>
+                </div>
+                <div class="campo">
+                    <label>Senha</label>
+                    <input type="password" id="loginSenha" required>
+                </div>
+                <button type="submit" class="botao botao-primario">Entrar</button>
+            </form>
+            <div class="divisor">ou</div>
+            <button class="botao botao-secundario" onclick="mostrarTela('cadastro')">Cadastrar nova conta</button>
+            <button class="botao botao-terciario" onclick="mostrarTela('recuperar')">Esqueci minha senha</button>
+            <div class="social-bar">
+                <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+        <div class="tela" id="telaCadastro">
+            <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
+            <div class="logo">
+                <div class="logo-icon" id="logoIconCad"></div>
+                <div class="logo-text">SulSafe</div>
+            </div>
+            <p class="subtitulo">Crie sua conta em segundos</p>
+            <form onsubmit="event.preventDefault();fazerCadastro()">
+                <div class="campo">
+                    <label>Nome completo</label>
+                    <input type="text" id="cadNome" required>
+                </div>
+                <div class="campo">
+                    <label>Email</label>
+                    <input type="email" id="cadEmail" required>
+                </div>
+                <div class="campo">
+                    <label>Senha</label>
+                    <input type="password" id="cadSenha" required>
+                </div>
+                <div class="campo">
+                    <label>Confirmar senha</label>
+                    <input type="password" id="cadSenha2" required>
+                </div>
+                <button type="submit" class="botao botao-primario">Criar conta</button>
+            </form>
+        </div>
+
+        <div class="tela" id="telaRecuperar">
+            <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
+            <div class="logo">
+                <div class="logo-icon" id="logoIconRec"></div>
+                <div class="logo-text">SulSafe</div>
+            </div>
+            <p class="subtitulo">Recupere o acesso</p>
+            <div class="msg-sucesso" id="msgSucessoRec">Link enviado! Verifique seu e-mail.</div>
+            <form onsubmit="event.preventDefault();recuperarSenha()">
+                <div class="campo">
+                    <label>Email cadastrado</label>
+                    <input type="email" id="recEmail" required>
+                </div>
+                <button type="submit" class="botao botao-primario">Enviar link</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="dash-sidebar">
+            <div class="dash-logo">
+                <div class="dash-logo-icon" id="dashLogoIcon"></div>
+                <div class="dash-logo-text" id="dashEmpresaNome">SulSafe</div>
+            </div>
+            <div class="dash-nav">
+                <div class="nav-item active" data-view="home"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+                <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
+                <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
+                <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
+                <div class="nav-item" data-view="nrs"><i class="fas fa-book"></i><span>Normas NRs</span></div>
+                <div class="nav-item" id="navAreaAluno" data-view="aluno" style="display:none"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
+                <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
+                <div class="nav-item" id="navTrabalhos" style="display:none" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos enviados</span></div>
+                <div class="nav-item" id="navRelatorio" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
+                <div class="nav-item" id="navFinanceiro" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
+                <div class="nav-item" id="navBoletim" data-view="boletim"><i class="fas fa-chart-simple"></i><span>Boletim</span></div>
+                <div class="nav-item" id="navConfig" data-view="config" style="display:none"><i class="fas fa-cog"></i><span>Configurações</span></div>
+            </div>
+            <div class="dash-user-info">
+                <span class="dash-user-name" id="dashUserName">Usuário</span>
+                <span class="dash-logout" onclick="fazerLogout()" title="Sair"><i class="fas fa-sign-out-alt"></i></span>
+            </div>
+        </div>
+
+        <div class="dash-main">
+            <!-- HOME -->
+            <div id="viewHome">
+                <h1 class="dash-welcome">Bem-vindo ao painel SulSafe</h1>
+                <p class="dash-subtitle">Sua plataforma de segurança do trabalho</p>
+                <div id="progressoResumoHome"></div>
+                <div class="dash-cards">
+                    <div class="dash-card" onclick="alternarView('videoaulas')">
+                        <div class="dash-card-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="dash-card-title">Videoaulas</div>
+                        <div class="dash-card-desc">Aulas gravadas por NR com acompanhamento de progresso.</div>
+                    </div>
+                    <div class="dash-card" onclick="alternarView('salas')">
+                        <div class="dash-card-icon"><i class="fas fa-video"></i></div>
+                        <div class="dash-card-title">Aula ao vivo</div>
+                        <div class="dash-card-desc">Entre na videoconferência via Jitsi Meet.</div>
+                    </div>
+                    <div class="dash-card" onclick="alternarView('materiais')">
+                        <div class="dash-card-icon"><i class="fas fa-book"></i></div>
+                        <div class="dash-card-title">Materiais</div>
+                        <div class="dash-card-desc">Apostilas e PDFs das NRs.</div>
+                    </div>
+                    <div class="dash-card" onclick="alternarView('ia')">
+                        <div class="dash-card-icon"><i class="fas fa-robot"></i></div>
+                        <div class="dash-card-title">Assistente NR</div>
+                        <div class="dash-card-desc">Dúvidas sobre normas regulamentadoras.</div>
+                    </div>
+                    <div class="dash-card" onclick="alternarView('equipe')">
+                        <div class="dash-card-icon"><i class="fas fa-users"></i></div>
+                        <div class="dash-card-title">Equipe</div>
+                        <div class="dash-card-desc">Gerenciar membros e convites.</div>
+                    </div>
+                    <div class="dash-card" onclick="alternarView('financeiro')">
+                        <div class="dash-card-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="dash-card-title">Financeiro</div>
+                        <div class="dash-card-desc">Pagamentos e assinaturas.</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-criar-sala" id="btnPainelProfessor" style="display:none" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
+            </div>
+
+            <!-- VIDEOAULAS -->
+            <div id="viewVideoaulas" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px">Videoaulas</h2>
+                <p class="dash-subtitle">Assista às aulas e acompanhe seu progresso</p>
+                <div id="progressoVideoaulas"></div>
+                <div class="filtro-nr" id="filtroNR">
+                    <button class="filtro-btn active" data-nr="todos" onclick="filtrarAulas('todos')">Todas</button>
+                </div>
+                <div class="videoaulas-grid" id="listaVideoaulas">
+                    <p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i><br><br>Carregando videoaulas...</p>
+                </div>
+                <div class="painel-card" style="margin-top:28px">
+                    <div class="cert-section" id="certSection">
+                        <div class="cert-icon">🏆</div>
+                        <div class="cert-titulo">Certificado de Conclusão</div>
+                        <div class="cert-desc" id="certDesc">Conclua todas as videoaulas para liberar seu certificado.</div>
+                        <button class="btn-criar-sala" id="btnCertificado" onclick="gerarCertificado()" style="display:none"><i class="fas fa-award"></i> Baixar Certificado PDF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SALAS -->
+            <div id="viewSalas" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-shield-alt"></i> Salas de Reunião</h2>
+                <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
+                <div class="salas-controls">
+                    <input type="text" id="meetingName" placeholder="Ex: Aula NR-35 — Trabalho em Altura">
+                    <button class="btn-criar-sala" id="btnCriarSala" onclick="criarReuniaoLocal()">
+                        <i class="fas fa-plus-circle"></i> CRIAR SALA
+                    </button>
+                </div>
+                <ul class="meeting-list" id="meetingList"></ul>
+            </div>
+
+            <!-- MATERIAIS -->
+            <div id="viewMateriais" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book"></i> Biblioteca de Materiais</h2>
+                <p class="dash-subtitle">Apostilas e PDFs publicados pelo professor</p>
+                <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
+            </div>
+
+            <!-- ALUNO -->
+            <div id="viewAluno" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
+                <p class="dash-subtitle">Envie seu trabalho em PDF e acompanhe as correções</p>
+                <div class="painel-card">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-cloud-upload-alt"></i> Enviar novo trabalho</h3>
+                    <div class="upload-area" onclick="document.getElementById('fileInputTrabalho').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:36px;color:var(--primaria)"></i>
+                        <p style="margin-top:10px"><strong>Clique para enviar PDF</strong></p>
+                        <p style="font-size:12px;color:var(--texto-sec);margin-top:3px">Apenas arquivos .pdf</p>
+                    </div>
+                    <input type="file" id="fileInputTrabalho" accept=".pdf" style="display:none" onchange="enviarTrabalho(this)">
+                    <div id="uploadStatus" style="margin-top:10px;font-size:14px"></div>
+                </div>
+                <div class="painel-card">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-history"></i> Meus trabalhos enviados</h3>
+                    <div id="meusTrabalhosList">
+                        <p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IA -->
+            <div id="viewIa" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente sobre NRs</h2>
+                <p class="dash-subtitle">Tire dúvidas sobre normas e segurança do trabalho</p>
+                <div class="painel-card ia-chat-box">
+                    <div class="ia-messages" id="iaChatMessages">
+                        <div class="ia-msg bot">Olá! Sou o assistente SULSAFE. Pergunte sobre NR-18, NR-31, NR-33, NR-35, NR-10, EPIs e segurança do trabalho.</div>
+                    </div>
+                    <div class="ia-input-row">
+                        <input type="text" id="iaChatInput" placeholder="Digite sua dúvida sobre NRs..." onkeypress="if(event.key==='Enter')enviarPerguntaIA()">
+                        <button class="btn-criar-sala" type="button" onclick="enviarPerguntaIA()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EQUIPE -->
+            <div id="viewEquipe" style="display:none">
+                <div class="team-container">
+                    <div class="team-members">
+                        <h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-users"></i> Membros da Equipe</h3>
+                        <div class="member-list" id="memberList"></div>
+                    </div>
+                    <div class="team-invite">
+                        <h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-envelope"></i> Convidar membros</h3>
+                        <div class="invite-code">
+                            <input type="text" id="inviteCode" readonly placeholder="Código de convite">
+                            <button class="test-button" id="generateInviteBtn">Gerar código</button>
+                        </div>
+                        <button class="test-button" id="copyInviteBtn">Copiar link</button>
+                        <div class="pending-invites" id="pendingInvitesContainer">
+                            <h4 style="margin-bottom:7px;font-size:13px">Convites pendentes</h4>
+                            <div id="pendingInvitesList"></div>
+                        </div>
+                        <div style="margin-top:16px">
+                            <label style="font-weight:600;font-size:13px;display:block;margin-bottom:7px">Entrar em uma equipe existente</label>
+                            <div style="display:flex;gap:8px">
+                                <input type="text" id="joinCode" placeholder="Código de convite" style="flex:1;background:var(--input-bg);border:1px solid var(--borda);border-radius:40px;padding:9px 14px;color:var(--texto);font-size:13px">
+                                <button class="test-button" id="joinTeamBtn">Entrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRABALHOS -->
+            <div id="viewTrabalhos" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos dos Alunos</h2>
+                <p class="dash-subtitle">Corrija e acompanhe as entregas</p>
+                <div class="filtro-nr" style="margin-bottom:20px">
+                    <button class="filtro-btn active" data-filtro="todos" onclick="filtrarTrabalhos('todos')">Todos</button>
+                    <button class="filtro-btn" data-filtro="pendente" onclick="filtrarTrabalhos('pendente')">Pendentes</button>
+                    <button class="filtro-btn" data-filtro="corrigido" onclick="filtrarTrabalhos('corrigido')">Corrigidos</button>
+                </div>
+                <div id="listaTrabalhos" class="videoaulas-grid" style="grid-template-columns:1fr">
+                    <p style="color:var(--texto-sec);text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+
+            <!-- CONFIG -->
+            <div id="viewConfig" style="display:none">
+                <div class="config-container">
+                    <div class="config-sidebar">
+                        <div class="config-tab active" data-config="geral"><i class="fas fa-sliders-h"></i> Geral</div>
+                        <div class="config-tab" data-config="audio"><i class="fas fa-headphones"></i> Áudio</div>
+                        <div class="config-tab" data-config="video"><i class="fas fa-camera"></i> Vídeo</div>
+                        <div class="config-tab" data-config="aparencia"><i class="fas fa-palette"></i> Aparência</div>
+                    </div>
+                    <div class="config-content">
+                        <div class="config-section active-section" id="config-geral">
+                            <div class="config-group"><label>Idioma</label><select id="idioma"><option value="pt">Português</option><option value="en">English</option></select></div>
+                            <div class="config-group"><label>Limpar dados locais</label><button class="test-button" id="limparDados">Limpar</button><span id="clearMsg" style="margin-left:10px;color:var(--sucesso);display:none">✓ Removido</span></div>
+                        </div>
+                        <div class="config-section" id="config-audio">
+                            <div class="config-group"><label>Alto-falante</label><select id="speakerDevice"></select><button class="test-button" id="testSpeaker">Testar</button></div>
+                            <div class="config-group"><label>Volume de saída</label><input type="range" id="outputVolume" min="0" max="100" value="80"><span id="volValue" style="margin-left:8px">80%</span></div>
+                            <div class="config-group"><label>Microfone</label><select id="micDevice"></select><button class="test-button" id="testMic">Testar</button></div>
+                        </div>
+                        <div class="config-section" id="config-video">
+                            <div class="config-group"><label>Câmera</label><select id="cameraDevice"></select><button class="test-button" id="testCamera">Visualizar</button><video id="cameraPreview" width="200" autoplay muted style="margin-top:10px;border-radius:12px;display:none"></video></div>
+                        </div>
+                        <div class="config-section" id="config-aparencia">
+                            <div class="config-group"><label>Modo de cor</label><select id="temaSelect"><option value="escuro">Escuro</option><option value="claro">Claro</option></select></div>
+                            <div class="config-group"><label>Cor de destaque</label><div id="colorThemePicker">
+                                <div class="color-option" style="background:#2E7D32" data-color="#2E7D32"></div>
+                                <div class="color-option" style="background:#1B5E20" data-color="#1B5E20"></div>
+                                <div class="color-option" style="background:#4CAF50" data-color="#4CAF50"></div>
+                                <div class="color-option" style="background:#1565C0" data-color="#1565C0"></div>
+                                <div class="color-option" style="background:#6A1B9A" data-color="#6A1B9A"></div>
+                                <div class="color-option" style="background:#C62828" data-color="#C62828"></div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RELATORIO -->
+            <div id="viewRelatorio" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
+                <p class="dash-subtitle">Acompanhe o progresso e desempenho da turma</p>
+                <div class="painel-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap">
+                        <h3 style="font-size:16px"><i class="fas fa-users"></i> Progresso geral</h3>
+                        <div>
+                            <button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:8px 16px"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                            <button class="btn-criar-sala" onclick="exportarRelatorioCSV()" style="padding:8px 16px; background:#1565C0"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+                            <button class="btn-criar-sala" onclick="exportarRelatorioExcel()" style="padding:8px 16px; background:#1B5E20"><i class="fas fa-file-excel"></i> Exportar Excel</button>
+                            <button class="btn-criar-sala" onclick="exportarRelatorioPDF()" style="padding:8px 16px; background:#D32F2F"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressoChart"></canvas>
+                    </div>
+                    <div id="relatorioContainer">
+                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando relatório...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINANCEIRO -->
+            <div id="viewFinanceiro" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-credit-card"></i> Financeiro</h2>
+                <p class="dash-subtitle">Gerencie pagamentos e assinaturas</p>
+                <div class="painel-card" id="assinaturaStripeCard">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fab fa-stripe"></i> Assinatura Mensal - Stripe</h3>
+                    <p style="margin-bottom:12px">Acesso completo a todas as videoaulas, materiais e aulas ao vivo.</p>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" id="btnAssinarPlano" style="background:#635BFF"><i class="fab fa-stripe"></i> Assinar por R$ 49,90/mês</button>
+                    </div>
+                    <div id="stripeStatus" style="margin-top:12px; font-size:13px"></div>
+                </div>
+                <div class="painel-card" id="adminPagamentoCard" style="display:none">
+                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-hand-holding-usd"></i> Gerar Pagamento Manual</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamentoManual('PIX')" style="background:#25D366"><i class="fab fa-pix"></i> Gerar PIX</button>
+                        <button class="btn-criar-sala" onclick="abrirModalGerarPagamentoManual('BOLETO')" style="background:#1565C0"><i class="fas fa-barcode"></i> Gerar Boleto</button>
+                    </div>
+                </div>
+                <div class="painel-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+                        <h3 style="font-size:16px; margin:0"><i class="fas fa-history"></i> Minhas Transações</h3>
+                        <button class="btn-criar-sala" onclick="carregarMinhasTransacoes()" style="padding:5px 12px; font-size:12px"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    <div id="minhasTransacoesContainer">
+                        <p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
+                    </div>
+                </div>
+                <div class="painel-card" id="adminTransacoesCard" style="display:none">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+                        <h3 style="font-size:16px; margin:0"><i class="fas fa-chart-line"></i> Todas as Transações (Admin)</h3>
+                        <button class="btn-criar-sala" onclick="carregarTodasTransacoes()" style="padding:5px 12px; font-size:12px"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    <div id="todasTransacoesContainer">
+                        <p style="text-align:center; padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOLETIM -->
+            <div id="viewBoletim" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
+                <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
+                <div class="painel-card">
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+                        <button class="btn-criar-sala" id="btnLancarNotas" onclick="abrirModalLancarNotas()" style="background:#2E7D32"><i class="fas fa-edit"></i> Lançar Notas</button>
+                        <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
+                    <div id="boletimContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div>
+                </div>
+            </div>
+
+            <!-- BOLETIM ALUNO -->
+            <div id="viewBoletimAluno" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
+                <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
+                <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
+            </div>
+
+            <!-- NRS - VERSÃO EXPANSÍVEL -->
+            <div id="viewNrs" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px">
+                    <i class="fas fa-book"></i> Normas Regulamentadoras - NRs
+                </h2>
+                <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho e Previdência</p>
+                
+                <!-- Estatísticas -->
+                <div class="stats-bar" id="nrStatsBar">
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrTotalCount">36</div>
+                        <div class="stat-lab">Total de NRs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrEspecificasCount">28</div>
+                        <div class="stat-lab">NRs Específicas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrGeraisCount">8</div>
+                        <div class="stat-lab">NRs Gerais</div>
+                    </div>
+                </div>
+
+                <!-- Busca e Filtros -->
+                <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
+                
+                <div class="filter-bar" id="nrFilterBar">
+                    <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
+                    <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
+                    <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
+                    <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
+                </div>
+
+                <!-- Lista de NRs com Setas Expansíveis -->
+                <div class="painel-card" style="padding: 10px;">
+                    <div id="nrListContainer"></div>
+                </div>
+
+                <!-- Modal para detalhes da NR -->
+                <div class="modal-bg" id="nrModal">
+                    <div class="modal">
+                        <button class="modal-close" onclick="fecharModalNr()">✕</button>
+                        <span class="modal-icon" id="modalNrIcon">📋</span>
+                        <div class="modal-num" id="modalNrNum">NR-01</div>
+                        <h2 id="modalNrTitle">Disposições Gerais</h2>
+                        <p id="modalNrDesc">...</p>
+                        <ul class="obj-list" id="modalNrList"></ul>
+                        <button class="ask-btn" onclick="perguntarSobreNr()">
+                            <i class="fas fa-robot"></i> Perguntar sobre esta NR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEETING MODAL -->
+    <div class="meeting-modal" id="meetingModal">
+        <div class="meeting-room">
+            <div class="room-header">
+                <span class="room-title" id="roomTitle">Sala de Reunião</span>
+                <div class="room-actions">
+                    <button class="btn-ia-assistente" onclick="chamarGemini()"><i class="fas fa-robot"></i> IA</button>
+                    <button class="btn-gerar-ata" onclick="gerarAtaReuniao()"><i class="fas fa-file-alt"></i> Ata</button>
+                    <button class="btn-whatsapp" onclick="enviarWhatsApp()"><i class="fab fa-whatsapp"></i></button>
+                    <button id="btnRecord" onclick="toggleRecording()"><i class="fas fa-circle"></i> Gravar</button>
+                    <button class="close-room" onclick="fecharSala()"><i class="fas fa-times"></i> Sair</button>
+                </div>
+            </div>
+            <div class="room-content">
+                <div class="video-area">
+                    <div id="jitsiContainer"></div>
+                    <div class="video-placeholder" id="videoPlaceholder"><i class="fas fa-video" style="font-size:28px"></i><p>Carregando Jitsi...</p></div>
+                </div>
+                <div class="chat-area">
+                    <div class="chat-messages" id="chatMessages"><div class="chat-message"><div class="sender">Sistema</div><div class="text">Bem-vindo à sala!</div></div></div>
+                    <div class="chat-input"><input type="text" id="chatInput" placeholder="Mensagem..."><button onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-wrapper"><iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>
+        <button class="video-modal-close" onclick="fecharVideo()"><i class="fas fa-times"></i> Fechar</button>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div class="admin-modal" id="modalAdmin">
+        <div class="admin-modal-content">
+            <h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2>
+            <div class="admin-tabs">
+                <div class="admin-tab active" onclick="trocarAbaAdmin('material')" id="tabMaterial">📄 Material / PDF</div>
+                <div class="admin-tab" onclick="trocarAbaAdmin('aula')" id="tabAula">🎬 Videoaula (YouTube)</div>
+            </div>
+            <div id="abaAdminMaterial">
+                <div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div>
+                <div class="campo"><label>NR</label><select id="matNR"><option value="NR-01">NR-01 — Disposições Gerais</option><option value="NR-05">NR-05 — CIPA</option><option value="NR-06">NR-06 — EPI</option><option value="NR-07">NR-07 — PCMSO</option><option value="NR-09">NR-09 — Riscos Ambientais</option><option value="NR-10">NR-10 — Instalações Elétricas</option><option value="NR-11">NR-11 — Transporte e Movimentação</option><option value="NR-12">NR-12 — Máquinas e Equipamentos</option><option value="NR-17">NR-17 — Ergonomia</option><option value="NR-18">NR-18 — Construção Civil</option><option value="NR-20">NR-20 — Inflamáveis e Combustíveis</option><option value="NR-23">NR-23 — Proteção Contra Incêndios</option><option value="NR-25">NR-25 — Resíduos Industriais</option><option value="NR-31">NR-31 — Trabalho Rural / Silos</option><option value="NR-33" selected>NR-33 — Espaços Confinados</option><option value="NR-35">NR-35 — Trabalho em Altura</option><option value="NR-36">NR-36 — Abate e Processamento</option><option value="Geral">Geral / Outros</option></select></div>
+                <div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3" placeholder="Descreva o conteúdo..."></textarea></div>
+                <div class="campo"><label>Arquivo (PDF ou imagem)</label><input type="file" id="matArquivo" accept=".pdf,.jpg,.jpeg,.png"></div>
+                <div id="adminStatus" style="margin:10px 0;font-size:13px"></div>
+                <div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarMaterial()">Publicar</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div>
+            </div>
+            <div id="abaAdminAula" style="display:none">
+                <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura: Introdução"></div>
+                <div class="campo"><label>NR</label><select id="aulaNR"><option value="NR-01">NR-01 — Disposições Gerais</option><option value="NR-05">NR-05 — CIPA</option><option value="NR-06">NR-06 — EPI</option><option value="NR-07">NR-07 — PCMSO</option><option value="NR-09">NR-09 — Riscos Ambientais</option><option value="NR-10">NR-10 — Instalações Elétricas</option><option value="NR-12">NR-12 — Máquinas e Equipamentos</option><option value="NR-17">NR-17 — Ergonomia</option><option value="NR-18">NR-18 — Construção Civil</option><option value="NR-23">NR-23 — Proteção Contra Incêndios</option><option value="NR-31">NR-31 — Trabalho Rural / Silos</option><option value="NR-33" selected>NR-33 — Espaços Confinados</option><option value="NR-35">NR-35 — Trabalho em Altura</option><option value="Geral">Geral / Outros</option></select></div>
+                <div class="campo"><label>Link do YouTube</label><input type="url" id="aulaYoutube" placeholder="https://www.youtube.com/watch?v=..."></div>
+                <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2" placeholder="Breve descrição da aula..."></textarea></div>
+                <div style="background:rgba(46,125,50,.07);padding:10px 14px;border-radius:12px;margin-bottom:14px;font-size:12px;color:var(--texto-sec)"><i class="fas fa-info-circle" style="color:var(--primaria)"></i> Cole o link normal do YouTube (público ou não listado).</div>
+                <div id="aulaStatus" style="margin:10px 0;font-size:13px"></div>
+                <div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarVideoaula()">Publicar aula</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div id="modalPagamentoManual" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+        <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:400px">
+            <h3 style="margin-bottom:20px" id="modalPagamentoManualTitulo">Gerar PIX</h3>
+            <div class="campo"><label>Aluno</label><select id="pagamentoManualAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select></div>
+            <div class="campo"><label>Valor (R$)</label><input type="number" id="pagamentoManualValor" step="0.01" placeholder="Ex: 99.90"></div>
+            <div class="campo"><label>Descrição</label><input type="text" id="pagamentoManualDescricao" placeholder="Ex: Mensalidade - Mês 01"></div>
+            <div style="display:flex; gap:10px; margin-top:20px">
+                <button class="btn-criar-sala" onclick="gerarPagamentoManual()" style="flex:1">Confirmar</button>
+                <button class="botao botao-secundario" onclick="fecharModalPagamentoManual()" style="flex:1">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRADE MODAL -->
+    <div id="modalLancarNotas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center">
+        <div style="background:var(--card-bg); border-radius:20px; padding:24px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto">
+            <h3 style="margin-bottom:20px">📝 Lançar Notas</h3>
+            <div class="campo"><label>Aluno</label><select id="notaAlunoId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select></div>
+            <div class="campo"><label>Disciplina</label><select id="notaDisciplinaId" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--borda)"><option value="">Selecione uma disciplina...</option></select></div>
+            <div class="campo"><label>Semestre</label><input type="text" id="notaSemestre" value="2025/1"></div>
+            <div class="campo"><label>Nota 1 (0-10)</label><input type="number" id="nota1" step="0.1" min="0" max="10"></div>
+            <div class="campo"><label>Nota 2 (0-10)</label><input type="number" id="nota2" step="0.1" min="0" max="10"></div>
+            <div class="campo"><label>Nota 3 (0-10)</label><input type="number" id="nota3" step="0.1" min="0" max="10"></div>
+            <div class="campo"><label>Recuperação (0-10)</label><input type="number" id="notaRec" step="0.1" min="0" max="10"></div>
+            <div class="campo"><label>Faltas</label><input type="number" id="notaFaltas" value="0"></div>
+            <div style="display:flex; gap:10px; margin-top:20px">
+                <button class="btn-criar-sala" onclick="salvarNotas()" style="flex:1">Salvar Notas</button>
+                <button class="botao botao-secundario" onclick="fecharModalLancarNotas()" style="flex:1">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR TOOLTIP -->
+    <div id="errorTooltip" class="error-tooltip"></div>
+
+    <!-- MASCOTE -->
+    <div class="mascote-assistente" id="mascoteAssistente">
+        <div class="mascote-avatar"><img src="sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.src='https://via.placeholder.com/70?text=SS'"></div>
+        <div class="balao-ajuda" id="balaoAjuda">
+            <div class="balao-header"><span><i class="fas fa-robot"></i> Assistente SulSafe</span><i class="fas fa-times" onclick="fecharAssistente()"></i></div>
+            <div class="balao-conteudo" id="balaoConteudo">
+                <div class="balao-mensagem"><strong>Olá! 👋</strong><br> Sou seu assistente virtual. Posso ajudar com:</div>
+                <div class="balao-opcoes">
+                    <div class="balao-opcao" onclick="ajudaEnvioTrabalho()">📄 Como enviar um trabalho?</div>
+                    <div class="balao-opcao" onclick="ajudaVideoaula()">🎬 Como acessar videoaulas?</div>
+                    <div class="balao-opcao" onclick="ajudaSala()">🎥 Como entrar em uma aula ao vivo?</div>
+                    <div class="balao-opcao" onclick="ajudaMateriais()">📚 Onde encontro os materiais?</div>
+                    <div class="balao-opcao" onclick="abrirAssistenteNR()">🤖 Falar com o Assistente NR (IA)</div>
+                </div>
+            </div>
+            <div class="balao-footer">Dica: clique no ícone do mascote para abrir/fechar.</div>
+        </div>
+    </div>
+    <script type="importmap">
+{
+            "imports": {
+                "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+            }
+        }
+    </script>
+
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
