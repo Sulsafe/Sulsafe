@@ -1260,265 +1260,6 @@
             background: rgba(46, 125, 50, .04);
         }
 
-        /* ===== NRS ===== */
-        .grid-nrs {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 14px;
-        }
-        .nr-card {
-            background: var(--card-bg);
-            border: 1.5px solid #c8e6c9;
-            border-radius: 16px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: border-color .15s, transform .12s, box-shadow .15s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
-        }
-        .nr-card:hover {
-            border-color: #1a6b2e;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(46, 125, 50, .12);
-        }
-        .nr-card .card-icon {
-            font-size: 34px;
-            margin-bottom: 8px;
-            display: block;
-            text-align: center;
-        }
-        .nr-card .nr-num {
-            font-size: 10px;
-            font-weight: 600;
-            color: #1a6b2e;
-            background: #e8f5e9;
-            border-radius: 10px;
-            padding: 2px 10px;
-            display: inline-block;
-            margin-bottom: 6px;
-            letter-spacing: .3px;
-        }
-        .nr-card h3 {
-            font-size: 13px;
-            font-weight: 600;
-            color: #1b5e20;
-            line-height: 1.4;
-            margin-bottom: 4px;
-        }
-        .nr-card p {
-            font-size: 11px;
-            color: #555;
-            line-height: 1.5;
-        }
-        .nr-card .tag {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 8px;
-            padding: 2px 8px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .3px;
-        }
-        .tag-geral {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        .tag-especifico {
-            background: #fff9c4;
-            color: #f57f17;
-        }
-        .tag-saude {
-            background: #e3f2fd;
-            color: #1565c0;
-        }
-
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 1rem;
-        }
-        .stat-card {
-            background: #e8f5e9;
-            border-radius: 12px;
-            padding: 10px 12px;
-            text-align: center;
-        }
-        .stat-card .stat-val {
-            font-size: 22px;
-            font-weight: 600;
-            color: #1a6b2e;
-        }
-        .stat-card .stat-lab {
-            font-size: 11px;
-            color: #388e3c;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 10px 18px;
-            border: 1.5px solid #c8e6c9;
-            border-radius: 40px;
-            font-size: 13px;
-            margin-bottom: 12px;
-            background: var(--input-bg);
-            color: var(--texto);
-            transition: border-color .2s, box-shadow .2s;
-        }
-        .search-box:focus {
-            outline: none;
-            border-color: #1a6b2e;
-            box-shadow: 0 0 0 3px rgba(26, 107, 46, .15);
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-        .filter-btn {
-            background: #e8f5e9;
-            border: 1.5px solid #4caf50;
-            color: #1a6b2e;
-            border-radius: 20px;
-            padding: 5px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .15s;
-        }
-        .filter-btn.active,
-        .filter-btn:hover {
-            background: #1a6b2e;
-            color: #fff;
-            border-color: #1a6b2e;
-        }
-
-        /* ===== NR MODAL ===== */
-        .modal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .5);
-            z-index: 1200;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-bg.open {
-            display: flex;
-        }
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            padding: 1.8rem 1.8rem 1.5rem;
-            max-width: 440px;
-            width: 92%;
-            border-top: 6px solid #1a6b2e;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
-            animation: modalFadeIn .25s ease;
-        }
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(.95) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-        .modal-icon {
-            font-size: 48px;
-            text-align: center;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .modal h2 {
-            font-size: 17px;
-            font-weight: 600;
-            color: #1b5e20;
-            margin-bottom: 4px;
-        }
-        .modal .modal-num {
-            font-size: 12px;
-            color: #1a6b2e;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .modal p {
-            font-size: 13px;
-            color: #333;
-            line-height: 1.7;
-            margin-bottom: 14px;
-        }
-        .modal .obj-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .modal .obj-list li {
-            font-size: 12px;
-            color: #444;
-            padding: 5px 0;
-            border-bottom: .5px solid #e8f5e9;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        .modal .obj-list li::before {
-            content: '✔';
-            color: #2e7d32;
-            flex-shrink: 0;
-            font-weight: 700;
-        }
-        .modal-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #e8f5e9;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #1a6b2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: .2s;
-        }
-        .modal-close:hover {
-            background: #1a6b2e;
-            color: #fff;
-        }
-        .ask-btn {
-            display: block;
-            width: 100%;
-            margin-top: 14px;
-            background: #1a6b2e;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: .2s;
-        }
-        .ask-btn:hover {
-            background: #145a25;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 107, 46, .3);
-        }
-
         /* ===== BOLETIM ===== */
         .boletim-tabela {
             width: 100%;
@@ -1681,6 +1422,310 @@
             display: none;
         }
 
+        /* ===== NR EXPANSÍVEL ===== */
+        .nr-expand-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--borda);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .nr-expand-item:hover {
+            border-color: var(--primaria);
+            box-shadow: 0 2px 12px rgba(46, 125, 50, 0.08);
+        }
+
+        .nr-expand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: var(--card-bg);
+            user-select: none;
+        }
+        .nr-expand-header:hover {
+            background: rgba(46, 125, 50, 0.05);
+        }
+        .nr-expand-header .left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+        .nr-expand-header .nr-icon {
+            font-size: 28px;
+            width: 40px;
+            text-align: center;
+        }
+        .nr-expand-header .nr-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .nr-expand-header .nr-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primaria);
+            background: rgba(46, 125, 50, 0.1);
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+        }
+        .nr-expand-header .nr-titulo {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--texto);
+        }
+        .nr-expand-header .nr-categoria {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-left: 8px;
+        }
+        .nr-categoria-geral {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .nr-categoria-especifico {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+        .nr-categoria-saude {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .nr-expand-header .arrow {
+            font-size: 18px;
+            color: var(--texto-sec);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .nr-expand-header .arrow.open {
+            transform: rotate(180deg);
+            color: var(--primaria);
+        }
+
+        .nr-expand-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.3s ease;
+            padding: 0 18px 0 18px;
+            background: var(--card-bg);
+            border-top: 1px solid transparent;
+        }
+        .nr-expand-content.open {
+            max-height: 2000px;
+            padding: 16px 18px 20px 18px;
+            border-top-color: var(--borda);
+        }
+
+        .nr-expand-content .desc {
+            color: var(--texto);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+        .nr-expand-content .desc strong {
+            color: var(--primaria);
+        }
+
+        .nr-expand-content .objetivos-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primaria);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nr-expand-content .objetivos-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 14px 0;
+        }
+        .nr-expand-content .objetivos-list li {
+            font-size: 13px;
+            color: var(--texto);
+            padding: 6px 0 6px 28px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+        .nr-expand-content .objetivos-list li::before {
+            content: '✔';
+            color: var(--primaria);
+            flex-shrink: 0;
+            font-weight: 700;
+            margin-left: -28px;
+            width: 20px;
+        }
+
+        .nr-expand-content .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .nr-expand-content .actions button {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nr-expand-content .actions .btn-ver {
+            background: var(--primaria);
+            color: #fff;
+        }
+        .nr-expand-content .actions .btn-ver:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        .nr-expand-content .actions .btn-perguntar {
+            background: #e8f5e9;
+            color: var(--primaria);
+        }
+        .nr-expand-content .actions .btn-perguntar:hover {
+            background: var(--primaria);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ===== NR MODAL ===== */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-bg.open {
+            display: flex;
+        }
+        .modal {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 92%;
+            border-top: 6px solid var(--primaria);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.25s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-icon {
+            font-size: 48px;
+            text-align: center;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .modal h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primaria);
+            margin-bottom: 4px;
+        }
+        .modal .modal-num {
+            font-size: 13px;
+            color: var(--primaria);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .modal p {
+            font-size: 14px;
+            color: var(--texto);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+        .modal .obj-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+        }
+        .modal .obj-list li {
+            font-size: 13px;
+            color: var(--texto);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--borda);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .modal .obj-list li::before {
+            content: '✔';
+            color: var(--primaria);
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--borda);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--texto-sec);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .modal-close:hover {
+            background: var(--erro);
+            color: #fff;
+        }
+        .ask-btn {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            background: var(--primaria);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ask-btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+        }
+
         /* ===== RESPONSIVO ===== */
         @media (max-width: 768px) {
             .dash-sidebar {
@@ -1711,10 +1756,6 @@
                 right: -10px;
                 bottom: 90px;
             }
-            .grid-nrs {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
             .stats-bar {
                 grid-template-columns: 1fr 1fr;
             }
@@ -1737,6 +1778,35 @@
                 border-top: 1px solid var(--borda);
                 min-width: unset;
                 max-height: 200px;
+            }
+            .nr-expand-header {
+                padding: 12px 14px;
+                flex-wrap: wrap;
+            }
+            .nr-expand-header .left {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .nr-expand-header .nr-icon {
+                font-size: 22px;
+                width: 30px;
+            }
+            .nr-expand-header .nr-titulo {
+                font-size: 13px;
+            }
+            .nr-expand-content {
+                padding: 0 14px;
+            }
+            .nr-expand-content.open {
+                padding: 12px 14px 16px 14px;
+            }
+            .nr-expand-content .objetivos-list li {
+                font-size: 12px;
+                padding: 5px 0 5px 24px;
+            }
+            .nr-expand-content .objetivos-list li::before {
+                margin-left: -24px;
+                width: 16px;
             }
         }
 
@@ -1762,9 +1832,6 @@
             }
             .videoaulas-grid {
                 grid-template-columns: 1fr;
-            }
-            .grid-nrs {
-                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
@@ -2169,23 +2236,45 @@
                 <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
             </div>
 
-            <!-- NRS -->
+            <!-- NRS - VERSÃO EXPANSÍVEL -->
             <div id="viewNrs" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book"></i> Normas Regulamentadoras - NRs</h2>
+                <h2 class="dash-welcome" style="font-size:22px">
+                    <i class="fas fa-book"></i> Normas Regulamentadoras - NRs
+                </h2>
                 <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho e Previdência</p>
+                
+                <!-- Estatísticas -->
                 <div class="stats-bar" id="nrStatsBar">
-                    <div class="stat-card"><div class="stat-val" id="nrTotalCount">36</div><div class="stat-lab">Total de NRs</div></div>
-                    <div class="stat-card"><div class="stat-val" id="nrEspecificasCount">28</div><div class="stat-lab">NRs Específicas</div></div>
-                    <div class="stat-card"><div class="stat-val" id="nrGeraisCount">8</div><div class="stat-lab">NRs Gerais</div></div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrTotalCount">36</div>
+                        <div class="stat-lab">Total de NRs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrEspecificasCount">28</div>
+                        <div class="stat-lab">NRs Específicas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="nrGeraisCount">8</div>
+                        <div class="stat-lab">NRs Gerais</div>
+                    </div>
                 </div>
+
+                <!-- Busca e Filtros -->
                 <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
+                
                 <div class="filter-bar" id="nrFilterBar">
                     <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
                     <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
                     <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
                     <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
                 </div>
-                <div class="grid-nrs" id="nrGrid"></div>
+
+                <!-- Lista de NRs com Setas Expansíveis -->
+                <div class="painel-card" style="padding: 10px;">
+                    <div id="nrListContainer"></div>
+                </div>
+
+                <!-- Modal para detalhes da NR -->
                 <div class="modal-bg" id="nrModal">
                     <div class="modal">
                         <button class="modal-close" onclick="fecharModalNr()">✕</button>
@@ -2194,7 +2283,9 @@
                         <h2 id="modalNrTitle">Disposições Gerais</h2>
                         <p id="modalNrDesc">...</p>
                         <ul class="obj-list" id="modalNrList"></ul>
-                        <button class="ask-btn" onclick="perguntarSobreNr()"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
+                        <button class="ask-btn" onclick="perguntarSobreNr()">
+                            <i class="fas fa-robot"></i> Perguntar sobre esta NR
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2425,6 +2516,215 @@
     }
 
     // ================================================================
+    //  NRS EXPANSÍVEIS
+    // ================================================================
+    let nrExpandidos = {};
+
+    function renderizarNrs() {
+        const container = document.getElementById('nrListContainer');
+        if (!container) return;
+        
+        // Atualizar estatísticas
+        const total = NRS_DATA.length;
+        const especificas = NRS_DATA.filter(n => n.categoria === 'especifico').length;
+        const gerais = NRS_DATA.filter(n => n.categoria === 'geral').length;
+        
+        document.getElementById('nrTotalCount').textContent = total;
+        document.getElementById('nrEspecificasCount').textContent = especificas;
+        document.getElementById('nrGeraisCount').textContent = gerais;
+        
+        // Renderizar lista expansível
+        renderizarNrsLista(NRS_DATA);
+    }
+
+    function renderizarNrsLista(nrs) {
+        const container = document.getElementById('nrListContainer');
+        if (!container) return;
+        
+        if (nrs.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:40px; color:var(--texto-sec);">
+                    <i class="fas fa-search" style="font-size:32px; display:block; margin-bottom:12px;"></i>
+                    <p>Nenhuma NR encontrada com esse filtro.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Inicializar estado de expansão para novas NRs
+        nrs.forEach(nr => {
+            if (!(nr.nr in nrExpandidos)) {
+                nrExpandidos[nr.nr] = false;
+            }
+        });
+        
+        container.innerHTML = nrs.map(nr => {
+            const isOpen = nrExpandidos[nr.nr] || false;
+            const categoriaLabel = nr.categoria === 'geral' ? 'Geral' : 
+                                  nr.categoria === 'especifico' ? 'Específica' : 'Saúde';
+            const categoriaClass = `nr-categoria-${nr.categoria}`;
+            
+            return `
+                <div class="nr-expand-item" id="nr-item-${nr.nr}">
+                    <div class="nr-expand-header" onclick="toggleNrExpand('${nr.nr}')">
+                        <div class="left">
+                            <span class="nr-icon">${nr.icone}</span>
+                            <div class="nr-info">
+                                <span class="nr-num">${nr.nr}</span>
+                                <span class="nr-titulo">${escapeHtml(nr.titulo)}</span>
+                            </div>
+                            <span class="nr-categoria ${categoriaClass}">${categoriaLabel}</span>
+                        </div>
+                        <span class="arrow ${isOpen ? 'open' : ''}">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </div>
+                    <div class="nr-expand-content ${isOpen ? 'open' : ''}">
+                        <div class="desc">
+                            <strong>📋 Descrição:</strong> ${escapeHtml(nr.descricao)}
+                        </div>
+                        <div class="objetivos-title">
+                            <i class="fas fa-bullseye"></i> Objetivos principais
+                        </div>
+                        <ul class="objetivos-list">
+                            ${nr.objetivos.map(obj => `<li>${escapeHtml(obj)}</li>`).join('')}
+                        </ul>
+                        <div class="actions">
+                            <button class="btn-ver" onclick="abrirModalNr('${nr.nr}')">
+                                <i class="fas fa-external-link-alt"></i> Ver detalhes
+                            </button>
+                            <button class="btn-perguntar" onclick="perguntarSobreNrEspecifica('${nr.nr}')">
+                                <i class="fas fa-robot"></i> Perguntar sobre esta NR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.toggleNrExpand = (nrNum) => {
+        nrExpandidos[nrNum] = !nrExpandidos[nrNum];
+        const item = document.getElementById(`nr-item-${nrNum}`);
+        if (!item) return;
+        const content = item.querySelector('.nr-expand-content');
+        const arrow = item.querySelector('.arrow');
+        if (nrExpandidos[nrNum]) {
+            content.classList.add('open');
+            arrow.classList.add('open');
+        } else {
+            content.classList.remove('open');
+            arrow.classList.remove('open');
+        }
+    };
+
+    window.filtrarNrs = (filtro = null) => {
+        const searchInput = document.getElementById('nrSearchInput');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        if (filtro) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filtro);
+            });
+        } else {
+            const activeBtn = document.querySelector('.filter-btn.active');
+            filtro = activeBtn ? activeBtn.dataset.filter : 'todos';
+        }
+        let nrsFiltradas = NRS_DATA.filter(nr => {
+            if (filtro !== 'todos' && nr.categoria !== filtro) return false;
+            if (searchTerm) {
+                const nrMatch = nr.nr.toLowerCase().includes(searchTerm);
+                const tituloMatch = nr.titulo.toLowerCase().includes(searchTerm);
+                const descMatch = nr.descricao.toLowerCase().includes(searchTerm);
+                if (!nrMatch && !tituloMatch && !descMatch) return false;
+            }
+            return true;
+        });
+        renderizarNrsLista(nrsFiltradas);
+    };
+
+    window.perguntarSobreNrEspecifica = (nrNum) => {
+        const nr = NRS_DATA.find(n => n.nr === nrNum);
+        if (!nr) return;
+        window.alternarView('ia');
+        const input = document.getElementById('iaChatInput');
+        if (input) {
+            input.value = `Explique a ${nr.nr} - ${nr.titulo} de forma detalhada e prática, com exemplos do dia a dia`;
+            window.enviarPerguntaIA();
+        }
+    };
+
+    // ================================================================
+    //  NRS - FUNÇÕES DO MODAL
+    // ================================================================
+
+    window.abrirModalNr = (nrNum) => {
+        console.log('📖 Abrindo modal para:', nrNum);
+        const nr = NRS_DATA.find(n => n.nr === nrNum);
+        if (!nr) {
+            console.error('NR não encontrada:', nrNum);
+            mostrarErro('NR não encontrada');
+            return;
+        }
+
+        try {
+            document.getElementById('modalNrIcon').textContent = nr.icone;
+            document.getElementById('modalNrNum').textContent = nr.nr;
+            document.getElementById('modalNrTitle').textContent = nr.titulo;
+            document.getElementById('modalNrDesc').textContent = nr.descricao;
+
+            const listContainer = document.getElementById('modalNrList');
+            listContainer.innerHTML = nr.objetivos.map(obj => `<li>${escapeHtml(obj)}</li>`).join('');
+
+            // Salvar a NR atual para uso no botão "Perguntar"
+            document.getElementById('modalNrNum').dataset.nrAtual = nr.nr;
+
+            // Abrir o modal
+            const modal = document.getElementById('nrModal');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+            console.log('✅ Modal aberto com sucesso');
+        } catch (err) {
+            console.error('Erro ao abrir modal:', err);
+            mostrarErro('Erro ao abrir detalhes da NR');
+        }
+    };
+
+    window.fecharModalNr = () => {
+        const modal = document.getElementById('nrModal');
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    // Fechar modal clicando fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('nrModal');
+        if (modal && e.target === modal) {
+            window.fecharModalNr();
+        }
+    });
+
+    // Fechar modal com tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.fecharModalNr();
+        }
+    });
+
+    window.perguntarSobreNr = () => {
+        const nrNum = document.getElementById('modalNrNum').dataset.nrAtual || '';
+        if (nrNum) {
+            window.fecharModalNr();
+            window.alternarView('ia');
+            const input = document.getElementById('iaChatInput');
+            if (input) {
+                const nr = NRS_DATA.find(n => n.nr === nrNum);
+                input.value = `Explique a ${nrNum} - ${nr?.titulo || ''} de forma detalhada e prática, com exemplos do dia a dia`;
+                setTimeout(() => window.enviarPerguntaIA(), 300);
+            }
+        }
+    };
+
+    // ================================================================
     //  FUNÇÕES DE AUTENTICAÇÃO
     // ================================================================
     async function garantirPerfil(user) {
@@ -2526,7 +2826,6 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active');
         
-        // Carregar conteúdo específico
         if (viewId === 'salas') atualizarListaSalas();
         if (viewId === 'equipe') carregarEquipe();
         if (viewId === 'materiais') carregarMateriais();
@@ -2984,12 +3283,10 @@
         mostrarErro('✅ Link copiado!');
     };
 
-    // Event listeners da equipe
     document.getElementById('generateInviteBtn')?.addEventListener('click', gerarConvite);
     document.getElementById('copyInviteBtn')?.addEventListener('click', window.copiarLinkConvite);
     document.getElementById('joinTeamBtn')?.addEventListener('click', aceitarConvite);
 
-    // Expor funções da equipe globalmente
     window.removerMembro = removerMembro;
     window.cancelarConvite = cancelarConvite;
 
@@ -3040,7 +3337,6 @@
     };
 
     window.filtrarAulas = (nr) => carregarVideoaulas(nr);
-
     window.abrirVideo = (url) => {
         const ytId = extrairYoutubeId(url);
         if (!ytId) { mostrarErro('Link inválido'); return; }
@@ -3323,31 +3619,86 @@
     };
 
     // ================================================================
-    //  IA
+    //  IA - COM FALLBACK
     // ================================================================
     window.enviarPerguntaIA = async () => {
         const input = document.getElementById('iaChatInput');
         const pergunta = input.value.trim();
-        if (!pergunta) return;
+        if (!pergunta) {
+            mostrarErro('Digite uma pergunta');
+            return;
+        }
+
         const box = document.getElementById('iaChatMessages');
         box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
         input.value = '';
+
         const loading = document.createElement('div');
         loading.className = 'ia-msg bot';
-        loading.textContent = 'Pensando...';
+        loading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pensando...';
         box.appendChild(loading);
+        box.scrollTop = box.scrollHeight;
+
         try {
-            const { data } = await supabase.functions.invoke('gemini-chat-import', {
+            // Tentar chamar a IA do Supabase
+            const { data, error } = await supabase.functions.invoke('gemini-chat-import', {
                 body: { prompt: `Você é especialista em Segurança do Trabalho. Pergunta: ${pergunta}` }
             });
+
             loading.remove();
-            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(data?.response || data?.text || 'Sem resposta')}</div>`;
+
+            if (error) {
+                throw new Error(error.message);
+            }
+
+            const resposta = data?.response || data?.text || 'Sem resposta';
+            box.innerHTML += `<div class="ia-msg bot">${escapeHtml(resposta)}</div>`;
+
         } catch (err) {
             loading.remove();
-            box.innerHTML += `<div class="ia-msg bot">Erro ao consultar IA. Tente novamente.</div>`;
+            console.error('Erro na IA:', err);
+
+            // Fallback: respostas pré-definidas
+            const respostaFallback = gerarRespostaFallback(pergunta);
+            box.innerHTML += `<div class="ia-msg bot">${respostaFallback}</div>`;
         }
+
         box.scrollTop = box.scrollHeight;
     };
+
+    // ================================================================
+    //  FALLBACK PARA IA (caso a Edge Function não esteja disponível)
+    // ================================================================
+    function gerarRespostaFallback(pergunta) {
+        const p = pergunta.toUpperCase();
+
+        // Respostas pré-definidas
+        const respostas = {
+            'NR-18': '📋 A NR-18 estabelece diretrizes para garantir condições de segurança e saúde no trabalho na indústria da construção civil. Ela abrange desde canteiros de obras até atividades como demolição, escavações, estruturas, etc. Principais pontos: <br>• Canteiro de obras organizado <br>• Proteção contra quedas <br>• Escavações e fundações <br>• Andaimes e plataformas <br>• Equipamentos de proteção',
+
+            'NR-31': '🌾 A NR-31 trata da segurança e saúde no trabalho na agricultura, pecuária, silvicultura, exploração florestal e aquicultura. Aborda: <br>• Uso seguro de agrotóxicos <br>• Máquinas agrícolas <br>• Exposição solar <br>• Alojamentos <br>• Transporte de trabalhadores',
+
+            'NR-33': '🚧 A NR-33 regulamenta o trabalho em espaços confinados. Exige: <br>• Treinamento obrigatório <br>• Permissão de entrada <br>• Monitoramento contínuo <br>• Equipe de resgate <br>• Equipamentos de comunicação',
+
+            'NR-35': '🧗 A NR-35 estabelece requisitos para trabalho em altura (acima de 2m). Inclui: <br>• Planejamento e análise de risco <br>• Uso de EPIs (cinto, trava-queda) <br>• Sistemas de ancoragem <br>• Treinamento obrigatório <br>• Procedimentos de emergência',
+
+            'NR-10': '⚡ A NR-10 trata da segurança em instalações e serviços com eletricidade. Exige: <br>• Treinamento específico <br>• Medidas de controle <br>• Sistema de segurança <br>• Documentação <br>• Procedimentos de emergência',
+
+            'EPI': '🛡️ Equipamentos de Proteção Individual (EPIs) são dispositivos de uso pessoal para proteção contra riscos. Exemplos: <br>• Capacete (proteção da cabeça) <br>• Óculos (proteção dos olhos) <br>• Protetor auricular (audição) <br>• Luvas (mãos) <br>• Botas (pés) <br>• Cinto de segurança (quedas)',
+
+            'CIPA': '👥 A CIPA (Comissão Interna de Prevenção de Acidentes) é obrigatória em empresas com mais de 20 empregados. Funções: <br>• Identificar riscos <br>• Promover treinamentos <br>• Investigar acidentes <br>• Elaborar planos de prevenção'
+        };
+
+        // Buscar resposta específica
+        for (const [key, value] of Object.entries(respostas)) {
+            if (p.includes(key)) {
+                return value;
+            }
+        }
+
+        // Resposta genérica
+        return `📋 <strong>Sobre sua pergunta sobre Segurança do Trabalho</strong><br><br>Ainda estou aprendendo sobre este assunto específico.<br><br><strong>NRs disponíveis para consulta:</strong><br>- NR-10: Segurança em eletricidade<br>- NR-18: Construção civil<br>- NR-31: Trabalho rural<br>- NR-33: Espaços confinados<br>- NR-35: Trabalho em altura<br><br>💡 <strong>Dica:</strong> Seja específico na pergunta para obter uma resposta mais precisa!<br><br>🔧 <strong>Para usar IA real</strong>, configure a chave Gemini no Supabase e faça o deploy da Edge Function.`;
+    }
 
     // ================================================================
     //  RELATÓRIO
@@ -3853,115 +4204,6 @@
     };
 
     // ================================================================
-    //  NRS
-    // ================================================================
-    function renderizarNrs() {
-        const container = document.getElementById('nrGrid');
-        if (!container) return;
-        const total = NRS_DATA.length;
-        const especificas = NRS_DATA.filter(n => n.categoria === 'especifico').length;
-        const gerais = NRS_DATA.filter(n => n.categoria === 'geral').length;
-        document.getElementById('nrTotalCount').textContent = total;
-        document.getElementById('nrEspecificasCount').textContent = especificas;
-        document.getElementById('nrGeraisCount').textContent = gerais;
-        renderizarNrsGrid(NRS_DATA);
-    }
-
-    function renderizarNrsGrid(nrs) {
-        const container = document.getElementById('nrGrid');
-        if (!container) return;
-        if (nrs.length === 0) {
-            container.innerHTML = '<div class="no-results">🔍 Nenhuma NR encontrada com esse filtro.</div>';
-            return;
-        }
-        container.innerHTML = nrs.map(nr => `
-            <div class="nr-card" onclick="abrirModalNr('${nr.nr}')">
-                <span class="card-icon">${nr.icone}</span>
-                <div>
-                    <span class="nr-num">${nr.nr}</span>
-                    <h3>${nr.titulo}</h3>
-                    <p>${nr.descricao.substring(0, 80)}${nr.descricao.length > 80 ? '...' : ''}</p>
-                </div>
-                <span class="tag tag-${nr.categoria}">${nr.categoria === 'geral' ? 'Geral' : nr.categoria === 'especifico' ? 'Específica' : 'Saúde'}</span>
-            </div>
-        `).join('');
-    }
-
-    window.filtrarNrs = (filtro = null) => {
-        const searchInput = document.getElementById('nrSearchInput');
-        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-        if (filtro) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filtro);
-            });
-        } else {
-            const activeBtn = document.querySelector('.filter-btn.active');
-            filtro = activeBtn ? activeBtn.dataset.filter : 'todos';
-        }
-        let nrsFiltradas = NRS_DATA.filter(nr => {
-            if (filtro !== 'todos' && nr.categoria !== filtro) return false;
-            if (searchTerm) {
-                const nrMatch = nr.nr.toLowerCase().includes(searchTerm);
-                const tituloMatch = nr.titulo.toLowerCase().includes(searchTerm);
-                const descMatch = nr.descricao.toLowerCase().includes(searchTerm);
-                if (!nrMatch && !tituloMatch && !descMatch) return false;
-            }
-            return true;
-        });
-        renderizarNrsGrid(nrsFiltradas);
-    };
-
-    window.abrirModalNr = (nrNum) => {
-        const nr = NRS_DATA.find(n => n.nr === nrNum);
-        if (!nr) return;
-        document.getElementById('modalNrIcon').textContent = nr.icone;
-        document.getElementById('modalNrNum').textContent = nr.nr;
-        document.getElementById('modalNrTitle').textContent = nr.titulo;
-        document.getElementById('modalNrDesc').textContent = nr.descricao;
-        const listContainer = document.getElementById('modalNrList');
-        listContainer.innerHTML = nr.objetivos.map(obj => `<li>${obj}</li>`).join('');
-        document.getElementById('modalNrNum').dataset.nrAtual = nr.nr;
-        document.getElementById('nrModal').classList.add('open');
-    };
-
-    window.fecharModalNr = () => {
-        document.getElementById('nrModal').classList.remove('open');
-    };
-
-    window.perguntarSobreNr = () => {
-        const nrNum = document.getElementById('modalNrNum').dataset.nrAtual || '';
-        if (nrNum) {
-            window.fecharModalNr();
-            window.alternarView('ia');
-            const input = document.getElementById('iaChatInput');
-            if (input) {
-                input.value = `Explique a ${nrNum} de forma detalhada e prática`;
-                window.enviarPerguntaIA();
-            }
-        }
-    };
-
-    // Fechar modal clicando fora
-    document.addEventListener('click', function(e) {
-        const modal = document.getElementById('nrModal');
-        if (modal && e.target === modal) {
-            window.fecharModalNr();
-        }
-    });
-
-    // Busca com debounce
-    let nrSearchTimeout = null;
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('nrSearchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                clearTimeout(nrSearchTimeout);
-                nrSearchTimeout = setTimeout(() => window.filtrarNrs(), 300);
-            });
-        }
-    });
-
-    // ================================================================
     //  ADMIN
     // ================================================================
     window.abrirModalAdmin = () => document.getElementById('modalAdmin').classList.add('active');
@@ -4122,7 +4364,6 @@
     console.log('🚀 SulSafe carregado com sucesso!');
     console.log('📊 NRS_DATA:', NRS_DATA.length, 'normas');
 
-    // Verificar sessão e logar automaticamente
     supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
             console.log('✅ Usuário logado:', session.user.email);
@@ -4140,7 +4381,6 @@
         }
     });
 
-    // Expor funções principais globalmente
     window.fazerLogin = window.fazerLogin;
     window.fazerCadastro = window.fazerCadastro;
     window.recuperarSenha = window.recuperarSenha;
