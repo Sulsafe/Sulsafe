@@ -179,9 +179,6 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(224,224,224,.6);
-            /* S5-FIX: trocou transition: all .3s (causava tremor no backdrop-filter
-               durante o scroll quando a classe .scrolled era alternada) por
-               propriedades específicas, com GPU-acceleration estável. */
             transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
             will-change: background-color, box-shadow;
             transform: translateZ(0);
@@ -368,8 +365,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-12px); }
         }
-        /* S5-FIX: promove elementos animados para camada própria do compositor
-           evitando repaint/tremor durante scroll. */
         .hero-logo-wrap, .hero-float-card, .hero-badge .dot {
             will-change: transform;
             transform: translateZ(0);
@@ -1031,164 +1026,6 @@
         .reveal.d4 { transition-delay: .4s; }
         .reveal.d5 { transition-delay: .5s; }
 
-        /* ============ MASCOTE FLUTUANTE (S5-FIX) ============ */
-        .mascote-landing-wrap {
-            position: fixed;
-            bottom: 24px; right: 24px;
-            z-index: 999;
-            display: flex; flex-direction: column; align-items: flex-end;
-            gap: 12px;
-        }
-        .mascote-avatar-landing {
-            position: relative;
-            width: 68px; height: 68px;
-            border-radius: 50%;
-            background: #fff;
-            border: 3px solid var(--verde);
-            box-shadow: 0 8px 24px rgba(46,125,50,.30);
-            cursor: pointer;
-            overflow: visible;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0;
-            /* S5-FIX: balanço leve a cada 5s — só em transform, sem afetar layout */
-            animation: mascoteBalanco 5s ease-in-out infinite;
-            transform: translateZ(0);
-            will-change: transform;
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-        .mascote-avatar-landing:hover {
-            transform: translateZ(0) scale(1.06);
-            box-shadow: 0 12px 32px rgba(46,125,50,.40);
-        }
-        .mascote-avatar-landing img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-        }
-        .mascote-avatar-landing .mascote-badge {
-            position: absolute;
-            top: -4px; right: -4px;
-            width: 22px; height: 22px;
-            background: #F44336;
-            color: #fff;
-            font-size: 13px; font-weight: 700;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,.25);
-            border: 2px solid #fff;
-            animation: badgePulse 1.6s ease-in-out infinite;
-        }
-        @keyframes badgePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,67,54,.6), 0 2px 6px rgba(0,0,0,.25); }
-            50%      { transform: scale(1.12); box-shadow: 0 0 0 8px rgba(244,67,54,0), 0 2px 6px rgba(0,0,0,.25); }
-        }
-        @keyframes mascoteBalanco {
-            0%, 88%, 100% { transform: translateZ(0) rotate(0deg); }
-            92% { transform: translateZ(0) rotate(-6deg); }
-            96% { transform: translateZ(0) rotate(6deg); }
-            98% { transform: translateZ(0) rotate(-3deg); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .mascote-avatar-landing,
-            .mascote-avatar-landing .mascote-badge {
-                animation: none !important;
-            }
-        }
-        .mascote-balao-landing {
-            width: 320px;
-            max-width: calc(100vw - 48px);
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 16px 40px rgba(0,0,0,.18);
-            border: 1px solid var(--borda);
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(8px) scale(.96);
-            transform-origin: bottom right;
-            pointer-events: none;
-            transition: opacity .2s ease, transform .2s ease;
-        }
-        .mascote-balao-landing.open {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-        .mascote-balao-header {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--grad-verde);
-            color: #fff;
-            padding: 12px 14px;
-        }
-        .mascote-balao-titulo {
-            font-size: 14px; font-weight: 700;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .mascote-balao-close {
-            background: rgba(255,255,255,.18);
-            color: #fff;
-            border: none;
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            transition: background .15s;
-        }
-        .mascote-balao-close:hover { background: rgba(255,255,255,.32); }
-        .mascote-balao-body {
-            padding: 14px;
-        }
-        .mascote-balao-msg {
-            font-size: 13.5px; color: var(--texto);
-            margin-bottom: 10px;
-        }
-        .mascote-balao-opcoes {
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .mascote-opcao {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 12px;
-            background: var(--verde-bg);
-            border: 1px solid var(--borda);
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px; font-weight: 600;
-            color: var(--texto);
-            text-align: left;
-            font-family: inherit;
-            transition: background .15s, border-color .15s, transform .12s;
-        }
-        .mascote-opcao:hover {
-            background: var(--verde);
-            color: #fff;
-            border-color: var(--verde);
-            transform: translateX(2px);
-        }
-        .mascote-opcao-ic {
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-        .mascote-opcao:hover .mascote-opcao-ic { background: rgba(255,255,255,.25); }
-        .mascote-balao-footer {
-            padding: 9px 14px;
-            background: var(--verde-bg-2);
-            border-top: 1px solid var(--borda);
-            font-size: 11.5px;
-            color: var(--texto-sec);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .mascote-balao-footer i { color: var(--dourado); }
-        @media (max-width: 480px) {
-            .mascote-landing-wrap { bottom: 16px; right: 16px; }
-            .mascote-avatar-landing { width: 56px; height: 56px; }
-            .mascote-balao-landing { width: calc(100vw - 32px); }
-        }
-
         /* ============ RESPONSIVE ============ */
         @media (max-width: 1024px) {
             .nav { display: none; }
@@ -1237,7 +1074,7 @@
             .reveal { opacity: 1; transform: none; }
         }
 
-        /* S5-FIX: desativar animações float em telas grandes (causava tremor no desktop) */
+        /* S5-FIX: desativar animações float em telas grandes */
         @media (min-width: 1025px) and (pointer: fine) {
             .hero-float-card,
             .hero-float-card.f1,
@@ -1249,9 +1086,195 @@
             }
         }
 
-        /* S5-FIX: ocultar float cards em telas muito largas (poluição visual no desktop) */
+        /* S5-FIX: ocultar float cards em telas muito largas */
         @media (min-width: 1400px) {
             .hero-float-card { display: none; }
+        }
+
+        /* ============ MASCOTE FLUTUANTE (S5-FIX) ============ */
+        .mascote-landing-wrap {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .mascote-avatar-landing {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid var(--verde);
+            box-shadow: 0 8px 24px rgba(46,125,50,.30);
+            cursor: pointer;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            animation: mascoteBalanco 5s ease-in-out infinite;
+            transform: translateZ(0);
+            will-change: transform;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .mascote-avatar-landing:hover {
+            transform: translateZ(0) scale(1.06);
+            box-shadow: 0 12px 32px rgba(46,125,50,.40);
+        }
+        .mascote-avatar-landing img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+        .mascote-avatar-landing .mascote-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 22px;
+            height: 22px;
+            background: #F44336;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,.25);
+            border: 2px solid #fff;
+            animation: badgePulse 1.6s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,67,54,.6), 0 2px 6px rgba(0,0,0,.25); }
+            50%      { transform: scale(1.12); box-shadow: 0 0 0 8px rgba(244,67,54,0), 0 2px 6px rgba(0,0,0,.25); }
+        }
+        @keyframes mascoteBalanco {
+            0%, 88%, 100% { transform: translateZ(0) rotate(0deg); }
+            92% { transform: translateZ(0) rotate(-6deg); }
+            96% { transform: translateZ(0) rotate(6deg); }
+            98% { transform: translateZ(0) rotate(-3deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .mascote-avatar-landing,
+            .mascote-avatar-landing .mascote-badge {
+                animation: none !important;
+            }
+        }
+        .mascote-balao-landing {
+            width: 320px;
+            max-width: calc(100vw - 48px);
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0,0,0,.18);
+            border: 1px solid var(--borda);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(8px) scale(.96);
+            transform-origin: bottom right;
+            pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .mascote-balao-landing.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .mascote-balao-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--grad-verde);
+            color: #fff;
+            padding: 12px 14px;
+        }
+        .mascote-balao-titulo {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mascote-balao-close {
+            background: rgba(255,255,255,.18);
+            color: #fff;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background .15s;
+        }
+        .mascote-balao-close:hover { background: rgba(255,255,255,.32); }
+        .mascote-balao-body { padding: 14px; }
+        .mascote-balao-msg {
+            font-size: 13.5px;
+            color: var(--texto);
+            margin-bottom: 10px;
+        }
+        .mascote-balao-opcoes {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .mascote-opcao {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--verde-bg);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto);
+            text-align: left;
+            font-family: inherit;
+            transition: background .15s, border-color .15s, transform .12s;
+        }
+        .mascote-opcao:hover {
+            background: var(--verde);
+            color: #fff;
+            border-color: var(--verde);
+            transform: translateX(2px);
+        }
+        .mascote-opcao-ic {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .mascote-opcao:hover .mascote-opcao-ic { background: rgba(255,255,255,.25); }
+        .mascote-balao-footer {
+            padding: 9px 14px;
+            background: var(--verde-bg-2);
+            border-top: 1px solid var(--borda);
+            font-size: 11.5px;
+            color: var(--texto-sec);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mascote-balao-footer i { color: var(--dourado); }
+        @media (max-width: 480px) {
+            .mascote-landing-wrap { bottom: 16px; right: 16px; }
+            .mascote-avatar-landing { width: 56px; height: 56px; }
+            .mascote-balao-landing { width: calc(100vw - 32px); }
         }
     </style>
 </head>
@@ -1325,7 +1348,7 @@
             </div>
             <div class="hero-visual reveal d2">
                 <div class="hero-logo-wrap">
-                    <img src="sulsafe.png" alt="SulSafe — Procurar vidas é o nosso compromisso. Composição com escudo, capacete, engrenagem e trabalhador." width="420" height="410">
+                    <img src="sulsafe.png" alt="SulSafe — Procurar vidas é o nosso compromisso." width="420" height="410">
                 </div>
                 <div class="hero-float-card f1">
                     <span class="ic"><i class="fas fa-certificate"></i></span>
@@ -1815,13 +1838,10 @@
     </div>
 </footer>
 
-<!-- =====================================================
-     S5-FIX — MASCOTE FLUTUANTE DA LANDING
-     Avatar no canto inferior direito + balão de ajuda
-     ===================================================== -->
+<!-- ============ MASCOTE FLUTUANTE (ÚNICO) ============ -->
 <div class="mascote-landing-wrap" id="mascoteBalaoWrap">
     <button class="mascote-avatar-landing" id="mascoteAvatarLanding" aria-label="Abrir assistente SulSafe">
-        <img src="assets/sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.style.display='none'">
+        <img src="sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.style.display='none'">
         <span class="mascote-badge">!</span>
     </button>
     <div class="mascote-balao-landing" id="mascoteBalaoLanding">
@@ -1867,7 +1887,7 @@
 
 /* ---- Lista das 38 NRs (categorias: gerais, especificas, setoriais) ---- */
 const NRS = [
-    // GERAIS (16) — aplicam a todos os trabalhadores
+    // GERAIS (16)
     { n: 1,  nome: 'Disposições Gerais e Gerenciamento de Riscos', cat: 'gerais', emoji: '📋' },
     { n: 2,  nome: 'Inspeção Prévia', cat: 'gerais', emoji: '📋' },
     { n: 3,  nome: 'Embargo ou Interdição', cat: 'gerais', emoji: '📋' },
@@ -1884,8 +1904,7 @@ const NRS = [
     { n: 25, nome: 'Resíduos Industriais', cat: 'gerais', emoji: '🗑️' },
     { n: 26, nome: 'Sinalização de Segurança', cat: 'gerais', emoji: '🚸' },
     { n: 28, nome: 'Fiscalização e Penalidades', cat: 'gerais', emoji: '📋' },
-
-    // ESPECÍFICAS (10) — risco/tema específico
+    // ESPECÍFICAS (10)
     { n: 10, nome: 'Segurança em Eletricidade', cat: 'especificas', emoji: '⚡' },
     { n: 11, nome: 'Movimentação e Armazenagem de Cargas', cat: 'especificas', emoji: '📦' },
     { n: 12, nome: 'Máquinas e Equipamentos', cat: 'especificas', emoji: '🏭' },
@@ -1896,8 +1915,7 @@ const NRS = [
     { n: 23, nome: 'Proteção Contra Incêndios', cat: 'especificas', emoji: '🧯' },
     { n: 33, nome: 'Espaços Confinados', cat: 'especificas', emoji: '🔬' },
     { n: 35, nome: 'Trabalho em Altura', cat: 'especificas', emoji: '🪜' },
-
-    // SETORIAIS (12) — específicas de setor/atividade
+    // SETORIAIS (12)
     { n: 18, nome: 'Indústria da Construção Civil', cat: 'setoriais', emoji: '🏗️' },
     { n: 21, nome: 'Trabalho a Céu Aberto', cat: 'setoriais', emoji: '☀️' },
     { n: 22, nome: 'Mineração', cat: 'setoriais', emoji: '⛏️' },
@@ -1943,7 +1961,6 @@ document.querySelectorAll('.nr-filter').forEach(btn => {
             const show = filter === 'all' || card.dataset.cat === filter;
             card.classList.toggle('hidden', !show);
         });
-        // Re-trigger reveal for visible items
         if (typeof IntersectionObserver !== 'undefined') {
             document.querySelectorAll('.nr-card:not(.hidden).reveal').forEach((el, i) => {
                 if (!el.classList.contains('visible')) {
@@ -1961,7 +1978,6 @@ document.querySelectorAll('.faq-q').forEach(q => {
         const ans = item.querySelector('.faq-a');
         const isOpen = item.classList.contains('open');
 
-        // Fecha todos
         document.querySelectorAll('.faq-item').forEach(i => {
             i.classList.remove('open');
             i.querySelector('.faq-a').style.maxHeight = null;
@@ -2000,7 +2016,7 @@ mobileNav.querySelectorAll('a').forEach(a => {
     });
 });
 
-/* ---- Scroll reveal com IntersectionObserver ---- */
+/* ---- Scroll reveal ---- */
 (function setupReveal() {
     const reveals = document.querySelectorAll('.reveal:not(.visible)');
     if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -2049,7 +2065,7 @@ mobileNav.querySelectorAll('a').forEach(a => {
     counters.forEach(el => io.observe(el));
 })();
 
-/* ---- Smooth anchor scrolling fallback (caso smooth behavior não suportado) ---- */
+/* ---- Smooth anchor scrolling ---- */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', (e) => {
         const id = a.getAttribute('href');
@@ -2064,7 +2080,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 });
 
-/* ---- Atalho: Esc fecha menu mobile ---- */
+/* ---- Esc fecha menu mobile e balão ---- */
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mobileNav.classList.contains('open')) {
         mobileNav.classList.remove('open');
@@ -2072,7 +2088,6 @@ document.addEventListener('keydown', (e) => {
         mobileNav.setAttribute('aria-hidden', 'true');
         hamburger.innerHTML = '<i class="fas fa-bars"></i>';
     }
-    /* S5-FIX: Esc também fecha balão do mascote */
     if (e.key === 'Escape') {
         const balao = document.getElementById('mascoteBalaoLanding');
         if (balao && balao.classList.contains('open')) {
@@ -2081,11 +2096,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-/* =====================================================
-   S5-FIX — BALÃO DO MASCOTE (landing page)
-   Avatar flutuante no canto inferior direito com
-   balão de ajuda clicável (WhatsApp / cursos / planos / FAQ).
-   ===================================================== */
+/* ---- MASCOTE BALÃO (ÚNICO) ---- */
 (function setupMascoteBalao() {
     const avatar = document.getElementById('mascoteAvatarLanding');
     const balao = document.getElementById('mascoteBalaoLanding');
@@ -2094,7 +2105,6 @@ document.addEventListener('keydown', (e) => {
 
     function toggle() {
         balao.classList.toggle('open');
-        // Esconde badge "!" ao abrir pela primeira vez
         const badge = avatar.querySelector('.mascote-badge');
         if (balao.classList.contains('open') && badge) {
             badge.style.display = 'none';
@@ -2103,14 +2113,12 @@ document.addEventListener('keydown', (e) => {
     avatar.addEventListener('click', toggle);
     if (closeBtn) closeBtn.addEventListener('click', () => balao.classList.remove('open'));
 
-    // Fecha ao clicar fora
     document.addEventListener('click', (e) => {
         if (!balao.classList.contains('open')) return;
         const wrap = document.getElementById('mascoteBalaoWrap');
         if (wrap && !wrap.contains(e.target)) balao.classList.remove('open');
     });
 
-    // Ações dos botões do balão
     const opcoes = balao.querySelectorAll('[data-acao]');
     opcoes.forEach(op => {
         op.addEventListener('click', (e) => {
@@ -2130,216 +2138,9 @@ document.addEventListener('keydown', (e) => {
         });
     });
 })();
-</script>
 
-<!-- ============ MASCOTE AJUDANTE (S5-FIX) ============ -->
-<style>
-.sulsafe-mascote {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9999;
-    font-family: 'Inter', sans-serif;
-}
-.sulsafe-mascote-avatar {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2E7D32, #1B5E20);
-    box-shadow: 0 8px 24px rgba(46, 125, 50, 0.4);
-    cursor: pointer;
-    border: 3px solid #fff;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    position: relative;
-    animation: mascoteIdle 5s ease-in-out infinite;
-}
-.sulsafe-mascote-avatar:hover {
-    transform: scale(1.1);
-}
-.sulsafe-mascote-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-}
-.sulsafe-mascote-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #FF3D00;
-    color: white;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #fff;
-    animation: mascotePulse 2s infinite;
-}
-@keyframes mascoteIdle {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-6px) rotate(2deg); }
-}
-@keyframes mascotePulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.8; }
-}
-.sulsafe-mascote-balao {
-    position: absolute;
-    bottom: 84px;
-    right: 0;
-    width: 320px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-.sulsafe-mascote-balao.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
-.sulsafe-mascote-balao-header {
-    background: linear-gradient(135deg, #2E7D32, #1B5E20);
-    color: #fff;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.sulsafe-mascote-balao-header span {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    font-size: 14px;
-}
-.sulsafe-mascote-balao-close {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: #fff;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-.sulsafe-mascote-balao-close:hover { background: rgba(255, 255, 255, 0.3); }
-.sulsafe-mascote-balao-body {
-    padding: 16px;
-}
-.sulsafe-mascote-balao-msg {
-    color: #1A1A1A;
-    font-size: 13px;
-    margin-bottom: 12px;
-    line-height: 1.5;
-}
-.sulsafe-mascote-balao-opcao {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 10px 12px;
-    background: #F4F7F6;
-    border: 1px solid #E0E0E0;
-    border-radius: 10px;
-    color: #1A1A1A;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 8px;
-    text-align: left;
-    transition: all 0.2s;
-    text-decoration: none;
-    font-family: inherit;
-}
-.sulsafe-mascote-balao-opcao:hover {
-    background: #E8F5E9;
-    border-color: #2E7D32;
-    transform: translateX(2px);
-}
-.sulsafe-mascote-balao-opcao:last-child { margin-bottom: 0; }
-.sulsafe-mascote-balao-footer {
-    padding: 10px 16px;
-    background: #FAFAFA;
-    border-top: 1px solid #E0E0E0;
-    color: #757575;
-    font-size: 11px;
-    text-align: center;
-}
-@media (max-width: 480px) {
-    .sulsafe-mascote-balao {
-        width: calc(100vw - 48px);
-        right: -8px;
-    }
-}
-/* S5-FIX: desativar animação idle no desktop (causava tremor) */
-@media (min-width: 1025px) and (pointer: fine) {
-    .sulsafe-mascote-avatar { animation: none; }
-}
-</style>
-
-<div class="sulsafe-mascote">
-    <div class="sulsafe-mascote-avatar" id="mascoteAvatar" onclick="toggleMascoteBalao()" role="button" aria-label="Abrir assistente SulSafe">
-        <img src="sipat-seguranca.png" alt="Assistente SulSafe" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2270%22 height=%2270%22><circle cx=%2235%22 cy=%2235%22 r=%2235%22 fill=%22%232E7D32%22/><text x=%2235%22 y=%2245%22 font-size=%2230%22 fill=%22white%22 text-anchor=%22middle%22>🦺</text></svg>'">
-        <span class="sulsafe-mascote-badge">!</span>
-    </div>
-    <div class="sulsafe-mascote-balao" id="mascoteBalao" role="dialog" aria-label="Assistente SulSafe">
-        <div class="sulsafe-mascote-balao-header">
-            <span><i class="fas fa-hard-hat"></i> Assistente SulSafe</span>
-            <button class="sulsafe-mascote-balao-close" onclick="toggleMascoteBalao()" aria-label="Fechar">×</button>
-        </div>
-        <div class="sulsafe-mascote-balao-body">
-            <div class="sulsafe-mascote-balao-msg">Olá! 👋 Posso te ajudar com:</div>
-            <a class="sulsafe-mascote-balao-opcao" href="https://wa.me/5553997060864" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-whatsapp" style="color:#25D366;font-size:18px;"></i> Falar com especialista
-            </a>
-            <button class="sulsafe-mascote-balao-opcao" onclick="scrollToSection('nrs')">
-                <i class="fas fa-book" style="color:#2E7D32;font-size:16px;"></i> Ver cursos de NR
-            </button>
-            <button class="sulsafe-mascote-balao-opcao" onclick="scrollToSection('planos')">
-                <i class="fas fa-tag" style="color:#C9B037;font-size:16px;"></i> Ver planos
-            </button>
-            <button class="sulsafe-mascote-balao-opcao" onclick="scrollToSection('faq')">
-                <i class="fas fa-question-circle" style="color:#1976D2;font-size:16px;"></i> Tirar dúvidas
-            </button>
-        </div>
-        <div class="sulsafe-mascote-balao-footer">Dica: clique no ícone para abrir/fechar</div>
-    </div>
-</div>
-
-<script>
-function toggleMascoteBalao() {
-    const balao = document.getElementById('mascoteBalao');
-    if (balao) balao.classList.toggle('open');
-}
-function scrollToSection(id) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    document.getElementById('mascoteBalao').classList.remove('open');
-}
-// Fechar balão ao clicar fora
-document.addEventListener('click', function(e) {
-    const mascote = document.querySelector('.sulsafe-mascote');
-    const balao = document.getElementById('mascoteBalao');
-    if (mascote && balao && !mascote.contains(e.target) && balao.classList.contains('open')) {
-        balao.classList.remove('open');
-    }
-});
+console.log('🚀 SulSafe carregado com sucesso!');
+console.log('📊 38 NRs disponíveis');
 </script>
 </body>
 </html>
