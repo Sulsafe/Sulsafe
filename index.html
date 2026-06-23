@@ -55,7 +55,6 @@
             --radius-lg: 24px;
             --radius-xl: 32px;
             --grad-verde: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
-            --grad-verde-claro: linear-gradient(135deg, #43A047 0%, #2E7D32 100%);
             --grad-dourado: linear-gradient(135deg, #E8D77A 0%, #C9B037 100%);
             --max: 1200px;
         }
@@ -86,12 +85,6 @@
         .text-center { text-align: center; }
         .gradient-text {
             background: var(--grad-verde);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .gold-text {
-            background: var(--grad-dourado);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -143,7 +136,6 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 28px rgba(46,125,50,.45);
         }
-        .btn-primary:active { transform: translateY(0); }
         .btn-gold {
             background: var(--grad-dourado);
             color: var(--verde-escuro);
@@ -156,13 +148,6 @@
             border: 2px solid var(--verde);
         }
         .btn-outline:hover { background: var(--verde); color: #fff; transform: translateY(-2px); }
-        .btn-ghost {
-            background: rgba(255,255,255,.15);
-            color: #fff;
-            border: 2px solid rgba(255,255,255,.4);
-            backdrop-filter: blur(8px);
-        }
-        .btn-ghost:hover { background: rgba(255,255,255,.25); transform: translateY(-2px); }
         .btn-block { width: 100%; }
         .btn-lg { padding: 17px 36px; font-size: 16px; }
 
@@ -172,9 +157,8 @@
             z-index: 1000;
             background: rgba(255,255,255,.85);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(224,224,224,.6);
-            transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
+            transition: background-color .3s ease, box-shadow .3s ease;
             will-change: background-color, box-shadow;
             transform: translateZ(0);
         }
@@ -360,7 +344,7 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-12px); }
         }
-        .hero-logo-wrap, .hero-float-card, .hero-badge .dot {
+        .hero-logo-wrap, .hero-badge .dot {
             will-change: transform;
             transform: translateZ(0);
             backface-visibility: hidden;
@@ -378,30 +362,6 @@
             opacity: .15;
             filter: blur(20px);
         }
-        .hero-float-card {
-            position: absolute;
-            background: #fff;
-            border-radius: 18px;
-            padding: 14px 18px;
-            box-shadow: var(--sombra-md);
-            border: 1px solid var(--borda-2);
-            display: flex; align-items: center; gap: 10px;
-            font-size: 13px; font-weight: 600;
-            z-index: 3;
-        }
-        .hero-float-card .ic {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            color: #fff;
-        }
-        .hero-float-card.f1 { top: 8%; left: -6%; animation: float 5s ease-in-out infinite .5s; }
-        .hero-float-card.f2 { bottom: 14%; right: -8%; animation: float 5s ease-in-out infinite 1.5s; }
-        .hero-float-card.f3 { top: 50%; right: -4%; animation: float 5s ease-in-out infinite 2.5s; }
-        .hero-float-card.f1 .ic { background: var(--grad-verde); }
-        .hero-float-card.f2 .ic { background: var(--grad-dourado); color: var(--verde-escuro); }
-        .hero-float-card.f3 .ic { background: linear-gradient(135deg, #2196F3, #1565C0); }
 
         /* ============ TRUST BAR ============ */
         .trust-bar {
@@ -1048,7 +1008,6 @@
             .nr-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-grid { grid-template-columns: 1fr; gap: 32px; }
             .footer-bottom { flex-direction: column; text-align: center; }
-            .hero-float-card { display: none; }
             .hero-logo-wrap { padding: 22px; border-radius: 24px; }
             .trust-track { gap: 18px; font-size: 12.5px; }
             .trust-track .sep { display: none; }
@@ -1070,18 +1029,10 @@
         }
 
         @media (min-width: 1025px) and (pointer: fine) {
-            .hero-float-card,
-            .hero-float-card.f1,
-            .hero-float-card.f2,
-            .hero-float-card.f3,
             .hero-logo-wrap,
             .hero-badge .dot {
                 animation: none !important;
             }
-        }
-
-        @media (min-width: 1400px) {
-            .hero-float-card { display: none; }
         }
 
         /* ============ MASCOTE FLUTUANTE ============ */
@@ -1309,7 +1260,7 @@
     </div>
 </header>
 
-<!-- ============ HERO ============ -->
+<!-- ============ HERO - BANNER SEM CARDS FLUTUANTES ============ -->
 <section class="hero" id="inicio">
     <div class="container">
         <div class="hero-grid">
@@ -1342,27 +1293,6 @@
             <div class="hero-visual reveal d2">
                 <div class="hero-logo-wrap">
                     <img src="sulsafe.png" alt="SulSafe" width="420" height="410">
-                </div>
-                <div class="hero-float-card f1">
-                    <span class="ic"><i class="fas fa-certificate"></i></span>
-                    <div>
-                        <div style="color:var(--verde-escuro);font-weight:700;">Certificado</div>
-                        <div style="color:var(--texto-ter);font-size:11px;">Reconhecido MTE</div>
-                    </div>
-                </div>
-                <div class="hero-float-card f2">
-                    <span class="ic"><i class="fas fa-video"></i></span>
-                    <div>
-                        <div style="color:var(--verde-escuro);font-weight:700;">Aulas ao vivo</div>
-                        <div style="color:var(--texto-ter);font-size:11px;">Videoconferência</div>
-                    </div>
-                </div>
-                <div class="hero-float-card f3">
-                    <span class="ic"><i class="fas fa-robot"></i></span>
-                    <div>
-                        <div style="color:var(--verde-escuro);font-weight:700;">IA 24/7</div>
-                        <div style="color:var(--texto-ter);font-size:11px;">Tira-dúvidas</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1654,9 +1584,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Sim. Todos os certificados emitidos pela SulSafe seguem as exigências das Normas Regulamentadoras do Ministério do Trabalho. Cada certificado possui QR Code de verificação e pode ser apresentado em auditorias fiscais e processos seletivos.
-                    </div>
+                    <div class="faq-a-inner">Sim. Todos os certificados emitidos pela SulSafe seguem as exigências das Normas Regulamentadoras do Ministério do Trabalho.</div>
                 </div>
             </div>
 
@@ -1666,9 +1594,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Você escolhe um dos 3 planos: Mensal (R$ 49,90), Trimestral (R$ 129,90) ou Anual (R$ 399,90). Após confirmar o pagamento (via Pix é instantâneo, cartão em segundos, boleto em até 2 dias úteis), você recebe acesso imediato a todas as 38 NRs, videoaulas e certificado.
-                    </div>
+                    <div class="faq-a-inner">Você escolhe um dos 3 planos: Mensal (R$ 49,90), Trimestral (R$ 129,90) ou Anual (R$ 399,90).</div>
                 </div>
             </div>
 
@@ -1678,9 +1604,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Você tem acesso a todas as NRs enquanto sua assinatura estiver ativa. Pode estudar no seu ritmo, refazer as aulas quantas vezes quiser e baixar os certificados sempre que concluir um curso. Não há limite de cursos por período.
-                    </div>
+                    <div class="faq-a-inner">Você tem acesso a todas as NRs enquanto sua assinatura estiver ativa.</div>
                 </div>
             </div>
 
@@ -1690,9 +1614,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        A validade varia conforme a NR. A NR 10 e a NR 35, por exemplo, exigem reciclagem a cada 2 anos. Outras NRs (como NR 6 - EPI) não têm prazo de validade definido. Em cada curso, informamos a validade específica do certificado.
-                    </div>
+                    <div class="faq-a-inner">A validade varia conforme a NR. A NR 10 e a NR 35 exigem reciclagem a cada 2 anos.</div>
                 </div>
             </div>
 
@@ -1702,9 +1624,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Os pagamentos são processados via <strong>Mercado Pago</strong>, em ambiente 100% seguro. Aceitamos cartão de crédito (à vista ou parcelado), Pix e boleto bancário. A cobrança é recursiva até você cancelar — cancele quando quiser, sem multa.
-                    </div>
+                    <div class="faq-a-inner">Os pagamentos são processados via <strong>Mercado Pago</strong>, em ambiente 100% seguro.</div>
                 </div>
             </div>
 
@@ -1714,21 +1634,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Sim! A plataforma SulSafe é totalmente responsiva e funciona perfeitamente em smartphones, tablets e computadores. As videoaulas se adaptam à sua conexão e você pode estudar de onde estiver.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item reveal">
-                <button class="faq-q" aria-expanded="false">
-                    <span>Vocês emitem nota fiscal para empresas?</span>
-                    <span class="ic"><i class="fas fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Sim. Para contratações empresariais com múltiplas licenças, emitimos nota fiscal eletrônica (NF-e) em nome da empresa contratante. Entre em contato pelo WhatsApp comercial para um plano sob medida.
-                    </div>
+                    <div class="faq-a-inner">Sim! A plataforma SulSafe é totalmente responsiva e funciona perfeitamente em smartphones, tablets e computadores.</div>
                 </div>
             </div>
 
@@ -1738,9 +1644,7 @@
                     <span class="ic"><i class="fas fa-chevron-down"></i></span>
                 </button>
                 <div class="faq-a">
-                    <div class="faq-a-inner">
-                        Sim. Oferecemos <strong>7 dias de garantia de reembolso</strong> após o pagamento. Se não ficar satisfeito com o conteúdo, devolvemos 100% do valor — sem perguntas, sem burocracia.
-                    </div>
+                    <div class="faq-a-inner">Sim. Oferecemos <strong>7 dias de garantia de reembolso</strong> após o pagamento.</div>
                 </div>
             </div>
         </div>
