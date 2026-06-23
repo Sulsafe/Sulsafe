@@ -1518,186 +1518,252 @@
                 </div>
             </div>
 
-            <!-- BOLETIM -->
-            <div id="viewBoletim" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
-                <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
-                <div class="painel-card">
-                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
-                        <button class="btn-criar-sala" id="btnLancarNotas" onclick="abrirModalLancarNotas()" style="background:#2E7D32"><i class="fas fa-edit"></i> Lançar Notas</button>
-                        <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                    </div>
-                    <div id="boletimContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div>
-                </div>
-            </div>
-
-            <!-- BOLETIM ALUNO -->
-            <div id="viewBoletimAluno" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
-                <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
-                <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
-            </div>
-
-            <!-- NRS -->
-            <div id="viewNrs" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-book-bookmark"></i> Normas Regulamentadoras - NRs</h2>
-                <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho e Previdência</p>
-                <div class="stats-bar" id="nrStatsBar">
-                    <div class="stat-card"><div class="stat-val" id="nrTotalCount">38</div><div class="stat-lab">Total de NRs</div></div>
-                    <div class="stat-card"><div class="stat-val" id="nrEspecificasCount">10</div><div class="stat-lab">NRs Específicas</div></div>
-                    <div class="stat-card"><div class="stat-val" id="nrGeraisCount">28</div><div class="stat-lab">Gerais + Saúde + Setoriais</div></div>
-                </div>
-                <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
-                <div class="filter-bar" id="nrFilterBar">
-                    <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
-                    <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
-                    <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
-                    <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
-                    <button class="filter-btn" data-filter="setorial" onclick="filtrarNrs('setorial')">🏭 Setoriais</button>
-                </div>
-                <div class="painel-card" style="padding:10px;"><div id="nrListContainer"></div></div>
-                <div class="modal-bg" id="nrModal">
-                    <div class="modal">
-                        <button class="modal-close" onclick="fecharModalNr()">✕</button>
-                        <span class="modal-icon" id="modalNrIcon">📋</span>
-                        <div class="modal-num" id="modalNrNum">NR-01</div>
-                        <h2 id="modalNrTitle">Disposições Gerais</h2>
-                        <p id="modalNrDesc">...</p>
-                        <ul class="obj-list" id="modalNrList"></ul>
-                        <button class="ask-btn" onclick="perguntarSobreNr()"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CERTIFICADO -->
-            <div id="viewCertificado" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-certificate"></i> Gerador de Certificados</h2>
-                <p class="dash-subtitle">Gere certificados PDF personalizados para seus alunos</p>
-                <div class="painel-card">
-                    <div class="campo"><label>Nome do aluno</label><input type="text" id="certNomeAluno" placeholder="Nome completo do aluno"></div>
-                    <div class="campo"><label>Curso</label><select id="certCursoSelect"></select></div>
-                    <div class="campo"><label>Carga horária (horas)</label><input type="number" id="certCargaHoraria" min="1" max="999" value="40"></div>
-                    <div class="campo"><label>Cidade/UF de emissão</label><input type="text" id="certCidadeEmissao" value="Pelotas/RS"></div>
-                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-                        <button class="btn-criar-sala" onclick="gerarCertificadoPDF()"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOLETOS -->
-            <div id="viewBoletos" style="display:none">
-                <div class="admin-god-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
-                    <h2><i class="fas fa-file-invoice-dollar"></i> Meus Boletos e Pagamentos</h2>
-                    <div class="admin-god-sub">Acompanhe suas mensalidades e pagamentos</div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-clock"></i> Boletos a pagar</div>
-                    <div id="bolPendentesContainer"><div class="empty-state"><i class="fas fa-check-circle"></i><h4>Você está em dia! 🎉</h4></div></div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-history"></i> Histórico de pagamentos</div>
-                    <div class="admin-table-wrap">
-                        <table class="admin-table">
-                            <thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead>
-                            <tbody id="bolHistoricoContainer"><tr><td colspan="4" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhum pagamento registrado.</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PLANOS -->
-          <div class="planos-grid" id="planosGrid">
-  <!-- MENSAL -->
-  <div class="plan-card">
-    <h3>Mensal</h3>
-    <p class="subtitle">Flexível para começar</p>
-    <div class="price">R$ <span>49</span>,90</div>
-    <p class="billing">por mês · cobrança mensal</p>
-    <ul>
-      <li>Acesso a todas as 38 NRs</li>
-      <li>Videoaulas em HD ilimitadas</li>
-      <li>Certificado reconhecido</li>
-      <li>Assistente de IA 24/7</li>
-      <li class="off">Aulas ao vivo ilimitadas</li>
-      <li class="off">Suporte prioritário</li>
-    </ul>
-    <button class="botao botao-secundario btn-assinar" data-plano="Mensal" data-valor="49.90">Assinar Mensal</button>
-  </div>
-
-  <!-- TRIMESTRAL - DESTAQUE -->
-  <div class="plan-card destaque">
-    <span class="badge-plano">Melhor custo-benefício</span>
-    <h3>Trimestral</h3>
-    <p class="subtitle">Melhor custo-benefício</p>
-    <div class="price">R$ <span>129</span>,90</div>
-    <p class="billing">a cada 3 meses · equivalente a R$ 43,30/mês</p>
-    <p class="economy">Economize 13%</p>
-    <ul>
-      <li>Acesso a todas as 38 NRs</li>
-      <li>Videoaulas em HD ilimitadas</li>
-      <li>Certificado reconhecido</li>
-      <li>Assistente de IA 24/7</li>
-      <li>Aulas ao vivo ilimitadas</li>
-      <li class="off">Suporte prioritário</li>
-    </ul>
-    <button class="botao botao-primario btn-assinar" data-plano="Trimestral" data-valor="129.90">Assinar Trimestral</button>
-  </div>
-
-  <!-- ANUAL -->
-  <div class="plan-card">
-    <h3>Anual</h3>
-    <p class="subtitle">Máxima economia</p>
-    <div class="price">R$ <span>399</span>,90</div>
-    <p class="billing">por ano · equivalente a R$ 33,32/mês</p>
-    <p class="economy">Economize 33%</p>
-    <ul>
-      <li>Acesso a todas as 38 NRs</li>
-      <li>Videoaulas em HD ilimitadas</li>
-      <li>Certificado reconhecido</li>
-      <li>Assistente de IA 24/7</li>
-      <li>Aulas ao vivo ilimitadas</li>
-      <li>Suporte prioritário dedicado</li>
-    </ul>
-    <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
+        <!-- BOLETIM -->
+<div id="viewBoletim" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
+  <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
+  <div class="painel-card">
+    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+      <button class="btn-criar-sala" id="btnLancarNotas" onclick="abrirModalLancarNotas()" style="background:#2E7D32"><i class="fas fa-edit"></i> Lançar Notas</button>
+      <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
+    </div>
+    <div id="boletimContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div>
   </div>
 </div>
-1661   <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
-1662   </div>
-1663   </div>  <!-- fecha o planos-grid -->
-1664 
-1665   <!-- Modal Pagamento - COLA AQUI -->
-1666   <div id="modalPagamento" class="modal-bg">
-1667     <div class="modal-pagamento">
-1668       <button class="modal-close" onclick="fecharModalPag()">×</button>
-1669       <h2>Finalizar <span id="nomePlanoModal"></span></h2>
-1670       <p class="subtitulo">Valor: R$ <span id="valorPlanoModal"></span></p>
-1671       
-1672       <div class="metodo-pagamento">
-1673         <button class="botao botao-primario" onclick="gerarPIX()">Gerar PIX</button>
-1674         <button class="botao botao-secundario" onclick="gerarBoletoOnline()">Gerar Boleto Online</button>
-1675       </div>
-1676       
-1677       <div id="conteudoPIX" style="display:none">
-1678         <div class="qr-code-box">
-1679           <img id="qrCodeImg" src="" alt="QR Code PIX">
-1680           <p style="font-size:12px; color:var(--texto-sec); margin-top:10px">Escaneie com app do banco</p>
-1681         </div>
-1682         <p style="font-size:12px; font-weight:600; margin-bottom:6px">Código Copia e Cola:</p>
-1683         <div class="copia-cola" id="copiaColaTexto"></div>
-1684       </div>
-1685       
-1686       <div id="conteudoBoleto" style="display:none">
-1687         <p style="font-size:12px; font-weight:600; margin-bottom:6px">Linha Digitável:</p>
-1688         <div class="linha-boleto" id="linhaBoletoTexto"></div>
-1689         <p style="font-size:12px; color:var(--texto-sec); text-align:center">
-1690           Vencimento: <span id="vencimentoBoleto"></span><br>
-1691           Status: <strong style="color:var(--erro)">Pendente</strong>
-1692         </p>
-1693       </div>
-1694       
-1695       <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:20px">Fechar</button>
-1696     </div>
-1697   </div>
+
+<!-- BOLETIM ALUNO -->
+<div id="viewBoletimAluno" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
+  <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
+  <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
+</div>
+
+<!-- NRS -->
+<div id="viewNrs" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-bookmark"></i> Normas Regulamentadoras - NRs</h2>
+  <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho e Previdência</p>
+  <div class="stats-bar" id="nrStatsBar">
+    <div class="stat-card"><div class="stat-val" id="nrTotalCount">38</div><div class="stat-lab">Total de NRs</div></div>
+    <div class="stat-card"><div class="stat-val" id="nrEspecificasCount">10</div><div class="stat-lab">NRs Específicas</div></div>
+    <div class="stat-card"><div class="stat-val" id="nrGeraisCount">28</div><div class="stat-lab">Gerais + Saúde + Setoriais</div></div>
+  </div>
+  <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
+  <div class="filter-bar" id="nrFilterBar">
+    <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
+    <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
+    <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
+    <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
+    <button class="filter-btn" data-filter="setorial" onclick="filtrarNrs('setorial')">🏭 Setoriais</button>
+  </div>
+  <div class="painel-card" style="padding:10px;"><div id="nrListContainer"></div></div>
+  <div class="modal-bg" id="nrModal">
+    <div class="modal">
+      <button class="modal-close" onclick="fecharModalNr()">✕</button>
+      <span class="modal-icon" id="modalNrIcon">📋</span>
+      <div class="modal-num" id="modalNrNum">NR-01</div>
+      <h2 id="modalNrTitle">Disposições Gerais</h2>
+      <p id="modalNrDesc">...</p>
+      <ul class="obj-list" id="modalNrList"></ul>
+      <button class="ask-btn" onclick="perguntarSobreNr()"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICADO -->
+<div id="viewCertificado" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-certificate"></i> Gerador de Certificados</h2>
+  <p class="dash-subtitle">Gere certificados PDF personalizados para seus alunos</p>
+  <div class="painel-card">
+    <div class="campo"><label>Nome do aluno</label><input type="text" id="certNomeAluno" placeholder="Nome completo do aluno"></div>
+    <div class="campo"><label>Curso</label><select id="certCursoSelect"></select></div>
+    <div class="campo"><label>Carga horária (horas)</label><input type="number" id="certCargaHoraria" min="1" max="999" value="40"></div>
+    <div class="campo"><label>Cidade/UF de emissão</label><input type="text" id="certCidadeEmissao" value="Pelotas/RS"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn-criar-sala" onclick="gerarCertificadoPDF()"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOLETOS -->
+<div id="viewBoletos" style="display:none">
+  <div class="admin-god-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
+    <h2><i class="fas fa-file-invoice-dollar"></i> Cobranças e Pagamentos</h2>
+    <div class="admin-god-sub">Acompanhe suas mensalidades e pagamentos</div>
+  </div>
+
+  <!-- Acesso Rápido -->
+  <div class="admin-card">
+    <div class="admin-card-title"><i class="fas fa-bolt"></i> Acesso Rápido</div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin-top:15px">
+      <button class="btn-acesso-rapido" onclick="mostrarAba('negociacao')">
+        <i class="fas fa-dollar-sign" style="font-size:28px; color:#1976D2"></i>
+        <span>Negociação<br>de Dívidas</span>
+      </button>
+      <button class="btn-acesso-rapido active" onclick="mostrarAba('cobrancas')">
+        <i class="fas fa-list" style="font-size:28px; color:#1976D2"></i>
+        <span>Cobranças E<br>Pagamentos</span>
+      </button>
+      <button class="btn-acesso-rapido" onclick="mostrarAba('pix-auto')">
+        <i class="fas fa-sync-alt" style="font-size:28px; color:#1976D2"></i>
+        <span>Pix<br>Automático</span>
+      </button>
+      <button class="btn-acesso-rapido" onclick="mostrarAba('recorrencia')">
+        <i class="fas fa-credit-card" style="font-size:28px; color:#1976D2"></i>
+        <span>Recorrência<br>Cartão</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Aba Cobranças -->
+  <div class="admin-card" id="aba-cobrancas">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="trocarAba('em-aberto')">Cobranças em Aberto</button>
+      <button class="tab-btn" onclick="trocarAba('pagamentos')">Pagamentos</button>
+    </div>
+    
+    <div id="em-aberto" class="tab-content">
+      <div class="empty-state">
+        <i class="fas fa-check-circle"></i>
+        <h4>Você Não Possui Mensalidades em Aberto</h4>
+      </div>
+    </div>
+    
+    <div id="pagamentos" class="tab-content" style="display:none">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead>
+          <tbody id="bolHistoricoContainer">
+            <tr><td colspan="4" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhum pagamento registrado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aba Negociação -->
+  <div class="admin-card" id="aba-negociacao" style="display:none">
+    <h3>Negociação de dívida</h3>
+    <p style="color:var(--texto-sec)">Realize seu acordo, é simples e fácil.</p>
+    <div class="empty-state" style="margin-top:40px">
+      <h4 style="color:#00BCD4">Você Não Possui Mensalidades em Aberto</h4>
+    </div>
+  </div>
+
+  <!-- Aba PIX Automático -->
+  <div class="admin-card" id="aba-pix-auto" style="display:none">
+    <h3>Pix Automático</h3>
+    <p style="font-size:13px; color:var(--erro); font-weight:600">ATENÇÃO: Os agendamentos serão processados para cobranças com vencimento a partir de 3 dias da data de ativação do PIX automático.</p>
+    <p style="margin-top:10px; color:var(--texto-sec)">Com o Pix Automático, suas cobranças são pagas de forma prática e segura, sendo que valor é debitado automaticamente na data de vencimento, usando a chave Pix cadastrada, sem a necessidade de pagamento por QR Code.</p>
+  </div>
+
+  <!-- Aba Recorrência -->
+  <div class="admin-card" id="aba-recorrencia" style="display:none">
+    <h3>Recorrência Cartão</h3>
+    <div class="empty-state">
+      <i class="fas fa-credit-card"></i>
+      <h4>Nenhum cartão cadastrado</h4>
+      <button class="botao botao-primario" style="margin-top:15px">+ Novo Cartão</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLANOS -->
+<div id="viewPlanos" style="display:none">
+  <div class="admin-god-header">
+    <h2><i class="fas fa-crown"></i> Planos de Assinatura</h2>
+    <div class="admin-god-sub">Escolha o plano ideal pra você</div>
+  </div>
+  
+  <div class="planos-grid" id="planosGrid">
+    <!-- MENSAL -->
+    <div class="plan-card">
+      <h3>Mensal</h3>
+      <p class="subtitle">Flexível para começar</p>
+      <div class="price">R$ <span>49</span>,90</div>
+      <p class="billing">por mês · cobrança mensal</p>
+      <ul>
+        <li>Acesso a todas as 38 NRs</li>
+        <li>Videoaulas em HD ilimitadas</li>
+        <li>Certificado reconhecido</li>
+        <li>Assistente de IA 24/7</li>
+        <li class="off">Aulas ao vivo ilimitadas</li>
+        <li class="off">Suporte prioritário</li>
+      </ul>
+      <button class="botao botao-secundario btn-assinar" data-plano="Mensal" data-valor="49.90">Assinar Mensal</button>
+    </div>
+
+    <!-- TRIMESTRAL - DESTAQUE -->
+    <div class="plan-card destaque">
+      <span class="badge-plano">Melhor custo-benefício</span>
+      <h3>Trimestral</h3>
+      <p class="subtitle">Melhor custo-benefício</p>
+      <div class="price">R$ <span>129</span>,90</div>
+      <p class="billing">a cada 3 meses · equivalente a R$ 43,30/mês</p>
+      <p class="economy">Economize 13%</p>
+      <ul>
+        <li>Acesso a todas as 38 NRs</li>
+        <li>Videoaulas em HD ilimitadas</li>
+        <li>Certificado reconhecido</li>
+        <li>Assistente de IA 24/7</li>
+        <li>Aulas ao vivo ilimitadas</li>
+        <li class="off">Suporte prioritário</li>
+      </ul>
+      <button class="botao botao-primario btn-assinar" data-plano="Trimestral" data-valor="129.90">Assinar Trimestral</button>
+    </div>
+
+    <!-- ANUAL -->
+    <div class="plan-card">
+      <h3>Anual</h3>
+      <p class="subtitle">Máxima economia</p>
+      <div class="price">R$ <span>399</span>,90</div>
+      <p class="billing">por ano · equivalente a R$ 33,32/mês</p>
+      <p class="economy">Economize 33%</p>
+      <ul>
+        <li>Acesso a todas as 38 NRs</li>
+        <li>Videoaulas em HD ilimitadas</li>
+        <li>Certificado reconhecido</li>
+        <li>Assistente de IA 24/7</li>
+        <li>Aulas ao vivo ilimitadas</li>
+        <li>Suporte prioritário dedicado</li>
+      </ul>
+      <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pagamento -->
+<div id="modalPagamento" class="modal-bg">
+  <div class="modal-pagamento">
+    <button class="modal-close" onclick="fecharModalPag()">×</button>
+    <h2>Finalizar <span id="nomePlanoModal"></span></h2>
+    <p class="subtitulo">Valor: R$ <span id="valorPlanoModal"></span></p>
+    
+    <div class="metodo-pagamento">
+      <button class="botao botao-primario" onclick="gerarPIX()">Gerar PIX</button>
+      <button class="botao botao-secundario" onclick="gerarBoletoOnline()">Gerar Boleto Online</button>
+    </div>
+    
+    <div id="conteudoPIX" style="display:none">
+      <div class="qr-code-box">
+        <img id="qrCodeImg" src="" alt="QR Code PIX">
+        <p style="font-size:12px; color:var(--texto-sec); margin-top:10px">Escaneie com app do banco</p>
+      </div>
+      <p style="font-size:12px; font-weight:600; margin-bottom:6px">Código Copia e Cola:</p>
+      <div class="copia-cola" id="copiaColaTexto"></div>
+    </div>
+    
+    <div id="conteudoBoleto" style="display:none">
+      <p style="font-size:12px; font-weight:600; margin-bottom:6px">Linha Digitável:</p>
+      <div class="linha-boleto" id="linhaBoletoTexto"></div>
+      <p style="font-size:12px; color:var(--texto-sec); text-align:center">
+        Vencimento: <span id="vencimentoBoleto"></span><br>
+        Status: <strong style="color:var(--erro)">Pendente</strong>
+      </p>
+    </div>
+    
+    <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:20px">Fechar</button>
+  </div>
+</div>
 1698 
 1699   <!-- AVALIACOES -->
 1700   <div id="viewAvaliacoes" style="display:none">
