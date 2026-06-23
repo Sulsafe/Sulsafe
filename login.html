@@ -1393,132 +1393,50 @@
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
-            <!-- ALUNO -->
-            <div id="viewAluno" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
-                <p class="dash-subtitle">Envie seu trabalho em PDF e acompanhe as correções</p>
-                <div class="painel-card">
-                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-cloud-upload-alt"></i> Enviar novo trabalho</h3>
-                    <div class="upload-area" onclick="document.getElementById('fileInputTrabalho').click()" style="border:2px dashed var(--primaria);border-radius:16px;padding:28px;text-align:center;cursor:pointer;transition:.25s;background:rgba(46,125,50,.02)">
-                        <i class="fas fa-cloud-upload-alt" style="font-size:36px;color:var(--primaria)"></i>
-                        <p style="margin-top:10px"><strong>Clique para enviar PDF</strong></p>
-                        <p style="font-size:12px;color:var(--texto-sec);margin-top:3px">Apenas arquivos .pdf</p>
-                    </div>
-                    <input type="file" id="fileInputTrabalho" accept=".pdf" style="display:none" onchange="enviarTrabalho(this)">
-                    <div id="uploadStatus" style="margin-top:10px;font-size:14px"></div>
-                </div>
-                <div class="painel-card">
-                    <h3 style="font-size:16px; margin-bottom:12px"><i class="fas fa-history"></i> Meus trabalhos enviados</h3>
-                    <div id="meusTrabalhosList">
-                        <p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
-                    </div>
-                </div>
-            </div>
+          <!-- ALUNO -->
+<div id="viewAluno" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
+  <p class="dash-subtitle">Seu progresso e certificados</p>
+  <div class="painel-card"><p style="text-align:center; padding:40px">Em breve...</p></div>
+</div>
 
-            <!-- IA -->
-            <div id="viewIa" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente NR com IA</h2>
-                <p class="dash-subtitle">Tire dúvidas sobre normas e segurança do trabalho</p>
-                <div class="painel-card ia-chat-box">
-                    <div class="ia-messages" id="iaChatMessages">
-                        <div class="ia-msg bot">Olá! 👋 Sou o assistente SULSAFE. Pergunte sobre NR-10, NR-18, NR-35, EPIs, CIPA e mais. 🤖</div>
-                    </div>
-                    <div class="ia-input-row">
-                        <input type="text" id="iaChatInput" placeholder="Digite sua dúvida sobre NRs..." onkeypress="if(event.key==='Enter')enviarPerguntaIA()">
-                        <button onclick="enviarPerguntaIA()"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
+<!-- IA -->
+<div id="viewIa" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente NR</h2>
+  <p class="dash-subtitle">Tire dúvidas sobre normas regulamentadoras</p>
+  <div class="painel-card ia-chat-box">
+    <div class="ia-messages" id="iaMessages"></div>
+    <div class="ia-input-row">
+      <input type="text" id="iaInput" placeholder="Digite sua pergunta...">
+      <button class="btn-criar-sala" onclick="perguntarIA()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
 
-            <!-- TRABALHOS -->
-            <div id="viewTrabalhos" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos</h2>
-                <p class="dash-subtitle">Acompanhe suas atividades</p>
-                <div class="painel-card" id="listaTrabalhos">
-                    <p style="color:var(--texto-sec);text-align:center;padding:20px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
-                </div>
-            </div>
+<!-- AVALIAÇÕES -->
+<div id="viewAvaliacoes" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-clipboard-check"></i> Avaliações</h2>
+  <p class="dash-subtitle">Provas e questionários disponíveis</p>
+  <div class="painel-card"><p style="text-align:center; padding:40px">Nenhuma avaliação disponível no momento.</p></div>
+</div>
 
-            <!-- RELATORIO -->
-            <div id="viewRelatorio" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
-                <p class="dash-subtitle">Acompanhe o progresso e desempenho da turma</p>
-                <div class="painel-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap">
-                        <h3 style="font-size:16px"><i class="fas fa-users"></i> Progresso geral</h3>
-                        <div>
-                            <button class="btn-criar-sala" onclick="carregarRelatorioAlunos()" style="padding:8px 16px"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="progressoChart"></canvas>
-                    </div>
-                    <div id="relatorioContainer">
-                        <p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando relatório...</p>
-                    </div>
-                </div>
-            </div>
+<!-- TRABALHOS -->
+<div id="viewTrabalhos" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos</h2>
+  <p class="dash-subtitle">Atividades enviadas pelo professor</p>
+  <div class="painel-card"><p style="text-align:center; padding:40px">Nenhum trabalho pendente.</p></div>
+</div>
 
-            <!-- FINANCEIRO -->
-            <div id="viewFinanceiro" style="display:none">
-                <div class="admin-god-header">
-                    <h2><i class="fas fa-chart-line"></i> Financeiro <span class="admin-god-badge"><i class="fas fa-crown"></i> Admin</span></h2>
-                    <div class="admin-god-sub">Visão completa de receita, transações e métricas financeiras da plataforma</div>
-                </div>
-                <div class="kpi-grid" id="finKpiGrid">
-                    <div class="kpi-card kpi-receita">
-                        <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <div class="kpi-label">Receita total</div>
-                        <div class="kpi-value" id="finKpiReceitaTotal">R$ 0,00</div>
-                        <div class="kpi-sub">Soma de todos os pagamentos confirmados</div>
-                    </div>
-                    <div class="kpi-card kpi-receita">
-                        <div class="kpi-icon"><i class="fas fa-calendar-check"></i></div>
-                        <div class="kpi-label">Receita este mês</div>
-                        <div class="kpi-value" id="finKpiReceitaMes">R$ 0,00</div>
-                        <div class="kpi-sub" id="finKpiReceitaMesLabel">—</div>
-                    </div>
-                    <div class="kpi-card kpi-pendente">
-                        <div class="kpi-icon"><i class="fas fa-hourglass-half"></i></div>
-                        <div class="kpi-label">Pendente</div>
-                        <div class="kpi-value" id="finKpiPendente">R$ 0,00</div>
-                        <div class="kpi-sub" id="finKpiPendenteCount">0 transações</div>
-                    </div>
-                    <div class="kpi-card kpi-cancelado">
-                        <div class="kpi-icon"><i class="fas fa-ban"></i></div>
-                        <div class="kpi-label">Cancelado</div>
-                        <div class="kpi-value" id="finKpiCancelado">R$ 0,00</div>
-                        <div class="kpi-sub" id="finKpiCanceladoCount">0 transações</div>
-                    </div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-chart-bar"></i> Receita — últimos 6 meses</div>
-                    <div class="chart-wrap"><canvas id="finChartReceita6m"></canvas></div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-list"></i> Todas as transações</div>
-                    <div class="admin-filters">
-                        <input type="text" id="finFiltroBusca" placeholder="🔎 Buscar por email do aluno…">
-                        <select id="finFiltroStatus">
-                            <option value="todos">Todos os status</option>
-                            <option value="pago">Pago</option>
-                            <option value="pendente">Pendente</option>
-                            <option value="cancelado">Cancelado</option>
-                        </select>
-                        <button class="btn-mini" onclick="carregarFinanceiroAdmin()"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                    </div>
-                    <div class="admin-table-wrap">
-                        <table class="admin-table">
-                            <thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Status</th><th>Data</th></tr></thead>
-                            <tbody id="todasTransacoesContainer">
-                                <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--texto-sec)">Carregue as transações...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<!-- RELATÓRIO -->
+<div id="viewRelatorio" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
+  <p class="dash-subtitle">Acompanhe o desempenho da turma</p>
+  <div class="painel-card">
+    <div class="chart-container"><canvas id="chartRelatorio"></canvas></div>
+  </div>
+</div>
 
-        <!-- BOLETIM -->
+<!-- BOLETIM -->
 <div id="viewBoletim" style="display:none">
   <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
   <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
@@ -1764,108 +1682,43 @@
     <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:20px">Fechar</button>
   </div>
 </div>
-1698 
-1699   <!-- AVALIACOES -->
-1700   <div id="viewAvaliacoes" style="display:none">
-            <!-- AVALIACOES -->
-            <div id="viewAvaliacoes" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-clipboard-check"></i> Avaliações</h2>
-                <p class="dash-subtitle">Teste seu conhecimento</p>
-                <div id="avaliacoesContainer"><p style="color:var(--texto-sec);text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i> Carregando...</p></div>
-            </div>
 
-            <!-- USUARIOS -->
-            <div id="viewUsuarios" style="display:none">
-                <div class="admin-god-header">
-                    <h2><i class="fas fa-crown"></i> Painel do Administrador <span class="admin-god-badge"><i class="fas fa-crown"></i> ADMIN</span></h2>
-                    <div class="admin-god-sub">Modo Deus — controle total da plataforma</div>
-                </div>
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-icon"><i class="fas fa-user-graduate"></i></div>
-                        <div class="kpi-label">Total de alunos</div>
-                        <div class="kpi-value" id="admKpiAlunos">0</div>
-                        <div class="kpi-sub">Matriculados ativos</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                        <div class="kpi-label">Total de professores</div>
-                        <div class="kpi-value" id="admKpiProfessores">0</div>
-                        <div class="kpi-sub">Com acesso ao painel docente</div>
-                    </div>
-                    <div class="kpi-card kpi-receita">
-                        <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <div class="kpi-label">Receita total</div>
-                        <div class="kpi-value" id="admKpiReceita">R$ 0,00</div>
-                        <div class="kpi-sub">Pagamentos confirmados</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-icon"><i class="fas fa-certificate"></i></div>
-                        <div class="kpi-label">Certificados emitidos</div>
-                        <div class="kpi-value" id="admKpiCertificados">0</div>
-                        <div class="kpi-sub">Documentos gerados</div>
-                    </div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-users-cog"></i> Gerenciar Usuários</div>
-                    <div class="admin-filters">
-                        <input type="text" id="admFiltroBusca" placeholder="🔎 Buscar por nome ou email…">
-                        <select id="admFiltroPapel">
-                            <option value="todos">Todos os papéis</option>
-                            <option value="aluno">Alunos</option>
-                            <option value="professor">Professores</option>
-                            <option value="admin">Admins</option>
-                        </select>
-                        <button class="btn-mini laranja" onclick="carregarPainelAdmin()"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                    </div>
-                    <div class="admin-table-wrap">
-                        <table class="admin-table">
-                            <thead><tr><th>Nome</th><th>Email</th><th>Papel</th><th>Status</th><th>Ações</th></tr></thead>
-                            <tbody id="admUsuariosTbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--texto-sec)">Clique em "Atualizar" para carregar…</td></tr></tbody>
-                        </table>
-                    </div>
-                    <div class="admin-pagination" id="admPagination"></div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-title"><i class="fas fa-cog"></i> Configurações da Plataforma</div>
-                    <div class="config-form-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px">
-                        <div class="form-group"><label>Mensal (R$)</label><input type="number" id="cfgPrecoMensal" step="0.01" min="49.90" max="100.00"></div>
-                        <div class="form-group"><label>Trimestral</label><input type="number" id="cfgPrecoTrimestral" step="0.01" min="0"></div>
-                        <div class="form-group"><label>Anual</label><input type="number" id="cfgPrecoAnual" step="0.01" min="0"></div>
-                    </div>
-                    <button class="btn-mini" onclick="salvarConfiguracoesPlataforma()"><i class="fas fa-save"></i> Salvar configurações</button>
-                    <div id="cfgStatus" style="margin-top:10px;font-size:13px"></div>
-                </div>
-            </div>
+<!-- USUARIOS -->
+<div id="viewUsuarios" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-users-cog"></i> Gerenciar Usuários</h2>
+  <p class="dash-subtitle">Administre permissões e acessos</p>
+  <div class="painel-card"><p style="text-align:center; padding:40px">Painel admin em desenvolvimento.</p></div>
+</div>
 
-            <!-- CONFIG -->
-            <div id="viewConfig" style="display:none">
-                <div class="config-container">
-                    <div class="config-sidebar">
-                        <div class="config-tab active" data-config="geral"><i class="fas fa-sliders-h"></i> Geral</div>
-                        <div class="config-tab" data-config="aparencia"><i class="fas fa-palette"></i> Aparência</div>
-                    </div>
-                    <div class="config-content">
-                        <div class="config-section active-section" id="config-geral">
-                            <div class="config-group"><label>Idioma</label><select id="idioma"><option value="pt">Português</option><option value="en">English</option></select></div>
-                            <div class="config-group"><label>Limpar dados locais</label><button class="test-button" onclick="localStorage.clear();alert('Dados limpos!')">Limpar</button></div>
-                        </div>
-                        <div class="config-section" id="config-aparencia">
-                            <div class="config-group"><label>Modo de cor</label><select id="temaSelect"><option value="escuro">Escuro</option><option value="claro">Claro</option></select></div>
-                            <div class="config-group"><label>Cor de destaque</label><div id="colorThemePicker">
-                                <div class="color-option" style="background:#2E7D32" data-color="#2E7D32"></div>
-                                <div class="color-option" style="background:#1B5E20" data-color="#1B5E20"></div>
-                                <div class="color-option" style="background:#4CAF50" data-color="#4CAF50"></div>
-                                <div class="color-option" style="background:#1565C0" data-color="#1565C0"></div>
-                                <div class="color-option" style="background:#6A1B9A" data-color="#6A1B9A"></div>
-                                <div class="color-option" style="background:#C62828" data-color="#C62828"></div>
-                            </div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- CONFIG -->
+<div id="viewConfig" style="display:none">
+  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-cog"></i> Configurações</h2>
+  <p class="dash-subtitle">Personalize sua plataforma</p>
+  <div class="config-container">
+    <div class="config-sidebar">
+      <div class="config-tab active" onclick="trocarConfigTab('geral')"><i class="fas fa-sliders-h"></i> Geral</div>
+      <div class="config-tab" onclick="trocarConfigTab('aparencia')"><i class="fas fa-palette"></i> Aparência</div>
     </div>
+    <div class="config-content">
+      <div class="config-section active-section" id="config-geral">
+        <div class="config-group">
+          <label>Nome da empresa</label>
+          <input type="text" id="cfgNomeEmpresa" value="SulSafe">
+        </div>
+      </div>
+      <div class="config-section" id="config-aparencia">
+        <div class="config-group">
+          <label>Tema</label>
+          <select id="cfgTema">
+            <option value="escuro">Escuro</option>
+            <option value="claro">Claro</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
 
     <!-- ADMIN MODAL -->
     <div class="admin-modal" id="modalAdmin">
