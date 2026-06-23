@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs, videoaulas, aulas ao vivo e IA.">
-    <title>SulSafe | Acesse sua conta</title>
+    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
+    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
     <link rel="icon" type="image/png" href="logo1.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -17,6 +17,7 @@
             --primaria: #2E7D32;
             --accent: #1B5E20;
             --dourado: #C9B037;
+            --dourado-soft: rgba(201,176,55,0.18);
             --texto: #1A1A1A;
             --texto-sec: #555;
             --borda: #E0E0E0;
@@ -28,6 +29,8 @@
             --glass-shadow: 0 24px 60px rgba(0,0,0,0.12);
             --shadow-card: 0 4px 16px rgba(0,0,0,0.06);
             --primaria-glow: rgba(46,125,50,0.3);
+            --erro: #D32F2F;
+            --sucesso: #2E7D32;
         }
 
         body.tema-escuro {
@@ -190,7 +193,7 @@
             color: var(--texto-sec);
             margin-bottom: 6px;
         }
-        .campo input {
+        .campo input, .campo select, .campo textarea {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid var(--borda);
@@ -201,11 +204,12 @@
             transition: .2s;
             font-family: 'Inter', sans-serif;
         }
-        .campo input:focus {
+        .campo input:focus, .campo select:focus, .campo textarea:focus {
             outline: none;
             border-color: var(--primaria);
             box-shadow: 0 0 0 4px var(--primaria-glow);
         }
+        .campo textarea { resize: vertical; min-height: 80px; }
 
         .botao {
             width: 100%;
@@ -279,9 +283,6 @@
             transform: translateY(-3px); 
             box-shadow: 0 8px 18px var(--primaria-glow);
         }
-        .social-btn.yt:hover { background: #FF0000; }
-        .social-btn.ig:hover { background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); }
-        .social-btn.wa:hover { background: #25D366; }
 
         .link-voltar-inicio {
             display: inline-flex;
@@ -331,6 +332,7 @@
             gap: 22px;
             flex-shrink: 0;
             overflow-y: auto;
+            transition: background .35s;
         }
 
         .dash-logo { display: flex; align-items: center; gap: 10px; }
@@ -443,7 +445,7 @@
             padding: 6px; 
             border-radius: 8px; 
         }
-        .dash-logout:hover { color: #D32F2F; background: rgba(211,47,47,.08); }
+        .dash-logout:hover { color: var(--erro); background: rgba(211,47,47,.08); }
 
         .dash-main {
             flex: 1;
@@ -571,6 +573,23 @@
             gap: 5px;
         }
 
+        .btn-mini {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: none;
+            background: var(--primaria);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: .2s;
+        }
+        .btn-mini:hover { background: var(--accent); transform: translateY(-1px); }
+
+        /* VIDEOAULAS */
         .videoaulas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -581,7 +600,7 @@
             border: 1px solid var(--borda);
             border-radius: 18px;
             overflow: hidden;
-            transition: .3s cubic-bezier(.2,.9,.3,1);
+            transition: .3s;
             box-shadow: var(--shadow-card);
         }
         .aula-card:hover { 
@@ -701,6 +720,7 @@
             transition: width .6s ease; 
         }
 
+        /* SALAS */
         .meeting-list { 
             display: flex; 
             flex-direction: column; 
@@ -758,6 +778,7 @@
             box-shadow: 0 0 0 3px var(--primaria-glow);
         }
 
+        /* MATERIAIS */
         .material-item { 
             display: flex; 
             justify-content: space-between; 
@@ -783,6 +804,7 @@
             margin-top: 4px; 
         }
 
+        /* IA */
         .ia-chat-box { display: flex; flex-direction: column; height: 400px; }
         .ia-messages { 
             flex: 1; 
@@ -822,117 +844,7 @@
             font-size: 14px; 
         }
 
-        /* ADMIN MODAL */
-        .admin-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.65);
-            z-index: 1100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .admin-modal.active { display: flex; }
-        .admin-modal-content {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 560px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--borda);
-        }
-        .admin-tabs { display: flex; gap: 7px; margin-bottom: 20px; }
-        .admin-tab {
-            flex: 1;
-            padding: 9px 13px;
-            border: 1px solid var(--borda);
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--texto-sec);
-            transition: .2s;
-        }
-        .admin-tab.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
-
-        .admin-tab-content { display: none; }
-        .admin-tab-content.active { display: block; }
-
-        .modal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.6);
-            z-index: 1200;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-        .modal-bg.open { display: flex; }
-        .modal {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 92%;
-            border-top: 6px solid var(--primaria);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,.3);
-        }
-        .modal-close { 
-            position: absolute; 
-            top: 10px; right: 10px; 
-            background: var(--borda); 
-            border: none; 
-            border-radius: 50%; 
-            width: 32px; height: 32px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            color: var(--texto-sec); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: .2s; 
-        }
-        .modal-close:hover { background: #D32F2F; color: #fff; }
-
-        .modal-icon { font-size: 48px; text-align: center; display: block; margin-bottom: 10px; }
-        .modal-num { font-size: 13px; color: var(--primaria); font-weight: 600; margin-bottom: 6px; }
-        .modal h2 { font-size: 18px; font-weight: 700; color: var(--primaria); margin-bottom: 4px; }
-        .modal p { font-size: 14px; color: var(--texto); line-height: 1.7; margin-bottom: 14px; }
-        .obj-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
-        .obj-list li { 
-            font-size: 13px; 
-            color: var(--texto); 
-            padding: 6px 0; 
-            border-bottom: 1px solid var(--borda); 
-            display: flex; 
-            gap: 10px; 
-            align-items: flex-start; 
-        }
-        .obj-list li::before { content: '✔'; color: var(--primaria); flex-shrink: 0; font-weight: 700; }
-        .ask-btn { 
-            display: block; 
-            width: 100%; 
-            margin-top: 14px; 
-            background: var(--primaria); 
-            color: #fff; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 40px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: .2s; 
-        }
-        .ask-btn:hover { background: var(--accent); transform: translateY(-2px); }
-
+        /* NRS */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1087,7 +999,6 @@
         .nr-expand-content .actions .btn-ver:hover { 
             background: var(--accent); 
             transform: translateY(-2px); 
-            box-shadow: 0 4px 12px rgba(46,125,50,.3);
         }
         .nr-expand-content .actions .btn-perguntar { 
             background: rgba(46,125,50,.12); 
@@ -1108,89 +1019,253 @@
         body.tema-escuro .nr-categoria-saude { background: rgba(21,101,192,.25); color: #90CAF9; }
         body.tema-escuro .nr-categoria-setorial { background: rgba(173,20,87,.25); color: #F48FB1; }
 
-        .config-container { display: flex; gap: 18px; flex-wrap: wrap; }
-        .config-sidebar {
-            width: 210px;
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 12px;
-            border: 1px solid var(--borda);
-            box-shadow: var(--shadow-card);
-        }
-        .config-tab {
-            padding: 9px 13px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: .2s;
-            color: var(--texto-sec);
-            display: flex;
+        /* MODAL */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.6);
+            z-index: 1200;
             align-items: center;
-            gap: 9px;
-            font-size: 13px;
+            justify-content: center;
+            backdrop-filter: blur(4px);
         }
-        .config-tab.active, .config-tab:hover { background: var(--primaria); color: #fff; }
-        .config-content {
-            flex: 1;
+        .modal-bg.open { display: flex; }
+        .modal {
             background: var(--card-bg);
-            border-radius: 18px;
-            padding: 18px;
-            border: 1px solid var(--borda);
-            box-shadow: var(--shadow-card);
-            min-width: 260px;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 92%;
+            border-top: 6px solid var(--primaria);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
         }
-        .config-section { display: none; }
-        .config-section.active-section { display: block; }
-        .config-group { 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid var(--borda); 
-            padding-bottom: 16px; 
+        .modal-close { 
+            position: absolute; 
+            top: 10px; right: 10px; 
+            background: var(--borda); 
+            border: none; 
+            border-radius: 50%; 
+            width: 32px; height: 32px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            color: var(--texto-sec); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: .2s; 
         }
-        .config-group label { 
-            display: block; 
-            font-weight: 600; 
-            margin-bottom: 7px; 
-            color: var(--texto); 
+        .modal-close:hover { background: var(--erro); color: #fff; }
+
+        .modal-icon { font-size: 48px; text-align: center; display: block; margin-bottom: 10px; }
+        .modal-num { font-size: 13px; color: var(--primaria); font-weight: 600; margin-bottom: 6px; }
+        .modal h2 { font-size: 18px; font-weight: 700; color: var(--primaria); margin-bottom: 4px; }
+        .modal p { font-size: 14px; color: var(--texto); line-height: 1.7; margin-bottom: 14px; }
+        .obj-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
+        .obj-list li { 
             font-size: 13px; 
+            color: var(--texto); 
+            padding: 6px 0; 
+            border-bottom: 1px solid var(--borda); 
+            display: flex; 
+            gap: 10px; 
+            align-items: flex-start; 
         }
-        .config-group input, .config-group select {
+        .obj-list li::before { content: '✔'; color: var(--primaria); flex-shrink: 0; font-weight: 700; }
+        .ask-btn { 
+            display: block; 
+            width: 100%; 
+            margin-top: 14px; 
+            background: var(--primaria); 
+            color: #fff; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 40px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: .2s; 
+        }
+        .ask-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        /* ADMIN MODAL */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.65);
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .admin-modal.active { display: flex; }
+        .admin-modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 560px;
             width: 100%;
-            background: var(--input-bg);
+            max-height: 90vh;
+            overflow-y: auto;
             border: 1px solid var(--borda);
-            border-radius: 40px;
-            padding: 9px 14px;
+        }
+        .admin-tabs { display: flex; gap: 7px; margin-bottom: 20px; }
+        .admin-tab {
+            flex: 1;
+            padding: 9px 13px;
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto-sec);
+            transition: .2s;
+        }
+        .admin-tab.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
+
+        /* FINANCEIRO */
+        .admin-god-header {
+            background: linear-gradient(135deg, var(--primaria), var(--accent));
+            color: #fff;
+            padding: 22px 28px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 28px rgba(46,125,50,.28);
+        }
+        .admin-god-header h2 { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 26px; 
+            font-weight: 800; 
+            margin-bottom: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        .admin-god-header h2 i { color: var(--dourado); font-size: 28px; }
+        .admin-god-header .admin-god-sub { font-size: 14px; opacity: .9; font-weight: 400; }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--borda);
+            border-radius: 16px;
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before { 
+            content: ""; 
+            position: absolute; 
+            top: 0; left: 0; right: 0; 
+            height: 4px; 
+            background: linear-gradient(90deg, var(--primaria), var(--dourado)); 
+        }
+        .kpi-card .kpi-icon { 
+            position: absolute; 
+            top: 14px; right: 14px; 
+            width: 38px; height: 38px; 
+            border-radius: 10px; 
+            background: var(--dourado-soft); 
+            color: var(--primaria); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 18px; 
+        }
+        .kpi-card .kpi-label { 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--texto-sec); 
+            font-weight: 700; 
+        }
+        .kpi-card .kpi-value { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: var(--primaria); 
+            line-height: 1.1; 
+        }
+        .kpi-card .kpi-sub { font-size: 12px; color: var(--texto-sec); }
+
+        .admin-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--borda); 
+            border-radius: 16px; 
+            padding: 20px 22px; 
+            margin-bottom: 22px; 
+        }
+        .admin-card-title { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: var(--primaria); 
+            margin-bottom: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .admin-card-title i { color: var(--dourado); }
+
+        .admin-filters { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-bottom: 16px; 
+            align-items: center; 
+        }
+        .admin-filters input, .admin-filters select {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--borda);
+            background: var(--input-bg);
             color: var(--texto);
             font-size: 13px;
             font-family: inherit;
         }
+        .admin-filters input { flex: 1; min-width: 200px; }
 
-        .modal-pagamento { 
-            background: var(--card-bg); 
-            border-radius: 20px; 
-            padding: 24px; 
-            max-width: 420px; 
-            width: 92%; 
-            border-top: 6px solid var(--primaria); 
-            position: relative;
+        .admin-table-wrap { overflow-x: auto; }
+        table.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.admin-table thead th {
+            background: linear-gradient(90deg, var(--primaria), var(--accent));
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
         }
-        .qr-code-box { 
-            text-align: center; 
-            padding: 20px; 
-            background: #f5f5f5; 
-            border-radius: 12px; 
-            margin: 15px 0; 
-        }
-        body.tema-escuro .qr-code-box { background: #1a1a1a; }
-        .copia-cola, .linha-boleto { 
-            background: #f5f5f5; 
-            padding: 12px; 
-            border-radius: 8px; 
-            font-family: monospace; 
-            font-size: 11px; 
-            word-break: break-all; 
-            margin-bottom: 10px; 
-        }
-        body.tema-escuro .copia-cola, body.tema-escuro .linha-boleto { background: #1a1a1a; }
+        table.admin-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--borda); color: var(--texto); }
+        table.admin-table tbody tr:nth-child(odd) td { background: rgba(46,125,50,.025); }
+        table.admin-table tbody tr:hover td { background: rgba(46,125,50,.08); }
 
+        .badge-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-status.pago { background: rgba(46,125,50,.15); color: #2E7D32; }
+        .badge-status.pendente { background: rgba(255,152,0,.15); color: #FF9800; }
+        .badge-status.cancelado { background: rgba(211,47,47,.15); color: #D32F2F; }
+
+        /* PLANOS */
         .planos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1264,30 +1339,127 @@
             letter-spacing: .5px;
         }
 
-        .admin-god-header {
-            background: linear-gradient(135deg, var(--primaria), var(--accent));
-            color: #fff;
-            padding: 22px 28px;
-            border-radius: 18px;
-            margin-bottom: 22px;
+        /* MODAL PAGAMENTO */
+        .modal-pagamento { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 24px; 
+            max-width: 420px; 
+            width: 92%; 
+            border-top: 6px solid var(--primaria); 
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 28px rgba(46,125,50,.28);
         }
-        .admin-god-header h2 { 
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 26px; 
-            font-weight: 800; 
-            margin-bottom: 4px; 
+        .qr-code-box { 
+            text-align: center; 
+            padding: 20px; 
+            background: #f5f5f5; 
+            border-radius: 12px; 
+            margin: 15px 0; 
+        }
+        body.tema-escuro .qr-code-box { background: #1a1a1a; }
+        .copia-cola, .linha-boleto { 
+            background: #f5f5f5; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            font-size: 11px; 
+            word-break: break-all; 
+            margin-bottom: 10px; 
+        }
+        body.tema-escuro .copia-cola, body.tema-escuro .linha-boleto { background: #1a1a1a; }
+
+        .btn-acesso-rapido {
+            background: var(--card-bg);
+            border: 2px solid var(--borda);
+            border-radius: 12px;
+            padding: 20px 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all .2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto-sec);
+        }
+        .btn-acesso-rapido:hover { border-color: var(--primaria); transform: translateY(-2px); }
+        .btn-acesso-rapido i { font-size: 28px; color: var(--primaria); }
+
+        .tabs { 
             display: flex; 
-            align-items: center; 
-            gap: 12px; 
+            border-bottom: 2px solid var(--borda); 
+            margin-bottom: 20px; 
         }
-        .admin-god-header h2 i { color: var(--dourado); font-size: 28px; }
-        .admin-god-header .admin-god-sub { font-size: 14px; opacity: .9; font-weight: 400; }
+        .tab-btn { 
+            background: none; 
+            border: none; 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            color: var(--texto-sec); 
+        }
+        .tab-btn.active { color: var(--primaria); border-bottom: 3px solid var(--primaria); }
 
         .empty-state { text-align: center; padding: 60px 20px; color: var(--texto-sec); }
         .empty-state i { font-size: 48px; color: var(--dourado); margin-bottom: 15px; display: block; }
+
+        /* CONFIG */
+        .config-container { display: flex; gap: 18px; flex-wrap: wrap; }
+        .config-sidebar {
+            width: 210px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 12px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--shadow-card);
+        }
+        .config-tab {
+            padding: 9px 13px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: .2s;
+            color: var(--texto-sec);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+        }
+        .config-tab.active, .config-tab:hover { background: var(--primaria); color: #fff; }
+        .config-content {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--shadow-card);
+            min-width: 260px;
+        }
+        .config-section { display: none; }
+        .config-section.active-section { display: block; }
+        .config-group { 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid var(--borda); 
+            padding-bottom: 16px; 
+        }
+        .config-group label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 7px; 
+            color: var(--texto); 
+            font-size: 13px; 
+        }
+        .config-group input, .config-group select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--borda);
+            border-radius: 40px;
+            padding: 9px 14px;
+            color: var(--texto);
+            font-size: 13px;
+            font-family: inherit;
+        }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -1301,6 +1473,7 @@
             .config-sidebar { width: 100%; display: flex; flex-wrap: wrap; }
             .config-tab { flex: 1; justify-content: center; }
             .stats-bar { grid-template-columns: 1fr 1fr; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
             .planos-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
@@ -1318,6 +1491,7 @@
             .videoaulas-grid { grid-template-columns: 1fr; }
             .social-bar { gap: 6px; }
             .social-btn { width: 38px; height: 38px; font-size: 16px; }
+            .kpi-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1357,9 +1531,9 @@
             <button class="botao botao-secundario" onclick="mostrarTela('cadastro')">Cadastrar nova conta</button>
             <button class="botao botao-terciario" onclick="mostrarTela('recuperar')">Esqueci minha senha</button>
             <div class="social-bar">
-                <a href="#" class="social-btn yt"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-btn ig"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
                 <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
             </div>
@@ -1402,7 +1576,7 @@
                 <div class="logo-text">SulSafe</div>
             </div>
             <p class="subtitulo">Recupere o acesso à sua conta.</p>
-            <div id="msgSucessoRec" style="display:none;font-size:13px;color:#2E7D32;background:rgba(46,125,50,.12);border-radius:16px;padding:10px;margin-bottom:16px;text-align:center;">Link enviado! Verifique seu e-mail.</div>
+            <div id="msgSucessoRec" style="display:none;font-size:13px;color:var(--sucesso);background:rgba(46,125,50,.12);border-radius:16px;padding:10px;margin-bottom:16px;text-align:center;">Link enviado! Verifique seu e-mail.</div>
             <form id="recuperarForm">
                 <div class="campo">
                     <label>Email cadastrado</label>
@@ -1431,11 +1605,11 @@
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
                 <div class="nav-item" data-view="aluno" id="navAreaAluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-section-label" id="labelEnsino">Ensino</div>
-                <div class="nav-item" data-view="relatorio" id="navRelatorio"><i class="fas fa-chart-line"></i><span>Relatório</span></div>
                 <div class="nav-item" data-view="certificado" id="navCertificado"><i class="fas fa-certificate"></i><span>Certificado</span></div>
                 <div class="nav-section-label" id="labelAdmin">Admin</div>
                 <div class="nav-item" data-view="financeiro" id="navFinanceiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
                 <div class="nav-item" data-view="planos" id="navPlanos"><i class="fas fa-tag"></i><span>Planos</span></div>
+                <div class="nav-item" data-view="boletos" id="navBoletos"><i class="fas fa-file-invoice-dollar"></i><span>Meus Boletos</span></div>
                 <div class="nav-item" data-view="config" id="navConfig"><i class="fas fa-cog"></i><span>Configurações</span></div>
             </div>
             <div class="dash-user-info">
@@ -1573,15 +1747,6 @@
                 <div class="painel-card"><p style="text-align:center;padding:40px">Em breve...</p></div>
             </div>
 
-            <!-- RELATÓRIO -->
-            <div id="viewRelatorio" style="display:none">
-                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
-                <p class="dash-subtitle">Acompanhe o desempenho da turma</p>
-                <div class="painel-card">
-                    <div id="relatorioContainer"><p style="text-align:center;padding:40px">Carregando...</p></div>
-                </div>
-            </div>
-
             <!-- CERTIFICADO -->
             <div id="viewCertificado" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-certificate"></i> Gerador de Certificados</h2>
@@ -1597,18 +1762,16 @@
                 </div>
             </div>
 
-            <!-- FINANCEIRO -->
+            <!-- FINANCEIRO (ADMIN) -->
             <div id="viewFinanceiro" style="display:none">
                 <div class="admin-god-header">
                     <h2><i class="fas fa-credit-card"></i> Financeiro</h2>
                     <div class="admin-god-sub">Gestão de pagamentos e assinaturas</div>
                 </div>
-                <div id="finContainer">
-                    <p style="text-align:center;padding:40px;color:var(--texto-sec)">Carregando dados financeiros...</p>
-                </div>
+                <div id="finContainer"></div>
             </div>
 
-            <!-- PLANOS -->
+            <!-- PLANOS (ALUNO) -->
             <div id="viewPlanos" style="display:none">
                 <div class="admin-god-header">
                     <h2><i class="fas fa-crown"></i> Planos de Assinatura</h2>
@@ -1627,7 +1790,7 @@
                             <li>Assistente de IA 24/7</li>
                             <li class="off">Aulas ao vivo</li>
                         </ul>
-                        <button class="botao botao-secundario btn-assinar" onclick="abrirModalPagamento('Mensal', '49.90')">Assinar</button>
+                        <button class="botao botao-secundario" onclick="abrirModalPagamento('Mensal', '49.90')">Assinar</button>
                     </div>
                     <div class="plan-card destaque">
                         <span class="badge-plano">Mais vendido</span>
@@ -1642,7 +1805,7 @@
                             <li>Assistente de IA 24/7</li>
                             <li>Aulas ao vivo</li>
                         </ul>
-                        <button class="botao botao-primario btn-assinar" onclick="abrirModalPagamento('Trimestral', '129.90')">Assinar</button>
+                        <button class="botao botao-primario" onclick="abrirModalPagamento('Trimestral', '129.90')">Assinar</button>
                     </div>
                     <div class="plan-card">
                         <h3>Anual</h3>
@@ -1656,7 +1819,100 @@
                             <li>Assistente de IA 24/7</li>
                             <li>Aulas ao vivo</li>
                         </ul>
-                        <button class="botao botao-secundario btn-assinar" onclick="abrirModalPagamento('Anual', '399.90')">Assinar</button>
+                        <button class="botao botao-secundario" onclick="abrirModalPagamento('Anual', '399.90')">Assinar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOLETOS (ALUNO) -->
+            <div id="viewBoletos" style="display:none">
+                <div class="admin-god-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
+                    <h2><i class="fas fa-file-invoice-dollar"></i> Cobranças e Pagamentos</h2>
+                    <div class="admin-god-sub">Acompanhe suas mensalidades e pagamentos</div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-title"><i class="fas fa-bolt"></i> Acesso Rápido</div>
+                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin-top:15px">
+                        <button class="btn-acesso-rapido" onclick="mostrarAbaBoletos('cobrancas')">
+                            <i class="fas fa-list"></i>
+                            <span>Cobranças</span>
+                        </button>
+                        <button class="btn-acesso-rapido" onclick="mostrarAbaBoletos('pix')">
+                            <i class="fas fa-qrcode"></i>
+                            <span>PIX</span>
+                        </button>
+                        <button class="btn-acesso-rapido" onclick="mostrarAbaBoletos('boleto')">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Boleto</span>
+                        </button>
+                        <button class="btn-acesso-rapido" onclick="mostrarAbaBoletos('historico')">
+                            <i class="fas fa-history"></i>
+                            <span>Histórico</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="abaCobrancas" class="admin-card">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="trocarTabBoletos('aberto')">Em Aberto</button>
+                        <button class="tab-btn" onclick="trocarTabBoletos('pagos')">Pagos</button>
+                    </div>
+                    <div id="tabAberto" class="tab-content">
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Nenhuma cobrança em aberto</h4>
+                        </div>
+                    </div>
+                    <div id="tabPagos" class="tab-content" style="display:none">
+                        <div class="empty-state">
+                            <i class="fas fa-credit-card"></i>
+                            <h4>Nenhum pagamento registrado</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="abaPix" class="admin-card" style="display:none">
+                    <h3 style="color:var(--primaria);margin-bottom:14px;"><i class="fas fa-qrcode"></i> Pagar com PIX</h3>
+                    <div style="text-align:center;padding:20px;">
+                        <div style="font-size:80px;margin-bottom:16px;">💳</div>
+                        <p style="color:var(--texto-sec);margin-bottom:16px;">Gere um QR Code PIX para pagar sua mensalidade</p>
+                        <button class="botao botao-primario" style="max-width:300px;margin:0 auto;" onclick="gerarPIX()">Gerar PIX</button>
+                        <div id="pixContainer" style="margin-top:16px;display:none;">
+                            <div class="qr-code-box">
+                                <img id="qrCodeImgPix" src="" alt="QR Code" style="max-width:200px;">
+                            </div>
+                            <p style="font-size:12px;font-weight:600;">Copia e Cola:</p>
+                            <div class="copia-cola" id="pixCopiaCola">00020126330014BR.GOV.BCB.PIX0114sulsafe@pag.com520400005303986540649.905802BR5913SulSafe Treinamentos6009Sao Paulo6108054090006305E2B3F</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="abaBoleto" class="admin-card" style="display:none">
+                    <h3 style="color:var(--primaria);margin-bottom:14px;"><i class="fas fa-file-invoice"></i> Pagar com Boleto</h3>
+                    <div style="text-align:center;padding:20px;">
+                        <div style="font-size:80px;margin-bottom:16px;">📄</div>
+                        <p style="color:var(--texto-sec);margin-bottom:16px;">Gere um boleto bancário para pagamento</p>
+                        <button class="botao botao-primario" style="max-width:300px;margin:0 auto;" onclick="gerarBoletoAluno()">Gerar Boleto</button>
+                        <div id="boletoContainer" style="margin-top:16px;display:none;">
+                            <p style="font-size:12px;font-weight:600;">Linha Digitável:</p>
+                            <div class="linha-boleto" id="linhaBoletoAluno">00190.00009 01234.567890 12345.678901 1 23450000049900</div>
+                            <p style="font-size:12px;color:var(--texto-sec);margin-top:10px;">
+                                Vencimento: <span id="vencimentoBoletoAluno"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="abaHistorico" class="admin-card" style="display:none">
+                    <div class="admin-card-title"><i class="fas fa-history"></i> Histórico de Pagamentos</div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead>
+                            <tbody id="historicoPagamentos">
+                                <tr><td colspan="4" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhum pagamento registrado.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1703,7 +1959,7 @@
             <div id="abaAdminMaterial" class="admin-tab-content active">
                 <div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div>
                 <div class="campo"><label>NR</label><select id="matNR"></select></div>
-                <div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3" style="width:100%;background:var(--input-bg);border:1px solid var(--borda);border-radius:14px;padding:13px 16px;color:var(--texto);font-size:14px;font-family:'Inter',sans-serif;"></textarea></div>
+                <div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3"></textarea></div>
                 <div style="display:flex;gap:10px;margin-top:10px">
                     <button class="btn-criar-sala" style="flex:1" onclick="salvarMaterial()">Publicar</button>
                     <button class="botao botao-secundario" style="flex:1;padding:10px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button>
@@ -1713,7 +1969,7 @@
                 <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura"></div>
                 <div class="campo"><label>NR</label><select id="aulaNR"></select></div>
                 <div class="campo"><label>Link do YouTube</label><input type="url" id="aulaYoutube" placeholder="https://www.youtube.com/watch?v=..."></div>
-                <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2" style="width:100%;background:var(--input-bg);border:1px solid var(--borda);border-radius:14px;padding:13px 16px;color:var(--texto);font-size:14px;font-family:'Inter',sans-serif;"></textarea></div>
+                <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2"></textarea></div>
                 <div style="display:flex;gap:10px;margin-top:10px">
                     <button class="btn-criar-sala" style="flex:1" onclick="salvarVideoaula()">Publicar</button>
                     <button class="botao botao-secundario" style="flex:1;padding:10px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button>
@@ -1729,23 +1985,22 @@
             <h2 style="color:var(--primaria);margin-bottom:4px;">Finalizar <span id="nomePlanoModal"></span></h2>
             <p style="color:var(--texto-sec);font-size:14px;margin-bottom:16px;">Valor: R$ <span id="valorPlanoModal"></span></p>
             <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-                <button class="botao botao-primario" style="flex:1" onclick="gerarPIX()"><i class="fas fa-qrcode"></i> Gerar PIX</button>
-                <button class="botao botao-secundario" style="flex:1;border:1px solid var(--borda)!important;" onclick="gerarBoletoOnline()"><i class="fas fa-file-invoice"></i> Boleto</button>
+                <button class="botao botao-primario" style="flex:1" onclick="gerarPIXModal()"><i class="fas fa-qrcode"></i> PIX</button>
+                <button class="botao botao-secundario" style="flex:1;border:1px solid var(--borda)!important;" onclick="gerarBoletoModal()"><i class="fas fa-file-invoice"></i> Boleto</button>
             </div>
-            <div id="conteudoPIX" style="display:none;">
+            <div id="conteudoPIXModal" style="display:none;">
                 <div class="qr-code-box">
-                    <img id="qrCodeImg" src="" alt="QR Code" style="max-width:100%;max-height:200px;">
+                    <img id="qrCodeModal" src="" alt="QR Code" style="max-width:100%;max-height:200px;">
                     <p style="font-size:12px;color:var(--texto-sec);margin-top:10px;">Escaneie com o app do banco</p>
                 </div>
-                <p style="font-size:12px;font-weight:600;margin-bottom:6px;">Código Copia e Cola:</p>
-                <div class="copia-cola" id="copiaColaTexto">00020126330014BR.GOV.BCB.PIX0114sulsafe@pag.com520400005303986540649.905802BR5913SulSafe Treinamentos6009Sao Paulo6108054090006305E2B3F</div>
+                <p style="font-size:12px;font-weight:600;margin-bottom:6px;">Copia e Cola:</p>
+                <div class="copia-cola" id="copiaColaModal">00020126330014BR.GOV.BCB.PIX0114sulsafe@pag.com520400005303986540649.905802BR5913SulSafe Treinamentos6009Sao Paulo6108054090006305E2B3F</div>
             </div>
-            <div id="conteudoBoleto" style="display:none;">
+            <div id="conteudoBoletoModal" style="display:none;">
                 <p style="font-size:12px;font-weight:600;margin-bottom:6px;">Linha Digitável:</p>
-                <div class="linha-boleto" id="linhaBoletoTexto">00190.00009 01234.567890 12345.678901 1 23450000049900</div>
+                <div class="linha-boleto" id="linhaBoletoModal">00190.00009 01234.567890 12345.678901 1 23450000049900</div>
                 <p style="font-size:12px;color:var(--texto-sec);text-align:center;margin-top:10px;">
-                    Vencimento: <span id="vencimentoBoleto"></span><br>
-                    Status: <strong style="color:var(--erro)">Pendente</strong>
+                    Vencimento: <span id="vencimentoBoletoModal"></span>
                 </p>
             </div>
             <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:12px;">Fechar</button>
@@ -1808,6 +2063,7 @@
         let ehAdmin = false;
         let nrExpandidos = {};
         let currentNrModal = null;
+        let transacoesCache = [];
 
         // ================================================================
         //  FUNÇÕES AUXILIARES
@@ -1822,6 +2078,18 @@
             el.innerText = msg;
             el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 4000);
+        }
+
+        function mostrarSucesso(msg) {
+            const el = document.getElementById('errorTooltip');
+            if (!el) return;
+            el.innerText = '✅ ' + msg;
+            el.style.display = 'block';
+            el.style.background = '#2E7D32';
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.style.background = '#D32F2F';
+            }, 3000);
         }
 
         function getAulasLocal() {
@@ -1840,8 +2108,22 @@
             return JSON.parse(localStorage.getItem('sulsafe_materiais') || '[]');
         }
 
+        function getTransacoes() {
+            return JSON.parse(localStorage.getItem('sulsafe_transacoes') || '[]');
+        }
+
+        function salvarTransacoes(transacoes) {
+            localStorage.setItem('sulsafe_transacoes', JSON.stringify(transacoes));
+            transacoesCache = transacoes;
+        }
+
+        function formatBRL(v) {
+            const n = Number(v || 0);
+            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
         // ================================================================
-        //  AUTENTICAÇÃO (SIMULADA)
+        //  AUTENTICAÇÃO
         // ================================================================
         window.mostrarTela = function(tela) {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('active'));
@@ -1855,12 +2137,12 @@
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
             if (!email || !senha) { mostrarErro('Preencha todos os campos'); return; }
+            
             usuarioAtual = email;
             usuarioId = 'user-' + Date.now();
             ehAdmin = email.includes('admin') || email === 'sulsafetreinamentos@gmail.com';
             ehProfessor = ehAdmin || email.includes('professor');
             
-            // Salva usuário
             localStorage.setItem('sulsafe_user', JSON.stringify({ 
                 id: usuarioId, 
                 email: usuarioAtual, 
@@ -1868,6 +2150,7 @@
             }));
             
             entrarDashboard();
+            mostrarSucesso('Login realizado! Bem-vindo(a), ' + email);
         });
 
         document.getElementById('cadastroForm').addEventListener('submit', function(e) {
@@ -1879,7 +2162,7 @@
             if (!nome || !email || !senha) { mostrarErro('Preencha todos os campos'); return; }
             if (senha !== senha2) { mostrarErro('Senhas não coincidem'); return; }
             if (senha.length < 6) { mostrarErro('Senha deve ter no mínimo 6 caracteres'); return; }
-            mostrarErro('✅ Conta criada! Faça login para continuar.');
+            mostrarSucesso('Conta criada! Faça login para continuar.');
             window.mostrarTela('login');
             document.getElementById('loginEmail').value = email;
         });
@@ -1912,23 +2195,23 @@
             
             document.getElementById('dashUserName').textContent = usuarioAtual || 'Usuário';
             
-            // Atualiza badges
+            // Badge
             const badgeWrap = document.getElementById('roleBadgeWrap');
             let cls = 'aluno', icon = 'fa-user-graduate', txt = 'Aluno';
             if (ehAdmin) { cls = 'admin'; icon = 'fa-crown'; txt = 'ADMIN'; }
             else if (ehProfessor) { cls = 'professor'; icon = 'fa-chalkboard-teacher'; txt = 'PROFESSOR'; }
             badgeWrap.innerHTML = `<span class="role-badge ${cls}"><i class="fas ${icon}"></i><span>${txt}</span></span>`;
 
-            // Mostra/esconde itens por perfil
+            // Mostra/esconde itens
             const setDisplay = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'block' : 'none'; };
             setDisplay('navFinanceiro', ehAdmin);
             setDisplay('navPlanos', !ehAdmin);
+            setDisplay('navBoletos', !ehAdmin);
             setDisplay('navConfig', ehAdmin);
-            setDisplay('navRelatorio', ehProfessor);
             setDisplay('navCertificado', ehProfessor);
             setDisplay('navAreaAluno', !ehProfessor);
             setDisplay('labelEnsino', ehProfessor);
-            setDisplay('labelAdmin', ehAdmin);
+            setDisplay('labelAdmin', ehAdmin || !ehProfessor);
             
             const btnProfessor = document.getElementById('btnPainelProfessor');
             if (btnProfessor) btnProfessor.style.display = ehProfessor ? 'inline-flex' : 'none';
@@ -1940,9 +2223,8 @@
             renderizarNrs();
             renderizarProgressoHome();
             popularSelectsNR();
-            carregarRelatorioAlunos();
-            
-            mostrarErro('✅ Bem-vindo(a), ' + usuarioAtual);
+            carregarFinanceiro();
+            carregarHistoricoPagamentos();
         }
 
         // Verifica sessão salva
@@ -1963,7 +2245,7 @@
         //  NAVEGAÇÃO
         // ================================================================
         window.alternarView = function(viewId) {
-            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Relatorio', 'Financeiro', 'Nrs', 'Certificado', 'Planos', 'Config'];
+            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Financeiro', 'Nrs', 'Certificado', 'Planos', 'Boletos', 'Config'];
             views.forEach(v => { 
                 const el = document.getElementById(`view${v}`); 
                 if (el) el.style.display = 'none'; 
@@ -1971,13 +2253,15 @@
             const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
             if (target) target.style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active');
+            const navItem = document.querySelector(`[data-view="${viewId}"]`);
+            if (navItem) navItem.classList.add('active');
 
             if (viewId === 'videoaulas') carregarVideoaulas();
             if (viewId === 'salas') atualizarListaSalas();
             if (viewId === 'materiais') carregarMateriais();
             if (viewId === 'nrs') renderizarNrs();
-            if (viewId === 'relatorio') carregarRelatorioAlunos();
+            if (viewId === 'financeiro') carregarFinanceiro();
+            if (viewId === 'boletos') carregarHistoricoPagamentos();
         };
 
         document.querySelectorAll('.nav-item').forEach(el => {
@@ -2001,7 +2285,6 @@
             const concluidas = aulas.filter(a => progresso[a.id]).length;
             const pct = Math.round((concluidas / aulas.length) * 100);
             
-            // Progresso
             const progEl = document.getElementById('progressoVideoaulas');
             if (progEl) {
                 progEl.innerHTML = `
@@ -2036,14 +2319,9 @@
                 `;
             }).join('');
 
-            // Certificado
             const btnCert = document.getElementById('btnCertificado');
             if (btnCert) {
-                if (concluidas === aulas.length && aulas.length > 0) {
-                    btnCert.style.display = 'inline-flex';
-                } else {
-                    btnCert.style.display = 'none';
-                }
+                btnCert.style.display = (concluidas === aulas.length && aulas.length > 0) ? 'inline-flex' : 'none';
             }
         }
 
@@ -2075,7 +2353,7 @@
             localStorage.setItem('sulsafe_videoaulas', JSON.stringify(aulas));
             fecharModalAdmin();
             carregarVideoaulas();
-            mostrarErro('✅ Aula publicada!');
+            mostrarSucesso('Aula publicada com sucesso!');
         };
 
         function renderizarProgressoHome() {
@@ -2127,13 +2405,11 @@
             localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
             document.getElementById('meetingName').value = '';
             atualizarListaSalas();
-            mostrarErro('✅ Sala criada!');
+            mostrarSucesso('Sala criada com sucesso!');
         };
 
         window.entrarSala = function(salaId) {
-            // Simula entrada na sala
             window.open('https://meet.jit.si/SulSafe-' + salaId, '_blank');
-            mostrarErro('🔗 Entrando na sala...');
         };
 
         // ================================================================
@@ -2169,7 +2445,7 @@
             localStorage.setItem('sulsafe_materiais', JSON.stringify(materiais));
             fecharModalAdmin();
             carregarMateriais();
-            mostrarErro('✅ Material publicado!');
+            mostrarSucesso('Material publicado!');
         };
 
         // ================================================================
@@ -2184,7 +2460,6 @@
             input.value = '';
             box.scrollTop = box.scrollHeight;
             
-            // Busca NR relacionada
             const nrMatch = pergunta.match(/NR[- ]?(\d{2})/i);
             let resposta = '';
             if (nrMatch) {
@@ -2198,7 +2473,7 @@
             } else {
                 const respostas = [
                     '📋 A NR-10 estabelece os requisitos para segurança em instalações e serviços com eletricidade. Ela exige treinamento específico e uso de EPIs adequados.',
-                    '🦺 O EPI (Equipamento de Proteção Individual) é todo dispositivo de uso individual destinado a proteger a saúde do trabalhador. Ex: capacete, óculos, luvas.',
+                    '🦺 O EPI (Equipamento de Proteção Individual) é todo dispositivo de uso individual destinado a proteger a saúde do trabalhador.',
                     '👥 A CIPA é uma comissão paritária que promove a prevenção de acidentes e doenças ocupacionais.'
                 ];
                 resposta = respostas[Math.floor(Math.random() * respostas.length)];
@@ -2410,7 +2685,7 @@
                 doc.text('concluiu as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
                 doc.text(`Emitido em ${new Date().toLocaleDateString()}`, 148.5, 146, { align: 'center' });
                 doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-                mostrarErro('✅ Certificado gerado!');
+                mostrarSucesso('Certificado gerado com sucesso!');
             } catch (err) {
                 mostrarErro('Erro ao gerar certificado: ' + err.message);
             }
@@ -2443,56 +2718,166 @@
                 doc.text(`concluiu o curso de ${escapeHtml(curso)} com carga horária de ${carga} horas.`, 148.5, 108, { align: 'center' });
                 doc.text(`${cidade}, ${new Date().toLocaleDateString()}`, 148.5, 146, { align: 'center' });
                 doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-                mostrarErro('✅ Certificado gerado!');
+                mostrarSucesso('Certificado gerado!');
             } catch (err) {
                 mostrarErro('Erro ao gerar certificado: ' + err.message);
             }
         };
 
         // ================================================================
-        //  RELATÓRIO
-        // ================================================================
-        function carregarRelatorioAlunos() {
-            const container = document.getElementById('relatorioContainer');
-            if (!container) return;
-            const alunos = [
-                { email: 'aluno1@exemplo.com', progresso: Math.floor(Math.random() * 100) },
-                { email: 'aluno2@exemplo.com', progresso: Math.floor(Math.random() * 100) },
-                { email: 'aluno3@exemplo.com', progresso: Math.floor(Math.random() * 100) }
-            ];
-            let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#2E7D32;color:#fff;"><th>Aluno</th><th>Progresso</th><th>Status</th></tr></thead><tbody>';
-            alunos.forEach(a => {
-                const pct = a.progresso;
-                html += `<tr><td>${escapeHtml(a.email)}</td><td><div style="background:#e0e0e0;border-radius:20px;height:8px"><div style="background:#2E7D32;border-radius:20px;height:8px;width:${pct}%"></div></div>${pct}%</td><td>${pct === 100 ? '✅ Concluído' : (pct > 0 ? '🟡 Em andamento' : '🔴 Não iniciado')}</td></tr>`;
-            });
-            html += '</tbody></table></div>';
-            container.innerHTML = html;
-        }
-
-        // ================================================================
-        //  FINANCEIRO
+        //  FINANCEIRO (ADMIN)
         // ================================================================
         function carregarFinanceiro() {
             const container = document.getElementById('finContainer');
             if (!container) return;
+
+            if (!ehAdmin) {
+                container.innerHTML = `
+                    <div class="access-denied-box" style="text-align:center;padding:60px 20px;">
+                        <i class="fas fa-lock" style="font-size:56px;color:var(--erro);margin-bottom:14px;display:block;"></i>
+                        <h2 style="color:var(--erro);font-size:22px;">Acesso restrito</h2>
+                        <p style="color:var(--texto-sec);font-size:14px;">Apenas administradores podem acessar o financeiro.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const transacoes = getTransacoes();
+            transacoesCache = transacoes;
+
+            // KPIs
+            const pagos = transacoes.filter(t => t.status === 'pago');
+            const receitaTotal = pagos.reduce((s, t) => s + (t.valor || 0), 0);
+            const pendentes = transacoes.filter(t => t.status === 'pendente');
+            const hoje = new Date();
+            const pagosMes = pagos.filter(t => {
+                const d = new Date(t.data);
+                return d.getMonth() === hoje.getMonth() && d.getFullYear() === hoje.getFullYear();
+            });
+            const receitaMes = pagosMes.reduce((s, t) => s + (t.valor || 0), 0);
+
             container.innerHTML = `
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px;">
-                    <div class="stat-card"><div class="stat-val">R$ 0</div><div class="stat-lab">Receita Total</div></div>
-                    <div class="stat-card"><div class="stat-val">R$ 0</div><div class="stat-lab">Este Mês</div></div>
-                    <div class="stat-card"><div class="stat-val">0</div><div class="stat-lab">Assinantes</div></div>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="kpi-label">Receita Total</div>
+                        <div class="kpi-value">${formatBRL(receitaTotal)}</div>
+                        <div class="kpi-sub">${pagos.length} pagamentos</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="kpi-label">Receita Este Mês</div>
+                        <div class="kpi-value">${formatBRL(receitaMes)}</div>
+                        <div class="kpi-sub">${pagosMes.length} pagamentos</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                        <div class="kpi-label">Pendentes</div>
+                        <div class="kpi-value">${pendentes.length}</div>
+                        <div class="kpi-sub">${formatBRL(pendentes.reduce((s,t) => s + (t.valor || 0), 0))}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                        <div class="kpi-label">Total de Transações</div>
+                        <div class="kpi-value">${transacoes.length}</div>
+                    </div>
                 </div>
-                <p style="text-align:center;color:var(--texto-sec);padding:20px;">Nenhuma transação registrada.</p>
+
+                <div class="admin-card">
+                    <div class="admin-card-title"><i class="fas fa-list"></i> Histórico de Transações</div>
+                    <div class="admin-filters">
+                        <input type="text" id="finFiltroBusca" placeholder="🔍 Buscar por email..." oninput="filtrarTransacoes()">
+                        <select id="finFiltroStatus" onchange="filtrarTransacoes()">
+                            <option value="todos">Todos os status</option>
+                            <option value="pago">Pago</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                        <button class="btn-mini" onclick="adicionarTransacaoExemplo()"><i class="fas fa-plus"></i> Adicionar Exemplo</button>
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr><th>Cliente</th><th>Plano</th><th>Valor</th><th>Status</th><th>Data</th></tr>
+                            </thead>
+                            <tbody id="finTabelaBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             `;
+
+            renderTabelaTransacoes();
         }
 
+        function renderTabelaTransacoes() {
+            const tbody = document.getElementById('finTabelaBody');
+            if (!tbody) return;
+
+            const busca = (document.getElementById('finFiltroBusca')?.value || '').toLowerCase().trim();
+            const statusFiltro = document.getElementById('finFiltroStatus')?.value || 'todos';
+
+            let filtradas = transacoesCache;
+            if (busca) {
+                filtradas = filtradas.filter(t => (t.cliente || '').toLowerCase().includes(busca));
+            }
+            if (statusFiltro !== 'todos') {
+                filtradas = filtradas.filter(t => t.status === statusFiltro);
+            }
+
+            if (filtradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhuma transação encontrada.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtradas.map(t => {
+                const statusLabel = { pago: '✅ Pago', pendente: '⏳ Pendente', cancelado: '❌ Cancelado' }[t.status] || t.status;
+                const statusClass = t.status || 'pendente';
+                return `
+                    <tr>
+                        <td>${escapeHtml(t.cliente || '—')}</td>
+                        <td>${escapeHtml(t.plano || 'Avulso')}</td>
+                        <td><strong>${formatBRL(t.valor || 0)}</strong></td>
+                        <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+                        <td>${t.data ? new Date(t.data).toLocaleDateString() : '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.filtrarTransacoes = function() {
+            renderTabelaTransacoes();
+        };
+
+        window.adicionarTransacaoExemplo = function() {
+            const transacoes = getTransacoes();
+            const nomes = ['João Silva', 'Maria Santos', 'Pedro Costa', 'Ana Lima', 'Carlos Souza'];
+            const planos = ['Mensal', 'Trimestral', 'Anual'];
+            const statuses = ['pago', 'pendente', 'pago', 'cancelado'];
+            
+            transacoes.push({
+                id: 'tran-' + Date.now(),
+                cliente: nomes[Math.floor(Math.random() * nomes.length)],
+                plano: planos[Math.floor(Math.random() * planos.length)],
+                valor: [49.90, 129.90, 399.90][Math.floor(Math.random() * 3)],
+                status: statuses[Math.floor(Math.random() * statuses.length)],
+                data: new Date().toISOString()
+            });
+            
+            salvarTransacoes(transacoes);
+            transacoesCache = transacoes;
+            carregarFinanceiro();
+            mostrarSucesso('Transação adicionada!');
+        };
+
         // ================================================================
-        //  PAGAMENTO
+        //  PAGAMENTO - MODAL
         // ================================================================
         window.abrirModalPagamento = function(plano, valor) {
             document.getElementById('nomePlanoModal').textContent = plano;
             document.getElementById('valorPlanoModal').textContent = valor;
-            document.getElementById('conteudoPIX').style.display = 'none';
-            document.getElementById('conteudoBoleto').style.display = 'none';
+            document.getElementById('conteudoPIXModal').style.display = 'none';
+            document.getElementById('conteudoBoletoModal').style.display = 'none';
             document.getElementById('modalPagamento').classList.add('open');
         };
 
@@ -2500,20 +2885,148 @@
             document.getElementById('modalPagamento').classList.remove('open');
         };
 
-        window.gerarPIX = function() {
-            document.getElementById('conteudoPIX').style.display = 'block';
-            document.getElementById('conteudoBoleto').style.display = 'none';
-            // Simula QR Code
-            document.getElementById('qrCodeImg').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23fff"/%3E%3Crect width="40" height="40" x="20" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="140" fill="%23000"/%3E%3C/svg%3E';
+        window.gerarPIXModal = function() {
+            document.getElementById('conteudoPIXModal').style.display = 'block';
+            document.getElementById('conteudoBoletoModal').style.display = 'none';
+            document.getElementById('qrCodeModal').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23fff"/%3E%3Crect width="40" height="40" x="20" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="140" fill="%23000"/%3E%3C/svg%3E';
+            
+            // Adiciona transação pendente
+            const plano = document.getElementById('nomePlanoModal').textContent;
+            const valor = parseFloat(document.getElementById('valorPlanoModal').textContent.replace(',', '.'));
+            const transacoes = getTransacoes();
+            transacoes.push({
+                id: 'tran-' + Date.now(),
+                cliente: usuarioAtual || 'Cliente',
+                plano: plano,
+                valor: valor,
+                status: 'pendente',
+                data: new Date().toISOString()
+            });
+            salvarTransacoes(transacoes);
+            transacoesCache = transacoes;
+            mostrarSucesso('PIX gerado! Pagamento pendente.');
         };
 
-        window.gerarBoletoOnline = function() {
-            document.getElementById('conteudoPIX').style.display = 'none';
-            document.getElementById('conteudoBoleto').style.display = 'block';
+        window.gerarBoletoModal = function() {
+            document.getElementById('conteudoPIXModal').style.display = 'none';
+            document.getElementById('conteudoBoletoModal').style.display = 'block';
             const hoje = new Date();
             hoje.setDate(hoje.getDate() + 5);
-            document.getElementById('vencimentoBoleto').textContent = hoje.toLocaleDateString();
+            document.getElementById('vencimentoBoletoModal').textContent = hoje.toLocaleDateString();
+            
+            // Adiciona transação pendente
+            const plano = document.getElementById('nomePlanoModal').textContent;
+            const valor = parseFloat(document.getElementById('valorPlanoModal').textContent.replace(',', '.'));
+            const transacoes = getTransacoes();
+            transacoes.push({
+                id: 'tran-' + Date.now(),
+                cliente: usuarioAtual || 'Cliente',
+                plano: plano,
+                valor: valor,
+                status: 'pendente',
+                data: new Date().toISOString()
+            });
+            salvarTransacoes(transacoes);
+            transacoesCache = transacoes;
+            mostrarSucesso('Boleto gerado! Pagamento pendente.');
         };
+
+        // ================================================================
+        //  BOLETOS (ALUNO)
+        // ================================================================
+        window.mostrarAbaBoletos = function(aba) {
+            document.querySelectorAll('#viewBoletos .admin-card').forEach(c => c.style.display = 'none');
+            const map = {
+                'cobrancas': 'abaCobrancas',
+                'pix': 'abaPix',
+                'boleto': 'abaBoleto',
+                'historico': 'abaHistorico'
+            };
+            const el = document.getElementById(map[aba]);
+            if (el) el.style.display = 'block';
+            
+            if (aba === 'historico') carregarHistoricoPagamentos();
+        };
+
+        window.trocarTabBoletos = function(tab) {
+            document.querySelectorAll('#abaCobrancas .tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('#abaCobrancas .tab-btn').forEach(b => b.classList.remove('active'));
+            
+            if (tab === 'aberto') {
+                document.getElementById('tabAberto').style.display = 'block';
+                document.querySelector('#abaCobrancas .tab-btn:first-child').classList.add('active');
+            } else {
+                document.getElementById('tabPagos').style.display = 'block';
+                document.querySelector('#abaCobrancas .tab-btn:last-child').classList.add('active');
+            }
+        };
+
+        window.gerarPIX = function() {
+            const container = document.getElementById('pixContainer');
+            container.style.display = 'block';
+            document.getElementById('qrCodeImgPix').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23fff"/%3E%3Crect width="40" height="40" x="20" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="140" fill="%23000"/%3E%3C/svg%3E';
+            
+            // Adiciona transação
+            const transacoes = getTransacoes();
+            transacoes.push({
+                id: 'tran-' + Date.now(),
+                cliente: usuarioAtual || 'Cliente',
+                plano: 'Mensal',
+                valor: 49.90,
+                status: 'pendente',
+                data: new Date().toISOString()
+            });
+            salvarTransacoes(transacoes);
+            transacoesCache = transacoes;
+            mostrarSucesso('PIX gerado!');
+        };
+
+        window.gerarBoletoAluno = function() {
+            const container = document.getElementById('boletoContainer');
+            container.style.display = 'block';
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + 5);
+            document.getElementById('vencimentoBoletoAluno').textContent = hoje.toLocaleDateString();
+            
+            const transacoes = getTransacoes();
+            transacoes.push({
+                id: 'tran-' + Date.now(),
+                cliente: usuarioAtual || 'Cliente',
+                plano: 'Mensal',
+                valor: 49.90,
+                status: 'pendente',
+                data: new Date().toISOString()
+            });
+            salvarTransacoes(transacoes);
+            transacoesCache = transacoes;
+            mostrarSucesso('Boleto gerado!');
+        };
+
+        function carregarHistoricoPagamentos() {
+            const tbody = document.getElementById('historicoPagamentos');
+            if (!tbody) return;
+            
+            const transacoes = getTransacoes();
+            const minhasTransacoes = transacoes.filter(t => t.cliente === usuarioAtual || !t.cliente);
+            
+            if (minhasTransacoes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhum pagamento registrado.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = minhasTransacoes.map(t => {
+                const statusLabel = { pago: '✅ Pago', pendente: '⏳ Pendente', cancelado: '❌ Cancelado' }[t.status] || t.status;
+                const statusClass = t.status || 'pendente';
+                return `
+                    <tr>
+                        <td>${t.data ? new Date(t.data).toLocaleDateString() : '—'}</td>
+                        <td><strong>${formatBRL(t.valor || 0)}</strong></td>
+                        <td>${escapeHtml(t.plano || 'Avulso')}</td>
+                        <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
 
         // ================================================================
         //  ADMIN MODAL
@@ -2540,7 +3053,7 @@
         window.trocarConfigTab = function(tab) {
             document.querySelectorAll('.config-tab').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.config-section').forEach(el => el.classList.remove('active-section'));
-            document.querySelector(`[onclick*="${tab}"]`)?.classList.add('active');
+            document.querySelector(`.config-tab[onclick*="${tab}"]`)?.classList.add('active');
             document.getElementById(`config-${tab}`)?.classList.add('active-section');
         };
 
@@ -2555,9 +3068,9 @@
             localStorage.setItem('sulsafe_tema', tema);
         };
 
-        // Aplica tema salvo
         const temaSalvo = localStorage.getItem('sulsafe_tema') || 'escuro';
-        document.getElementById('cfgTema').value = temaSalvo;
+        const cfgTema = document.getElementById('cfgTema');
+        if (cfgTema) cfgTema.value = temaSalvo;
         aplicarTema(temaSalvo);
 
         // ================================================================
@@ -2615,6 +3128,7 @@
         console.log('🚀 SulSafe carregado!');
         console.log('📊 NRS_DATA:', NRS_DATA.length, 'normas');
         console.log('👤 Usuário:', usuarioAtual || 'Não logado');
+        console.log('🔑 Admin:', ehAdmin, 'Professor:', ehProfessor);
     </script>
 </body>
 </html>
