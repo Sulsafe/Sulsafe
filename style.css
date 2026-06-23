@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSaber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
         /* ===== RESET E BASE ===== */
         * {
             margin: 0;
@@ -1713,7 +1722,186 @@
             box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
         }
 
+        /* ===== PLANOS ===== */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .plan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--borda);
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            transition: .25s;
+        }
+
+        .plan-card:hover {
+            border-color: var(--primaria);
+            box-shadow: 0 12px 32px rgba(46, 125, 50, .1);
+            transform: translateY(-3px);
+        }
+
+        .plan-card.destaque {
+            border: 2px solid var(--primaria);
+            box-shadow: 0 0 0 4px var(--primaria-glow);
+        }
+
+        .badge-plano {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primaria);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .plan-card h3 { 
+            font-size: 18px; 
+            font-weight: 800;
+            color: var(--texto); 
+            margin-bottom: 6px; 
+        }
+
+        .plan-card .subtitle { 
+            color: var(--texto-sec); 
+            font-size: 12px; 
+            margin-bottom: 18px; 
+        }
+
+        .plan-card .price { 
+            font-size: 38px; 
+            color: var(--texto); 
+            font-weight: 900; 
+            line-height: 1;
+        }
+        .plan-card .price span { font-size: 46px; }
+
+        .plan-card .billing { 
+            color: var(--texto-sec); 
+            font-size: 12px; 
+            margin: 8px 0 14px; 
+        }
+
+        .economy { 
+            background: rgba(46, 125, 50, .12);
+            color: var(--sucesso);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .plan-card ul { 
+            list-style: none; 
+            text-align: left; 
+            margin: 20px 0; 
+            min-height: 160px;
+        }
+
+        .plan-card li { 
+            padding: 7px 0; 
+            color: var(--texto); 
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .plan-card li::before {
+            content: '✓';
+            color: var(--primaria);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .plan-card li.off { 
+            color: var(--texto-sec); 
+            opacity: .5;
+        }
+        .plan-card li.off::before {
+            content: '✗';
+            color: var(--erro);
+        }
+
+        .btn-assinar {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* ===== MODAL PAGAMENTO ===== */
+        .modal-pagamento {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 420px;
+            width: 92%;
+            border: 1px solid var(--borda);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .metodo-pagamento {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .qr-code-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .qr-code-box img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .copia-cola {
+            background: var(--input-bg);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 11px;
+            word-break: break-all;
+            color: var(--texto-sec);
+            margin-top: 8px;
+        }
+
+        .linha-boleto {
+            background: var(--input-bg);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--texto);
+            text-align: center;
+            letter-spacing: 1px;
+            margin: 16px 0;
+        }
+
         /* ===== RESPONSIVO ===== */
+        @media (max-width: 900px) {
+            .plans-grid { 
+                grid-template-columns: 1fr; 
+            }
+        }
+
         @media (max-width: 768px) {
             .dash-sidebar {
                 width: 60px;
@@ -1742,12 +1930,6 @@
                 width: 250px;
                 right: -10px;
                 bottom: 90px;
-            }
-            .stats-bar {
-                grid-template-columns: 1fr 1fr;
-            }
-            .stats-bar .stat-card:last-child {
-                grid-column: span 2;
             }
             .modal {
                 padding: 1.2rem;
@@ -1821,3 +2003,9 @@
                 grid-template-columns: 1fr;
             }
         }
+    </style>
+</head>
+<body>
+    <!-- Conteúdo do site aqui -->
+</body>
+</html>
