@@ -1606,14 +1606,101 @@
             </div>
 
             <!-- PLANOS -->
-            <div id="viewPlanos" style="display:none">
-                <div class="admin-god-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
-                    <h2><i class="fas fa-tag"></i> Escolha seu plano</h2>
-                    <div class="admin-god-sub">Acesso completo às 38 NRs, videoaulas, aulas ao vivo e certificados</div>
-                </div>
-                <div class="planos-grid" id="planosGrid"></div>
-            </div>
+          <div class="planos-grid" id="planosGrid">
+  <!-- MENSAL -->
+  <div class="plan-card">
+    <h3>Mensal</h3>
+    <p class="subtitle">Flexível para começar</p>
+    <div class="price">R$ <span>49</span>,90</div>
+    <p class="billing">por mês · cobrança mensal</p>
+    <ul>
+      <li>Acesso a todas as 38 NRs</li>
+      <li>Videoaulas em HD ilimitadas</li>
+      <li>Certificado reconhecido</li>
+      <li>Assistente de IA 24/7</li>
+      <li class="off">Aulas ao vivo ilimitadas</li>
+      <li class="off">Suporte prioritário</li>
+    </ul>
+    <button class="botao botao-secundario btn-assinar" data-plano="Mensal" data-valor="49.90">Assinar Mensal</button>
+  </div>
 
+  <!-- TRIMESTRAL - DESTAQUE -->
+  <div class="plan-card destaque">
+    <span class="badge-plano">Melhor custo-benefício</span>
+    <h3>Trimestral</h3>
+    <p class="subtitle">Melhor custo-benefício</p>
+    <div class="price">R$ <span>129</span>,90</div>
+    <p class="billing">a cada 3 meses · equivalente a R$ 43,30/mês</p>
+    <p class="economy">Economize 13%</p>
+    <ul>
+      <li>Acesso a todas as 38 NRs</li>
+      <li>Videoaulas em HD ilimitadas</li>
+      <li>Certificado reconhecido</li>
+      <li>Assistente de IA 24/7</li>
+      <li>Aulas ao vivo ilimitadas</li>
+      <li class="off">Suporte prioritário</li>
+    </ul>
+    <button class="botao botao-primario btn-assinar" data-plano="Trimestral" data-valor="129.90">Assinar Trimestral</button>
+  </div>
+
+  <!-- ANUAL -->
+  <div class="plan-card">
+    <h3>Anual</h3>
+    <p class="subtitle">Máxima economia</p>
+    <div class="price">R$ <span>399</span>,90</div>
+    <p class="billing">por ano · equivalente a R$ 33,32/mês</p>
+    <p class="economy">Economize 33%</p>
+    <ul>
+      <li>Acesso a todas as 38 NRs</li>
+      <li>Videoaulas em HD ilimitadas</li>
+      <li>Certificado reconhecido</li>
+      <li>Assistente de IA 24/7</li>
+      <li>Aulas ao vivo ilimitadas</li>
+      <li>Suporte prioritário dedicado</li>
+    </ul>
+    <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
+  </div>
+</div>
+1661   <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
+1662   </div>
+1663   </div>  <!-- fecha o planos-grid -->
+1664 
+1665   <!-- Modal Pagamento - COLA AQUI -->
+1666   <div id="modalPagamento" class="modal-bg">
+1667     <div class="modal-pagamento">
+1668       <button class="modal-close" onclick="fecharModalPag()">×</button>
+1669       <h2>Finalizar <span id="nomePlanoModal"></span></h2>
+1670       <p class="subtitulo">Valor: R$ <span id="valorPlanoModal"></span></p>
+1671       
+1672       <div class="metodo-pagamento">
+1673         <button class="botao botao-primario" onclick="gerarPIX()">Gerar PIX</button>
+1674         <button class="botao botao-secundario" onclick="gerarBoletoOnline()">Gerar Boleto Online</button>
+1675       </div>
+1676       
+1677       <div id="conteudoPIX" style="display:none">
+1678         <div class="qr-code-box">
+1679           <img id="qrCodeImg" src="" alt="QR Code PIX">
+1680           <p style="font-size:12px; color:var(--texto-sec); margin-top:10px">Escaneie com app do banco</p>
+1681         </div>
+1682         <p style="font-size:12px; font-weight:600; margin-bottom:6px">Código Copia e Cola:</p>
+1683         <div class="copia-cola" id="copiaColaTexto"></div>
+1684       </div>
+1685       
+1686       <div id="conteudoBoleto" style="display:none">
+1687         <p style="font-size:12px; font-weight:600; margin-bottom:6px">Linha Digitável:</p>
+1688         <div class="linha-boleto" id="linhaBoletoTexto"></div>
+1689         <p style="font-size:12px; color:var(--texto-sec); text-align:center">
+1690           Vencimento: <span id="vencimentoBoleto"></span><br>
+1691           Status: <strong style="color:var(--erro)">Pendente</strong>
+1692         </p>
+1693       </div>
+1694       
+1695       <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:20px">Fechar</button>
+1696     </div>
+1697   </div>
+1698 
+1699   <!-- AVALIACOES -->
+1700   <div id="viewAvaliacoes" style="display:none">
             <!-- AVALIACOES -->
             <div id="viewAvaliacoes" style="display:none">
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-clipboard-check"></i> Avaliações</h2>
