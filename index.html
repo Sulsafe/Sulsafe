@@ -1833,7 +1833,43 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 })();
 
-console.log('🚀 SulSafe carregado!');
+console.log('✨ SulSafe carregado!');
+
+// ===== JS DOS PLANOS =====
+document.querySelectorAll('.btn-assinar').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const plano = btn.dataset.plano;
+    const valor = btn.dataset.valor;
+    document.getElementById('modalPagamento').classList.add('open');
+    document.getElementById('nomePlanoModal').innerText = plano;
+    document.getElementById('valorPlanoModal').innerText = valor;
+    
+    // esconde conteúdo anterior do modal
+    document.getElementById('conteudoPIX').style.display = 'none';
+    document.getElementById('conteudoBoleto').style.display = 'none';
+  });
+});
+
+function gerarPIX() {
+  document.getElementById('conteudoPIX').style.display = 'block';
+  document.getElementById('conteudoBoleto').style.display = 'none';
+  document.getElementById('qrCodeImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PIX-PLANO-FAKE';
+  document.getElementById('copiaColaTexto').innerText = '00020126580014BR.GOV.BCB.PIX...VALOR' + document.getElementById('valorPlanoModal').innerText;
+  alert('PIX gerado! Status: Pendente');
+}
+
+function gerarBoletoOnline() {
+  document.getElementById('conteudoBoleto').style.display = 'block';
+  document.getElementById('conteudoPIX').style.display = 'none';
+  const valor = document.getElementById('valorPlanoModal').innerText.replace('.','');
+  document.getElementById('linhaBoletoTexto').innerText = '23790.00000 00000.000 00000.000 1 999900000' + valor;
+  document.getElementById('vencimentoBoleto').innerText = new Date(Date.now() + 3*24*60*60*1000).toLocaleDateString('pt-BR');
+  alert('Boleto gerado! Marca como Pago no admin depois');
+}
+
+function fecharModalPag() {
+  document.getElementById('modalPagamento').classList.remove('open');
+}
+// ===== FIM JS DOS PLANOS =====
 </script>
 </body>
-</html>
