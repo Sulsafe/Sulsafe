@@ -690,105 +690,6 @@
         .plano-features li.off i { color: var(--borda); }
         .plano .btn { width: 100%; }
 
-        /* ============ DEPOIMENTOS ============ */
-        .depoimentos { background: #fff; }
-        .depoimentos-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        .depoimento {
-            background: var(--verde-bg-2);
-            border: 1px solid var(--borda-2);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            transition: all .3s;
-            position: relative;
-        }
-        .depoimento:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--sombra-md);
-            background: #fff;
-        }
-        .depoimento .stars {
-            color: var(--dourado);
-            font-size: 14px;
-            margin-bottom: 14px;
-            display: flex; gap: 2px;
-        }
-        .depoimento .aspas {
-            position: absolute; top: 18px; right: 22px;
-            font-size: 56px; color: var(--verde-bg);
-            font-family: 'Montserrat', serif;
-            line-height: 1;
-            z-index: 0;
-        }
-        .depoimento p {
-            font-size: 14.5px; color: var(--texto);
-            line-height: 1.65;
-            margin-bottom: 20px;
-            position: relative; z-index: 1;
-            font-style: italic;
-        }
-        .depoimento-author {
-            display: flex; align-items: center; gap: 12px;
-            padding-top: 16px;
-            border-top: 1px solid var(--borda-2);
-        }
-        .depoimento-avatar {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: var(--grad-verde);
-            color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 17px; font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            flex-shrink: 0;
-        }
-        .depoimento-author-info { line-height: 1.3; }
-        .depoimento-author-info .nome { font-size: 14px; font-weight: 700; color: var(--texto); }
-        .depoimento-author-info .cargo { font-size: 12.5px; color: var(--texto-ter); }
-
-        /* ============ STATS ============ */
-        .stats {
-            background: var(--grad-verde);
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-        }
-        .stats::before {
-            content: '';
-            position: absolute; inset: 0;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(201,176,55,.2), transparent 50%),
-                radial-gradient(circle at 80% 30%, rgba(255,255,255,.08), transparent 40%);
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-            position: relative; z-index: 1;
-        }
-        .stat {
-            text-align: center;
-            padding: 24px 16px;
-        }
-        .stat-num {
-            font-family: 'Montserrat', sans-serif;
-            font-size: clamp(36px, 5vw, 56px);
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            margin-bottom: 6px;
-            line-height: 1;
-        }
-        .stat-num .plus { color: var(--dourado-claro); }
-        .stat-label {
-            font-size: 14px; font-weight: 500;
-            opacity: .85;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
         /* ============ FAQ ============ */
         .faq { background: var(--verde-bg-2); }
         .faq-list {
@@ -839,6 +740,37 @@
             font-size: 14.5px;
             color: var(--texto-sec);
             line-height: 1.7;
+        }
+
+        /* ============ SEÇÃO DE IMAGENS ============ */
+        .imagens-section {
+            background: var(--verde-bg-2);
+            padding: 60px 0;
+        }
+        .imagens-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            align-items: center;
+            justify-items: center;
+        }
+        .imagem-item {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .3s ease;
+        }
+        .imagem-item:hover {
+            transform: scale(1.05);
+        }
+        .imagem-item img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,.1));
         }
 
         /* ============ CTA FINAL ============ */
@@ -989,13 +921,13 @@
             .hero-content { max-width: 100%; margin: 0 auto; }
             .hero-badge, .hero-ctas, .hero-mini { justify-content: center; }
             .hero-mini { margin: 0 auto; }
-            .features-grid, .planos-grid, .depoimentos-grid, .how-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid, .planos-grid, .how-grid { grid-template-columns: repeat(2, 1fr); }
             .nr-grid { grid-template-columns: repeat(3, 1fr); }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
             .plano.popular { transform: scale(1); }
             .plano.popular:hover { transform: translateY(-6px); }
             .how-grid::before { display: none; }
+            .imagens-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
         }
         @media (max-width: 640px) {
             .section { padding: 64px 0; }
@@ -1004,7 +936,7 @@
             .hero h1 { font-size: 32px; }
             .hero-tagline { font-size: 16px; }
             .hero-mini { gap: 14px; flex-direction: column; align-items: center; }
-            .features-grid, .planos-grid, .depoimentos-grid, .how-grid, .nr-grid, .stats-grid { grid-template-columns: 1fr; }
+            .features-grid, .planos-grid, .how-grid, .nr-grid { grid-template-columns: 1fr; }
             .nr-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-grid { grid-template-columns: 1fr; gap: 32px; }
             .footer-bottom { flex-direction: column; text-align: center; }
@@ -1014,9 +946,13 @@
             .section-title { font-size: 26px; }
             .btn { padding: 13px 24px; font-size: 14px; }
             .feature-card { padding: 26px 22px; }
+            .imagens-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .imagem-item { max-width: 140px; }
         }
         @media (max-width: 400px) {
             .nr-grid { grid-template-columns: 1fr; }
+            .imagens-grid { grid-template-columns: 1fr; }
+            .imagem-item { max-width: 180px; }
         }
 
         /* Reduced motion */
@@ -1260,7 +1196,7 @@
     </div>
 </header>
 
-<!-- ============ HERO - BANNER SEM CARDS FLUTUANTES ============ -->
+<!-- ============ HERO ============ -->
 <section class="hero" id="inicio">
     <div class="container">
         <div class="hero-grid">
@@ -1408,6 +1344,26 @@
     </div>
 </section>
 
+<!-- ============ SEÇÃO DE IMAGENS (LADO A LADO) ============ -->
+<section class="imagens-section">
+    <div class="container">
+        <div class="imagens-grid reveal">
+            <div class="imagem-item">
+                <img src="simbolopreto.png" alt="Símbolo SulSafe" loading="lazy">
+            </div>
+            <div class="imagem-item">
+                <img src="elementos2.png" alt="Elementos SulSafe" loading="lazy">
+            </div>
+            <div class="imagem-item">
+                <img src="seg.png" alt="Segurança SulSafe" loading="lazy">
+            </div>
+            <div class="imagem-item">
+                <img src="elementos.png" alt="Elementos SulSafe" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ============ PLANOS ============ -->
 <section class="section planos" id="planos">
     <div class="container">
@@ -1484,87 +1440,6 @@
         <p class="text-center reveal" style="margin-top:32px;font-size:13.5px;color:var(--texto-ter);">
             <i class="fas fa-lock" style="color:var(--verde);"></i>&nbsp; Pagamento seguro via Mercado Pago · Pix, cartão ou boleto · Acesso imediato
         </p>
-    </div>
-</section>
-
-<!-- ============ DEPOIMENTOS ============ -->
-<section class="section depoimentos" id="depoimentos">
-    <div class="container">
-        <div class="section-head reveal">
-            <span class="eyebrow"><i class="fas fa-quote-right"></i> Depoimentos</span>
-            <h2 class="section-title">Quem usa, <span class="gradient-text">recomenda</span></h2>
-            <p class="section-subtitle">Mais de 500 profissionais já se capacitaram com a SulSafe. Veja o que dizem sobre a experiência.</p>
-        </div>
-        <div class="depoimentos-grid">
-            <article class="depoimento reveal">
-                <span class="aspas">"</span>
-                <div class="stars" aria-label="5 de 5 estrelas">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p>Implementamos o SulSafe em toda a fábrica. Em 2 meses, 180 funcionários foram treinados nas NRs 6, 10 e 35. Reduzimos acidentes em 40% no trimestre seguinte. Recomendo!</p>
-                <div class="depoimento-author">
-                    <div class="depoimento-avatar">RM</div>
-                    <div class="depoimento-author-info">
-                        <div class="nome">Rogério Martins</div>
-                        <div class="cargo">Coordenador de SST · Indústria Metalúrgica Sul</div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="depoimento reveal d1">
-                <span class="aspas">"</span>
-                <div class="stars" aria-label="5 de 5 estrelas">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p>Como engenheira de segurança, preciso me manter atualizada. A plataforma tem o conteúdo das 38 NRs sempre atualizado, e a IA me ajuda a esclarecer dúvidas técnicas na hora. Sensacional.</p>
-                <div class="depoimento-author">
-                    <div class="depoimento-avatar">PS</div>
-                    <div class="depoimento-author-info">
-                        <div class="nome">Patrícia Souza</div>
-                        <div class="cargo">Engenheira de Segurança do Trabalho · Freelancer</div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="depoimento reveal d2">
-                <span class="aspas">"</span>
-                <div class="stars" aria-label="5 de 5 estrelas">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p>Sou eletricista e precisava fazer a NR 10. Fiz pelo celular nos horários vagos. O certificado chegou rápido e foi aceito pela empresa sem problema. Plataforma simples e direta.</p>
-                <div class="depoimento-author">
-                    <div class="depoimento-avatar">JC</div>
-                    <div class="depoimento-author-info">
-                        <div class="nome">José Carlos Lima</div>
-                        <div class="cargo">Eletricista Industrial · Porto Alegre/RS</div>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </div>
-</section>
-
-<!-- ============ ESTATÍSTICAS ============ -->
-<section class="section stats">
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat reveal">
-                <div class="stat-num" data-count="500"><span class="plus">+</span></div>
-                <div class="stat-label">Alunos formados</div>
-            </div>
-            <div class="stat reveal d1">
-                <div class="stat-num" data-count="38"></div>
-                <div class="stat-label">NRs disponíveis</div>
-            </div>
-            <div class="stat reveal d2">
-                <div class="stat-num" data-count="98"><span class="plus">%</span></div>
-                <div class="stat-label">Taxa de aprovação</div>
-            </div>
-            <div class="stat reveal d3">
-                <div class="stat-num">24<span class="plus">/7</span></div>
-                <div class="stat-label">Suporte &amp; IA</div>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -1656,9 +1531,9 @@
     <div class="container">
         <div class="reveal">
             <h2>Pronto para começar?</h2>
-            <p>Junte-se a mais de 500 profissionais que já escolheram a SulSafe para garantir segurança no trabalho. Acesso imediato após o pagamento.</p>
+            <p>Junte-se a nós e garanta a segurança da sua equipe. Acesso imediato após o pagamento.</p>
             <a href="login.html" class="btn btn-gold btn-lg">
-                <i class="fas fa-rocket"></i> Assinar agora
+                <i class="fas fa-rocket"></i> Começar agora
             </a>
             <div class="micro">
                 <i class="fas fa-bolt"></i> Acesso imediato &nbsp;·&nbsp; <i class="fas fa-shield-halved"></i> Pagamento seguro &nbsp;·&nbsp; <i class="fas fa-infinity"></i> 38 NRs disponíveis
@@ -1904,32 +1779,6 @@ hamburger.addEventListener('click', () => {
         });
     }, { threshold: 0.12 });
     reveals.forEach(el => io.observe(el));
-})();
-
-/* ---- Contadores ---- */
-(function setupCounters() {
-    const counters = document.querySelectorAll('.stat-num[data-count]');
-    if (!counters.length) return;
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const el = entry.target;
-            const target = parseInt(el.dataset.count, 10);
-            const suffix = el.querySelector('.plus')?.outerHTML || '';
-            const duration = 1500;
-            const start = performance.now();
-            const step = (now) => {
-                const p = Math.min((now - start) / duration, 1);
-                const val = Math.floor(p * target);
-                el.innerHTML = val + suffix;
-                if (p < 1) requestAnimationFrame(step);
-                else el.innerHTML = target + suffix;
-            };
-            requestAnimationFrame(step);
-            io.unobserve(el);
-        });
-    }, { threshold: 0.5 });
-    counters.forEach(el => io.observe(el));
 })();
 
 /* ---- Smooth scroll ---- */
