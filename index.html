@@ -16,11 +16,6 @@
     <meta property="og:image" content="sulsafe.png">
     <meta property="og:url" content="https://sulsafe.com.br/">
     <meta property="og:site_name" content="SulSafe">
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SulSafe | Cursos de NR Online com Certificado">
-    <meta name="twitter:description" content="38 NRs em videoaulas HD, aulas ao vivo, certificado reconhecido e IA 24/7.">
-    <meta name="twitter:image" content="sulsafe.png">
 
     <!-- PWA / Favicon -->
     <link rel="manifest" href="manifest.json">
@@ -1074,7 +1069,6 @@
             .reveal { opacity: 1; transform: none; }
         }
 
-        /* S5-FIX: desativar animações float em telas grandes */
         @media (min-width: 1025px) and (pointer: fine) {
             .hero-float-card,
             .hero-float-card.f1,
@@ -1086,12 +1080,11 @@
             }
         }
 
-        /* S5-FIX: ocultar float cards em telas muito largas */
         @media (min-width: 1400px) {
             .hero-float-card { display: none; }
         }
 
-        /* ============ MASCOTE FLUTUANTE (S5-FIX) ============ */
+        /* ============ MASCOTE FLUTUANTE ============ */
         .mascote-landing-wrap {
             position: fixed;
             bottom: 24px;
@@ -1348,7 +1341,7 @@
             </div>
             <div class="hero-visual reveal d2">
                 <div class="hero-logo-wrap">
-                    <img src="sulsafe.png" alt="SulSafe — Procurar vidas é o nosso compromisso." width="420" height="410">
+                    <img src="sulsafe.png" alt="SulSafe" width="420" height="410">
                 </div>
                 <div class="hero-float-card f1">
                     <span class="ic"><i class="fas fa-certificate"></i></span>
@@ -1450,9 +1443,7 @@
             <button class="nr-filter" data-filter="setoriais" role="tab" aria-selected="false">Setoriais <span class="count">(12)</span></button>
         </div>
 
-        <div class="nr-grid" id="nrGrid">
-            <!-- 38 NRs inseridas via JS para manter HTML limpo -->
-        </div>
+        <div class="nr-grid" id="nrGrid"></div>
     </div>
 </section>
 
@@ -1784,15 +1775,16 @@
                         <span class="logo-sub">Segurança do Trabalho</span>
                     </span>
                 </a>
-                <p>Plataforma de ensino de Segurança do Trabalho com as 38 NRs em videoaulas HD, aulas ao vivo e certificado reconhecido. Sua segurança, nosso compromisso.</p>
+                <p><strong>Proteger vidas é o nosso compromisso.</strong></p>
+                <p>Plataforma de ensino de Segurança do Trabalho com as 38 NRs em videoaulas HD, aulas ao vivo e certificado reconhecido.</p>
                 <div class="footer-social">
-                    <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank" rel="noopener noreferrer" aria-label="YouTube SulSafe"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram SulSafe"><i class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp SulSafe"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn SulSafe"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://facebook.com/sulsafetreinamentos" class="social-btn" title="Facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook SulSafe"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://tiktok.com/@sulsafetreinamentos" class="social-btn" title="TikTok" target="_blank" rel="noopener noreferrer" aria-label="TikTok SulSafe"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://x.com/sulsafetreinamentos" class="social-btn" title="X (Twitter)" target="_blank" rel="noopener noreferrer" aria-label="X SulSafe"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.youtube.com/@SulSafeTreinamentos" class="social-btn" title="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/sulsafetreinamentos/" class="social-btn" title="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/5553997060864" class="social-btn" title="WhatsApp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://facebook.com/sulsafetreinamentos" class="social-btn" title="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://tiktok.com/@sulsafetreinamentos" class="social-btn" title="TikTok" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://x.com/sulsafetreinamentos" class="social-btn" title="X" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
                 </div>
             </div>
 
@@ -1838,7 +1830,7 @@
     </div>
 </footer>
 
-<!-- ============ MASCOTE FLUTUANTE (ÚNICO) ============ -->
+<!-- ============ MASCOTE ============ -->
 <div class="mascote-landing-wrap" id="mascoteBalaoWrap">
     <button class="mascote-avatar-landing" id="mascoteAvatarLanding" aria-label="Abrir assistente SulSafe">
         <img src="sipat-seguranca.png" alt="Mascote SulSafe" onerror="this.style.display='none'">
@@ -1881,13 +1873,8 @@
 </div>
 
 <script>
-/* =====================================================
-   SULSAFE LANDING PAGE — INTERACTIONS
-   ===================================================== */
-
-/* ---- Lista das 38 NRs (categorias: gerais, especificas, setoriais) ---- */
+/* ---- Lista das 38 NRs ---- */
 const NRS = [
-    // GERAIS (16)
     { n: 1,  nome: 'Disposições Gerais e Gerenciamento de Riscos', cat: 'gerais', emoji: '📋' },
     { n: 2,  nome: 'Inspeção Prévia', cat: 'gerais', emoji: '📋' },
     { n: 3,  nome: 'Embargo ou Interdição', cat: 'gerais', emoji: '📋' },
@@ -1904,7 +1891,6 @@ const NRS = [
     { n: 25, nome: 'Resíduos Industriais', cat: 'gerais', emoji: '🗑️' },
     { n: 26, nome: 'Sinalização de Segurança', cat: 'gerais', emoji: '🚸' },
     { n: 28, nome: 'Fiscalização e Penalidades', cat: 'gerais', emoji: '📋' },
-    // ESPECÍFICAS (10)
     { n: 10, nome: 'Segurança em Eletricidade', cat: 'especificas', emoji: '⚡' },
     { n: 11, nome: 'Movimentação e Armazenagem de Cargas', cat: 'especificas', emoji: '📦' },
     { n: 12, nome: 'Máquinas e Equipamentos', cat: 'especificas', emoji: '🏭' },
@@ -1915,7 +1901,6 @@ const NRS = [
     { n: 23, nome: 'Proteção Contra Incêndios', cat: 'especificas', emoji: '🧯' },
     { n: 33, nome: 'Espaços Confinados', cat: 'especificas', emoji: '🔬' },
     { n: 35, nome: 'Trabalho em Altura', cat: 'especificas', emoji: '🪜' },
-    // SETORIAIS (12)
     { n: 18, nome: 'Indústria da Construção Civil', cat: 'setoriais', emoji: '🏗️' },
     { n: 21, nome: 'Trabalho a Céu Aberto', cat: 'setoriais', emoji: '☀️' },
     { n: 22, nome: 'Mineração', cat: 'setoriais', emoji: '⛏️' },
@@ -1930,12 +1915,12 @@ const NRS = [
     { n: 38, nome: 'Limpeza Urbana e Resíduos Sólidos', cat: 'setoriais', emoji: '🚛' }
 ];
 
-/* ---- Renderiza as NRs ---- */
+/* ---- Renderiza NRs ---- */
 (function renderNRs() {
     const grid = document.getElementById('nrGrid');
     if (!grid) return;
-    const html = NRS.map(nr => `
-        <article class="nr-card reveal" data-cat="${nr.cat}" tabindex="0" aria-label="NR ${nr.n} — ${nr.nome}">
+    grid.innerHTML = NRS.map(nr => `
+        <article class="nr-card reveal" data-cat="${nr.cat}" tabindex="0">
             <div class="nr-emoji" aria-hidden="true">${nr.emoji}</div>
             <div class="nr-info">
                 <div class="nr-num">NR ${nr.n}</div>
@@ -1943,10 +1928,9 @@ const NRS = [
             </div>
         </article>
     `).join('');
-    grid.innerHTML = html;
 })();
 
-/* ---- Filtros de NR ---- */
+/* ---- Filtros ---- */
 document.querySelectorAll('.nr-filter').forEach(btn => {
     btn.addEventListener('click', () => {
         const filter = btn.dataset.filter;
@@ -1958,20 +1942,12 @@ document.querySelectorAll('.nr-filter').forEach(btn => {
         btn.setAttribute('aria-selected', 'true');
 
         document.querySelectorAll('.nr-card').forEach(card => {
-            const show = filter === 'all' || card.dataset.cat === filter;
-            card.classList.toggle('hidden', !show);
+            card.classList.toggle('hidden', filter !== 'all' && card.dataset.cat !== filter);
         });
-        if (typeof IntersectionObserver !== 'undefined') {
-            document.querySelectorAll('.nr-card:not(.hidden).reveal').forEach((el, i) => {
-                if (!el.classList.contains('visible')) {
-                    setTimeout(() => el.classList.add('visible'), 30 * i);
-                }
-            });
-        }
     });
 });
 
-/* ---- FAQ Accordion ---- */
+/* ---- FAQ ---- */
 document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
         const item = q.closest('.faq-item');
@@ -1992,7 +1968,7 @@ document.querySelectorAll('.faq-q').forEach(q => {
     });
 });
 
-/* ---- Header scroll state ---- */
+/* ---- Header scroll ---- */
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 30);
@@ -2007,19 +1983,11 @@ hamburger.addEventListener('click', () => {
     mobileNav.setAttribute('aria-hidden', String(!open));
     hamburger.innerHTML = open ? '<i class="fas fa-xmark"></i>' : '<i class="fas fa-bars"></i>';
 });
-mobileNav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-        mobileNav.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        mobileNav.setAttribute('aria-hidden', 'true');
-        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-    });
-});
 
 /* ---- Scroll reveal ---- */
 (function setupReveal() {
     const reveals = document.querySelectorAll('.reveal:not(.visible)');
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!('IntersectionObserver' in window)) {
         reveals.forEach(el => el.classList.add('visible'));
         return;
     }
@@ -2030,30 +1998,25 @@ mobileNav.querySelectorAll('a').forEach(a => {
                 io.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.12 });
     reveals.forEach(el => io.observe(el));
 })();
 
-/* ---- Contadores animados ---- */
+/* ---- Contadores ---- */
 (function setupCounters() {
     const counters = document.querySelectorAll('.stat-num[data-count]');
     if (!counters.length) return;
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        counters.forEach(el => { el.setAttribute('data-done', '1'); });
-        return;
-    }
     const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             const el = entry.target;
             const target = parseInt(el.dataset.count, 10);
-            const suffix = el.querySelector('.plus') ? el.querySelector('.plus').outerHTML : '';
+            const suffix = el.querySelector('.plus')?.outerHTML || '';
             const duration = 1500;
             const start = performance.now();
             const step = (now) => {
                 const p = Math.min((now - start) / duration, 1);
-                const eased = 1 - Math.pow(1 - p, 3);
-                const val = Math.floor(eased * target);
+                const val = Math.floor(p * target);
                 el.innerHTML = val + suffix;
                 if (p < 1) requestAnimationFrame(step);
                 else el.innerHTML = target + suffix;
@@ -2065,7 +2028,7 @@ mobileNav.querySelectorAll('a').forEach(a => {
     counters.forEach(el => io.observe(el));
 })();
 
-/* ---- Smooth anchor scrolling ---- */
+/* ---- Smooth scroll ---- */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', (e) => {
         const id = a.getAttribute('href');
@@ -2074,30 +2037,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             if (target) {
                 e.preventDefault();
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                history.replaceState(null, '', id);
             }
         }
     });
 });
 
-/* ---- Esc fecha menu mobile e balão ---- */
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileNav.classList.contains('open')) {
-        mobileNav.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        mobileNav.setAttribute('aria-hidden', 'true');
-        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-    }
-    if (e.key === 'Escape') {
-        const balao = document.getElementById('mascoteBalaoLanding');
-        if (balao && balao.classList.contains('open')) {
-            balao.classList.remove('open');
-        }
-    }
-});
-
-/* ---- MASCOTE BALÃO (ÚNICO) ---- */
-(function setupMascoteBalao() {
+/* ---- Mascote ---- */
+(function setupMascote() {
     const avatar = document.getElementById('mascoteAvatarLanding');
     const balao = document.getElementById('mascoteBalaoLanding');
     const closeBtn = document.getElementById('mascoteBalaoClose');
@@ -2110,6 +2056,7 @@ document.addEventListener('keydown', (e) => {
             badge.style.display = 'none';
         }
     }
+
     avatar.addEventListener('click', toggle);
     if (closeBtn) closeBtn.addEventListener('click', () => balao.classList.remove('open'));
 
@@ -2119,28 +2066,21 @@ document.addEventListener('keydown', (e) => {
         if (wrap && !wrap.contains(e.target)) balao.classList.remove('open');
     });
 
-    const opcoes = balao.querySelectorAll('[data-acao]');
-    opcoes.forEach(op => {
-        op.addEventListener('click', (e) => {
-            const acao = op.getAttribute('data-acao');
+    document.querySelectorAll('[data-acao]').forEach(op => {
+        op.addEventListener('click', () => {
+            const acao = op.dataset.acao;
             if (acao === 'whatsapp') {
-                window.open('https://wa.me/5553997060864', '_blank', 'noopener');
+                window.open('https://wa.me/5553997060864', '_blank');
             } else if (acao === 'scroll') {
-                const alvo = op.getAttribute('data-alvo');
-                if (alvo) {
-                    const el = document.querySelector(alvo);
-                    if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
+                const alvo = op.dataset.alvo;
+                if (alvo) document.querySelector(alvo)?.scrollIntoView({ behavior: 'smooth' });
             }
             balao.classList.remove('open');
         });
     });
 })();
 
-console.log('🚀 SulSafe carregado com sucesso!');
-console.log('📊 38 NRs disponíveis');
+console.log('🚀 SulSafe carregado!');
 </script>
 </body>
 </html>
