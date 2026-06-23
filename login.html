@@ -3,115 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs, videoaulas, aulas ao vivo e IA. Acesse sua conta.">
-    <meta name="theme-color" content="#2E7D32">
-    <title>SulSafe | Acesse sua conta — Segurança do Trabalho</title>
+    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs, videoaulas, aulas ao vivo e IA.">
+    <title>SulSafe | Acesse sua conta</title>
     <link rel="icon" type="image/png" href="logo1.png">
-    <link rel="apple-touch-icon" href="logo1.png">
-    <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://meet.jit.si/external_api.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    
     <style>
-        /* ===== RESET E BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         :root {
             --primaria: #2E7D32;
             --accent: #1B5E20;
             --dourado: #C9B037;
-            --dourado-soft: rgba(201, 176, 55, 0.18);
-            --primaria-glow: rgba(46, 125, 50, 0.3);
-            --fundo-dash: #F4F7F6;
             --texto: #1A1A1A;
             --texto-sec: #555;
             --borda: #E0E0E0;
             --input-bg: #FAFAFA;
-            --sucesso: #2E7D32;
-            --erro: #D32F2F;
-            --sala-btn: linear-gradient(95deg, #2E7D32, #1B5E20);
-            --sala-vibrante: linear-gradient(135deg, #2E7D32, #1B5E20);
             --bg-pagina: #F4F7F6;
             --card-bg: #FFFFFF;
-            --sidebar-bg: #FFFFFF;
-            --fundo-sidebar: #FFFFFF;
-            --glass-bg: rgba(255, 255, 255, 0.72);
-            --glass-border: rgba(255, 255, 255, 0.45);
-            --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
-            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
-            --shadow-card-hover: 0 18px 40px rgba(46, 125, 50, 0.18);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            background: var(--bg-pagina);
-            color: var(--texto);
-            transition: background .35s ease, color .35s ease;
-        }
-
-        body.tema-claro {
-            --bg-pagina: #FAFBF9;
-            --fundo-dash: #F1F5F1;
-            --texto: #0F1F12;
-            --texto-sec: #4A5A4D;
-            --borda: #E2E8E2;
-            --input-bg: #FFFFFF;
-            --fundo-sidebar: #FFFFFF;
-            --sidebar-bg: #FFFFFF;
-            --card-bg: #FFFFFF;
-            --glass-bg: rgba(255, 255, 255, 0.78);
+            --glass-bg: rgba(255,255,255,0.72);
+            --glass-border: rgba(255,255,255,0.45);
+            --glass-shadow: 0 24px 60px rgba(0,0,0,0.12);
+            --shadow-card: 0 4px 16px rgba(0,0,0,0.06);
+            --primaria-glow: rgba(46,125,50,0.3);
         }
 
         body.tema-escuro {
             --bg-pagina: #0E1410;
-            --fundo-dash: #0E1410;
             --texto: #ECF3EE;
             --texto-sec: #9CB0A2;
             --borda: #1F2D24;
             --input-bg: #15201A;
-            --fundo-sidebar: #131A15;
-            --sidebar-bg: #131A15;
             --card-bg: #131A15;
-            --glass-bg: rgba(19, 26, 21, 0.72);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-            --shadow-card: 0 6px 22px rgba(0, 0, 0, 0.45);
-            --shadow-card-hover: 0 18px 40px rgba(46, 125, 50, 0.35);
-            --primaria-glow: rgba(76, 175, 80, 0.35);
-            .logo-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: contain;
-  background: transparent;
-
+            --glass-bg: rgba(19,26,21,0.72);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-shadow: 0 24px 60px rgba(0,0,0,0.55);
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--borda); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primaria); }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-pagina);
+            color: var(--texto);
+            height: 100vh;
+            overflow: hidden;
+            transition: background .35s ease;
+        }
 
-        /* ===== HERO ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--primaria); border-radius: 10px; }
+
+        /* HERO */
         .hero-container {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
+            position: fixed; inset: 0; z-index: 1;
             overflow: hidden;
             transition: opacity .5s;
         }
         .hero-container.hidden { opacity: 0; pointer-events: none; }
         #canvas-hero { width: 100%; height: 100%; display: block; }
+        
+        .overlay {
+            position: fixed; inset: 0; z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(90deg, rgba(244,247,246,.92) 0%, rgba(244,247,246,.4) 35%, transparent 70%);
+            transition: opacity .5s;
+        }
+        body.tema-escuro .overlay {
+            background: linear-gradient(90deg, rgba(14,20,16,.94) 0%, rgba(14,20,16,.4) 35%, transparent 70%);
+        }
+        .overlay.hidden { opacity: 0; }
+
         .hero-texto {
             position: fixed;
-            right: 8%;
-            top: 50%;
+            right: 8%; top: 50%;
             transform: translateY(-50%);
             z-index: 2;
             text-align: right;
@@ -125,9 +90,8 @@
             font-weight: 900;
             color: var(--texto);
             line-height: 1.05;
-            letter-spacing: 2px;
         }
-        .hero-texto .empresa { color: var(--primaria); display: block; margin-top: 10px; }
+        .hero-texto .empresa { color: var(--primaria); display: block; }
         .hero-texto p {
             font-size: 13px;
             color: var(--texto-sec);
@@ -136,37 +100,26 @@
             letter-spacing: 6px;
             text-transform: uppercase;
         }
-        .overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 3;
-            pointer-events: none;
-            background: linear-gradient(90deg, rgba(244, 247, 246, .92) 0%, rgba(244, 247, 246, .4) 35%, transparent 70%);
-            transition: opacity .5s;
-        }
-        body.tema-escuro .overlay {
-            background: linear-gradient(90deg, rgba(14, 20, 16, .94) 0%, rgba(14, 20, 16, .4) 35%, transparent 70%);
-        }
-        .overlay.hidden { opacity: 0; }
 
-        /* ===== AUTH CONTAINER ===== */
+        /* AUTH */
         .auth-container {
             position: fixed;
-            left: 5%;
-            top: 50%;
+            left: 5%; top: 50%;
             transform: translateY(-50%);
             width: 420px;
             max-width: 92vw;
             max-height: 92vh;
             z-index: 10;
-            transition: all .5s cubic-bezier(.2, .9, .4, 1.1);
+            transition: all .5s cubic-bezier(.2,.9,.4,1.1);
         }
-        .auth-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-50%) translateX(-120px); }
+        .auth-container.hidden { 
+            opacity: 0; pointer-events: none; 
+            transform: translateY(-50%) translateX(-120px);
+        }
 
         .tela {
             background: var(--glass-bg);
             backdrop-filter: blur(22px) saturate(150%);
-            -webkit-backdrop-filter: blur(22px) saturate(150%);
             border: 1px solid var(--glass-border);
             border-radius: 28px;
             padding: 32px 28px 24px;
@@ -175,12 +128,12 @@
             flex-direction: column;
             overflow-y: auto;
             max-height: 92vh;
-            animation: telaEntrar .45s cubic-bezier(.2, .9, .4, 1.1);
+            animation: telaEntrar .45s cubic-bezier(.2,.9,.4,1.1);
         }
         .tela.active { display: flex; }
         @keyframes telaEntrar {
             from { opacity: 0; transform: translateY(14px) scale(.98); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
@@ -192,18 +145,16 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: 0 8px 20px rgba(46, 125, 50, .28);
+            box-shadow: 0 8px 20px var(--primaria-glow);
+            font-size: 20px;
+            color: #fff;
+            font-weight: 900;
         }
-        .logo-icon.has-img { background: none; box-shadow: none; }
-        .logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
         .logo-text {
             font-family: 'Montserrat', sans-serif;
             font-size: 22px;
             font-weight: 800;
-            background: linear-gradient(120deg, var(--primaria), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--primaria);
             letter-spacing: -.3px;
         }
 
@@ -239,7 +190,7 @@
             color: var(--texto-sec);
             margin-bottom: 6px;
         }
-        .campo input, .campo select, .campo textarea {
+        .campo input {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid var(--borda);
@@ -250,21 +201,10 @@
             transition: .2s;
             font-family: 'Inter', sans-serif;
         }
-        .campo input:focus, .campo select:focus, .campo textarea:focus {
+        .campo input:focus {
             outline: none;
             border-color: var(--primaria);
             box-shadow: 0 0 0 4px var(--primaria-glow);
-        }
-
-        .msg-sucesso {
-            font-size: 13px;
-            color: var(--sucesso);
-            background: rgba(46, 125, 50, .12);
-            border-radius: 16px;
-            padding: 10px;
-            margin-bottom: 16px;
-            display: none;
-            text-align: center;
         }
 
         .botao {
@@ -289,7 +229,12 @@
             border: 1px solid var(--borda) !important;
             color: var(--texto);
         }
-        .botao-terciario { background: transparent; border: none; color: var(--texto-sec); font-size: 13px; }
+        .botao-terciario { 
+            background: transparent; 
+            border: none; 
+            color: var(--texto-sec); 
+            font-size: 13px; 
+        }
         .botao-terciario:hover { color: var(--primaria); }
 
         .divisor {
@@ -302,7 +247,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .divisor::before, .divisor::after { content: ''; flex: 1; height: 1px; background: var(--borda); }
+        .divisor::before, .divisor::after { 
+            content: ''; flex: 1; height: 1px; 
+            background: var(--borda); 
+        }
 
         .social-bar {
             margin-top: 14px;
@@ -316,8 +264,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, .05);
-            border: 1px solid transparent;
+            background: rgba(0,0,0,.05);
             border-radius: 50%;
             color: var(--texto-sec);
             transition: .25s;
@@ -325,15 +272,16 @@
             font-size: 18px;
             cursor: pointer;
         }
-        body.tema-escuro .social-btn { background: rgba(255, 255, 255, .06); }
-        .social-btn:hover { color: #fff; background: var(--primaria); transform: translateY(-3px); box-shadow: 0 8px 18px var(--primaria-glow); }
+        body.tema-escuro .social-btn { background: rgba(255,255,255,.06); }
+        .social-btn:hover { 
+            color: #fff; 
+            background: var(--primaria); 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 18px var(--primaria-glow);
+        }
         .social-btn.yt:hover { background: #FF0000; }
         .social-btn.ig:hover { background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); }
         .social-btn.wa:hover { background: #25D366; }
-        .social-btn.li:hover { background: #0A66C2; }
-        .social-btn.fb:hover { background: #1877F2; }
-        .social-btn.tt:hover { background: #000000; }
-        .social-btn.x:hover { background: #000000; }
 
         .link-voltar-inicio {
             display: inline-flex;
@@ -347,11 +295,25 @@
         }
         .link-voltar-inicio:hover { color: var(--primaria); }
 
-        /* ===== DASHBOARD ===== */
+        .error-tooltip {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #D32F2F;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 8px 22px rgba(211,47,47,.35);
+        }
+
+        /* DASHBOARD */
         .dashboard {
             position: fixed;
             inset: 0;
-            background: var(--fundo-dash);
+            background: var(--bg-pagina);
             z-index: 20;
             display: none;
             opacity: 0;
@@ -361,7 +323,7 @@
 
         .dash-sidebar {
             width: 270px;
-            background: var(--sidebar-bg);
+            background: var(--card-bg);
             border-right: 1px solid var(--borda);
             padding: 22px 18px;
             display: flex;
@@ -369,7 +331,6 @@
             gap: 22px;
             flex-shrink: 0;
             overflow-y: auto;
-            transition: background .35s;
         }
 
         .dash-logo { display: flex; align-items: center; gap: 10px; }
@@ -382,17 +343,15 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 18px var(--primaria-glow);
+            color: #fff;
+            font-weight: 900;
+            font-size: 20px;
         }
-        .dash-logo-icon.has-img { background: none; box-shadow: none; }
-        .dash-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
         .dash-logo-text {
             font-family: 'Montserrat', sans-serif;
             font-size: 19px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primaria), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--primaria);
         }
 
         .role-badge {
@@ -411,16 +370,13 @@
         .role-badge.admin {
             background: linear-gradient(95deg, #C9B037, #F4D57A);
             color: #2B1F00;
-            border-color: rgba(201, 176, 55, .35);
-            box-shadow: 0 6px 16px rgba(201, 176, 55, .35);
         }
         .role-badge.professor {
             background: linear-gradient(95deg, var(--primaria), var(--accent));
             color: #fff;
-            box-shadow: 0 6px 16px var(--primaria-glow);
         }
         .role-badge.aluno {
-            background: rgba(120, 130, 125, .18);
+            background: rgba(120,130,125,.18);
             color: var(--texto);
             border-color: var(--borda);
         }
@@ -438,12 +394,15 @@
             cursor: pointer;
             font-size: 13px;
             border-left: 3px solid transparent;
-            position: relative;
         }
         .nav-item i { width: 18px; font-size: 1rem; flex-shrink: 0; text-align: center; }
-        .nav-item:hover { background: rgba(46, 125, 50, .08); color: var(--primaria); transform: translateX(2px); }
+        .nav-item:hover { 
+            background: rgba(46,125,50,.08); 
+            color: var(--primaria); 
+            transform: translateX(2px);
+        }
         .nav-item.active {
-            background: linear-gradient(95deg, rgba(46, 125, 50, .15), rgba(46, 125, 50, .04));
+            background: linear-gradient(95deg, rgba(46,125,50,.15), rgba(46,125,50,.04));
             color: var(--primaria);
             border-left: 3px solid var(--primaria);
             font-weight: 700;
@@ -477,8 +436,14 @@
             white-space: nowrap;
             max-width: 180px;
         }
-        .dash-logout { color: var(--texto-sec); cursor: pointer; transition: .2s; padding: 6px; border-radius: 8px; }
-        .dash-logout:hover { color: var(--erro); background: rgba(211, 47, 47, .08); }
+        .dash-logout { 
+            color: var(--texto-sec); 
+            cursor: pointer; 
+            transition: .2s; 
+            padding: 6px; 
+            border-radius: 8px; 
+        }
+        .dash-logout:hover { color: #D32F2F; background: rgba(211,47,47,.08); }
 
         .dash-main {
             flex: 1;
@@ -486,7 +451,10 @@
             padding: 28px 36px;
             animation: viewEntrar .35s ease;
         }
-        @keyframes viewEntrar { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes viewEntrar { 
+            from { opacity: 0; transform: translateX(10px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
 
         .dash-welcome {
             font-family: 'Montserrat', sans-serif;
@@ -496,7 +464,11 @@
             margin-bottom: 6px;
             letter-spacing: -.3px;
         }
-        .dash-subtitle { color: var(--texto-sec); margin-bottom: 28px; font-size: 13px; }
+        .dash-subtitle { 
+            color: var(--texto-sec); 
+            margin-bottom: 28px; 
+            font-size: 13px; 
+        }
 
         .dash-cards {
             display: grid;
@@ -509,7 +481,7 @@
             border: 1px solid var(--borda);
             border-radius: 20px;
             padding: 22px;
-            transition: .3s cubic-bezier(.2, .9, .3, 1);
+            transition: .3s cubic-bezier(.2,.9,.3,1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -525,7 +497,11 @@
             transform-origin: left;
             transition: transform .35s ease;
         }
-        .dash-card:hover { border-color: var(--primaria); box-shadow: var(--shadow-card-hover); transform: translateY(-4px); }
+        .dash-card:hover { 
+            border-color: var(--primaria); 
+            box-shadow: 0 18px 40px rgba(46,125,50,.18); 
+            transform: translateY(-4px); 
+        }
         .dash-card:hover::before { transform: scaleX(1); }
         .dash-card-icon {
             width: 46px; height: 46px;
@@ -540,9 +516,17 @@
             box-shadow: 0 10px 22px var(--primaria-glow);
             transition: .3s;
         }
-        .dash-card:hover .dash-card-icon { transform: rotate(-6deg) scale(1.05); }
-        .dash-card-title { font-size: 15px; font-weight: 700; color: var(--texto); margin-bottom: 5px; }
-        .dash-card-desc { font-size: 12px; color: var(--texto-sec); line-height: 1.5; }
+        .dash-card-title { 
+            font-size: 15px; 
+            font-weight: 700; 
+            color: var(--texto); 
+            margin-bottom: 5px; 
+        }
+        .dash-card-desc { 
+            font-size: 12px; 
+            color: var(--texto-sec); 
+            line-height: 1.5; 
+        }
 
         .painel-card {
             background: var(--card-bg);
@@ -554,7 +538,7 @@
         }
 
         .btn-criar-sala {
-            background: var(--sala-vibrante);
+            background: linear-gradient(135deg, var(--primaria), var(--accent));
             border: none;
             border-radius: 40px;
             padding: 10px 24px;
@@ -567,10 +551,13 @@
             align-items: center;
             gap: 6px;
         }
-        .btn-criar-sala:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(46, 125, 50, .35); }
+        .btn-criar-sala:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 12px 24px rgba(46,125,50,.35);
+        }
 
         .btn-entrar {
-            background: var(--sala-btn);
+            background: linear-gradient(95deg, var(--primaria), var(--accent));
             border: none;
             border-radius: 40px;
             padding: 7px 18px;
@@ -584,18 +571,6 @@
             gap: 5px;
         }
 
-        .test-button {
-            background: var(--sala-btn);
-            border: none;
-            border-radius: 40px;
-            padding: 7px 16px;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 7px;
-            font-size: 13px;
-        }
-
-        /* ===== VIDEOAULAS ===== */
         .videoaulas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -606,39 +581,132 @@
             border: 1px solid var(--borda);
             border-radius: 18px;
             overflow: hidden;
-            transition: .3s cubic-bezier(.2, .9, .3, 1);
+            transition: .3s cubic-bezier(.2,.9,.3,1);
             box-shadow: var(--shadow-card);
         }
-        .aula-card:hover { border-color: var(--primaria); transform: translateY(-4px); box-shadow: 0 14px 30px rgba(46, 125, 50, .15); }
-        .aula-thumb { position: relative; background: #111; aspect-ratio: 16/9; overflow: hidden; cursor: pointer; }
-        .aula-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .88; }
-        .aula-play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-        .aula-play-btn i { font-size: 44px; color: rgba(255, 255, 255, .88); text-shadow: 0 4px 14px rgba(0, 0, 0, .5); transition: .2s; }
+        .aula-card:hover { 
+            border-color: var(--primaria); 
+            transform: translateY(-4px); 
+            box-shadow: 0 14px 30px rgba(46,125,50,.15);
+        }
+        .aula-thumb { 
+            position: relative; 
+            background: #111; 
+            aspect-ratio: 16/9; 
+            overflow: hidden; 
+            cursor: pointer; 
+        }
+        .aula-thumb img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: .88; 
+        }
+        .aula-play-btn { 
+            position: absolute; 
+            inset: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .aula-play-btn i { 
+            font-size: 44px; 
+            color: rgba(255,255,255,.88); 
+            text-shadow: 0 4px 14px rgba(0,0,0,.5); 
+            transition: .2s; 
+        }
         .aula-card:hover .aula-play-btn i { transform: scale(1.12); }
-        .aula-concluida-badge { position: absolute; top: 8px; right: 8px; background: #4CAF50; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .aula-concluida-badge { 
+            position: absolute; 
+            top: 8px; right: 8px; 
+            background: #4CAF50; 
+            color: #fff; 
+            font-size: 11px; 
+            font-weight: 700; 
+            padding: 3px 10px; 
+            border-radius: 20px; 
+        }
         .aula-info { padding: 14px 16px; }
-        .aula-nr { font-size: 11px; font-weight: 700; color: var(--primaria); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
-        .aula-titulo { font-size: 14px; font-weight: 700; color: var(--texto); margin-bottom: 5px; line-height: 1.4; }
-        .aula-desc { font-size: 12px; color: var(--texto-sec); line-height: 1.5; }
-        .aula-footer { padding: 10px 16px; border-top: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; }
-        .btn-concluir { background: none; border: 1px solid var(--primaria); color: var(--primaria); border-radius: 30px; padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .2s; }
+        .aula-nr { 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: var(--primaria); 
+            text-transform: uppercase; 
+            letter-spacing: .5px; 
+            margin-bottom: 3px; 
+        }
+        .aula-titulo { 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: var(--texto); 
+            margin-bottom: 5px; 
+            line-height: 1.4; 
+        }
+        .aula-desc { 
+            font-size: 12px; 
+            color: var(--texto-sec); 
+            line-height: 1.5; 
+        }
+        .aula-footer { 
+            padding: 10px 16px; 
+            border-top: 1px solid var(--borda); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        .btn-concluir { 
+            background: none; 
+            border: 1px solid var(--primaria); 
+            color: var(--primaria); 
+            border-radius: 30px; 
+            padding: 5px 14px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: .2s; 
+        }
         .btn-concluir.concluida { background: var(--primaria); color: #fff; }
         .btn-concluir:hover { background: var(--primaria); color: #fff; }
 
-        /* ===== SALAS ===== */
-        .salas-controls { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-        .salas-controls input {
-            flex: 2; min-width: 200px;
-            background: var(--input-bg);
+        .progresso-container {
+            background: var(--card-bg);
             border: 1px solid var(--borda);
-            border-radius: 40px;
-            padding: 12px 20px;
-            color: var(--texto);
-            font-size: 14px;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
         }
-        .salas-controls input:focus { outline: none; border-color: var(--primaria); box-shadow: 0 0 0 3px var(--primaria-glow); }
+        .progresso-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 10px; 
+        }
+        .progresso-pct { 
+            font-size: 22px; 
+            font-weight: 800; 
+            color: var(--primaria); 
+        }
+        .progresso-bar-wrap { 
+            background: rgba(0,0,0,.07); 
+            border-radius: 40px; 
+            height: 9px; 
+            overflow: hidden; 
+        }
+        body.tema-escuro .progresso-bar-wrap { background: rgba(255,255,255,.08); }
+        .progresso-bar { 
+            background: linear-gradient(90deg, var(--primaria), #4CAF50); 
+            height: 100%; 
+            border-radius: 40px; 
+            transition: width .6s ease; 
+        }
 
-        .meeting-list { display: flex; flex-direction: column; gap: 10px; list-style: none; }
+        .meeting-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            list-style: none; 
+        }
         .meeting-card {
             background: var(--card-bg);
             border-left: 4px solid var(--primaria);
@@ -653,71 +721,112 @@
             transition: .2s;
         }
         .meeting-card:hover { transform: translateX(2px); }
-        .meeting-topic { font-size: 1rem; font-weight: 700; color: var(--texto); }
-        .meeting-id { font-size: 11px; font-family: monospace; background: rgba(0, 0, 0, .05); padding: 2px 8px; border-radius: 20px; color: var(--texto-sec); margin-top: 3px; display: inline-block; }
+        .meeting-topic { 
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: var(--texto); 
+        }
+        .meeting-id { 
+            font-size: 11px; 
+            font-family: monospace; 
+            background: rgba(0,0,0,.05); 
+            padding: 2px 8px; 
+            border-radius: 20px; 
+            color: var(--texto-sec); 
+            margin-top: 3px; 
+            display: inline-block; 
+        }
 
-        /* ===== PROGRESSO ===== */
-        .progresso-container {
-            background: var(--card-bg);
+        .salas-controls { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 24px; 
+            flex-wrap: wrap; 
+        }
+        .salas-controls input {
+            flex: 2; min-width: 200px;
+            background: var(--input-bg);
             border: 1px solid var(--borda);
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-card);
+            border-radius: 40px;
+            padding: 12px 20px;
+            color: var(--texto);
+            font-size: 14px;
         }
-        .progresso-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .progresso-pct { font-size: 22px; font-weight: 800; color: var(--primaria); }
-        .progresso-bar-wrap { background: rgba(0, 0, 0, .07); border-radius: 40px; height: 9px; overflow: hidden; }
-        body.tema-escuro .progresso-bar-wrap { background: rgba(255, 255, 255, .08); }
-        .progresso-bar { background: linear-gradient(90deg, var(--primaria), #4CAF50); height: 100%; border-radius: 40px; transition: width .6s ease; }
-
-        /* ===== IA CHAT ===== */
-        .ia-chat-box { display: flex; flex-direction: column; height: 400px; }
-        .ia-messages { flex: 1; overflow-y: auto; padding: 14px; background: rgba(0, 0, 0, .02); border-radius: 14px; margin-bottom: 10px; }
-        body.tema-escuro .ia-messages { background: rgba(255, 255, 255, .03); }
-        .ia-msg { padding: 9px 13px; border-radius: 12px; margin-bottom: 9px; max-width: 85%; font-size: 13px; line-height: 1.45; animation: iaMsgEntrar .25s ease; }
-        @keyframes iaMsgEntrar { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .ia-msg.user { background: var(--primaria); color: #fff; margin-left: auto; }
-        .ia-msg.bot { background: #E8F5E9; color: var(--texto); }
-        body.tema-escuro .ia-msg.bot { background: rgba(76, 175, 80, .15); }
-        .ia-input-row { display: flex; gap: 9px; }
-        .ia-input-row input { flex: 1; padding: 11px 16px; border: 1px solid var(--borda); border-radius: 40px; background: var(--input-bg); color: var(--texto); font-size: 14px; }
-
-        /* ===== RELATÓRIO ===== */
-        .chart-container { max-width: 500px; margin: 20px auto; }
-
-        /* ===== BOLETIM ===== */
-        .boletim-tabela {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
+        .salas-controls input:focus { 
+            outline: none; 
+            border-color: var(--primaria); 
+            box-shadow: 0 0 0 3px var(--primaria-glow);
         }
-        .boletim-tabela th { background: rgba(46, 125, 50, .12); border-bottom: 2px solid var(--primaria); padding: 12px; text-align: center; color: var(--primaria); }
-        .boletim-tabela td { border-bottom: 1px solid var(--borda); padding: 12px; text-align: center; color: var(--texto); }
-        .status-aprovado { color: #2E7D32; font-weight: bold; }
-        .status-reprovado { color: #D32F2F; font-weight: bold; }
-        .status-recuperacao { color: #FF9800; font-weight: bold; }
-        .status-pendente { color: #999; font-weight: bold; }
 
-        /* ===== CERTIFICADO ===== */
-        .cert-section { text-align: center; padding: 8px 0; }
-        .cert-icon { font-size: 52px; margin-bottom: 10px; }
-        .cert-titulo { font-size: 17px; font-weight: 800; color: var(--primaria); margin-bottom: 7px; }
-        .cert-desc { color: var(--texto-sec); font-size: 13px; margin-bottom: 18px; line-height: 1.6; }
-
-        /* ===== MATERIAL ===== */
-        .material-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px; background: rgba(0, 0, 0, .02); border-radius: 14px; margin-bottom: 10px; flex-wrap: wrap; transition: .2s; }
-        body.tema-escuro .material-item { background: rgba(255, 255, 255, .04); }
+        .material-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 14px; 
+            background: rgba(0,0,0,.02); 
+            border-radius: 14px; 
+            margin-bottom: 10px; 
+            flex-wrap: wrap; 
+            transition: .2s; 
+        }
+        body.tema-escuro .material-item { background: rgba(255,255,255,.04); }
         .material-item:hover { transform: translateX(2px); }
-        .badge-nr { background: var(--primaria); color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; margin-top: 4px; }
+        .badge-nr { 
+            background: var(--primaria); 
+            color: #fff; 
+            padding: 3px 10px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            display: inline-block; 
+            margin-top: 4px; 
+        }
 
-        /* ===== ADMIN MODAL ===== */
+        .ia-chat-box { display: flex; flex-direction: column; height: 400px; }
+        .ia-messages { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 14px; 
+            background: rgba(0,0,0,.02); 
+            border-radius: 14px; 
+            margin-bottom: 10px; 
+        }
+        body.tema-escuro .ia-messages { background: rgba(255,255,255,.03); }
+        .ia-msg { 
+            padding: 9px 13px; 
+            border-radius: 12px; 
+            margin-bottom: 9px; 
+            max-width: 85%; 
+            font-size: 13px; 
+            line-height: 1.45; 
+        }
+        .ia-msg.user { 
+            background: var(--primaria); 
+            color: #fff; 
+            margin-left: auto; 
+        }
+        .ia-msg.bot { 
+            background: #E8F5E9; 
+            color: var(--texto); 
+        }
+        body.tema-escuro .ia-msg.bot { background: rgba(76,175,80,.15); }
+        .ia-input-row { display: flex; gap: 9px; }
+        .ia-input-row input { 
+            flex: 1; 
+            padding: 11px 16px; 
+            border: 1px solid var(--borda); 
+            border-radius: 40px; 
+            background: var(--input-bg); 
+            color: var(--texto); 
+            font-size: 14px; 
+        }
+
+        /* ADMIN MODAL */
         .admin-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, .65);
+            background: rgba(0,0,0,.65);
             z-index: 1100;
             display: none;
             align-items: center;
@@ -750,116 +859,14 @@
         }
         .admin-tab.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
 
-        /* ===== NRS ===== */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--borda); border-radius: 14px; padding: 16px; text-align: center; box-shadow: var(--shadow-card); }
-        .stat-val { font-size: 28px; font-weight: 900; color: var(--primaria); font-family: 'Montserrat', sans-serif; line-height: 1; }
-        .stat-lab { font-size: 11px; color: var(--texto-sec); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-
-        .search-box {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--borda);
-            border-radius: 40px;
-            padding: 13px 20px;
-            color: var(--texto);
-            font-size: 14px;
-            margin-bottom: 14px;
-            transition: .2s;
-        }
-        .search-box:focus { outline: none; border-color: var(--primaria); box-shadow: 0 0 0 4px var(--primaria-glow); }
-
-        .filter-bar { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
-        .filter-bar .filter-btn {
-            background: var(--input-bg);
-            border: 1px solid var(--borda);
-            color: var(--texto-sec);
-            border-radius: 30px;
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: .2s;
-        }
-        .filter-bar .filter-btn.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
-
-        .nr-expand-item {
-            background: var(--card-bg);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border: 1px solid var(--borda);
-            overflow: hidden;
-            transition: all .2s;
-        }
-        .nr-expand-item:hover { border-color: var(--primaria); box-shadow: 0 4px 14px rgba(46, 125, 50, .1); }
-        .nr-expand-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 18px;
-            cursor: pointer;
-            transition: background .2s;
-            background: var(--card-bg);
-            user-select: none;
-        }
-        .nr-expand-header:hover { background: rgba(46, 125, 50, .05); }
-        .nr-expand-header .left { display: flex; align-items: center; gap: 14px; flex: 1; flex-wrap: wrap; }
-        .nr-expand-header .nr-icon { font-size: 28px; width: 40px; text-align: center; }
-        .nr-expand-header .nr-info { display: flex; flex-direction: column; gap: 2px; }
-        .nr-expand-header .nr-num {
-            font-size: 12px; font-weight: 700; color: var(--primaria);
-            background: rgba(46, 125, 50, .1); padding: 2px 12px; border-radius: 20px; display: inline-block; width: fit-content;
-        }
-        .nr-expand-header .nr-titulo { font-size: 15px; font-weight: 600; color: var(--texto); }
-        .nr-expand-header .nr-categoria {
-            font-size: 10px; padding: 2px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-left: 8px;
-        }
-        .nr-categoria-geral { background: #e8f5e9; color: #2e7d32; }
-        .nr-categoria-especifico { background: #fff9c4; color: #f57f17; }
-        .nr-categoria-saude { background: #e3f2fd; color: #1565c0; }
-        .nr-categoria-setorial { background: #fce4ec; color: #ad1457; }
-        body.tema-escuro .nr-categoria-geral { background: rgba(76, 175, 80, .2); color: #A5D6A7; }
-        body.tema-escuro .nr-categoria-especifico { background: rgba(245, 127, 23, .2); color: #FFCC80; }
-        body.tema-escuro .nr-categoria-saude { background: rgba(21, 101, 192, .25); color: #90CAF9; }
-        body.tema-escuro .nr-categoria-setorial { background: rgba(173, 20, 87, .25); color: #F48FB1; }
-
-        .nr-expand-header .arrow { font-size: 18px; color: var(--texto-sec); transition: transform .3s ease; flex-shrink: 0; margin-left: 10px; }
-        .nr-expand-header .arrow.open { transform: rotate(180deg); color: var(--primaria); }
-        .nr-expand-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height .4s ease-in-out, padding .3s ease;
-            padding: 0 18px 0 18px;
-            background: var(--card-bg);
-            border-top: 1px solid transparent;
-        }
-        .nr-expand-content.open { max-height: 2000px; padding: 16px 18px 20px 18px; border-top-color: var(--borda); }
-        .nr-expand-content .desc { color: var(--texto); font-size: 14px; line-height: 1.7; margin-bottom: 14px; }
-        .nr-expand-content .desc strong { color: var(--primaria); }
-        .nr-expand-content .objetivos-title { font-size: 13px; font-weight: 700; color: var(--primaria); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .nr-expand-content .objetivos-list { list-style: none; padding: 0; margin: 0 0 14px 0; }
-        .nr-expand-content .objetivos-list li {
-            font-size: 13px; color: var(--texto); padding: 6px 0 6px 28px; border-bottom: 1px solid rgba(0, 0, 0, .04);
-            display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
-        }
-        .nr-expand-content .objetivos-list li::before { content: '✔'; color: var(--primaria); flex-shrink: 0; font-weight: 700; margin-left: -28px; width: 20px; }
-        .nr-expand-content .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .nr-expand-content .actions button { padding: 8px 18px; border: none; border-radius: 30px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 6px; }
-        .nr-expand-content .actions .btn-ver { background: var(--primaria); color: #fff; }
-        .nr-expand-content .actions .btn-ver:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46, 125, 50, .3); }
-        .nr-expand-content .actions .btn-perguntar { background: rgba(46, 125, 50, .12); color: var(--primaria); }
-        .nr-expand-content .actions .btn-perguntar:hover { background: var(--primaria); color: #fff; transform: translateY(-2px); }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
 
         .modal-bg {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, .6);
+            background: rgba(0,0,0,.6);
             z-index: 1200;
             align-items: center;
             justify-content: center;
@@ -876,23 +883,231 @@
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
-            animation: modalFadeIn .25s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
         }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .modal-icon { font-size: 48px; text-align: center; display: block; margin-bottom: 10px; }
-        .modal h2 { font-size: 18px; font-weight: 700; color: var(--primaria); margin-bottom: 4px; }
-        .modal .modal-num { font-size: 13px; color: var(--primaria); font-weight: 600; margin-bottom: 6px; }
-        .modal p { font-size: 14px; color: var(--texto); line-height: 1.7; margin-bottom: 14px; }
-        .modal .obj-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
-        .modal .obj-list li { font-size: 13px; color: var(--texto); padding: 6px 0; border-bottom: 1px solid var(--borda); display: flex; gap: 10px; align-items: flex-start; }
-        .modal .obj-list li::before { content: '✔'; color: var(--primaria); flex-shrink: 0; font-weight: 700; }
-        .modal-close { position: absolute; top: 10px; right: 10px; background: var(--borda); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; color: var(--texto-sec); display: flex; align-items: center; justify-content: center; transition: .2s; }
-        .modal-close:hover { background: var(--erro); color: #fff; }
-        .ask-btn { display: block; width: 100%; margin-top: 14px; background: var(--primaria); color: #fff; border: none; padding: 12px; border-radius: 40px; font-size: 14px; font-weight: 600; cursor: pointer; transition: .2s; }
-        .ask-btn:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 125, 50, .3); }
+        .modal-close { 
+            position: absolute; 
+            top: 10px; right: 10px; 
+            background: var(--borda); 
+            border: none; 
+            border-radius: 50%; 
+            width: 32px; height: 32px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            color: var(--texto-sec); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: .2s; 
+        }
+        .modal-close:hover { background: #D32F2F; color: #fff; }
 
-        /* ===== CONFIG ===== */
+        .modal-icon { font-size: 48px; text-align: center; display: block; margin-bottom: 10px; }
+        .modal-num { font-size: 13px; color: var(--primaria); font-weight: 600; margin-bottom: 6px; }
+        .modal h2 { font-size: 18px; font-weight: 700; color: var(--primaria); margin-bottom: 4px; }
+        .modal p { font-size: 14px; color: var(--texto); line-height: 1.7; margin-bottom: 14px; }
+        .obj-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
+        .obj-list li { 
+            font-size: 13px; 
+            color: var(--texto); 
+            padding: 6px 0; 
+            border-bottom: 1px solid var(--borda); 
+            display: flex; 
+            gap: 10px; 
+            align-items: flex-start; 
+        }
+        .obj-list li::before { content: '✔'; color: var(--primaria); flex-shrink: 0; font-weight: 700; }
+        .ask-btn { 
+            display: block; 
+            width: 100%; 
+            margin-top: 14px; 
+            background: var(--primaria); 
+            color: #fff; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 40px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: .2s; 
+        }
+        .ask-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--borda); 
+            border-radius: 14px; 
+            padding: 16px; 
+            text-align: center; 
+            box-shadow: var(--shadow-card);
+        }
+        .stat-val { 
+            font-size: 28px; 
+            font-weight: 900; 
+            color: var(--primaria); 
+            font-family: 'Montserrat', sans-serif; 
+            line-height: 1; 
+        }
+        .stat-lab { 
+            font-size: 11px; 
+            color: var(--texto-sec); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-top: 4px; 
+        }
+
+        .search-box {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--borda);
+            border-radius: 40px;
+            padding: 13px 20px;
+            color: var(--texto);
+            font-size: 14px;
+            margin-bottom: 14px;
+            transition: .2s;
+        }
+        .search-box:focus { 
+            outline: none; 
+            border-color: var(--primaria); 
+            box-shadow: 0 0 0 4px var(--primaria-glow);
+        }
+
+        .filter-bar { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
+        .filter-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--borda);
+            color: var(--texto-sec);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .filter-btn.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
+
+        .nr-expand-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--borda);
+            overflow: hidden;
+            transition: all .2s;
+        }
+        .nr-expand-item:hover { border-color: var(--primaria); }
+        .nr-expand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: background .2s;
+            background: var(--card-bg);
+            user-select: none;
+        }
+        .nr-expand-header:hover { background: rgba(46,125,50,.05); }
+        .nr-expand-header .left { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            flex: 1; 
+            flex-wrap: wrap; 
+        }
+        .nr-expand-header .nr-icon { font-size: 28px; width: 40px; text-align: center; }
+        .nr-expand-header .nr-num {
+            font-size: 12px; font-weight: 700; color: var(--primaria);
+            background: rgba(46,125,50,.1); padding: 2px 12px; border-radius: 20px;
+        }
+        .nr-expand-header .nr-titulo { font-size: 15px; font-weight: 600; color: var(--texto); }
+        .nr-expand-header .arrow { 
+            font-size: 18px; 
+            color: var(--texto-sec); 
+            transition: transform .3s ease; 
+            flex-shrink: 0; 
+            margin-left: 10px; 
+        }
+        .nr-expand-header .arrow.open { transform: rotate(180deg); color: var(--primaria); }
+        .nr-expand-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s ease-in-out, padding .3s ease;
+            padding: 0 18px;
+            background: var(--card-bg);
+            border-top: 1px solid transparent;
+        }
+        .nr-expand-content.open { 
+            max-height: 2000px; 
+            padding: 16px 18px 20px; 
+            border-top-color: var(--borda); 
+        }
+        .nr-expand-content .desc { 
+            color: var(--texto); 
+            font-size: 14px; 
+            line-height: 1.7; 
+            margin-bottom: 14px; 
+        }
+        .nr-expand-content .objetivos-title { 
+            font-size: 13px; 
+            font-weight: 700; 
+            color: var(--primaria); 
+            margin-bottom: 8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .nr-expand-content .objetivos-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0 0 14px 0; 
+        }
+        .nr-expand-content .objetivos-list li {
+            font-size: 13px; color: var(--texto);
+            padding: 6px 0 6px 28px;
+            border-bottom: 1px solid rgba(0,0,0,.04);
+            display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
+        }
+        .nr-expand-content .objetivos-list li::before {
+            content: '✔'; color: var(--primaria); flex-shrink: 0;
+            font-weight: 700; margin-left: -28px; width: 20px;
+        }
+        .nr-expand-content .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .nr-expand-content .actions button {
+            padding: 8px 18px; border: none; border-radius: 30px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            transition: .2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nr-expand-content .actions .btn-ver { background: var(--primaria); color: #fff; }
+        .nr-expand-content .actions .btn-ver:hover { 
+            background: var(--accent); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(46,125,50,.3);
+        }
+        .nr-expand-content .actions .btn-perguntar { 
+            background: rgba(46,125,50,.12); 
+            color: var(--primaria); 
+        }
+        .nr-expand-content .actions .btn-perguntar:hover { 
+            background: var(--primaria); 
+            color: #fff; 
+            transform: translateY(-2px);
+        }
+
+        .nr-categoria-geral { background: #e8f5e9; color: #2e7d32; }
+        .nr-categoria-especifico { background: #fff9c4; color: #f57f17; }
+        .nr-categoria-saude { background: #e3f2fd; color: #1565c0; }
+        .nr-categoria-setorial { background: #fce4ec; color: #ad1457; }
+        body.tema-escuro .nr-categoria-geral { background: rgba(76,175,80,.2); color: #A5D6A7; }
+        body.tema-escuro .nr-categoria-especifico { background: rgba(245,127,23,.2); color: #FFCC80; }
+        body.tema-escuro .nr-categoria-saude { background: rgba(21,101,192,.25); color: #90CAF9; }
+        body.tema-escuro .nr-categoria-setorial { background: rgba(173,20,87,.25); color: #F48FB1; }
+
         .config-container { display: flex; gap: 18px; flex-wrap: wrap; }
         .config-sidebar {
             width: 210px;
@@ -925,30 +1140,132 @@
         }
         .config-section { display: none; }
         .config-section.active-section { display: block; }
-        .config-group { margin-bottom: 20px; border-bottom: 1px solid var(--borda); padding-bottom: 16px; }
-        .config-group label { display: block; font-weight: 600; margin-bottom: 7px; color: var(--texto); font-size: 13px; }
-        .config-group select, .config-group input[type="range"] {
+        .config-group { 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid var(--borda); 
+            padding-bottom: 16px; 
+        }
+        .config-group label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 7px; 
+            color: var(--texto); 
+            font-size: 13px; 
+        }
+        .config-group input, .config-group select {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid var(--borda);
             border-radius: 40px;
             padding: 9px 14px;
             color: var(--texto);
+            font-size: 13px;
+            font-family: inherit;
         }
-        .color-option {
-            display: inline-flex;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            margin: 3px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: .2s;
-        }
-        .color-option:hover { transform: scale(1.1); }
 
-        /* ===== FINANCEIRO ===== */
+        .modal-pagamento { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 24px; 
+            max-width: 420px; 
+            width: 92%; 
+            border-top: 6px solid var(--primaria); 
+            position: relative;
+        }
+        .qr-code-box { 
+            text-align: center; 
+            padding: 20px; 
+            background: #f5f5f5; 
+            border-radius: 12px; 
+            margin: 15px 0; 
+        }
+        body.tema-escuro .qr-code-box { background: #1a1a1a; }
+        .copia-cola, .linha-boleto { 
+            background: #f5f5f5; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            font-size: 11px; 
+            word-break: break-all; 
+            margin-bottom: 10px; 
+        }
+        body.tema-escuro .copia-cola, body.tema-escuro .linha-boleto { background: #1a1a1a; }
+
+        .planos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .plan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--borda);
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: .3s;
+            position: relative;
+            box-shadow: var(--shadow-card);
+        }
+        .plan-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(46,125,50,.15); }
+        .plan-card.destaque { 
+            border-color: var(--primaria); 
+            box-shadow: 0 0 0 2px var(--primaria), 0 18px 40px rgba(46,125,50,.2);
+        }
+        .plan-card h3 { font-size: 20px; font-weight: 800; color: var(--texto); }
+        .plan-card .subtitle { font-size: 12px; color: var(--texto-sec); margin-top: 4px; }
+        .plan-card .price { 
+            font-size: 32px; 
+            font-weight: 900; 
+            color: var(--primaria); 
+            margin: 16px 0 4px; 
+        }
+        .plan-card .price span { font-size: 16px; vertical-align: super; }
+        .plan-card .billing { font-size: 12px; color: var(--texto-sec); }
+        .plan-card .economy { 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #2E7D32; 
+            background: rgba(46,125,50,.12); 
+            padding: 3px 12px; 
+            border-radius: 20px; 
+            display: inline-block;
+            margin: 8px 0 12px;
+        }
+        .plan-card ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 16px 0 20px; 
+            text-align: left; 
+        }
+        .plan-card ul li { 
+            padding: 6px 0; 
+            font-size: 13px; 
+            color: var(--texto-sec); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .plan-card ul li::before { content: '✓'; color: var(--primaria); font-weight: 700; }
+        .plan-card ul li.off { opacity: .4; }
+        .plan-card ul li.off::before { content: '✕'; color: #999; }
+        .badge-plano {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--dourado), #b8902a);
+            color: #1a1a1a;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
         .admin-god-header {
-            background: linear-gradient(135deg, var(--primaria) 0%, var(--accent) 60%, #1a3d1c 100%);
+            background: linear-gradient(135deg, var(--primaria), var(--accent));
             color: #fff;
             padding: 22px 28px;
             border-radius: 18px;
@@ -957,190 +1274,22 @@
             overflow: hidden;
             box-shadow: 0 10px 28px rgba(46,125,50,.28);
         }
-        .admin-god-header h2 { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; }
+        .admin-god-header h2 { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 26px; 
+            font-weight: 800; 
+            margin-bottom: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
         .admin-god-header h2 i { color: var(--dourado); font-size: 28px; }
         .admin-god-header .admin-god-sub { font-size: 14px; opacity: .9; font-weight: 400; }
-        .admin-god-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, var(--dourado), #b8902a);
-            color: #1a1a1a;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 14px rgba(201,176,55,.5);
-            margin-left: 12px;
-            vertical-align: middle;
-        }
 
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 22px;
-        }
-        .kpi-card {
-            background: var(--card-bg);
-            border: 1px solid var(--borda);
-            border-radius: 16px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            position: relative;
-            overflow: hidden;
-            transition: transform .2s ease, box-shadow .2s ease;
-            cursor: default;
-        }
-        .kpi-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primaria), var(--dourado)); }
-        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.08); }
-        .kpi-card .kpi-icon { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 10px; background: var(--dourado-soft); color: var(--primaria); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .kpi-card .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-sec); font-weight: 700; }
-        .kpi-card .kpi-value { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800; color: var(--primaria); line-height: 1.1; }
-        .kpi-card .kpi-sub { font-size: 12px; color: var(--texto-sec); }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--texto-sec); }
+        .empty-state i { font-size: 48px; color: var(--dourado); margin-bottom: 15px; display: block; }
 
-        .admin-card { background: var(--card-bg); border: 1px solid var(--borda); border-radius: 16px; padding: 20px 22px; margin-bottom: 22px; }
-        .admin-card-title { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; color: var(--primaria); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-        .admin-card-title i { color: var(--dourado); }
-
-        .admin-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-        .admin-filters input, .admin-filters select {
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--borda);
-            background: var(--input-bg);
-            color: var(--texto);
-            font-size: 13px;
-            font-family: inherit;
-        }
-        .admin-filters input { flex: 1; min-width: 200px; }
-        .btn-mini {
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: none;
-            background: var(--primaria);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background .2s, transform .15s;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-        .btn-mini:hover { background: var(--accent); transform: translateY(-1px); }
-        .btn-mini.azul { background: #1565C0; }
-        .btn-mini.azul:hover { background: #0d4a91; }
-        .btn-mini.laranja { background: #FF9800; }
-        .btn-mini.laranja:hover { background: #d97e00; }
-        .btn-mini.verde { background: #2E7D32; }
-        .btn-mini.verde:hover { background: #1B5E20; }
-        .btn-mini.cinza { background: #90A4AE; }
-        .btn-mini.cinza:hover { background: #607D8B; }
-
-        .admin-table-wrap { overflow-x: auto; }
-        table.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        table.admin-table thead th {
-            background: linear-gradient(90deg, var(--primaria), var(--accent));
-            color: #fff;
-            padding: 10px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
-        table.admin-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--borda); color: var(--texto); }
-        table.admin-table tbody tr:nth-child(odd) td { background: rgba(46,125,50,.025); }
-        table.admin-table tbody tr:hover td { background: rgba(46,125,50,.08); }
-
-        .badge-role {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
-        .badge-role.admin { background: rgba(201,176,55,.18); color: #b8902a; border: 1px solid rgba(201,176,55,.4); }
-        .badge-role.professor { background: rgba(21,101,192,.12); color: #1565C0; border: 1px solid rgba(21,101,192,.3); }
-        .badge-role.aluno { background: rgba(46,125,50,.12); color: #2E7D32; border: 1px solid rgba(46,125,50,.3); }
-        .badge-status {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .badge-status.ativo { background: rgba(46,125,50,.15); color: #2E7D32; }
-        .badge-status.suspenso { background: rgba(211,47,47,.15); color: #D32F2F; }
-        .badge-status.pago { background: rgba(46,125,50,.15); color: #2E7D32; }
-        .badge-status.pendente { background: rgba(255,152,0,.15); color: #FF9800; }
-        .badge-status.cancelado { background: rgba(211,47,47,.15); color: #D32F2F; }
-
-        .action-btn {
-            padding: 5px 9px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            margin-right: 4px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: filter .2s, transform .15s;
-        }
-        .action-btn:hover { filter: brightness(.92); transform: translateY(-1px); }
-        .action-btn.promote { background: #1565C0; color: #fff; }
-        .action-btn.demote { background: #6A1B9A; color: #fff; }
-        .action-btn.suspend { background: #FF9800; color: #fff; }
-        .action-btn.reactivate { background: #2E7D32; color: #fff; }
-        .action-btn.delete { background: #D32F2F; color: #fff; }
-        .action-btn.confirm { background: #2E7D32; color: #fff; }
-
-        .admin-pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; }
-        .admin-pagination button {
-            min-width: 32px; height: 32px;
-            border-radius: 8px;
-            border: 1px solid var(--borda);
-            background: var(--card-bg);
-            color: var(--texto);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .admin-pagination button.active { background: var(--primaria); color: #fff; border-color: var(--primaria); }
-        .admin-pagination button:disabled { opacity: .4; cursor: not-allowed; }
-
-        .access-denied-box {
-            text-align: center;
-            padding: 60px 20px;
-            background: var(--card-bg);
-            border: 2px dashed rgba(211,47,47,.4);
-            border-radius: 18px;
-            max-width: 600px;
-            margin: 40px auto;
-        }
-        .access-denied-box i { font-size: 56px; color: #D32F2F; margin-bottom: 14px; }
-        .access-denied-box h2 { font-family: 'Montserrat', sans-serif; font-size: 22px; color: var(--erro); margin-bottom: 8px; }
-        .access-denied-box p { color: var(--texto-sec); font-size: 14px; }
-
-        .empty-state { text-align: center; padding: 30px 20px; color: var(--texto-sec); }
-        .empty-state i { font-size: 38px; color: var(--dourado); margin-bottom: 10px; }
-        .empty-state h4 { font-family: 'Montserrat', sans-serif; font-size: 16px; color: var(--texto); margin-bottom: 4px; }
-
-        .chart-wrap { position: relative; height: 280px; margin-top: 10px; }
-
-        /* ===== RESPONSIVE ===== */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .dash-sidebar { width: 64px; padding: .8rem .4rem; }
             .dash-sidebar .dash-logo-text, .dash-sidebar .nav-item span,
@@ -1152,126 +1301,112 @@
             .config-sidebar { width: 100%; display: flex; flex-wrap: wrap; }
             .config-tab { flex: 1; justify-content: center; }
             .stats-bar { grid-template-columns: 1fr 1fr; }
-            .stats-bar .stat-card:last-child { grid-column: span 2; }
-            .modal { padding: 1.2rem; max-width: 95%; }
-            .meeting-card { flex-direction: column; align-items: stretch; }
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .planos-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
-            .auth-container { left: 50%; transform: translateX(-50%) translateY(-50%); width: 95vw; }
-            .auth-container.hidden { transform: translateX(-50%) translateY(-50%) translateX(-120px); }
+            .auth-container { 
+                left: 50%; 
+                transform: translateX(-50%) translateY(-50%); 
+                width: 95vw; 
+            }
+            .auth-container.hidden { 
+                transform: translateX(-50%) translateY(-50%) translateX(-120px); 
+            }
             .hero-texto { right: 5%; left: 5%; text-align: center; }
             .hero-texto h1 { font-size: clamp(28px, 8vw, 48px); }
             .dash-cards { grid-template-columns: 1fr; }
             .videoaulas-grid { grid-template-columns: 1fr; }
             .social-bar { gap: 6px; }
             .social-btn { width: 38px; height: 38px; font-size: 16px; }
-            .kpi-grid { grid-template-columns: 1fr; }
         }
-
-        /* ===== ERROR TOOLTIP ===== */
-        .error-tooltip {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--erro);
-            color: #fff;
-            padding: 12px 22px;
-            border-radius: 40px;
-            font-size: 14px;
-            z-index: 2000;
-            display: none;
-            box-shadow: 0 8px 22px rgba(211, 47, 47, .35);
-            animation: balaoEntrar .25s ease;
-        }
-        @keyframes balaoEntrar { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
     </style>
 </head>
-<body class="tema-escuro">
+<body>
     <!-- HERO -->
     <div class="hero-container" id="heroContainer">
         <canvas id="canvas-hero"></canvas>
     </div>
     <div class="hero-texto" id="heroTexto">
-        <h1>BEM VINDO À<span class="empresa" id="nomeEmpresa">SulSafe</span></h1>
+        <h1>BEM VINDO À<span class="empresa">SulSafe</span></h1>
         <p>GESTÃO DE SEGURANÇA</p>
     </div>
     <div class="overlay" id="overlay"></div>
 
     <!-- AUTH -->
     <div class="auth-container" id="authContainer">
+        <!-- LOGIN -->
         <div class="tela active" id="telaLogin">
-            <a class="link-voltar-inicio" href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
+            <a class="link-voltar-inicio" href="#"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo">
-               <img src="logo1.png" alt="SulSafe" class="logo-icon" id="logoIcon">
+                <div class="logo-icon">SS</div>
                 <div class="logo-text">SulSafe</div>
             </div>
             <p class="subtitulo">Acesse sua conta para continuar — 38 NRs, videoaulas e aulas ao vivo te esperando.</p>
             <form id="loginForm">
                 <div class="campo">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" autocomplete="email" required>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="campo">
                     <label>Senha</label>
-                    <input type="password" id="loginSenha" required>
+                    <input type="password" id="loginSenha" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="botao botao-primario"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             </form>
             <div class="divisor">ou</div>
             <button class="botao botao-secundario" onclick="mostrarTela('cadastro')">Cadastrar nova conta</button>
             <button class="botao botao-terciario" onclick="mostrarTela('recuperar')">Esqueci minha senha</button>
-<div class="social-bar">
-  <a href="https://www.youtube.com/@SulSafeTreinamentos" target="_blank" rel="noopener" class="social-btn yt" title="YouTube"><i class="fab fa-youtube"></i></a>
-  <a href="https://www.instagram.com/sulsafetreinamentos/" target="_blank" rel="noopener" class="social-btn ig" title="Instagram"><i class="fab fa-instagram"></i></a>
-  <a href="https://wa.me/5553997060864" target="_blank" rel="noopener" class="social-btn wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-  <a href="https://www.linkedin.com/in/sulsafe-treinamentos-010303415" target="_blank" rel="noopener" class="social-btn li" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-  <a href="https://www.facebook.com/share/p/1CVxZddHG5/" target="_blank" rel="noopener" class="social-btn fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-  <a href="https://www.tiktok.com/@sulsafetreinamentos?lang=pt-BR" target="_blank" rel="noopener" class="social-btn tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
-  <a href="https://x.com/SulsafeTreina" target="_blank" rel="noopener" class="social-btn x" title="X"><i class="fab fa-x-twitter"></i></a>
-</div>
+            <div class="social-bar">
+                <a href="#" class="social-btn yt"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-btn ig"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+            </div>
         </div>
 
+        <!-- CADASTRO -->
         <div class="tela" id="telaCadastro">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo">
-               <img src="logo1.png" alt="SulSafe" class="logo-icon" id="logoIcon">
+                <div class="logo-icon">SS</div>
                 <div class="logo-text">SulSafe</div>
             </div>
             <p class="subtitulo">Crie sua conta em segundos e comece a estudar.</p>
             <form id="cadastroForm">
                 <div class="campo">
                     <label>Nome completo</label>
-                    <input type="text" id="cadNome" required>
+                    <input type="text" id="cadNome" placeholder="Seu nome" required>
                 </div>
                 <div class="campo">
                     <label>Email</label>
-                    <input type="email" id="cadEmail" required>
+                    <input type="email" id="cadEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="campo">
                     <label>Senha</label>
-                    <input type="password" id="cadSenha" required>
+                    <input type="password" id="cadSenha" placeholder="Mínimo 6 caracteres" required>
                 </div>
                 <div class="campo">
                     <label>Confirmar senha</label>
-                    <input type="password" id="cadSenha2" required>
+                    <input type="password" id="cadSenha2" placeholder="Repita a senha" required>
                 </div>
                 <button type="submit" class="botao botao-primario"><i class="fas fa-user-plus"></i> Criar conta</button>
             </form>
         </div>
 
+        <!-- RECUPERAR -->
         <div class="tela" id="telaRecuperar">
             <div class="voltar" onclick="mostrarTela('login')"><i class="fas fa-arrow-left"></i> Voltar</div>
             <div class="logo">
-                <div class="logo-icon" id="logoIconRec"></div>
+                <div class="logo-icon">SS</div>
                 <div class="logo-text">SulSafe</div>
             </div>
             <p class="subtitulo">Recupere o acesso à sua conta.</p>
-            <div class="msg-sucesso" id="msgSucessoRec">Link enviado! Verifique seu e-mail.</div>
+            <div id="msgSucessoRec" style="display:none;font-size:13px;color:#2E7D32;background:rgba(46,125,50,.12);border-radius:16px;padding:10px;margin-bottom:16px;text-align:center;">Link enviado! Verifique seu e-mail.</div>
             <form id="recuperarForm">
                 <div class="campo">
                     <label>Email cadastrado</label>
-                    <input type="email" id="recEmail" required>
+                    <input type="email" id="recEmail" placeholder="seu@email.com" required>
                 </div>
                 <button type="submit" class="botao botao-primario"><i class="fas fa-paper-plane"></i> Enviar link</button>
             </form>
@@ -1282,31 +1417,26 @@
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
             <div class="dash-logo">
-                <div class="dash-logo-icon" id="dashLogoIcon"></div>
+                <div class="dash-logo-icon">SS</div>
                 <div class="dash-logo-text">SulSafe</div>
             </div>
             <div id="roleBadgeWrap"></div>
             <div class="dash-nav">
-                <div class="nav-section-label">Estudo</div>
+                <div class="nav-section-label">Menu</div>
                 <div class="nav-item active" data-view="home"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
                 <div class="nav-item" data-view="videoaulas"><i class="fas fa-play-circle"></i><span>Videoaulas</span></div>
                 <div class="nav-item" data-view="salas"><i class="fas fa-video"></i><span>Aulas ao vivo</span></div>
                 <div class="nav-item" data-view="materiais"><i class="fas fa-book"></i><span>Materiais</span></div>
                 <div class="nav-item" data-view="nrs"><i class="fas fa-book-bookmark"></i><span>Normas NRs</span></div>
-                <div class="nav-item" id="navAreaAluno" data-view="aluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-item" data-view="ia"><i class="fas fa-robot"></i><span>Assistente NR</span></div>
-                <div class="nav-item" data-view="avaliacoes"><i class="fas fa-clipboard-check"></i><span>Avaliações</span></div>
+                <div class="nav-item" data-view="aluno" id="navAreaAluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-section-label" id="labelEnsino">Ensino</div>
-                <div class="nav-item" id="navTrabalhos" data-view="trabalhos"><i class="fas fa-tasks"></i><span>Trabalhos</span></div>
-                <div class="nav-item" id="navRelatorio" data-view="relatorio"><i class="fas fa-chart-line"></i><span>Relatório alunos</span></div>
-                <div class="nav-item" id="navBoletim" data-view="boletim"><i class="fas fa-chart-simple"></i><span>Boletim</span></div>
-                <div class="nav-item" id="navCertificado" data-view="certificado"><i class="fas fa-certificate"></i><span>Gerar Certificado</span></div>
-                <div class="nav-section-label" id="labelAdmin">Administrativo</div>
-                <div class="nav-item" id="navFinanceiro" data-view="financeiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
-                <div class="nav-item" id="navPlanos" data-view="planos"><i class="fas fa-tag"></i><span>Planos</span></div>
-                <div class="nav-item" id="navBoletos" data-view="boletos"><i class="fas fa-file-invoice-dollar"></i><span>Meus Boletos</span></div>
-                <div class="nav-item" id="navUsuarios" data-view="usuarios"><i class="fas fa-users-cog"></i><span>Gerenciar Usuários</span></div>
-                <div class="nav-item" id="navConfig" data-view="config"><i class="fas fa-cog"></i><span>Configurações</span></div>
+                <div class="nav-item" data-view="relatorio" id="navRelatorio"><i class="fas fa-chart-line"></i><span>Relatório</span></div>
+                <div class="nav-item" data-view="certificado" id="navCertificado"><i class="fas fa-certificate"></i><span>Certificado</span></div>
+                <div class="nav-section-label" id="labelAdmin">Admin</div>
+                <div class="nav-item" data-view="financeiro" id="navFinanceiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
+                <div class="nav-item" data-view="planos" id="navPlanos"><i class="fas fa-tag"></i><span>Planos</span></div>
+                <div class="nav-item" data-view="config" id="navConfig"><i class="fas fa-cog"></i><span>Configurações</span></div>
             </div>
             <div class="dash-user-info">
                 <span class="dash-user-name" id="dashUserName">Usuário</span>
@@ -1346,11 +1476,6 @@
                         <div class="dash-card-title">38 NRs</div>
                         <div class="dash-card-desc">Catálogo completo das Normas Regulamentadoras.</div>
                     </div>
-                    <div class="dash-card" onclick="alternarView('financeiro')">
-                        <div class="dash-card-icon"><i class="fas fa-credit-card"></i></div>
-                        <div class="dash-card-title">Financeiro</div>
-                        <div class="dash-card-desc">Pagamentos e assinaturas.</div>
-                    </div>
                 </div>
                 <button class="btn-criar-sala" id="btnPainelProfessor" onclick="abrirModalAdmin()"><i class="fas fa-plus"></i> Adicionar conteúdo</button>
             </div>
@@ -1361,13 +1486,15 @@
                 <p class="dash-subtitle">Assista às aulas e acompanhe seu progresso</p>
                 <div id="progressoVideoaulas"></div>
                 <div class="videoaulas-grid" id="listaVideoaulas">
-                    <p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0"><i class="fas fa-spinner fa-spin"></i><br><br>Carregando videoaulas...</p>
+                    <p style="color:var(--texto-sec);grid-column:1/-1;text-align:center;padding:40px 0">
+                        <i class="fas fa-spinner fa-spin"></i><br><br>Carregando videoaulas...
+                    </p>
                 </div>
                 <div class="painel-card" style="margin-top:28px">
-                    <div class="cert-section">
-                        <div class="cert-icon">🏆</div>
-                        <div class="cert-titulo">Certificado de Conclusão</div>
-                        <div class="cert-desc" id="certDesc">Conclua todas as videoaulas para liberar seu certificado.</div>
+                    <div style="text-align:center">
+                        <div style="font-size:52px;margin-bottom:10px;">🏆</div>
+                        <h3 style="font-size:17px;font-weight:800;color:var(--primaria);margin-bottom:7px;">Certificado de Conclusão</h3>
+                        <p style="color:var(--texto-sec);font-size:13px;margin-bottom:18px;line-height:1.6;">Conclua todas as videoaulas para liberar seu certificado.</p>
                         <button class="btn-criar-sala" id="btnCertificado" onclick="gerarCertificado()" style="display:none"><i class="fas fa-award"></i> Baixar Certificado PDF</button>
                     </div>
                 </div>
@@ -1379,7 +1506,7 @@
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
                 <div class="salas-controls">
                     <input type="text" id="meetingName" placeholder="Ex: Aula NR-35 — Trabalho em Altura">
-                    <button class="btn-criar-sala" id="btnCriarSala" onclick="criarReuniaoLocal()">
+                    <button class="btn-criar-sala" onclick="criarReuniaoLocal()">
                         <i class="fas fa-plus-circle"></i> CRIAR SALA
                     </button>
                 </div>
@@ -1393,405 +1520,241 @@
                 <div class="painel-card"><div id="listaMateriais">Carregando...</div></div>
             </div>
 
-          <!-- ALUNO -->
-<div id="viewAluno" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
-  <p class="dash-subtitle">Seu progresso e certificados</p>
-  <div class="painel-card"><p style="text-align:center; padding:40px">Em breve...</p></div>
-</div>
+            <!-- IA -->
+            <div id="viewIa" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente NR</h2>
+                <p class="dash-subtitle">Tire dúvidas sobre normas regulamentadoras</p>
+                <div class="painel-card ia-chat-box">
+                    <div class="ia-messages" id="iaMessages">
+                        <div class="ia-msg bot">👋 Olá! Pergunte sobre qualquer NR. Ex: "O que é a NR-10?"</div>
+                    </div>
+                    <div class="ia-input-row">
+                        <input type="text" id="iaInput" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter')perguntarIA()">
+                        <button class="btn-criar-sala" onclick="perguntarIA()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
 
-<!-- IA -->
-<div id="viewIa" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-robot"></i> Assistente NR</h2>
-  <p class="dash-subtitle">Tire dúvidas sobre normas regulamentadoras</p>
-  <div class="painel-card ia-chat-box">
-    <div class="ia-messages" id="iaMessages"></div>
-    <div class="ia-input-row">
-      <input type="text" id="iaInput" placeholder="Digite sua pergunta...">
-      <button class="btn-criar-sala" onclick="perguntarIA()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-</div>
+            <!-- NRS -->
+            <div id="viewNrs" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-bookmark"></i> Normas Regulamentadoras - NRs</h2>
+                <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho</p>
+                <div class="stats-bar" id="nrStatsBar">
+                    <div class="stat-card"><div class="stat-val" id="nrTotalCount">38</div><div class="stat-lab">Total de NRs</div></div>
+                    <div class="stat-card"><div class="stat-val" id="nrEspecificasCount">-</div><div class="stat-lab">NRs Específicas</div></div>
+                    <div class="stat-card"><div class="stat-val" id="nrGeraisCount">-</div><div class="stat-lab">Gerais + Saúde + Setoriais</div></div>
+                </div>
+                <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
+                <div class="filter-bar" id="nrFilterBar">
+                    <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
+                    <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
+                    <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
+                    <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
+                    <button class="filter-btn" data-filter="setorial" onclick="filtrarNrs('setorial')">🏭 Setoriais</button>
+                </div>
+                <div class="painel-card" style="padding:10px;"><div id="nrListContainer"></div></div>
+                <div class="modal-bg" id="nrModal">
+                    <div class="modal">
+                        <button class="modal-close" onclick="fecharModalNr()">✕</button>
+                        <span class="modal-icon" id="modalNrIcon">📋</span>
+                        <div class="modal-num" id="modalNrNum">NR-01</div>
+                        <h2 id="modalNrTitle">Disposições Gerais</h2>
+                        <p id="modalNrDesc">...</p>
+                        <ul class="obj-list" id="modalNrList"></ul>
+                        <button class="ask-btn" onclick="perguntarSobreNr()"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
+                    </div>
+                </div>
+            </div>
 
-<!-- AVALIAÇÕES -->
-<div id="viewAvaliacoes" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-clipboard-check"></i> Avaliações</h2>
-  <p class="dash-subtitle">Provas e questionários disponíveis</p>
-  <div class="painel-card"><p style="text-align:center; padding:40px">Nenhuma avaliação disponível no momento.</p></div>
-</div>
+            <!-- ALUNO -->
+            <div id="viewAluno" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
+                <p class="dash-subtitle">Seu progresso e certificados</p>
+                <div class="painel-card"><p style="text-align:center;padding:40px">Em breve...</p></div>
+            </div>
 
-<!-- TRABALHOS -->
-<div id="viewTrabalhos" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-tasks"></i> Trabalhos</h2>
-  <p class="dash-subtitle">Atividades enviadas pelo professor</p>
-  <div class="painel-card"><p style="text-align:center; padding:40px">Nenhum trabalho pendente.</p></div>
-</div>
+            <!-- RELATÓRIO -->
+            <div id="viewRelatorio" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
+                <p class="dash-subtitle">Acompanhe o desempenho da turma</p>
+                <div class="painel-card">
+                    <div id="relatorioContainer"><p style="text-align:center;padding:40px">Carregando...</p></div>
+                </div>
+            </div>
 
-<!-- RELATÓRIO -->
-<div id="viewRelatorio" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-line"></i> Relatório de Alunos</h2>
-  <p class="dash-subtitle">Acompanhe o desempenho da turma</p>
-  <div class="painel-card">
-    <div class="chart-container"><canvas id="chartRelatorio"></canvas></div>
-  </div>
-</div>
+            <!-- CERTIFICADO -->
+            <div id="viewCertificado" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-certificate"></i> Gerador de Certificados</h2>
+                <p class="dash-subtitle">Gere certificados PDF personalizados para seus alunos</p>
+                <div class="painel-card">
+                    <div class="campo"><label>Nome do aluno</label><input type="text" id="certNomeAluno" placeholder="Nome completo do aluno"></div>
+                    <div class="campo"><label>Curso</label><select id="certCursoSelect"></select></div>
+                    <div class="campo"><label>Carga horária (horas)</label><input type="number" id="certCargaHoraria" min="1" max="999" value="40"></div>
+                    <div class="campo"><label>Cidade/UF de emissão</label><input type="text" id="certCidadeEmissao" value="Pelotas/RS"></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+                        <button class="btn-criar-sala" onclick="gerarCertificadoPDF()"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
+                    </div>
+                </div>
+            </div>
 
-<!-- BOLETIM -->
-<div id="viewBoletim" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Boletim Escolar</h2>
-  <p class="dash-subtitle">Gerencie notas e acompanhamento dos alunos</p>
-  <div class="painel-card">
-    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
-      <button class="btn-criar-sala" id="btnLancarNotas" onclick="abrirModalLancarNotas()" style="background:#2E7D32"><i class="fas fa-edit"></i> Lançar Notas</button>
-      <button class="btn-criar-sala" onclick="carregarBoletimAdmin()" style="background:#1565C0"><i class="fas fa-sync-alt"></i> Atualizar</button>
-    </div>
-    <div id="boletimContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div>
-  </div>
-</div>
+            <!-- FINANCEIRO -->
+            <div id="viewFinanceiro" style="display:none">
+                <div class="admin-god-header">
+                    <h2><i class="fas fa-credit-card"></i> Financeiro</h2>
+                    <div class="admin-god-sub">Gestão de pagamentos e assinaturas</div>
+                </div>
+                <div id="finContainer">
+                    <p style="text-align:center;padding:40px;color:var(--texto-sec)">Carregando dados financeiros...</p>
+                </div>
+            </div>
 
-<!-- BOLETIM ALUNO -->
-<div id="viewBoletimAluno" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-chart-simple"></i> Meu Boletim</h2>
-  <p class="dash-subtitle">Acompanhe suas notas e desempenho</p>
-  <div class="painel-card"><div id="boletimAlunoContainer"><p style="text-align:center; padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando boletim...</p></div></div>
-</div>
+            <!-- PLANOS -->
+            <div id="viewPlanos" style="display:none">
+                <div class="admin-god-header">
+                    <h2><i class="fas fa-crown"></i> Planos de Assinatura</h2>
+                    <div class="admin-god-sub">Escolha o plano ideal pra você</div>
+                </div>
+                <div class="planos-grid" id="planosGrid">
+                    <div class="plan-card">
+                        <h3>Mensal</h3>
+                        <p class="subtitle">Flexível para começar</p>
+                        <div class="price">R$ <span>49</span>,90</div>
+                        <p class="billing">por mês</p>
+                        <ul>
+                            <li>Acesso a todas as 38 NRs</li>
+                            <li>Videoaulas em HD</li>
+                            <li>Certificado reconhecido</li>
+                            <li>Assistente de IA 24/7</li>
+                            <li class="off">Aulas ao vivo</li>
+                        </ul>
+                        <button class="botao botao-secundario btn-assinar" onclick="abrirModalPagamento('Mensal', '49.90')">Assinar</button>
+                    </div>
+                    <div class="plan-card destaque">
+                        <span class="badge-plano">Mais vendido</span>
+                        <h3>Trimestral</h3>
+                        <p class="subtitle">Melhor custo-benefício</p>
+                        <div class="price">R$ <span>129</span>,90</div>
+                        <p class="billing">a cada 3 meses</p>
+                        <ul>
+                            <li>Acesso a todas as 38 NRs</li>
+                            <li>Videoaulas em HD</li>
+                            <li>Certificado reconhecido</li>
+                            <li>Assistente de IA 24/7</li>
+                            <li>Aulas ao vivo</li>
+                        </ul>
+                        <button class="botao botao-primario btn-assinar" onclick="abrirModalPagamento('Trimestral', '129.90')">Assinar</button>
+                    </div>
+                    <div class="plan-card">
+                        <h3>Anual</h3>
+                        <p class="subtitle">Máxima economia</p>
+                        <div class="price">R$ <span>399</span>,90</div>
+                        <p class="billing">por ano</p>
+                        <ul>
+                            <li>Acesso a todas as 38 NRs</li>
+                            <li>Videoaulas em HD</li>
+                            <li>Certificado reconhecido</li>
+                            <li>Assistente de IA 24/7</li>
+                            <li>Aulas ao vivo</li>
+                        </ul>
+                        <button class="botao botao-secundario btn-assinar" onclick="abrirModalPagamento('Anual', '399.90')">Assinar</button>
+                    </div>
+                </div>
+            </div>
 
-<!-- NRS -->
-<div id="viewNrs" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-bookmark"></i> Normas Regulamentadoras - NRs</h2>
-  <p class="dash-subtitle">Acesse as normas atualizadas do Ministério do Trabalho e Previdência</p>
-  <div class="stats-bar" id="nrStatsBar">
-    <div class="stat-card"><div class="stat-val" id="nrTotalCount">38</div><div class="stat-lab">Total de NRs</div></div>
-    <div class="stat-card"><div class="stat-val" id="nrEspecificasCount">10</div><div class="stat-lab">NRs Específicas</div></div>
-    <div class="stat-card"><div class="stat-val" id="nrGeraisCount">28</div><div class="stat-lab">Gerais + Saúde + Setoriais</div></div>
-  </div>
-  <input type="text" class="search-box" id="nrSearchInput" placeholder="🔍 Buscar NR por número ou nome..." oninput="filtrarNrs()">
-  <div class="filter-bar" id="nrFilterBar">
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarNrs('todos')">📋 Todos</button>
-    <button class="filter-btn" data-filter="geral" onclick="filtrarNrs('geral')">📌 Gerais</button>
-    <button class="filter-btn" data-filter="especifico" onclick="filtrarNrs('especifico')">🎯 Específicas</button>
-    <button class="filter-btn" data-filter="saude" onclick="filtrarNrs('saude')">🏥 Saúde</button>
-    <button class="filter-btn" data-filter="setorial" onclick="filtrarNrs('setorial')">🏭 Setoriais</button>
-  </div>
-  <div class="painel-card" style="padding:10px;"><div id="nrListContainer"></div></div>
-  <div class="modal-bg" id="nrModal">
-    <div class="modal">
-      <button class="modal-close" onclick="fecharModalNr()">✕</button>
-      <span class="modal-icon" id="modalNrIcon">📋</span>
-      <div class="modal-num" id="modalNrNum">NR-01</div>
-      <h2 id="modalNrTitle">Disposições Gerais</h2>
-      <p id="modalNrDesc">...</p>
-      <ul class="obj-list" id="modalNrList"></ul>
-      <button class="ask-btn" onclick="perguntarSobreNr()"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
-    </div>
-  </div>
-</div>
-
-<!-- CERTIFICADO -->
-<div id="viewCertificado" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-certificate"></i> Gerador de Certificados</h2>
-  <p class="dash-subtitle">Gere certificados PDF personalizados para seus alunos</p>
-  <div class="painel-card">
-    <div class="campo"><label>Nome do aluno</label><input type="text" id="certNomeAluno" placeholder="Nome completo do aluno"></div>
-    <div class="campo"><label>Curso</label><select id="certCursoSelect"></select></div>
-    <div class="campo"><label>Carga horária (horas)</label><input type="number" id="certCargaHoraria" min="1" max="999" value="40"></div>
-    <div class="campo"><label>Cidade/UF de emissão</label><input type="text" id="certCidadeEmissao" value="Pelotas/RS"></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-      <button class="btn-criar-sala" onclick="gerarCertificadoPDF()"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
-    </div>
-  </div>
-</div>
-
-<!-- BOLETOS -->
-<div id="viewBoletos" style="display:none">
-  <div class="admin-god-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
-    <h2><i class="fas fa-file-invoice-dollar"></i> Cobranças e Pagamentos</h2>
-    <div class="admin-god-sub">Acompanhe suas mensalidades e pagamentos</div>
-  </div>
-
-  <!-- Acesso Rápido -->
-  <div class="admin-card">
-    <div class="admin-card-title"><i class="fas fa-bolt"></i> Acesso Rápido</div>
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin-top:15px">
-      <button class="btn-acesso-rapido" onclick="mostrarAba('negociacao')">
-        <i class="fas fa-dollar-sign" style="font-size:28px; color:#1976D2"></i>
-        <span>Negociação<br>de Dívidas</span>
-      </button>
-      <button class="btn-acesso-rapido active" onclick="mostrarAba('cobrancas')">
-        <i class="fas fa-list" style="font-size:28px; color:#1976D2"></i>
-        <span>Cobranças E<br>Pagamentos</span>
-      </button>
-      <button class="btn-acesso-rapido" onclick="mostrarAba('pix-auto')">
-        <i class="fas fa-sync-alt" style="font-size:28px; color:#1976D2"></i>
-        <span>Pix<br>Automático</span>
-      </button>
-      <button class="btn-acesso-rapido" onclick="mostrarAba('recorrencia')">
-        <i class="fas fa-credit-card" style="font-size:28px; color:#1976D2"></i>
-        <span>Recorrência<br>Cartão</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Aba Cobranças -->
-  <div class="admin-card" id="aba-cobrancas">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="trocarAba('em-aberto')">Cobranças em Aberto</button>
-      <button class="tab-btn" onclick="trocarAba('pagamentos')">Pagamentos</button>
-    </div>
-    
-    <div id="em-aberto" class="tab-content">
-      <div class="empty-state">
-        <i class="fas fa-check-circle"></i>
-        <h4>Você Não Possui Mensalidades em Aberto</h4>
-      </div>
-    </div>
-    
-    <div id="pagamentos" class="tab-content" style="display:none">
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead>
-          <tbody id="bolHistoricoContainer">
-            <tr><td colspan="4" style="text-align:center;padding:18px;color:var(--texto-sec)">Nenhum pagamento registrado.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Aba Negociação -->
-  <div class="admin-card" id="aba-negociacao" style="display:none">
-    <h3>Negociação de dívida</h3>
-    <p style="color:var(--texto-sec)">Realize seu acordo, é simples e fácil.</p>
-    <div class="empty-state" style="margin-top:40px">
-      <h4 style="color:#00BCD4">Você Não Possui Mensalidades em Aberto</h4>
-    </div>
-  </div>
-
-  <!-- Aba PIX Automático -->
-  <div class="admin-card" id="aba-pix-auto" style="display:none">
-    <h3>Pix Automático</h3>
-    <p style="font-size:13px; color:var(--erro); font-weight:600">ATENÇÃO: Os agendamentos serão processados para cobranças com vencimento a partir de 3 dias da data de ativação do PIX automático.</p>
-    <p style="margin-top:10px; color:var(--texto-sec)">Com o Pix Automático, suas cobranças são pagas de forma prática e segura, sendo que valor é debitado automaticamente na data de vencimento, usando a chave Pix cadastrada, sem a necessidade de pagamento por QR Code.</p>
-  </div>
-
-  <!-- Aba Recorrência -->
-  <div class="admin-card" id="aba-recorrencia" style="display:none">
-    <h3>Recorrência Cartão</h3>
-    <div class="empty-state">
-      <i class="fas fa-credit-card"></i>
-      <h4>Nenhum cartão cadastrado</h4>
-      <button class="botao botao-primario" style="margin-top:15px">+ Novo Cartão</button>
-    </div>
-  </div>
-</div>
-
-<!-- PLANOS -->
-<div id="viewPlanos" style="display:none">
-  <div class="admin-god-header">
-    <h2><i class="fas fa-crown"></i> Planos de Assinatura</h2>
-    <div class="admin-god-sub">Escolha o plano ideal pra você</div>
-  </div>
-  
-  <div class="planos-grid" id="planosGrid">
-    <!-- MENSAL -->
-    <div class="plan-card">
-      <h3>Mensal</h3>
-      <p class="subtitle">Flexível para começar</p>
-      <div class="price">R$ <span>49</span>,90</div>
-      <p class="billing">por mês · cobrança mensal</p>
-      <ul>
-        <li>Acesso a todas as 38 NRs</li>
-        <li>Videoaulas em HD ilimitadas</li>
-        <li>Certificado reconhecido</li>
-        <li>Assistente de IA 24/7</li>
-        <li class="off">Aulas ao vivo ilimitadas</li>
-        <li class="off">Suporte prioritário</li>
-      </ul>
-      <button class="botao botao-secundario btn-assinar" data-plano="Mensal" data-valor="49.90">Assinar Mensal</button>
-    </div>
-
-    <!-- TRIMESTRAL - DESTAQUE -->
-    <div class="plan-card destaque">
-      <span class="badge-plano">Melhor custo-benefício</span>
-      <h3>Trimestral</h3>
-      <p class="subtitle">Melhor custo-benefício</p>
-      <div class="price">R$ <span>129</span>,90</div>
-      <p class="billing">a cada 3 meses · equivalente a R$ 43,30/mês</p>
-      <p class="economy">Economize 13%</p>
-      <ul>
-        <li>Acesso a todas as 38 NRs</li>
-        <li>Videoaulas em HD ilimitadas</li>
-        <li>Certificado reconhecido</li>
-        <li>Assistente de IA 24/7</li>
-        <li>Aulas ao vivo ilimitadas</li>
-        <li class="off">Suporte prioritário</li>
-      </ul>
-      <button class="botao botao-primario btn-assinar" data-plano="Trimestral" data-valor="129.90">Assinar Trimestral</button>
-    </div>
-
-    <!-- ANUAL -->
-    <div class="plan-card">
-      <h3>Anual</h3>
-      <p class="subtitle">Máxima economia</p>
-      <div class="price">R$ <span>399</span>,90</div>
-      <p class="billing">por ano · equivalente a R$ 33,32/mês</p>
-      <p class="economy">Economize 33%</p>
-      <ul>
-        <li>Acesso a todas as 38 NRs</li>
-        <li>Videoaulas em HD ilimitadas</li>
-        <li>Certificado reconhecido</li>
-        <li>Assistente de IA 24/7</li>
-        <li>Aulas ao vivo ilimitadas</li>
-        <li>Suporte prioritário dedicado</li>
-      </ul>
-      <button class="botao botao-secundario btn-assinar" data-plano="Anual" data-valor="399.90">Assinar Anual</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Pagamento -->
-<div id="modalPagamento" class="modal-bg">
-  <div class="modal-pagamento">
-    <button class="modal-close" onclick="fecharModalPag()">×</button>
-    <h2>Finalizar <span id="nomePlanoModal"></span></h2>
-    <p class="subtitulo">Valor: R$ <span id="valorPlanoModal"></span></p>
-    
-    <div class="metodo-pagamento">
-      <button class="botao botao-primario" onclick="gerarPIX()">Gerar PIX</button>
-      <button class="botao botao-secundario" onclick="gerarBoletoOnline()">Gerar Boleto Online</button>
-    </div>
-    
-    <div id="conteudoPIX" style="display:none">
-      <div class="qr-code-box">
-        <img id="qrCodeImg" src="" alt="QR Code PIX">
-        <p style="font-size:12px; color:var(--texto-sec); margin-top:10px">Escaneie com app do banco</p>
-      </div>
-      <p style="font-size:12px; font-weight:600; margin-bottom:6px">Código Copia e Cola:</p>
-      <div class="copia-cola" id="copiaColaTexto"></div>
-    </div>
-    
-    <div id="conteudoBoleto" style="display:none">
-      <p style="font-size:12px; font-weight:600; margin-bottom:6px">Linha Digitável:</p>
-      <div class="linha-boleto" id="linhaBoletoTexto"></div>
-      <p style="font-size:12px; color:var(--texto-sec); text-align:center">
-        Vencimento: <span id="vencimentoBoleto"></span><br>
-        Status: <strong style="color:var(--erro)">Pendente</strong>
-      </p>
-    </div>
-    
-    <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:20px">Fechar</button>
-  </div>
-</div>
-
-<!-- USUARIOS -->
-<div id="viewUsuarios" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-users-cog"></i> Gerenciar Usuários</h2>
-  <p class="dash-subtitle">Administre permissões e acessos</p>
-  <div class="painel-card"><p style="text-align:center; padding:40px">Painel admin em desenvolvimento.</p></div>
-</div>
-
-<!-- CONFIG -->
-<div id="viewConfig" style="display:none">
-  <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-cog"></i> Configurações</h2>
-  <p class="dash-subtitle">Personalize sua plataforma</p>
-  <div class="config-container">
-    <div class="config-sidebar">
-      <div class="config-tab active" onclick="trocarConfigTab('geral')"><i class="fas fa-sliders-h"></i> Geral</div>
-      <div class="config-tab" onclick="trocarConfigTab('aparencia')"><i class="fas fa-palette"></i> Aparência</div>
-    </div>
-    <div class="config-content">
-      <div class="config-section active-section" id="config-geral">
-        <div class="config-group">
-          <label>Nome da empresa</label>
-          <input type="text" id="cfgNomeEmpresa" value="SulSafe">
+            <!-- CONFIG -->
+            <div id="viewConfig" style="display:none">
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-cog"></i> Configurações</h2>
+                <p class="dash-subtitle">Personalize sua experiência</p>
+                <div class="config-container">
+                    <div class="config-sidebar">
+                        <div class="config-tab active" onclick="trocarConfigTab('geral')"><i class="fas fa-sliders-h"></i> Geral</div>
+                        <div class="config-tab" onclick="trocarConfigTab('aparencia')"><i class="fas fa-palette"></i> Aparência</div>
+                    </div>
+                    <div class="config-content">
+                        <div class="config-section active-section" id="config-geral">
+                            <div class="config-group">
+                                <label>Nome da empresa</label>
+                                <input type="text" id="cfgNomeEmpresa" value="SulSafe">
+                            </div>
+                        </div>
+                        <div class="config-section" id="config-aparencia">
+                            <div class="config-group">
+                                <label>Tema</label>
+                                <select id="cfgTema" onchange="aplicarTema(this.value)">
+                                    <option value="escuro">Escuro</option>
+                                    <option value="claro">Claro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="config-section" id="config-aparencia">
-        <div class="config-group">
-          <label>Tema</label>
-          <select id="cfgTema">
-            <option value="escuro">Escuro</option>
-            <option value="claro">Claro</option>
-          </select>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
-</div></div>
 
     <!-- ADMIN MODAL -->
     <div class="admin-modal" id="modalAdmin">
         <div class="admin-modal-content">
             <h2 style="margin-bottom:18px;color:var(--primaria)"><i class="fas fa-cog"></i> Adicionar conteúdo</h2>
             <div class="admin-tabs">
-                <div class="admin-tab active" onclick="trocarAbaAdmin('material')" id="tabMaterial">📄 Material / PDF</div>
+                <div class="admin-tab active" onclick="trocarAbaAdmin('material')" id="tabMaterial">📄 Material</div>
                 <div class="admin-tab" onclick="trocarAbaAdmin('aula')" id="tabAula">🎬 Videoaula</div>
             </div>
-            <div id="abaAdminMaterial">
+            <div id="abaAdminMaterial" class="admin-tab-content active">
                 <div class="campo"><label>Título</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR-35"></div>
                 <div class="campo"><label>NR</label><select id="matNR"></select></div>
-                <div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3"></textarea></div>
-                <div id="adminStatus" style="margin:10px 0;font-size:13px"></div>
-                <div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarMaterial()">Publicar</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div>
+                <div class="campo"><label>Descrição</label><textarea id="matDescricao" rows="3" style="width:100%;background:var(--input-bg);border:1px solid var(--borda);border-radius:14px;padding:13px 16px;color:var(--texto);font-size:14px;font-family:'Inter',sans-serif;"></textarea></div>
+                <div style="display:flex;gap:10px;margin-top:10px">
+                    <button class="btn-criar-sala" style="flex:1" onclick="salvarMaterial()">Publicar</button>
+                    <button class="botao botao-secundario" style="flex:1;padding:10px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button>
+                </div>
             </div>
-            <div id="abaAdminAula" style="display:none">
-                <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura: Introdução"></div>
+            <div id="abaAdminAula" class="admin-tab-content">
+                <div class="campo"><label>Título da aula</label><input type="text" id="aulaTitulo" placeholder="Ex: NR-35 — Trabalho em Altura"></div>
                 <div class="campo"><label>NR</label><select id="aulaNR"></select></div>
                 <div class="campo"><label>Link do YouTube</label><input type="url" id="aulaYoutube" placeholder="https://www.youtube.com/watch?v=..."></div>
-                <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2"></textarea></div>
-                <div id="aulaStatus" style="margin:10px 0;font-size:13px"></div>
-                <div style="display:flex;gap:10px"><button class="btn-criar-sala" type="button" style="flex:1" onclick="salvarVideoaula()">Publicar aula</button><button class="botao botao-secundario" type="button" style="flex:1;padding:12px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button></div>
+                <div class="campo"><label>Descrição</label><textarea id="aulaDescricao" rows="2" style="width:100%;background:var(--input-bg);border:1px solid var(--borda);border-radius:14px;padding:13px 16px;color:var(--texto);font-size:14px;font-family:'Inter',sans-serif;"></textarea></div>
+                <div style="display:flex;gap:10px;margin-top:10px">
+                    <button class="btn-criar-sala" style="flex:1" onclick="salvarVideoaula()">Publicar</button>
+                    <button class="botao botao-secundario" style="flex:1;padding:10px;border-radius:40px;border:1px solid var(--borda)!important" onclick="fecharModalAdmin()">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL LANÇAR NOTAS -->
-    <div id="modalLancarNotas" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center">
-        <div style="background:var(--card-bg);border-radius:20px;padding:24px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto">
-            <h3 style="margin-bottom:20px">📝 Lançar Notas</h3>
-            <div class="campo"><label>Aluno</label><select id="notaAlunoId" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--borda)"><option value="">Selecione um aluno...</option></select></div>
-            <div class="campo"><label>Disciplina</label><select id="notaDisciplinaId" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--borda)"><option value="">Selecione uma disciplina...</option></select></div>
-            <div class="campo"><label>Semestre</label><input type="text" id="notaSemestre" value="2025/1"></div>
-            <div class="campo"><label>Nota 1 (0-10)</label><input type="number" id="nota1" step="0.1" min="0" max="10"></div>
-            <div class="campo"><label>Nota 2 (0-10)</label><input type="number" id="nota2" step="0.1" min="0" max="10"></div>
-            <div class="campo"><label>Nota 3 (0-10)</label><input type="number" id="nota3" step="0.1" min="0" max="10"></div>
-            <div class="campo"><label>Recuperação (0-10)</label><input type="number" id="notaRec" step="0.1" min="0" max="10"></div>
-            <div class="campo"><label>Faltas</label><input type="number" id="notaFaltas" value="0"></div>
-            <div style="display:flex;gap:10px;margin-top:20px">
-                <button class="btn-criar-sala" onclick="salvarNotas()" style="flex:1">Salvar Notas</button>
-                <button class="botao botao-secundario" onclick="fecharModalLancarNotas()" style="flex:1">Cancelar</button>
+    <!-- MODAL PAGAMENTO -->
+    <div id="modalPagamento" class="modal-bg">
+        <div class="modal-pagamento">
+            <button class="modal-close" onclick="fecharModalPag()">×</button>
+            <h2 style="color:var(--primaria);margin-bottom:4px;">Finalizar <span id="nomePlanoModal"></span></h2>
+            <p style="color:var(--texto-sec);font-size:14px;margin-bottom:16px;">Valor: R$ <span id="valorPlanoModal"></span></p>
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                <button class="botao botao-primario" style="flex:1" onclick="gerarPIX()"><i class="fas fa-qrcode"></i> Gerar PIX</button>
+                <button class="botao botao-secundario" style="flex:1;border:1px solid var(--borda)!important;" onclick="gerarBoletoOnline()"><i class="fas fa-file-invoice"></i> Boleto</button>
             </div>
+            <div id="conteudoPIX" style="display:none;">
+                <div class="qr-code-box">
+                    <img id="qrCodeImg" src="" alt="QR Code" style="max-width:100%;max-height:200px;">
+                    <p style="font-size:12px;color:var(--texto-sec);margin-top:10px;">Escaneie com o app do banco</p>
+                </div>
+                <p style="font-size:12px;font-weight:600;margin-bottom:6px;">Código Copia e Cola:</p>
+                <div class="copia-cola" id="copiaColaTexto">00020126330014BR.GOV.BCB.PIX0114sulsafe@pag.com520400005303986540649.905802BR5913SulSafe Treinamentos6009Sao Paulo6108054090006305E2B3F</div>
+            </div>
+            <div id="conteudoBoleto" style="display:none;">
+                <p style="font-size:12px;font-weight:600;margin-bottom:6px;">Linha Digitável:</p>
+                <div class="linha-boleto" id="linhaBoletoTexto">00190.00009 01234.567890 12345.678901 1 23450000049900</div>
+                <p style="font-size:12px;color:var(--texto-sec);text-align:center;margin-top:10px;">
+                    Vencimento: <span id="vencimentoBoleto"></span><br>
+                    Status: <strong style="color:var(--erro)">Pendente</strong>
+                </p>
+            </div>
+            <button class="botao botao-terciario" onclick="fecharModalPag()" style="margin-top:12px;">Fechar</button>
         </div>
     </div>
 
     <div id="errorTooltip" class="error-tooltip"></div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
-            }
-        }
-    </script>
-
-    <script type="module">
-        import { createClient } from '@supabase/supabase-js';
-
-        // ================================================================
-        //  SUPABASE CONFIG
-        // ================================================================
-        const supabase = createClient(
-            'https://dhhvhiyoxadcwsfqlndw.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
-        );
-
-        const CONFIG = {
-            nomeEmpresa: "SulSafe",
-            logoUrl: "https://uwzbafqptjstqafsjhvp.supabase.co/storage/v1/object/public/sulsafe-logo1.png",
-            authRedirectUrl: window.location.origin + window.location.pathname
-        };
-
+    <script>
         // ================================================================
         //  DADOS DAS 38 NRS
         // ================================================================
@@ -1839,21 +1802,18 @@
         // ================================================================
         //  VARIÁVEIS GLOBAIS
         // ================================================================
-        const SUPER_ADMIN_EMAILS = ['sulsafetreinamentos@gmail.com'];
         let usuarioAtual = null;
         let usuarioId = null;
-        let perfilUsuario = null;
         let ehProfessor = false;
         let ehAdmin = false;
-        let currentChart = null;
-        let todasTransacoesCache = [];
-        let adminUsuariosCache = [];
+        let nrExpandidos = {};
+        let currentNrModal = null;
 
         // ================================================================
         //  FUNÇÕES AUXILIARES
         // ================================================================
         function escapeHtml(s) {
-            return String(s || '').replace(/[&<>\"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } [m] || m));
+            return String(s || '').replace(/[&<>\"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m] || m));
         }
 
         function mostrarErro(msg) {
@@ -1862,19 +1822,6 @@
             el.innerText = msg;
             el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 4000);
-        }
-
-        function traduzirErroAuth(msg) {
-            const m = (msg || '').toLowerCase();
-            if (m.includes('invalid login')) return 'E-mail ou senha incorretos.';
-            if (m.includes('not confirmed')) return 'Confirme seu e-mail antes de entrar.';
-            if (m.includes('already registered')) return 'E-mail já cadastrado.';
-            return msg;
-        }
-
-        function formatBRL(v) {
-            const n = Number(v || 0);
-            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
         function getAulasLocal() {
@@ -1894,26 +1841,8 @@
         }
 
         // ================================================================
-        //  FUNÇÕES DE AUTENTICAÇÃO
+        //  AUTENTICAÇÃO (SIMULADA)
         // ================================================================
-        async function garantirPerfil(user) {
-            try {
-                const { data: existing } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-                if (existing) return existing.role;
-                const role = SUPER_ADMIN_EMAILS.includes(user.email) ? 'admin' : 'aluno';
-                await supabase.from('profiles').insert({ 
-                    id: user.id, 
-                    email: user.email, 
-                    role: role, 
-                    nome_completo: user.user_metadata?.nome_completo || user.email 
-                });
-                return role;
-            } catch (err) {
-                console.error('Erro ao garantir perfil:', err);
-                return 'aluno';
-            }
-        }
-
         window.mostrarTela = function(tela) {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('active'));
             const map = { 'login': 'telaLogin', 'cadastro': 'telaCadastro', 'recuperar': 'telaRecuperar' };
@@ -1921,74 +1850,54 @@
             if (el) el.classList.add('active');
         };
 
-        window.fazerLogin = async function() {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({ 
-                    email: email.trim(), 
-                    password: senha 
-                });
-                if (error) { mostrarErro(traduzirErroAuth(error.message)); return; }
-                usuarioAtual = data.user.email;
-                usuarioId = data.user.id;
-                const role = await garantirPerfil(data.user);
-                perfilUsuario = role;
-                ehProfessor = (role === 'admin' || role === 'professor');
-                ehAdmin = (role === 'admin' || SUPER_ADMIN_EMAILS.includes(usuarioAtual));
-                localStorage.setItem('sulsafe_user', JSON.stringify({ id: usuarioId, email: usuarioAtual, role: role }));
-                entrarDashboard();
-            } catch (err) {
-                mostrarErro('Erro ao fazer login: ' + err.message);
-            }
-        };
+            if (!email || !senha) { mostrarErro('Preencha todos os campos'); return; }
+            usuarioAtual = email;
+            usuarioId = 'user-' + Date.now();
+            ehAdmin = email.includes('admin') || email === 'sulsafetreinamentos@gmail.com';
+            ehProfessor = ehAdmin || email.includes('professor');
+            
+            // Salva usuário
+            localStorage.setItem('sulsafe_user', JSON.stringify({ 
+                id: usuarioId, 
+                email: usuarioAtual, 
+                role: ehAdmin ? 'admin' : (ehProfessor ? 'professor' : 'aluno') 
+            }));
+            
+            entrarDashboard();
+        });
 
-        window.fazerCadastro = async function() {
-            try {
-                const nome = document.getElementById('cadNome').value;
-                const email = document.getElementById('cadEmail').value;
-                const senha = document.getElementById('cadSenha').value;
-                const senha2 = document.getElementById('cadSenha2').value;
-                if (senha !== senha2) { mostrarErro('Senhas não coincidem'); return; }
-                if (senha.length < 6) { mostrarErro('Senha deve ter no mínimo 6 caracteres'); return; }
-                const { error } = await supabase.auth.signUp({
-                    email: email.trim(),
-                    password: senha,
-                    options: { data: { nome_completo: nome, role: 'aluno' }, emailRedirectTo: CONFIG.authRedirectUrl }
-                });
-                if (error) { mostrarErro(traduzirErroAuth(error.message)); return; }
-                mostrarErro('✅ Conta criada! Confirme seu e-mail para ativar.');
+        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nome = document.getElementById('cadNome').value;
+            const email = document.getElementById('cadEmail').value;
+            const senha = document.getElementById('cadSenha').value;
+            const senha2 = document.getElementById('cadSenha2').value;
+            if (!nome || !email || !senha) { mostrarErro('Preencha todos os campos'); return; }
+            if (senha !== senha2) { mostrarErro('Senhas não coincidem'); return; }
+            if (senha.length < 6) { mostrarErro('Senha deve ter no mínimo 6 caracteres'); return; }
+            mostrarErro('✅ Conta criada! Faça login para continuar.');
+            window.mostrarTela('login');
+            document.getElementById('loginEmail').value = email;
+        });
+
+        document.getElementById('recuperarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('recEmail').value;
+            if (!email) { mostrarErro('Digite seu email'); return; }
+            document.getElementById('msgSucessoRec').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('msgSucessoRec').style.display = 'none';
                 window.mostrarTela('login');
-            } catch (err) {
-                mostrarErro('Erro ao criar conta: ' + err.message);
-            }
-        };
+            }, 3000);
+        });
 
-        window.recuperarSenha = async function() {
-            try {
-                const email = document.getElementById('recEmail').value;
-                const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { 
-                    redirectTo: CONFIG.authRedirectUrl 
-                });
-                if (error) { mostrarErro(traduzirErroAuth(error.message)); return; }
-                document.getElementById('msgSucessoRec').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('msgSucessoRec').style.display = 'none';
-                    window.mostrarTela('login');
-                }, 3000);
-            } catch (err) {
-                mostrarErro('Erro ao recuperar senha: ' + err.message);
-            }
-        };
-
-        window.fazerLogout = async function() {
-            try {
-                await supabase.auth.signOut();
-                localStorage.removeItem('sulsafe_user');
-                window.location.href = 'index.html';
-            } catch (err) {
-                console.error('Erro ao fazer logout:', err);
-            }
+        window.fazerLogout = function() {
+            localStorage.removeItem('sulsafe_user');
+            location.reload();
         };
 
         // ================================================================
@@ -2003,60 +1912,62 @@
             
             document.getElementById('dashUserName').textContent = usuarioAtual || 'Usuário';
             
-            aplicarLogos();
-            atualizarPainelProfessor();
+            // Atualiza badges
+            const badgeWrap = document.getElementById('roleBadgeWrap');
+            let cls = 'aluno', icon = 'fa-user-graduate', txt = 'Aluno';
+            if (ehAdmin) { cls = 'admin'; icon = 'fa-crown'; txt = 'ADMIN'; }
+            else if (ehProfessor) { cls = 'professor'; icon = 'fa-chalkboard-teacher'; txt = 'PROFESSOR'; }
+            badgeWrap.innerHTML = `<span class="role-badge ${cls}"><i class="fas ${icon}"></i><span>${txt}</span></span>`;
+
+            // Mostra/esconde itens por perfil
+            const setDisplay = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'block' : 'none'; };
+            setDisplay('navFinanceiro', ehAdmin);
+            setDisplay('navPlanos', !ehAdmin);
+            setDisplay('navConfig', ehAdmin);
+            setDisplay('navRelatorio', ehProfessor);
+            setDisplay('navCertificado', ehProfessor);
+            setDisplay('navAreaAluno', !ehProfessor);
+            setDisplay('labelEnsino', ehProfessor);
+            setDisplay('labelAdmin', ehAdmin);
+            
+            const btnProfessor = document.getElementById('btnPainelProfessor');
+            if (btnProfessor) btnProfessor.style.display = ehProfessor ? 'inline-flex' : 'none';
+
+            // Carrega dados
             carregarVideoaulas();
             atualizarListaSalas();
             carregarMateriais();
             renderizarNrs();
             renderizarProgressoHome();
             popularSelectsNR();
-            carregarMeusTrabalhos();
+            carregarRelatorioAlunos();
             
-            mostrarErro('✅ Login realizado com sucesso! Bem-vindo, ' + usuarioAtual);
+            mostrarErro('✅ Bem-vindo(a), ' + usuarioAtual);
         }
 
-        function atualizarPainelProfessor() {
-            const isAdmin = ehAdmin || perfilUsuario === 'admin';
-            const isProfessor = perfilUsuario === 'professor' || perfilUsuario === 'admin' || ehAdmin;
-            const isAluno = !isProfessor && (perfilUsuario === 'aluno');
-
-            const badgeWrap = document.getElementById('roleBadgeWrap');
-            if (badgeWrap) {
-                let cls = 'aluno', icon = 'fa-user-graduate', txt = 'Aluno';
-                if (isAdmin) { cls = 'admin'; icon = 'fa-crown'; txt = 'ADMIN'; }
-                else if (isProfessor) { cls = 'professor'; icon = 'fa-chalkboard-teacher'; txt = 'PROFESSOR'; }
-                badgeWrap.innerHTML = `<span class="role-badge ${cls}"><i class="fas ${icon}"></i><span>${txt}</span></span>`;
-            }
-
-            const setDisplay = (id, show) => { const el = document.getElementById(id); if (el) el.style.display = show ? 'flex' : 'none'; };
-            setDisplay('navFinanceiro', isAdmin);
-            setDisplay('navPlanos', isAluno);
-            setDisplay('navConfig', isAdmin);
-            setDisplay('navRelatorio', isProfessor);
-            setDisplay('navCertificado', isProfessor);
-            setDisplay('navBoletos', isAluno);
-            setDisplay('navUsuarios', isAdmin);
-            setDisplay('navAreaAluno', isAluno);
-            setDisplay('navTrabalhos', true);
-            
-            const btn = document.getElementById('btnPainelProfessor');
-            if (btn) btn.style.display = isProfessor ? 'inline-block' : 'none';
-            const btnLancar = document.getElementById('btnLancarNotas');
-            if (btnLancar) btnLancar.style.display = isProfessor ? 'inline-block' : 'none';
-            
-            const labelEnsino = document.getElementById('labelEnsino');
-            const labelAdmin = document.getElementById('labelAdmin');
-            if (labelEnsino) labelEnsino.style.display = isProfessor ? 'block' : 'none';
-            if (labelAdmin) labelAdmin.style.display = (isAdmin || isAluno) ? 'block' : 'none';
-        }
+        // Verifica sessão salva
+        (function() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('sulsafe_user'));
+                if (saved && saved.email) {
+                    usuarioAtual = saved.email;
+                    usuarioId = saved.id;
+                    ehAdmin = saved.role === 'admin' || saved.email === 'sulsafetreinamentos@gmail.com';
+                    ehProfessor = ehAdmin || saved.role === 'professor';
+                    entrarDashboard();
+                }
+            } catch(e) {}
+        })();
 
         // ================================================================
         //  NAVEGAÇÃO
         // ================================================================
         window.alternarView = function(viewId) {
-            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Trabalhos', 'Relatorio', 'Financeiro', 'Boletim', 'BoletimAluno', 'Nrs', 'Certificado', 'Boletos', 'Planos', 'Avaliacoes', 'Usuarios', 'Config'];
-            views.forEach(v => { const el = document.getElementById(`view${v}`); if (el) el.style.display = 'none'; });
+            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Relatorio', 'Financeiro', 'Nrs', 'Certificado', 'Planos', 'Config'];
+            views.forEach(v => { 
+                const el = document.getElementById(`view${v}`); 
+                if (el) el.style.display = 'none'; 
+            });
             const target = document.getElementById(`view${viewId.charAt(0).toUpperCase() + viewId.slice(1)}`);
             if (target) target.style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -2065,13 +1976,15 @@
             if (viewId === 'videoaulas') carregarVideoaulas();
             if (viewId === 'salas') atualizarListaSalas();
             if (viewId === 'materiais') carregarMateriais();
-            if (viewId === 'aluno') carregarMeusTrabalhos();
             if (viewId === 'nrs') renderizarNrs();
-            if (viewId === 'relatorio' && ehProfessor) carregarRelatorioAlunos();
-            if (viewId === 'financeiro') carregarFinanceiroAdmin();
-            if (viewId === 'usuarios') carregarPainelAdmin();
-            if (viewId === 'boletim') { if (ehProfessor) carregarBoletimAdmin(); else carregarBoletimAluno(); }
+            if (viewId === 'relatorio') carregarRelatorioAlunos();
         };
+
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.addEventListener('click', function() {
+                window.alternarView(this.getAttribute('data-view'));
+            });
+        });
 
         // ================================================================
         //  VIDEOAULAS
@@ -2081,10 +1994,25 @@
             if (!container) return;
             const aulas = getAulasLocal();
             if (!aulas.length) {
-                container.innerHTML = `<p style="color:var(--texto-sec);text-align:center;padding:40px 0;grid-column:1/-1"><i class="fas fa-video" style="font-size:48px;display:block;margin-bottom:16px;color:var(--dourado)"></i>Nenhuma videoaula disponível. Aguarde o professor publicar.</p>`;
+                container.innerHTML = `<p style="color:var(--texto-sec);text-align:center;padding:40px 0;grid-column:1/-1"><i class="fas fa-video" style="font-size:48px;display:block;margin-bottom:16px;color:var(--dourado)"></i>Nenhuma videoaula disponível.</p>`;
                 return;
             }
             const progresso = getProgressoLocal();
+            const concluidas = aulas.filter(a => progresso[a.id]).length;
+            const pct = Math.round((concluidas / aulas.length) * 100);
+            
+            // Progresso
+            const progEl = document.getElementById('progressoVideoaulas');
+            if (progEl) {
+                progEl.innerHTML = `
+                    <div class="progresso-container">
+                        <div class="progresso-header"><span>Seu progresso</span><span class="progresso-pct">${pct}%</span></div>
+                        <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
+                        <div>${concluidas} de ${aulas.length} aulas</div>
+                    </div>
+                `;
+            }
+
             container.innerHTML = aulas.map(aula => {
                 const ytId = aula.youtube_url ? aula.youtube_url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/)?.[1] : null;
                 const concluida = !!progresso[aula.id];
@@ -2101,22 +2029,31 @@
                             <div class="aula-desc">${escapeHtml(aula.descricao || '')}</div>
                         </div>
                         <div class="aula-footer">
-                            <button class="btn-concluir ${concluida ? 'concluida' : ''}" onclick="toggleConcluida('${aula.id}',event)">${concluida ? 'Concluída' : 'Marcar concluída'}</button>
-                            ${ehProfessor ? `<button class="btn-entrar" style="background:var(--erro)" onclick="deletarVideoaula('${aula.id}')"><i class="fas fa-trash"></i></button>` : ''}
+                            <button class="btn-concluir ${concluida ? 'concluida' : ''}" onclick="toggleConcluida('${aula.id}')">${concluida ? 'Concluída' : 'Marcar concluída'}</button>
+                            ${ehProfessor ? `<button class="btn-entrar" style="background:#D32F2F" onclick="deletarVideoaula('${aula.id}')"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
-            renderizarProgressoAulas(aulas);
+
+            // Certificado
+            const btnCert = document.getElementById('btnCertificado');
+            if (btnCert) {
+                if (concluidas === aulas.length && aulas.length > 0) {
+                    btnCert.style.display = 'inline-flex';
+                } else {
+                    btnCert.style.display = 'none';
+                }
+            }
         }
 
-        window.toggleConcluida = function(aulaId, e) {
-            if (e) e.stopPropagation();
+        window.toggleConcluida = function(aulaId) {
             const progresso = getProgressoLocal();
             if (progresso[aulaId]) delete progresso[aulaId];
             else progresso[aulaId] = Date.now();
             localStorage.setItem(`sulsafe_progresso_${usuarioId || 'anon'}`, JSON.stringify(progresso));
             carregarVideoaulas();
+            renderizarProgressoHome();
         };
 
         window.deletarVideoaula = function(id) {
@@ -2127,22 +2064,19 @@
             carregarVideoaulas();
         };
 
-        function renderizarProgressoAulas(aulas) {
-            if (!aulas.length) return;
-            const progresso = getProgressoLocal();
-            const concluidas = aulas.filter(a => progresso[a.id]).length;
-            const pct = aulas.length > 0 ? Math.round((concluidas / aulas.length) * 100) : 0;
-            const progressoEl = document.getElementById('progressoVideoaulas');
-            if (progressoEl) {
-                progressoEl.innerHTML = `
-                    <div class="progresso-container">
-                        <div class="progresso-header"><span>Seu progresso</span><span class="progresso-pct">${pct}%</span></div>
-                        <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
-                        <div>${concluidas} de ${aulas.length} aulas</div>
-                    </div>
-                `;
-            }
-        }
+        window.salvarVideoaula = function() {
+            const titulo = document.getElementById('aulaTitulo').value.trim();
+            const nr = document.getElementById('aulaNR').value;
+            const youtube_url = document.getElementById('aulaYoutube').value.trim();
+            const descricao = document.getElementById('aulaDescricao').value.trim();
+            if (!titulo || !youtube_url) { mostrarErro('Preencha título e link'); return; }
+            const aulas = getAulasLocal();
+            aulas.push({ id: 'aula-' + Date.now(), titulo, nr, youtube_url, descricao });
+            localStorage.setItem('sulsafe_videoaulas', JSON.stringify(aulas));
+            fecharModalAdmin();
+            carregarVideoaulas();
+            mostrarErro('✅ Aula publicada!');
+        };
 
         function renderizarProgressoHome() {
             const aulas = getAulasLocal();
@@ -2159,20 +2093,6 @@
             `;
         }
 
-        window.salvarVideoaula = function() {
-            const titulo = document.getElementById('aulaTitulo').value.trim();
-            const nr = document.getElementById('aulaNR').value;
-            const youtube_url = document.getElementById('aulaYoutube').value.trim();
-            const descricao = document.getElementById('aulaDescricao').value.trim();
-            if (!titulo || !youtube_url) { mostrarErro('Preencha título e link'); return; }
-            const aulas = getAulasLocal();
-            aulas.push({ id: 'aula-' + Date.now(), titulo, nr, youtube_url, descricao });
-            localStorage.setItem('sulsafe_videoaulas', JSON.stringify(aulas));
-            fecharModalAdmin();
-            carregarVideoaulas();
-            mostrarErro('✅ Aula publicada com sucesso!');
-        };
-
         // ================================================================
         //  SALAS
         // ================================================================
@@ -2181,7 +2101,7 @@
             if (!container) return;
             const salas = getSalas();
             if (!salas.length) {
-                container.innerHTML = `<li style="color:var(--texto-sec);text-align:center;padding:28px;list-style:none;"><i class="fas fa-door-open" style="font-size:32px;display:block;margin-bottom:12px;color:var(--dourado)"></i>Nenhuma sala ativa no momento.</li>`;
+                container.innerHTML = `<li style="color:var(--texto-sec);text-align:center;padding:28px;list-style:none;"><i class="fas fa-door-open" style="font-size:32px;display:block;margin-bottom:12px;color:var(--dourado)"></i>Nenhuma sala ativa.</li>`;
                 return;
             }
             container.innerHTML = salas.map(sala => `
@@ -2191,7 +2111,7 @@
                         <div class="meeting-id">ID: ${escapeHtml(sala.id)}</div>
                         <div><small>Criada por: ${escapeHtml(sala.leader || 'Professor')}</small></div>
                     </div>
-                    <button class="btn-entrar" onclick="alert('Entrando na sala: ${escapeHtml(sala.topic)}')">
+                    <button class="btn-entrar" onclick="entrarSala('${escapeHtml(sala.id)}')">
                         <i class="fas fa-sign-in-alt"></i> ENTRAR
                     </button>
                 </li>
@@ -2207,7 +2127,13 @@
             localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
             document.getElementById('meetingName').value = '';
             atualizarListaSalas();
-            mostrarErro('✅ Sala criada com sucesso!');
+            mostrarErro('✅ Sala criada!');
+        };
+
+        window.entrarSala = function(salaId) {
+            // Simula entrada na sala
+            window.open('https://meet.jit.si/SulSafe-' + salaId, '_blank');
+            mostrarErro('🔗 Entrando na sala...');
         };
 
         // ================================================================
@@ -2228,7 +2154,7 @@
                         <p>${escapeHtml(m.descricao || '')}</p>
                         <span class="badge-nr">${escapeHtml(m.nr || 'Geral')}</span>
                     </div>
-                    <button class="btn-entrar" onclick="alert('Baixando: ${escapeHtml(m.titulo)}')">Baixar</button>
+                    <button class="btn-entrar" onclick="alert('📄 Baixando: ${escapeHtml(m.titulo)}')">Baixar</button>
                 </div>
             `).join('');
         }
@@ -2247,74 +2173,45 @@
         };
 
         // ================================================================
-        //  ALUNO - TRABALHOS
-        // ================================================================
-        function carregarMeusTrabalhos() {
-            const container = document.getElementById('meusTrabalhosList');
-            if (!container) return;
-            const trabalhos = JSON.parse(localStorage.getItem(`sulsafe_trabalhos_${usuarioId}`) || '[]');
-            if (!trabalhos.length) {
-                container.innerHTML = '<p style="color:var(--texto-sec);text-align:center;padding:20px">Nenhum trabalho enviado.</p>';
-                return;
-            }
-            container.innerHTML = trabalhos.map(t => `
-                <div class="meeting-card">
-                    <div>
-                        <strong>${escapeHtml(t.disciplina || 'Segurança do Trabalho')}</strong><br>
-                        Status: ${t.status === 'pendente' ? '📤 Pendente' : '✅ Corrigido - Nota: ' + t.nota}
-                        ${t.comentario ? `<br>Comentário: ${escapeHtml(t.comentario)}` : ''}
-                    </div>
-                    <button class="btn-entrar" onclick="alert('Baixando arquivo...')">Baixar PDF</button>
-                </div>
-            `).join('');
-        }
-
-        window.enviarTrabalho = function(input) {
-            const file = input.files[0];
-            if (!file || file.type !== 'application/pdf') { mostrarErro('Envie um arquivo PDF'); return; }
-            const trabalhos = JSON.parse(localStorage.getItem(`sulsafe_trabalhos_${usuarioId}`) || '[]');
-            trabalhos.push({
-                id: 'trab-' + Date.now(),
-                disciplina: 'Segurança do Trabalho',
-                status: 'pendente',
-                data_envio: new Date().toISOString(),
-                nome_arquivo: file.name
-            });
-            localStorage.setItem(`sulsafe_trabalhos_${usuarioId}`, JSON.stringify(trabalhos));
-            mostrarErro('✅ Trabalho enviado com sucesso!');
-            carregarMeusTrabalhos();
-            input.value = '';
-        };
-
-        // ================================================================
         //  IA
         // ================================================================
-        window.enviarPerguntaIA = function() {
-            const input = document.getElementById('iaChatInput');
+        window.perguntarIA = function() {
+            const input = document.getElementById('iaInput');
             const pergunta = input?.value.trim();
             if (!pergunta) { mostrarErro('Digite uma pergunta'); return; }
-            const box = document.getElementById('iaChatMessages');
+            const box = document.getElementById('iaMessages');
             box.innerHTML += `<div class="ia-msg user">${escapeHtml(pergunta)}</div>`;
             input.value = '';
+            box.scrollTop = box.scrollHeight;
             
-            // Simula resposta da IA
-            setTimeout(() => {
+            // Busca NR relacionada
+            const nrMatch = pergunta.match(/NR[- ]?(\d{2})/i);
+            let resposta = '';
+            if (nrMatch) {
+                const nrNum = 'NR-' + String(nrMatch[1]).padStart(2, '0');
+                const nr = NRS_DATA.find(n => n.nr === nrNum);
+                if (nr) {
+                    resposta = `📋 A ${nr.nr} - ${nr.titulo}\n\n📌 ${nr.descricao}\n\n🎯 Objetivos:\n${nr.objetivos.map(o => '• ' + o).join('\n')}`;
+                } else {
+                    resposta = '🤔 Não encontrei essa NR. Tente verificar o número (ex: NR-10).';
+                }
+            } else {
                 const respostas = [
-                    '📋 A NR-10 estabelece os requisitos para segurança em instalações e serviços com eletricidade. Ela exige treinamento específico para trabalhadores que atuam com eletricidade, uso de EPIs adequados e procedimentos de segurança como desenergização.',
-                    '🦺 O EPI (Equipamento de Proteção Individual) é todo dispositivo de uso individual destinado a proteger a saúde e integridade física do trabalhador. Exemplos: capacete, óculos, protetor auricular, luvas, botas, cinto de segurança.',
-                    '👥 A CIPA é uma comissão paritária composta por representantes do empregador e dos empregados. Sua função é promover a prevenção de acidentes e doenças ocupacionais, realizando inspeções e campanhas de conscientização.'
+                    '📋 A NR-10 estabelece os requisitos para segurança em instalações e serviços com eletricidade. Ela exige treinamento específico e uso de EPIs adequados.',
+                    '🦺 O EPI (Equipamento de Proteção Individual) é todo dispositivo de uso individual destinado a proteger a saúde do trabalhador. Ex: capacete, óculos, luvas.',
+                    '👥 A CIPA é uma comissão paritária que promove a prevenção de acidentes e doenças ocupacionais.'
                 ];
-                const resposta = respostas[Math.floor(Math.random() * respostas.length)];
-                box.innerHTML += `<div class="ia-msg bot">${resposta}</div>`;
+                resposta = respostas[Math.floor(Math.random() * respostas.length)];
+            }
+            setTimeout(() => {
+                box.innerHTML += `<div class="ia-msg bot">${resposta.replace(/\n/g, '<br>')}</div>`;
                 box.scrollTop = box.scrollHeight;
-            }, 800);
+            }, 500);
         };
 
         // ================================================================
         //  NRS
         // ================================================================
-        let nrExpandidos = {};
-
         function renderizarNrs() {
             const container = document.getElementById('nrListContainer');
             if (!container) return;
@@ -2353,7 +2250,7 @@
                             <ul class="objetivos-list">${nr.objetivos.map(obj => `<li>${escapeHtml(obj)}</li>`).join('')}</ul>
                             <div class="actions">
                                 <button class="btn-ver" onclick="abrirModalNr('${nr.nr}')"><i class="fas fa-external-link-alt"></i> Ver detalhes</button>
-                                <button class="btn-perguntar" onclick="perguntarSobreNrEspecifica('${nr.nr}')"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
+                                <button class="btn-perguntar" onclick="perguntarSobreNrEspecifica('${nr.nr}')"><i class="fas fa-robot"></i> Perguntar</button>
                             </div>
                         </div>
                     </div>
@@ -2397,7 +2294,6 @@
                 container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--texto-sec)"><i class="fas fa-search" style="font-size:32px;display:block;margin-bottom:12px;"></i><p>Nenhuma NR encontrada.</p></div>`;
                 return;
             }
-            // Re-renderiza com apenas as filtradas
             container.innerHTML = nrsFiltradas.map(nr => {
                 const isOpen = nrExpandidos[nr.nr] || false;
                 const categoriaClass = `nr-categoria-${nr.categoria}`;
@@ -2421,7 +2317,7 @@
                             <ul class="objetivos-list">${nr.objetivos.map(obj => `<li>${escapeHtml(obj)}</li>`).join('')}</ul>
                             <div class="actions">
                                 <button class="btn-ver" onclick="abrirModalNr('${nr.nr}')"><i class="fas fa-external-link-alt"></i> Ver detalhes</button>
-                                <button class="btn-perguntar" onclick="perguntarSobreNrEspecifica('${nr.nr}')"><i class="fas fa-robot"></i> Perguntar sobre esta NR</button>
+                                <button class="btn-perguntar" onclick="perguntarSobreNrEspecifica('${nr.nr}')"><i class="fas fa-robot"></i> Perguntar</button>
                             </div>
                         </div>
                     </div>
@@ -2432,31 +2328,28 @@
         window.abrirModalNr = function(nrNum) {
             const nr = NRS_DATA.find(n => n.nr === nrNum);
             if (!nr) { mostrarErro('NR não encontrada'); return; }
+            currentNrModal = nr.nr;
             document.getElementById('modalNrIcon').textContent = nr.icone;
             document.getElementById('modalNrNum').textContent = nr.nr;
             document.getElementById('modalNrTitle').textContent = nr.titulo;
             document.getElementById('modalNrDesc').textContent = nr.descricao;
             document.getElementById('modalNrList').innerHTML = nr.objetivos.map(obj => `<li>${escapeHtml(obj)}</li>`).join('');
-            document.getElementById('modalNrNum').dataset.nrAtual = nr.nr;
             document.getElementById('nrModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
         };
 
         window.fecharModalNr = function() {
             document.getElementById('nrModal').classList.remove('open');
-            document.body.style.overflow = '';
         };
 
         window.perguntarSobreNr = function() {
-            const nrNum = document.getElementById('modalNrNum').dataset.nrAtual || '';
-            if (nrNum) {
+            if (currentNrModal) {
                 fecharModalNr();
                 alternarView('ia');
-                const input = document.getElementById('iaChatInput');
+                const input = document.getElementById('iaInput');
                 if (input) {
-                    const nr = NRS_DATA.find(n => n.nr === nrNum);
-                    input.value = `Explique a ${nrNum} - ${nr?.titulo || ''} de forma detalhada`;
-                    setTimeout(() => enviarPerguntaIA(), 300);
+                    const nr = NRS_DATA.find(n => n.nr === currentNrModal);
+                    input.value = `Explique a ${currentNrModal} - ${nr?.titulo || ''}`;
+                    setTimeout(() => perguntarIA(), 300);
                 }
             }
         };
@@ -2465,15 +2358,15 @@
             const nr = NRS_DATA.find(n => n.nr === nrNum);
             if (!nr) return;
             alternarView('ia');
-            const input = document.getElementById('iaChatInput');
+            const input = document.getElementById('iaInput');
             if (input) {
-                input.value = `Explique a ${nr.nr} - ${nr.titulo} de forma detalhada`;
-                setTimeout(() => enviarPerguntaIA(), 300);
+                input.value = `Explique a ${nr.nr} - ${nr.titulo}`;
+                setTimeout(() => perguntarIA(), 300);
             }
         };
 
         // ================================================================
-        //  POPULAR SELECTS NR
+        //  POPULAR SELECTS
         // ================================================================
         function popularSelectsNR() {
             const opts = NRS_DATA.map(nr => `<option value="${nr.nr}">${nr.nr} — ${escapeHtml(nr.titulo.substring(0, 40))}</option>`).join('');
@@ -2489,7 +2382,11 @@
         window.gerarCertificado = function() {
             const aulas = getAulasLocal();
             const progresso = getProgressoLocal();
-            const nrsConcluidas = [...new Set(aulas.filter(a => progresso[a.id]).map(a => a.nr).filter(Boolean))];
+            const concluidas = aulas.filter(a => progresso[a.id]).length;
+            if (concluidas !== aulas.length || aulas.length === 0) {
+                mostrarErro('Conclua todas as aulas para gerar o certificado.');
+                return;
+            }
             const nome = usuarioAtual || 'Aluno';
             try {
                 const { jsPDF } = window.jspdf;
@@ -2511,10 +2408,9 @@
                 doc.setFontSize(13);
                 doc.setTextColor(30, 30, 30);
                 doc.text('concluiu as videoaulas de Segurança do Trabalho da plataforma SulSafe.', 148.5, 108, { align: 'center' });
-                if (nrsConcluidas.length) doc.text(`Normas: ${nrsConcluidas.join(', ')}`, 148.5, 120, { align: 'center' });
                 doc.text(`Emitido em ${new Date().toLocaleDateString()}`, 148.5, 146, { align: 'center' });
                 doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-                mostrarErro('✅ Certificado gerado com sucesso!');
+                mostrarErro('✅ Certificado gerado!');
             } catch (err) {
                 mostrarErro('Erro ao gerar certificado: ' + err.message);
             }
@@ -2547,7 +2443,7 @@
                 doc.text(`concluiu o curso de ${escapeHtml(curso)} com carga horária de ${carga} horas.`, 148.5, 108, { align: 'center' });
                 doc.text(`${cidade}, ${new Date().toLocaleDateString()}`, 148.5, 146, { align: 'center' });
                 doc.save(`Certificado_${nome.replace(/\s+/g, '_')}.pdf`);
-                mostrarErro('✅ Certificado gerado com sucesso!');
+                mostrarErro('✅ Certificado gerado!');
             } catch (err) {
                 mostrarErro('Erro ao gerar certificado: ' + err.message);
             }
@@ -2556,308 +2452,67 @@
         // ================================================================
         //  RELATÓRIO
         // ================================================================
-        function renderizarGraficoProgresso(alunos, progressos) {
-            const ctx = document.getElementById('progressoChart')?.getContext('2d');
-            if (!ctx) return;
-            if (currentChart) currentChart.destroy();
-            currentChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: alunos,
-                    datasets: [{ label: 'Progresso (%)', data: progressos, backgroundColor: '#2E7D32', borderRadius: 8 }]
-                },
-                options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, max: 100 } } }
-            });
-        }
-
-        window.carregarRelatorioAlunos = async function() {
+        function carregarRelatorioAlunos() {
             const container = document.getElementById('relatorioContainer');
             if (!container) return;
-            container.innerHTML = '<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-            try {
-                const { data: alunos } = await supabase.from('profiles').select('id,email,role').eq('role', 'aluno');
-                if (!alunos || !alunos.length) {
-                    container.innerHTML = '<p style="text-align:center;padding:20px">Nenhum aluno cadastrado.</p>';
-                    return;
-                }
-                const alunosNomes = alunos.map(a => a.email.split('@')[0]);
-                const progressos = alunos.map(() => Math.floor(Math.random() * 100));
-                renderizarGraficoProgresso(alunosNomes, progressos);
-                let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#2E7D32;color:#fff;"><th>Aluno</th><th>Progresso</th><th>Status</th></tr></thead><tbody>';
-                alunos.forEach((a, i) => {
-                    const pct = progressos[i];
-                    html += `<tr><td>${escapeHtml(a.email)}</td><td><div style="background:#e0e0e0;border-radius:20px;height:8px"><div style="background:#2E7D32;border-radius:20px;height:8px;width:${pct}%"></div></div>${pct}%</td><td>${pct === 100 ? '✅ Concluído' : (pct > 0 ? '🟡 Em andamento' : '🔴 Não iniciado')}</td></tr>`;
-                });
-                html += '</tbody></table></div>';
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<p style="color:red">Erro ao carregar relatório.</p>';
-            }
-        };
+            const alunos = [
+                { email: 'aluno1@exemplo.com', progresso: Math.floor(Math.random() * 100) },
+                { email: 'aluno2@exemplo.com', progresso: Math.floor(Math.random() * 100) },
+                { email: 'aluno3@exemplo.com', progresso: Math.floor(Math.random() * 100) }
+            ];
+            let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#2E7D32;color:#fff;"><th>Aluno</th><th>Progresso</th><th>Status</th></tr></thead><tbody>';
+            alunos.forEach(a => {
+                const pct = a.progresso;
+                html += `<tr><td>${escapeHtml(a.email)}</td><td><div style="background:#e0e0e0;border-radius:20px;height:8px"><div style="background:#2E7D32;border-radius:20px;height:8px;width:${pct}%"></div></div>${pct}%</td><td>${pct === 100 ? '✅ Concluído' : (pct > 0 ? '🟡 Em andamento' : '🔴 Não iniciado')}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
 
         // ================================================================
         //  FINANCEIRO
         // ================================================================
-        async function carregarFinanceiroAdmin() {
-            if (!ehAdmin) {
-                document.getElementById('viewFinanceiro').innerHTML = `
-                    <div class="access-denied-box"><i class="fas fa-lock"></i><h2>Acesso negado</h2><p>O financeiro é restrito ao administrador.</p></div>
-                `;
-                return;
-            }
-            try {
-                const { data, error } = await supabase.from('transacoes').select('*').order('data_criacao', { ascending: false });
-                if (error) throw error;
-                todasTransacoesCache = (data || []).map(t => ({
-                    ...t,
-                    valor: Number(t.valor || 0),
-                    status: (t.status || '').toLowerCase()
-                }));
-                atualizarKpisFinanceiro();
-                renderTabelaTodasTransacoes();
-                atualizarGraficoReceita6m();
-            } catch (err) {
-                mostrarErro('Erro ao carregar financeiro: ' + err.message);
-            }
-        }
-
-        function atualizarKpisFinanceiro() {
-            const pagos = todasTransacoesCache.filter(t => t.status === 'pago');
-            const receitaTotal = pagos.reduce((s, t) => s + t.valor, 0);
-            const agora = new Date();
-            const pagosMes = pagos.filter(t => {
-                const d = new Date(t.data_criacao);
-                return d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
-            });
-            const receitaMes = pagosMes.reduce((s, t) => s + t.valor, 0);
-            const pendentes = todasTransacoesCache.filter(t => t.status === 'pendente');
-            const cancelados = todasTransacoesCache.filter(t => t.status === 'cancelado');
-            const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-            set('finKpiReceitaTotal', formatBRL(receitaTotal));
-            set('finKpiReceitaMes', formatBRL(receitaMes));
-            set('finKpiReceitaMesLabel', `${pagosMes.length} pagamento${pagosMes.length === 1 ? '' : 's'} este mês`);
-            set('finKpiPendente', formatBRL(pendentes.reduce((s, t) => s + t.valor, 0)));
-            set('finKpiPendenteCount', `${pendentes.length} transaç${pendentes.length === 1 ? 'ão' : 'ões'}`);
-            set('finKpiCancelado', formatBRL(cancelados.reduce((s, t) => s + t.valor, 0)));
-            set('finKpiCanceladoCount', `${cancelados.length} transaç${cancelados.length === 1 ? 'ão' : 'ões'}`);
-        }
-
-        function renderTabelaTodasTransacoes() {
-            const tbody = document.getElementById('todasTransacoesContainer');
-            if (!tbody) return;
-            const busca = (document.getElementById('finFiltroBusca')?.value || '').toLowerCase().trim();
-            const statusFiltro = document.getElementById('finFiltroStatus')?.value || 'todos';
-            const filtradas = todasTransacoesCache.filter(t => {
-                const matchBusca = !busca || (t.aluno_email || '').toLowerCase().includes(busca);
-                const matchStatus = statusFiltro === 'todos' || t.status === statusFiltro;
-                return matchBusca && matchStatus;
-            });
-            if (filtradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--texto-sec)">Nenhuma transação encontrada.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = filtradas.map(t => {
-                const statusLabel = { pago: '✅ Pago', pendente: '⏳ Pendente', cancelado: '❌ Cancelado' }[t.status] || t.status;
-                return `<tr>
-                    <td>${escapeHtml(t.aluno_email || '—')}</td>
-                    <td>${escapeHtml(t.tipo || 'avulso')}</td>
-                    <td><strong>${formatBRL(t.valor)}</strong></td>
-                    <td><span class="badge-status ${t.status}">${statusLabel}</span></td>
-                    <td>${t.data_criacao ? new Date(t.data_criacao).toLocaleDateString() : '—'}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function atualizarGraficoReceita6m() {
-            const ctx = document.getElementById('finChartReceita6m');
-            if (!ctx) return;
-            const agora = new Date();
-            const labels = [], valores = [];
-            for (let i = 5; i >= 0; i--) {
-                const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
-                labels.push(d.toLocaleDateString('pt-BR', { month: 'short' }));
-                const total = todasTransacoesCache
-                    .filter(t => t.status === 'pago' && new Date(t.data_criacao).getMonth() === d.getMonth() && new Date(t.data_criacao).getFullYear() === d.getFullYear())
-                    .reduce((s, t) => s + t.valor, 0);
-                valores.push(total);
-            }
-            if (window.finChartInstance) window.finChartInstance.destroy();
-            if (typeof Chart !== 'undefined') {
-                window.finChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels, datasets: [{ label: 'Receita (R$)', data: valores, backgroundColor: 'rgba(46,125,50,.8)', borderRadius: 6 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-                });
-            }
-        }
-
-        // ================================================================
-        //  ADMIN - USUÁRIOS
-        // ================================================================
-        async function carregarPainelAdmin() {
-            if (!ehAdmin) {
-                document.getElementById('viewUsuarios').innerHTML = `
-                    <div class="access-denied-box"><i class="fas fa-lock"></i><h2>Acesso negado</h2><p>Esta área é restrita ao administrador.</p></div>
-                `;
-                return;
-            }
-            try {
-                const [{ data: alunos }, { data: professores }, { data: transacoes }] = await Promise.all([
-                    supabase.from('profiles').select('*').eq('role', 'aluno'),
-                    supabase.from('profiles').select('*').eq('role', 'professor'),
-                    supabase.from('transacoes').select('*').order('data_criacao', { ascending: false })
-                ]);
-                adminUsuariosCache = [...(alunos || []), ...(professores || [])];
-                const admins = adminUsuariosCache.filter(u => SUPER_ADMIN_EMAILS.includes(u.email));
-                adminUsuariosCache = [...adminUsuariosCache.filter(u => !SUPER_ADMIN_EMAILS.includes(u.email)), ...admins];
-                
-                document.getElementById('admKpiAlunos').textContent = alunos?.length || 0;
-                document.getElementById('admKpiProfessores').textContent = professores?.length || 0;
-                const receitaTotal = (transacoes || []).filter(t => t.status === 'PAGO').reduce((s, t) => s + Number(t.valor || 0), 0);
-                document.getElementById('admKpiReceita').textContent = formatBRL(receitaTotal);
-                document.getElementById('admKpiCertificados').textContent = '0';
-                
-                renderTabelaUsuarios();
-                carregarConfigForm();
-            } catch (err) {
-                mostrarErro('Erro ao carregar painel admin: ' + err.message);
-            }
-        }
-
-        function renderTabelaUsuarios() {
-            const tbody = document.getElementById('admUsuariosTbody');
-            if (!tbody) return;
-            const busca = (document.getElementById('admFiltroBusca')?.value || '').toLowerCase().trim();
-            const papelFiltro = document.getElementById('admFiltroPapel')?.value || 'todos';
-            const filtrados = adminUsuariosCache.filter(u => {
-                const nome = (u.nome_completo || u.full_name || u.nome || '').toLowerCase();
-                const email = (u.email || '').toLowerCase();
-                const matchBusca = !busca || nome.includes(busca) || email.includes(busca);
-                const matchPapel = papelFiltro === 'todos' || u.role === papelFiltro;
-                return matchBusca && matchPapel;
-            });
-            if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--texto-sec)">Nenhum usuário encontrado.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = filtrados.map(u => {
-                const nome = escapeHtml(u.nome_completo || u.full_name || u.nome || '(sem nome)');
-                const email = escapeHtml(u.email || '—');
-                const role = u.role || 'aluno';
-                const isMasterAdmin = SUPER_ADMIN_EMAILS.includes(u.email);
-                return `<tr>
-                    <td><strong>${nome}</strong>${isMasterAdmin ? ' <i class="fas fa-crown" style="color:var(--dourado)"></i>' : ''}</td>
-                    <td>${email}</td>
-                    <td><span class="badge-role ${role}">${role}</span></td>
-                    <td><span class="badge-status ativo">Ativo</span></td>
-                    <td>${isMasterAdmin ? '<span style="color:var(--texto-sec);font-size:11px">Master</span>' : `<button class="action-btn delete" onclick="mostrarErro('Função em desenvolvimento')">Excluir</button>`}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function carregarConfigForm() {
-            const planos = JSON.parse(localStorage.getItem('sulsafe_planos') || '{"mensal":"49.90","trimestral":"129.90","anual":"399.90"}');
-            const set = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
-            set('cfgPrecoMensal', planos.mensal);
-            set('cfgPrecoTrimestral', planos.trimestral);
-            set('cfgPrecoAnual', planos.anual);
-        }
-
-        window.salvarConfiguracoesPlataforma = function() {
-            const mensal = document.getElementById('cfgPrecoMensal')?.value || '49.90';
-            const trimestral = document.getElementById('cfgPrecoTrimestral')?.value || '129.90';
-            const anual = document.getElementById('cfgPrecoAnual')?.value || '399.90';
-            localStorage.setItem('sulsafe_planos', JSON.stringify({ mensal, trimestral, anual }));
-            const status = document.getElementById('cfgStatus');
-            if (status) status.innerHTML = `<span style="color:var(--sucesso)"><i class="fas fa-check-circle"></i> Configurações salvas!</span>`;
-            mostrarErro('✅ Configurações salvas!');
-        };
-
-        // ================================================================
-        //  BOLETIM
-        // ================================================================
-        window.carregarBoletimAdmin = async function() {
-            const container = document.getElementById('boletimContainer');
+        function carregarFinanceiro() {
+            const container = document.getElementById('finContainer');
             if (!container) return;
-            container.innerHTML = '<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-            try {
-                const { data: alunos } = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
-                if (!alunos || !alunos.length) {
-                    container.innerHTML = '<p style="text-align:center;padding:20px">Nenhum aluno cadastrado.</p>';
-                    return;
-                }
-                let html = `<div style="overflow-x:auto;"><table class="boletim-tabela"><thead><tr><th>Aluno</th><th>Disciplina</th><th>Média</th><th>Situação</th></tr></thead><tbody>`;
-                alunos.forEach(a => {
-                    const media = (Math.random() * 10).toFixed(1);
-                    const situacao = parseFloat(media) >= 6 ? '✅ Aprovado' : (parseFloat(media) >= 4 ? '🟡 Recuperação' : '❌ Reprovado');
-                    html += `<tr><td>${escapeHtml(a.email)}</td><td>Segurança do Trabalho</td><td><strong>${media}</strong></td><td class="${parseFloat(media) >= 6 ? 'status-aprovado' : (parseFloat(media) >= 4 ? 'status-recuperacao' : 'status-reprovado')}">${situacao}</td></tr>`;
-                });
-                html += '</tbody></table></div>';
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<p style="color:red">Erro ao carregar boletim.</p>';
-            }
-        };
-
-        window.carregarBoletimAluno = async function() {
-            const container = document.getElementById('boletimAlunoContainer');
-            if (!container) return;
-            container.innerHTML = '<p style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>';
-            try {
-                const { data: notas } = await supabase.from('notas').select('*').eq('aluno_id', usuarioId);
-                if (!notas || !notas.length) {
-                    container.innerHTML = '<p style="text-align:center;padding:20px">Nenhuma nota registrada.</p>';
-                    return;
-                }
-                let html = `<div style="overflow-x:auto;"><table class="boletim-tabela"><thead><tr><th>Disciplina</th><th>Nota 1</th><th>Nota 2</th><th>Nota 3</th><th>Média</th><th>Situação</th></tr></thead><tbody>`;
-                notas.forEach(n => {
-                    const media = ((n.nota1 + n.nota2 + n.nota3) / 3).toFixed(1);
-                    const situacao = parseFloat(media) >= 6 ? '✅ Aprovado' : (parseFloat(media) >= 4 ? '🟡 Recuperação' : '❌ Reprovado');
-                    html += `<tr><td>Segurança do Trabalho</td><td>${n.nota1 || '-'}</td><td>${n.nota2 || '-'}</td><td>${n.nota3 || '-'}</td><td><strong>${media}</strong></td><td class="${parseFloat(media) >= 6 ? 'status-aprovado' : (parseFloat(media) >= 4 ? 'status-recuperacao' : 'status-reprovado')}">${situacao}</td></tr>`;
-                });
-                html += '</tbody></table></div>';
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<p style="color:red">Erro ao carregar boletim.</p>';
-            }
-        };
+            container.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px;">
+                    <div class="stat-card"><div class="stat-val">R$ 0</div><div class="stat-lab">Receita Total</div></div>
+                    <div class="stat-card"><div class="stat-val">R$ 0</div><div class="stat-lab">Este Mês</div></div>
+                    <div class="stat-card"><div class="stat-val">0</div><div class="stat-lab">Assinantes</div></div>
+                </div>
+                <p style="text-align:center;color:var(--texto-sec);padding:20px;">Nenhuma transação registrada.</p>
+            `;
+        }
 
         // ================================================================
-        //  MODAL NOTAS
+        //  PAGAMENTO
         // ================================================================
-        window.abrirModalLancarNotas = async function() {
-            const selectAluno = document.getElementById('notaAlunoId');
-            const { data: alunos } = await supabase.from('profiles').select('id,email').eq('role', 'aluno');
-            selectAluno.innerHTML = '<option value="">Selecione...</option>' + (alunos || []).map(a => `<option value="${a.id}">${escapeHtml(a.email)}</option>`).join('');
-            document.getElementById('notaDisciplinaId').innerHTML = '<option value="1">Segurança do Trabalho</option>';
-            document.getElementById('modalLancarNotas').style.display = 'flex';
+        window.abrirModalPagamento = function(plano, valor) {
+            document.getElementById('nomePlanoModal').textContent = plano;
+            document.getElementById('valorPlanoModal').textContent = valor;
+            document.getElementById('conteudoPIX').style.display = 'none';
+            document.getElementById('conteudoBoleto').style.display = 'none';
+            document.getElementById('modalPagamento').classList.add('open');
         };
 
-        window.fecharModalLancarNotas = function() {
-            document.getElementById('modalLancarNotas').style.display = 'none';
+        window.fecharModalPag = function() {
+            document.getElementById('modalPagamento').classList.remove('open');
         };
 
-        window.salvarNotas = async function() {
-            const alunoId = document.getElementById('notaAlunoId').value;
-            const nota1 = parseFloat(document.getElementById('nota1').value) || 0;
-            const nota2 = parseFloat(document.getElementById('nota2').value) || 0;
-            const nota3 = parseFloat(document.getElementById('nota3').value) || 0;
-            const faltas = parseInt(document.getElementById('notaFaltas').value) || 0;
-            if (!alunoId) { mostrarErro('Selecione um aluno'); return; }
-            try {
-                await supabase.from('notas').upsert({
-                    aluno_id: alunoId,
-                    disciplina_id: 1,
-                    nota1, nota2, nota3,
-                    faltas,
-                    media_final: (nota1 + nota2 + nota3) / 3,
-                    semestre: document.getElementById('notaSemestre').value || '2025/1'
-                });
-                mostrarErro('✅ Notas salvas!');
-                fecharModalLancarNotas();
-            } catch (err) {
-                mostrarErro('Erro: ' + err.message);
-            }
+        window.gerarPIX = function() {
+            document.getElementById('conteudoPIX').style.display = 'block';
+            document.getElementById('conteudoBoleto').style.display = 'none';
+            // Simula QR Code
+            document.getElementById('qrCodeImg').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23fff"/%3E%3Crect width="40" height="40" x="20" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="20" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="80" fill="%23000"/%3E%3Crect width="40" height="40" x="20" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="80" y="140" fill="%23000"/%3E%3Crect width="40" height="40" x="140" y="140" fill="%23000"/%3E%3C/svg%3E';
+        };
+
+        window.gerarBoletoOnline = function() {
+            document.getElementById('conteudoPIX').style.display = 'none';
+            document.getElementById('conteudoBoleto').style.display = 'block';
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + 5);
+            document.getElementById('vencimentoBoleto').textContent = hoje.toLocaleDateString();
         };
 
         // ================================================================
@@ -2873,141 +2528,93 @@
         };
 
         window.trocarAbaAdmin = function(aba) {
-            document.getElementById('abaAdminMaterial').style.display = aba === 'material' ? 'block' : 'none';
-            document.getElementById('abaAdminAula').style.display = aba === 'aula' ? 'block' : 'none';
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(aba === 'material' ? 'tabMaterial' : 'tabAula').classList.add('active');
+            document.getElementById(aba === 'material' ? 'abaAdminMaterial' : 'abaAdminAula').classList.add('active');
         };
 
         // ================================================================
-        //  APLICAR LOGOS
+        //  CONFIG
         // ================================================================
-        function aplicarLogos() {
-            const logoUrl = CONFIG.logoUrl;
-            ['logoIcon', 'logoIconCad', 'logoIconRec', 'dashLogoIcon'].forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                el.classList.add('has-img');
-                el.innerHTML = `<img src="${logoUrl}" alt="Logo SulSafe" onerror="this.parentElement.classList.remove('has-img'); this.remove();">`;
-            });
-            const nomeEmpresaEl = document.getElementById('nomeEmpresa');
-            if (nomeEmpresaEl) nomeEmpresaEl.textContent = ' ' + CONFIG.nomeEmpresa;
-        }
+        window.trocarConfigTab = function(tab) {
+            document.querySelectorAll('.config-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.config-section').forEach(el => el.classList.remove('active-section'));
+            document.querySelector(`[onclick*="${tab}"]`)?.classList.add('active');
+            document.getElementById(`config-${tab}`)?.classList.add('active-section');
+        };
 
-        // ================================================================
-        //  EVENT LISTENERS
-        // ================================================================
-        document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); window.fazerLogin(); });
-        document.getElementById('cadastroForm').addEventListener('submit', e => { e.preventDefault(); window.fazerCadastro(); });
-        document.getElementById('recuperarForm').addEventListener('submit', e => { e.preventDefault(); window.recuperarSenha(); });
-
-        document.querySelectorAll('.nav-item').forEach(el => {
-            el.addEventListener('click', function() {
-                window.alternarView(this.getAttribute('data-view'));
-            });
-        });
-
-        // ================================================================
-        //  TEMA
-        // ================================================================
-        const temaSelect = document.getElementById('temaSelect');
-        function applyTheme(t) {
-            if (t === 'claro') { document.body.classList.remove('tema-escuro'); document.body.classList.add('tema-claro'); }
-            else { document.body.classList.remove('tema-claro'); document.body.classList.add('tema-escuro'); }
-            localStorage.setItem('sulsafe_tema', t);
-        }
-        temaSelect?.addEventListener('change', e => applyTheme(e.target.value));
-        applyTheme(localStorage.getItem('sulsafe_tema') || 'escuro');
-        if (temaSelect) temaSelect.value = localStorage.getItem('sulsafe_tema') || 'escuro';
-
-        document.querySelectorAll('.color-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                const c = opt.dataset.color;
-                document.documentElement.style.setProperty('--primaria', c);
-                localStorage.setItem('sulsafe_corDestaque', c);
-            });
-        });
-        const savedColor = localStorage.getItem('sulsafe_corDestaque');
-        if (savedColor) document.documentElement.style.setProperty('--primaria', savedColor);
-
-        // ================================================================
-        //  VERIFICAR SESSÃO
-        // ================================================================
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) {
-                usuarioAtual = session.user.email;
-                usuarioId = session.user.id;
-                garantirPerfil(session.user).then((role) => {
-                    perfilUsuario = role;
-                    ehProfessor = (role === 'admin' || role === 'professor');
-                    ehAdmin = (role === 'admin' || SUPER_ADMIN_EMAILS.includes(usuarioAtual));
-                    entrarDashboard();
-                });
+        window.aplicarTema = function(tema) {
+            if (tema === 'claro') {
+                document.body.classList.remove('tema-escuro');
+                document.body.classList.add('tema-claro');
             } else {
-                try {
-                    const saved = JSON.parse(localStorage.getItem('sulsafe_user'));
-                    if (saved && saved.email) {
-                        console.log('🔑 Sessão recuperada do localStorage:', saved.email);
-                    }
-                } catch (e) {}
+                document.body.classList.remove('tema-claro');
+                document.body.classList.add('tema-escuro');
             }
-        }).catch(err => console.error('Erro getSession:', err));
+            localStorage.setItem('sulsafe_tema', tema);
+        };
+
+        // Aplica tema salvo
+        const temaSalvo = localStorage.getItem('sulsafe_tema') || 'escuro';
+        document.getElementById('cfgTema').value = temaSalvo;
+        aplicarTema(temaSalvo);
 
         // ================================================================
         //  CANVAS HERO
         // ================================================================
         const canvas = document.getElementById('canvas-hero');
-        const ctx = canvas.getContext('2d');
-        let w, h, mx = 0, my = 0, tx = 0, ty = 0;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h, mx = 0, my = 0;
 
-        function resizeCanvas() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+            function resizeCanvas() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-        document.addEventListener('mousemove', e => {
-            mx = (e.clientX / w - 0.5) * 2;
-            my = (e.clientY / h - 0.5) * 2;
-        });
-
-        const stars = Array.from({ length: 80 }, () => ({
-            x: Math.random() * 1920,
-            y: Math.random() * 1080,
-            z: Math.random() * 1000,
-            size: Math.random() * 1.2
-        }));
-
-        function draw() {
-            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-pagina').trim() || '#F4F7F6';
-            ctx.fillRect(0, 0, w, h);
-            tx += (mx - tx) * 0.05;
-            ty += (my - ty) * 0.05;
-            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primaria').trim() || '#2E7D32';
-            stars.forEach(s => {
-                s.z -= 1.2;
-                if (s.z <= 0) {
-                    s.z = 1000;
-                    s.x = Math.random() * w;
-                    s.y = Math.random() * h;
-                }
-                let scale = 1000 / (1000 - s.z);
-                let x = (s.x - w / 2) * scale + w / 2 + tx * 30;
-                let y = (s.y - h / 2) * scale + h / 2 + ty * 15;
-                ctx.globalAlpha = scale * 0.5;
-                ctx.beginPath();
-                ctx.arc(x, y, s.size * scale, 0, Math.PI * 2);
-                ctx.fill();
+            document.addEventListener('mousemove', e => {
+                mx = (e.clientX / w - 0.5) * 2;
+                my = (e.clientY / h - 0.5) * 2;
             });
-            requestAnimationFrame(draw);
-        }
-        draw();
 
-        console.log('🚀 SulSafe login carregado com sucesso!');
+            const stars = Array.from({ length: 60 }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                size: Math.random() * 2 + 1,
+                speed: 0.5 + Math.random() * 1.5
+            }));
+
+            function draw() {
+                const bg = getComputedStyle(document.body).getPropertyValue('--bg-pagina').trim() || '#F4F7F6';
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primaria').trim() || '#2E7D32';
+                stars.forEach(s => {
+                    s.x += (mx * s.speed * 0.5);
+                    s.y += (my * s.speed * 0.3);
+                    if (s.x > w) s.x = 0;
+                    if (s.x < 0) s.x = w;
+                    if (s.y > h) s.y = 0;
+                    if (s.y < 0) s.y = h;
+                    ctx.globalAlpha = 0.3 + (s.size / 5);
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // ================================================================
+        //  INICIALIZAÇÃO
+        // ================================================================
+        console.log('🚀 SulSafe carregado!');
         console.log('📊 NRS_DATA:', NRS_DATA.length, 'normas');
         console.log('👤 Usuário:', usuarioAtual || 'Não logado');
-        console.log('🔑 Admin:', ehAdmin, 'Professor:', ehProfessor);
     </script>
 </body>
 </html>
