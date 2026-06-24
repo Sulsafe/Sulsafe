@@ -3,27 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-<meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-<title>SulSafe | Plataforma de Segurança do Trabalho</title>
+<title>SulSafe | Plataforma de Seguranca do Trabalho</title>
 <link rel="icon" type="image/png" href="logo1.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- Mercado Pago SDK — Substitua TEST-xxx pela sua chave pública quando tiver ACC -->
+<!-- MERCADO PAGO — Substitua TEST-xxx pela sua chave publica quando tiver ACC -->
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
---p:#2E7D32;--p2:#1B5E20;--p3:#43A047;
---gold:#C9B037;--gold-s:rgba(201,176,55,.18);
---tx:#1A1A1A;--tx2:#555;--tx3:#999;
---bd:#E0E0E0;--bd2:#EEE;--ip:#FAFAFA;
---bg:#F4F7F6;--cd:#FFF;
---gl:rgba(46,125,50,.3);--sh:0 4px 16px rgba(0,0,0,.06);
---err:#D32F2F;--ok:#2E7D32;
---r:14px;--r2:20px;--r3:28px
-}
+:root{--p:#2E7D32;--p2:#1B5E20;--p3:#43A047;--gd:#C9B037;--tx:#1A1A1A;--tx2:#555;--tx3:#999;--bd:#E0E0E0;--bd2:#EEE;--ip:#FAFAFA;--bg:#F4F7F6;--cd:#FFF;--gl:rgba(46,125,50,.3);--sh:0 4px 16px rgba(0,0,0,.06);--err:#D32F2F;--r:14px;--r2:20px;--r3:28px}
 body.t-azul{--p:#1565C0;--p2:#0D47A1;--p3:#1E88E5;--gl:rgba(21,101,192,.3)}
 body.t-roxo{--p:#7B1FA2;--p2:#4A148C;--p3:#9C27B0;--gl:rgba(123,31,162,.3)}
 body.t-vermelho{--p:#C62828;--p2:#B71C1C;--p3:#E53935;--gl:rgba(198,40,40,.3)}
@@ -35,8 +25,6 @@ h1,h2,h3,.fd{font-family:'Montserrat','Inter',sans-serif}
 a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}
 input,select,textarea{font-family:inherit;outline:none}
 ::selection{background:var(--p);color:#fff}
-
-/* AUTH */
 #authWrap{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .4s}
 #authWrap.off{opacity:0;pointer-events:none}
 .auth-card{width:420px;max-width:94vw;max-height:94vh;overflow-y:auto;background:var(--cd);border:1px solid var(--bd);border-radius:var(--r3);padding:32px 28px;box-shadow:0 24px 60px rgba(0,0,0,.12);animation:au .4s ease}
@@ -44,7 +32,7 @@ input,select,textarea{font-family:inherit;outline:none}
 .logo-r{display:flex;align-items:center;gap:12px;margin-bottom:6px}
 .lic{width:42px;height:42px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px var(--gl);color:#fff;font-weight:900;font-size:18px;flex-shrink:0}
 .lt{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--p)}
-.sub{font-size:13px;color:var(--tx2);margin-bottom:22px;border-left:3px solid var(--gold);padding-left:12px;line-height:1.5}
+.sub{font-size:13px;color:var(--tx2);margin-bottom:22px;border-left:3px solid var(--gd);padding-left:12px;line-height:1.5}
 .fld{margin-bottom:14px}
 .fld label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--tx2);margin-bottom:5px}
 .fld input,.fld select,.fld textarea{width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px 16px;color:var(--tx);font-size:14px;transition:.2s}
@@ -56,7 +44,7 @@ input,select,textarea{font-family:inherit;outline:none}
 .btn-s:hover{border-color:var(--p)!important;color:var(--p)}
 .btn-d{background:#D32F2F;color:#fff;box-shadow:0 8px 20px rgba(211,47,47,.3)}
 .btn-d:hover{transform:translateY(-2px)}
-.btn-g{background:linear-gradient(135deg,var(--gold),#b8902a);color:#1a1a00}
+.btn-g{background:linear-gradient(135deg,var(--gd),#b8902a);color:#1a1a00}
 .btn-sm{padding:8px 16px;font-size:12px;border-radius:30px}
 .btn-block{width:100%;margin-bottom:10px}
 .btn-back{display:inline-flex;align-items:center;gap:6px;color:var(--tx2);font-size:13px;cursor:pointer;margin-bottom:16px;transition:.2s;font-weight:500}
@@ -64,16 +52,8 @@ input,select,textarea{font-family:inherit;outline:none}
 .divider{display:flex;align-items:center;gap:14px;margin:14px 0;color:var(--tx3);font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd)}
 .t{display:none}.t.on{display:flex;flex-direction:column;animation:au .35s ease}
-
-/* LINK VOLTAR SITE — estilizado igual landing page */
-.back-to-site{
-    display:inline-flex;align-items:center;gap:6px;
-    margin-bottom:14px;font-size:13px;color:var(--tx2);
-    text-decoration:none;transition:.2s;font-weight:500;
-}
-.back-to-site:hover{color:var(--p);transform:translateX(-2px)}
-
-/* DASHBOARD */
+.back-site{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font-size:13px;color:var(--tx2);text-decoration:none;transition:.2s;font-weight:500}
+.back-site:hover{color:var(--p);transform:translateX(-2px)}
 #dash{position:fixed;inset:0;display:none;opacity:0;transition:opacity .3s}
 #dash.on{display:flex;opacity:1}
 .sidebar{width:260px;background:var(--cd);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;transition:width .3s,background .35s}
@@ -92,35 +72,30 @@ input,select,textarea{font-family:inherit;outline:none}
 .sb-name{font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px}
 .sb-out{color:var(--tx3);padding:6px 8px;border-radius:8px;transition:.2s;font-size:14px}
 .sb-out:hover{color:#D32F2F;background:rgba(211,47,47,.08)}
-
 .main{flex:1;overflow-y:auto;padding:28px 32px;animation:fv .3s ease}
 @keyframes fv{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
 .wc{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
 .wcs{color:var(--tx2);font-size:13px;margin-bottom:28px}
-
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-bottom:28px}
 .card{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:20px;transition:.3s;cursor:pointer;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--p),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--p),var(--gd));transform:scaleX(0);transform-origin:left;transition:transform .35s}
 .card:hover{border-color:var(--p);box-shadow:0 16px 36px rgba(46,125,50,.15);transform:translateY(-3px)}
 .card:hover::before{transform:scaleX(1)}
 .card-ic{width:44px;height:44px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;color:#fff;box-shadow:0 8px 18px var(--gl)}
 .card-t{font-size:14px;font-weight:700;margin-bottom:4px}
 .card-d{font-size:12px;color:var(--tx2);line-height:1.5}
-
 .pnl{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:22px;margin-bottom:20px;box-shadow:var(--sh)}
 .pnl-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .pnl-t{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
 .pnl-t i{color:var(--p)}
-
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:24px}
 .st{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh)}
 .st-v{font-size:26px;font-weight:900;color:var(--p);font-family:'Montserrat',sans-serif;line-height:1}
 .st-l{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
-
 .tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--bd)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:linear-gradient(90deg,var(--p),var(--p2));color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
-td{padding:10px 12px;border-bottom:1px solid var(--bd2);color:var(--tx)}
+td{padding:10px 12px;border-bottom:1px solid var(--bd2);color:var(--tx);vertical-align:middle}
 tr:nth-child(odd) td{background:rgba(46,125,50,.02)}
 tr:hover td{background:rgba(46,125,50,.06)}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
@@ -128,28 +103,23 @@ tr:hover td{background:rgba(46,125,50,.06)}
 .bg-warn{background:rgba(255,152,0,.15);color:#E65100}
 .bg-err{background:rgba(211,47,47,.15);color:#D32F2F}
 .bg-info{background:rgba(21,101,192,.15);color:#1565C0}
-
 .prog-w{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:18px;box-shadow:var(--sh)}
 .prog-bar{background:rgba(0,0,0,.06);border-radius:40px;height:8px;overflow:hidden}
 body.t-escuro .prog-bar{background:rgba(255,255,255,.08)}
 .prog-fill{background:linear-gradient(90deg,var(--p),var(--p3));height:100%;border-radius:40px;transition:width .6s ease}
-
 .search{width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:40px;padding:11px 18px;color:var(--tx);font-size:14px;margin-bottom:14px;transition:.2s}
 .search:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--gl)}
-
 .mt-c{background:var(--cd);border-left:4px solid var(--p);border-radius:var(--r);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;box-shadow:var(--sh);margin-bottom:10px;transition:.2s}
 .mt-c:hover{transform:translateX(3px)}
 .mt-topic{font-weight:700;font-size:14px}
 .mt-id{font-size:11px;font-family:monospace;background:var(--ip);padding:2px 8px;border-radius:20px;color:var(--tx2);margin-top:3px;display:inline-block}
-
 .nr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
 .nr-c{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;transition:.25s;cursor:pointer}
 .nr-c:hover{border-color:var(--p);transform:translateY(-2px);box-shadow:var(--sh)}
 .nr-ic{width:42px;height:42px;border-radius:10px;background:rgba(46,125,50,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:.2s}
 .nr-c:hover .nr-ic{background:var(--p);color:#fff}
-.nr-num{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.nr-num{font-size:10px;font-weight:800;color:var(--gd);letter-spacing:1px;text-transform:uppercase}
 .nr-nm{font-size:13px;font-weight:600;line-height:1.3}
-
 .chat-box{display:flex;flex-direction:column;height:420px}
 .chat-msgs{flex:1;overflow-y:auto;padding:14px;background:var(--ip);border-radius:var(--r);margin-bottom:10px}
 .chat-m{padding:10px 14px;border-radius:12px;margin-bottom:8px;max-width:85%;font-size:13px;line-height:1.5}
@@ -159,7 +129,6 @@ body.t-escuro .chat-m.b{background:rgba(76,175,80,.12)}
 .chat-row{display:flex;gap:8px}
 .chat-row input{flex:1;padding:11px 16px;border:1px solid var(--bd);border-radius:40px;background:var(--ip);color:var(--tx);font-size:14px}
 .chat-row input:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--gl)}
-
 .cfg-w{display:flex;gap:18px;flex-wrap:wrap}
 .cfg-sb{width:200px;background:var(--cd);border-radius:var(--r2);padding:10px;border:1px solid var(--bd);box-shadow:var(--sh);display:flex;flex-direction:column;gap:4px}
 .cfg-tb{padding:9px 12px;border-radius:10px;cursor:pointer;transition:.2s;color:var(--tx2);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
@@ -175,7 +144,6 @@ body.t-escuro .chat-m.b{background:rgba(76,175,80,.12)}
 .tema-o:hover{border-color:var(--p)}
 .tema-o.on{border-color:var(--p);box-shadow:0 0 0 3px var(--gl)}
 .tema-dot{width:30px;height:30px;border-radius:50%;margin:0 auto 6px;border:2px solid rgba(0,0,0,.1)}
-
 .planos-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:20px}
 .plan-c{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:28px 24px;text-align:center;transition:.3s;position:relative;box-shadow:var(--sh)}
 .plan-c:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(46,125,50,.15)}
@@ -191,14 +159,12 @@ body.t-escuro .chat-m.b{background:rgba(76,175,80,.12)}
 .plan-c ul li::before{content:'\2713';color:var(--p);font-weight:700}
 .plan-c ul li.off{opacity:.4}
 .plan-c ul li.off::before{content:'\2715';color:#999}
-.badge-plan{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),#b8902a);color:#1a1a00;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-
+.badge-plan{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gd),#b8902a);color:#1a1a00;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .mdl-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px}
 .mdl-bg.on{display:flex}
-.mdl{background:var(--cd);border-radius:var(--r2);padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;border-top:5px solid var(--p);box-shadow:0 20px 60px rgba(0,0,0,.3);animation:au .3s ease;position:relative}
+.mdl{background:var(--cd);border-radius:var(--r2);padding:24px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;border-top:5px solid var(--p);box-shadow:0 20px 60px rgba(0,0,0,.3);animation:au .3s ease;position:relative}
 .mdl-x{position:absolute;top:10px;right:10px;background:var(--bd);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:.2s}
 .mdl-x:hover{background:#D32F2F;color:#fff}
-
 .pay-c{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:24px;text-align:center;box-shadow:var(--sh);position:relative}
 .qr-box{background:var(--ip);border-radius:12px;padding:20px;margin:16px 0;text-align:center}
 .copy-b{background:var(--ip);padding:12px;border-radius:8px;font-family:monospace;font-size:11px;word-break:break-all;margin:10px 0;position:relative;cursor:pointer;transition:.2s}
@@ -210,18 +176,15 @@ body.t-escuro .warn-b{background:rgba(230,81,0,.12);border-color:rgba(230,81,0,.
 .tab-b{background:none;border:none;padding:12px 24px;cursor:pointer;font-weight:600;color:var(--tx2);transition:.2s}
 .tab-b.on{color:var(--p);border-bottom:3px solid var(--p)}
 .tab-c{display:none}.tab-c.on{display:block}
-
 .god-hd{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:22px 28px;border-radius:var(--r2);margin-bottom:22px;position:relative;overflow:hidden;box-shadow:0 10px 28px var(--gl)}
 .god-hd h2{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
-.god-hd h2 i{color:var(--gold);font-size:24px}
+.god-hd h2 i{color:var(--gd);font-size:24px}
 .god-hd p{font-size:13px;opacity:.9;margin-top:4px}
 .god-hd::after{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:rgba(255,255,255,.08);border-radius:50%}
-
 .ch-b{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:20px;margin-bottom:20px;box-shadow:var(--sh)}
 .ch-b h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .ch-b h3 i{color:var(--p)}
 .ch-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
-
 .notif-popup{position:fixed;top:20px;right:20px;z-index:9000;width:360px;max-width:calc(100vw - 40px);background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:0 20px 50px rgba(0,0,0,.2);transform:translateX(120%);transition:transform .4s cubic-bezier(.2,.9,.4,1.1);overflow:hidden}
 .notif-popup.show{transform:translateX(0)}
 .notif-popup-hd{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -229,866 +192,497 @@ body.t-escuro .warn-b{background:rgba(230,81,0,.12);border-color:rgba(230,81,0,.
 .notif-popup-bd{padding:16px}
 .notif-popup-bd p{font-size:13px;line-height:1.6;color:var(--tx)}
 .notif-popup-ft{padding:10px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
-
 #toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{padding:12px 20px;border-radius:40px;font-size:13px;font-weight:600;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.2);pointer-events:auto;animation:ti .3s ease;max-width:360px}
 .toast.ok{background:#2E7D32}.toast.err{background:#D32F2F}.toast.warn{background:#E65100}.toast.info{background:#1565C0}
 @keyframes ti{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-
 .empty{text-align:center;padding:50px 20px;color:var(--tx3)}
-.empty i{font-size:42px;color:var(--gold);margin-bottom:12px;display:block;opacity:.6}
-
-@media(max-width:768px){
-.sidebar{width:60px;padding:8px 4px}
-.sidebar .lt,.sidebar .ni span,.sidebar .sb-lbl,.sidebar .sb-name,.sidebar .sb-role{display:none}
-.sb-role{margin:8px auto;width:32px;padding:4px;justify-content:center}
-.ni{justify-content:center;padding:10px}
-.sb-hd{justify-content:center;padding:12px 8px}
-.main{padding:16px 14px}
-.cfg-w{flex-direction:column}.cfg-sb{width:100%;flex-direction:row;flex-wrap:wrap}
-.cfg-tb{flex:1;justify-content:center}
-.ch-g{grid-template-columns:1fr}
-.stats{grid-template-columns:1fr 1fr}
-.planos-g{grid-template-columns:1fr}
-}
-@media(max-width:480px){
-.auth-card{padding:24px 20px}
-.cards{grid-template-columns:1fr}
-.stats{grid-template-columns:1fr}
-.nr-g{grid-template-columns:1fr 1fr}
-}
+.empty i{font-size:42px;color:var(--gd);margin-bottom:12px;display:block;opacity:.6}
+.exame-card{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r2);padding:22px;margin-bottom:16px;box-shadow:var(--sh);transition:.2s}
+.exame-card:hover{border-color:var(--p);box-shadow:0 8px 24px rgba(46,125,50,.12)}
+.exame-status{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.exame-q{margin-bottom:16px;padding:14px;background:var(--ip);border-radius:var(--r);border:1px solid var(--bd2)}
+.exame-q p{font-size:14px;color:var(--tx);line-height:1.7;margin-bottom:10px}
+.exame-opts{display:flex;flex-direction:column;gap:8px}
+.exame-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--ip);border:1px solid var(--bd2);border-radius:10px;cursor:pointer;transition:.2s;font-size:13px}
+.exame-opt:hover{border-color:var(--p);background:rgba(46,125,50,.06)}
+.exame-opt.selected{border-color:var(--p);background:rgba(46,125,50,.1);color:var(--p)}
+.exame-opt input[type=radio]{accent-color:var(--p)}
+.exame-opt input[type=text]{flex:1;background:transparent;border:none;color:var(--tx);font-size:13px;outline:none}
+.material-up{display:flex;flex-direction:column;gap:14px}
+.material-up textarea{width:100%;min-height:120px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:13px;resize:vertical}
+.material-list{display:flex;flex-direction:column;gap:10px}
+.material-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px;background:rgba(0,0,0,.02);border-radius:var(--r);border:1px solid var(--bd2);transition:.2s}
+body.t-escuro .material-item{background:rgba(255,255,255,.04)}
+.material-item:hover{transform:translateX(2px)}
+.vid-player{background:#000;border-radius:var(--r);overflow:hidden;position:relative;aspect-ratio:16/9}
+.vid-player iframe{width:100%;height:100%;border:none}
+.vid-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:2;cursor:pointer;transition:background .2s}
+.vid-overlay:hover{background:rgba(0,0,0,.3)}
+.vid-overlay i{font-size:48px;color:rgba(255,255,255,.85)}
+.vid-title-bar{position:absolute;bottom:0;left:0;right:0;padding:8px 14px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:12px;font-weight:600;z-index:3;display:flex;justify-content:space-between;align-items:center}
+@media(max-width:768px){.sidebar{width:60px;padding:8px 4px}.sidebar .lt,.sidebar .ni span,.sidebar .sb-lbl,.sidebar .sb-name,.sidebar .sb-role{display:none}.sb-role{margin:8px auto;width:32px;padding:4px;justify-content:center}.ni{justify-content:center;padding:10px}.sb-hd{justify-content:center;padding:12px 8px}.main{padding:16px 14px}.cfg-w{flex-direction:column}.cfg-sb{width:100%;flex-direction:row;flex-wrap:wrap}.cfg-tb{flex:1;justify-content:center}.ch-g{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.planos-g{grid-template-columns:1fr}}
+@media(max-width:480px){.auth-card{padding:24px 20px}.cards{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.nr-g{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-
-<!-- ==================== AUTH ==================== -->
-<div id="authWrap">
-<div class="auth-card">
-<!-- LOGIN -->
+<div id="authWrap"><div class="auth-card">
 <div class="t on" id="tLogin">
-<!-- BOTÃO VOLTAR PARA LANDING PAGE -->
-<a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
+<a href="index.html" class="back-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
 <p class="sub">Acesse sua conta — 38 NRs, videoaulas e aulas ao vivo.</p>
-<form id="frmLogin">
-<div class="fld"><label>Email</label><input type="email" id="lEmail" placeholder="seu@email.com" required></div>
-<div class="fld"><label>Senha</label><input type="password" id="lPass" placeholder="Sua senha" required></div>
-<button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-</form>
+<form id="frmLogin"><div class="fld"><label>Email</label><input type="email" id="lEmail" placeholder="seu@email.com" required></div><div class="fld"><label>Senha</label><input type="password" id="lPass" placeholder="Sua senha" required></div>
+<button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button></form>
 <div class="divider">ou</div>
 <button class="btn btn-s btn-block" onclick="showT('tCad')">Cadastrar nova conta</button>
 </div>
-<!-- CADASTRO -->
 <div class="t" id="tCad">
-<a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
+<a href="index.html" class="back-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
 <p class="sub">Crie sua conta e comece a estudar agora.</p>
-<form id="frmCad">
-<div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div>
-<div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div>
-<div class="fld"><label>Senha</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
-<div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
-<button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
-</form>
-</div>
-</div>
-</div>
-
-<!-- ==================== DASHBOARD ==================== -->
-<div id="dash">
-<aside class="sidebar" id="sidebar"></aside>
-<main class="main" id="mc"></main>
-</div>
-
-<!-- MODAL -->
+<form id="frmCad"><div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div><div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div><div class="fld"><label>Senha</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div><div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
+<button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button></form>
+</div></div></div>
+<div id="dash"><aside class="sidebar" id="sidebar"></aside><main class="main" id="mc"></main></div>
 <div class="mdl-bg" id="mdlBg"><div class="mdl" id="mdlBox"></div></div>
-
-<!-- NOTIFICAÇÃO POPUP -->
 <div class="notif-popup" id="notifPopup">
-<div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteudo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="closeNotif()"><i class="fas fa-times"></i></button></div>
+<div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteudo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="closeN()"><i class="fas fa-times"></i></button></div>
 <div class="notif-popup-bd" id="notifBody"></div>
-<div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
-</div>
-
-<!-- TOAST -->
+<div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="closeN()">Fechar</button><button class="btn btn-sm btn-p" id="notifAct">Ver agora</button></div></div>
 <div id="toast"></div>
-
 <script>
-/*
-=============================================================
-  SULSAFE — LOGIN.HTML
-  Landing page = index.html (NÃO mexer)
-  Dashboard   = login.html (este arquivo)
-
-  Fluxo:
-  index.html [Entrar] → login.html (auth) → dashboard
-  dashboard [Logout]  → index.html (landing page)
-=============================================================
-*/
-
-/* URL da landing page — mude se o arquivo tiver outro nome */
-const LANDING_URL = 'index.html';
-
-/* Chave pública do Mercado Pago — substitua quando tiver ACC */
-const MP_KEY = 'TEST-8e4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c';
-
-const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com';
-
-const S = {
-    user: null, view: 'inicio', prevView: null,
-    users: JSON.parse(localStorage.getItem('ss_users') || '[]'),
-    salas: JSON.parse(localStorage.getItem('ss_salas') || '[]'),
-    notas: JSON.parse(localStorage.getItem('ss_notas') || '[]'),
-    boletos: JSON.parse(localStorage.getItem('ss_boletos') || '[]'),
-    certs: JSON.parse(localStorage.getItem('ss_certs') || '[]'),
-    aulas: JSON.parse(localStorage.getItem('ss_aulas') || '[]'),
-    notifs: JSON.parse(localStorage.getItem('ss_notifs') || '[]'),
-    cfg: JSON.parse(localStorage.getItem('ss_cfg') || '{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true}')
-};
-
-function save(k, v) { localStorage.setItem('ss_' + k, JSON.stringify(v)); }
-function saveAll() { ['users', 'salas', 'notas', 'boletos', 'certs', 'aulas', 'notifs', 'cfg'].forEach(k => save(k, S[k])); }
-
-const role = () => S.user?.role || 'aluno';
-const isAdmin = () => role() === 'admin';
-const isProf = () => role() === 'professor';
-const canManage = () => isAdmin() || isProf();
-const uid = () => S.user?.id;
-const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
-const fmtM = v => v != null ? 'R$ ' + Number(v).toFixed(2).replace('.', ',') : 'R$ 0,00';
-const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-const genDigitable = () => { let s = ''; for (let i = 0; i < 47; i++) s += Math.random() > .3 ? String(Math.floor(Math.random() * 10)) : '.'; return s; };
-const genPix = () => '00020126580014br.gov.bcb.pix0136' + Math.random().toString(36).substr(2, 36).toUpperCase() + '5204000053039865802BR5925SULSAFE TREINAMENTOS LTDA6009SAO PAULO62070503***6304' + Math.random().toString(16).substr(2, 4).toUpperCase();
-
-const NRS = [
-    { id: '1', nm: 'Disposicoes Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
-    { id: '2', nm: 'Inspecao Previa', cat: 'geral', ic: 'fa-magnifying-glass' },
-    { id: '3', nm: 'Embargo ou Interdicao', cat: 'geral', ic: 'fa-ban' },
-    { id: '4', nm: 'SESMT', cat: 'geral', ic: 'fa-users-gear' },
-    { id: '5', nm: 'CIPA', cat: 'geral', ic: 'fa-people-group' },
-    { id: '6', nm: 'EPI', cat: 'geral', ic: 'fa-hard-hat' },
-    { id: '7', nm: 'PCMSO', cat: 'saude', ic: 'fa-stethoscope' },
-    { id: '8', nm: 'Edificacoes', cat: 'especifico', ic: 'fa-building' },
-    { id: '9', nm: 'PPRA', cat: 'especifico', ic: 'fa-shield-halved' },
-    { id: '10', nm: 'Eletricidade', cat: 'especifico', ic: 'fa-bolt' },
-    { id: '11', nm: 'Movimentacao de Materiais', cat: 'especifico', ic: 'fa-truck' },
-    { id: '12', nm: 'Maquinas e Equipamentos', cat: 'especifico', ic: 'fa-gears' },
-    { id: '13', nm: 'Caldeiras e Vasos', cat: 'especifico', ic: 'fa-fire' },
-    { id: '14', nm: 'Fornos', cat: 'especifico', ic: 'fa-temperature-high' },
-    { id: '15', nm: 'Atividades Insalubres', cat: 'saude', ic: 'fa-biohazard' },
-    { id: '16', nm: 'Atividades Perigosas', cat: 'saude', ic: 'fa-skull-crossbones' },
-    { id: '17', nm: 'Ergonomia', cat: 'saude', ic: 'fa-person' },
-    { id: '18', nm: 'Trabalho em Calor', cat: 'saude', ic: 'fa-sun' },
-    { id: '19', nm: 'Explosivos', cat: 'especifico', ic: 'fa-explosion' },
-    { id: '20', nm: 'Inflamaveis e Combustiveis', cat: 'especifico', ic: 'fa-fire-flame-curved' },
-    { id: '21', nm: 'Trabalho a Ceu Aberto', cat: 'especifico', ic: 'fa-cloud-sun' },
-    { id: '22', nm: 'Trabalhos Subterraneos', cat: 'especifico', ic: 'fa-mountain' },
-    { id: '23', nm: 'Protecao contra Incendios', cat: 'especifico', ic: 'fa-fire-extinguisher' },
-    { id: '24', nm: 'Condicoes Sanitarias', cat: 'saude', ic: 'fa-hand-sparkles' },
-    { id: '25', nm: 'Residuos Industriais', cat: 'especifico', ic: 'fa-recycle' },
-    { id: '26', nm: 'Sinalizacao de Seguranca', cat: 'geral', ic: 'fa-triangle-exclamation' },
-    { id: '27', nm: 'Registro Profissional', cat: 'geral', ic: 'fa-id-card' },
-    { id: '28', nm: 'Fiscalizacao e Penalidades', cat: 'geral', ic: 'fa-gavel' },
-    { id: '29', nm: 'Trabalho Portuario', cat: 'setorial', ic: 'fa-ship' },
-    { id: '30', nm: 'Trabalho Aquaviario', cat: 'setorial', ic: 'fa-anchor' },
-    { id: '31', nm: 'Trabalho em Altura', cat: 'especifico', ic: 'fa-arrow-up-long' },
-    { id: '32', nm: 'Espaco Confinado', cat: 'especifico', ic: 'fa-dungeon' },
-    { id: '33', nm: 'Seguranca em Mineracao', cat: 'setorial', ic: 'fa-helmet-safety' },
-    { id: '34', nm: 'Construcao Civil', cat: 'setorial', ic: 'fa-helmet-safety' },
-    { id: '35', nm: 'Altura e Confinado - Mineracao', cat: 'setorial', ic: 'fa-mountain-sun' },
-    { id: '36', nm: 'Capacitacao e Treinamento', cat: 'geral', ic: 'fa-graduation-cap' },
-    { id: '37', nm: 'Seguranca em Maquinas', cat: 'especifico', ic: 'fa-gear' },
-    { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
-];
-
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-function toast(m, t = 'ok') {
-    const e = document.createElement('div');
-    e.className = 'toast ' + t;
-    e.textContent = m;
-    $('#toast').appendChild(e);
-    setTimeout(() => { e.style.opacity = '0'; e.style.transform = 'translateY(10px)'; e.style.transition = '.3s'; setTimeout(() => e.remove(), 300); }, 3500);
+const LANDING='index.html',ADMIN_EMAIL='sulsafetreinamentos@gmail.com',MP_KEY='TEST-8e4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c';
+const S={user:null,view:'inicio',prevView:null,users:JSON.parse(localStorage.getItem('ss_users')||'[]'),salas:JSON.parse(localStorage.getItem('ss_salas')||'[]'),notas:JSON.parse(localStorage.getItem('ss_notas')||'[]'),boletos:JSON.parse(localStorage.getItem('ss_boletos')||'[]'),certs:JSON.parse(localStorage.getItem('ss_certs')||'[]'),aulas:JSON.parse(localStorage.getItem('ss_aulas')||'[]'),materiais:JSON.parse(localStorage.getItem('ss_mats')||'[]'),exames:JSON.parse(localStorage.getItem('ss_exams')||'[]'),notifs:JSON.parse(localStorage.getItem('ss_notifs')||'[]'),cfg:JSON.parse(localStorage.getItem('ss_cfg')||'{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true,"notifsSnd":true}};
+function sv(k,v){localStorage.setItem('ss_'+k,JSON.stringify(v))}
+function sa(){['users','salas','notas','boletos','certs','aulas','mats','exams','notifs','cfg'].forEach(k=>sv(k,S[k]))}
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const role=()=>S.user?.role||'aluno',isAdmin=()=>role()==='admin',isProf=()=>role()==='professor',canM=()=>isAdmin()||isProf(),uid=()=>S.user?.id;
+const fmtD=d=>d?new Date(d).toLocaleDateString('pt-BR'):'—';
+const fmtM=v=>v!=null?'R$ '+Number(v).toFixed(2).replace('.',','):'R$ 0,00';
+const gid=()=>'ss_'+Date.now().toString(36)+Math.random().toString(36).substr(2,6);
+const gDig=()=>{let s='';for(let i=0;i<47;i++)s+=Math.random()>.3?String(Math.floor(Math.random()*10)):'.';return s};
+const gPix=()=>'00020126580014br.gov.bcb.pix0136'+Math.random().toString(36).substr(2,36).toUpperCase()+'5204000053039865802BR5925SULSAFE TREINAMENTOS LTDA6009SAO PAULO62070503***6304'+Math.random().toString(16).substr(2,4).toUpperCase();
+function toast(m,t='ok'){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;$('#toast').appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateY(10px)';e.style.transition='.3s';setTimeout(()=>e.remove(),300)},3500)}
+function showT(id){$$('.t').forEach(t=>t.classList.remove('on'));$('#'+id).classList.add('on')}
+function openM(h){$('#mdlBox').innerHTML=h;$('#mdlBg').classList.add('on')}
+function closeMdl(){$('#mdlBg').classList.remove('on')}
+ $('#mdlBg').addEventListener('click',e=>{if(e.target===$('#mdlBg'))closeMdl()});
+function closeN(){$('#notifPopup').classList.remove('show')}
+ $('#frmLogin').addEventListener('submit',e=>{e.preventDefault();const em=$('#lEmail').value.trim().toLowerCase(),pw=$('#lPass').value;let u=S.users.find(x=>x.email===em&&x.pass===pw);if(!u){if(em===ADMIN_EMAIL){u={id:gid(),nome:'Administrador SulSafe',email:em,pass:pw,role:'admin',created:Date.now(),acesso:'liberado'};S.users.push(u);sv('users',S.users)}else{toast('Email ou senha incorretos','err');return}}S.user=u;localStorage.setItem('ss_session',JSON.stringify({id:u.id}));loadCfg();enterD();toast('Bem-vindo(a), '+u.nome+'!')});
+ $('#frmCad').addEventListener('submit',e=>{e.preventDefault();const nm=$('#cNome').value.trim(),em=$('#cEmail').value.trim().toLowerCase(),p1=$('#cPass').value,p2=$('#cPass2').value;if(p1!==p2){toast('As senhas nao coincidem','err');return}if(S.users.find(x=>x.email===em)){toast('Email ja cadastrado','err');return}const u={id:gid(),nome:nm,email:em,pass:p1,role:'aluno',created:Date.now(),acesso:'bloqueado'};S.users.push(u);sv('users',S.users);S.user=u;localStorage.setItem('ss_session',JSON.stringify({id:u.id}));loadCfg();enterD();toast('Conta criada! Assine um plano para acessar o conteudo.')});
+function logout(){S.user=null;localStorage.removeItem('ss_session');destroyCh();window.location.href=LANDING}
+(function(){const s=localStorage.getItem('ss_session');if(s){const{id}=JSON.parse(s);const u=S.users.find(x=>x.id===id);if(u){S.user=u;loadCfg();enterD()}}})();
+function enterD(){$('#authWrap').classList.add('off');$('#dash').classList.add('on');S.view='inicio';renderSB();renderV();checkN()}
+function pushN(msg,act,v){S.notifs.push({id:gid(),msg,action:act||'Ver',view:v||'inicio',ts:Date.now(),readBy:[]});sv('notifs',S.notifs);if(S.user&&role()!=='admin')showNP(S.notifs[S.notifs.length-1])}
+function showNP(n){$('#notifBody').innerHTML=`<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(n.ts)}</p>`;$('#notifAct').onclick=()=>{closeN();nav(n.view||'inicio')};$('#notifPopup').classList.add('show');setTimeout(closeN,8000)}
+function checkN(){if(!S.user||role()==='admin')return;const u=S.notifs.filter(n=>!n.readBy?.includes(uid()));if(u.length){const l=u[u.length-1];if(Date.now()-l.ts<60000)showNP(l)}}
+function renderSB(){const r=role();const items=[{id:'inicio',ic:'fa-house',lb:'Inicio'},{id:'videoaulas',ic:'fa-play-circle',lb:'Videoaulas'},{id:'salas',ic:'fa-tower-broadcast',lb:'Salas ao Vivo'},{id:'nrs',ic:'fa-book',lb:'NRs'},{id:'ia',ic:'fa-robot',lb:'Assistente IA'}];
+if(r==='aluno'){items.push({sep:'ACADEMICO'});items.push({id:'boletim',ic:'fa-file-lines',lb:'Meu Boletim'});items.push({sep:'MATERIAIS'});items.push({id:'materiais',ic:'fa-folder-open',lb:'Materiais'});items.push({sep:'EXAMES'});items.push({id:'exames',ic:'fa-file-pen-to-square',lb:'Provas'});items.push({sep:'FINANCEIRO'});items.push({id:'planos',ic:'fa-crown',lb:'Planos'});items.push({id:'boletos',ic:'fa-file-invoice-dollar',lb:'Financeiro'})}
+if(r==='professor'){items.push({sep:'ACADEMICO'});items.push({id:'boletim',ic:'fa-file-pen',lb:'Lancar Notas'});items.push({sep:'CONTEUDO'});items.push({id:'conteudos',ic:'fa-plus-circle',lb:'Gerenciar Conteudo'});items.push({id:'materiais',ic:'fa-folder-open',lb:'Materiais'});items.push({sep:'AVALIACAO'});items.push({id:'exames',ic:'fa-file-pen-to-square',lb:'Criar Prova'});items.push({sep:'DOCUMENTOS'});items.push({id:'certificados',ic:'fa-certificate',lb:'Certificados'})}
+if(r==='admin'){items.push({sep:'ACADEMICO'});items.push({id:'boletim',ic:'fa-file-pen',lb:'Notas'});items.push({sep:'CONTEUDO'});items.push({id:'conteudos',ic:'fa-plus-circle',lb:'Gerenciar Conteudo'});items.push({id:'materiais',ic:'fa-folder-open',lb:'Materiais'});items.push({sep:'AVALIACAO'});items.push({id:'exames',ic:'fa-file-pen-to-square',lb:'Gerenciar Provas'});items.push({sep:'FINANCEIRO'});items.push({id:'boletos',ic:'fa-chart-pie',lb:'Pagamentos'});items.push({sep:'DOCUMENTOS'});items.push({id:'certificados',ic:'fa-certificate',lb:'Certificados'});items.push({sep:'SISTEMA'});items.push({id:'admin',ic:'fa-shield-halved',lb:'Modo Deus'})}
+items.push({sep:'CONTA'});items.push({id:'config',ic:'fa-gear',lb:'Configuracoes'});
+let h=`<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div>`;
+h+=`<div class="sb-role ${r}"><i class="fas fa-${r==='admin'?'crown':r==='professor'?'chalkboard-user':'user-graduate'}"></i> <span>${r}</span></div>`;
+h+=`<nav class="sb-nav">`;
+items.forEach(i=>{if(i.sep)h+=`<div class="sb-lbl">${i.sep}</div>`;else h+=`<div class="ni${S.view===i.id?' on':''}" onclick="nav('${i.id}')"><i class="fas ${i.ic}"></i><span>${i.lb}</span></div>`});
+h+=`</nav><div class="sb-ft"><span class="sb-name">${S.user?.nome||''}</span><div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-right-from-bracket"></i></div></div>`;
+ $('#sidebar').innerHTML=h}
+function nav(v){S.prevView=S.view;S.view=v;destroyCh();renderSB();renderV()}
+function renderV(){const fn={inicio:vInicio,videoaulas:vVideoaulas,salas:vSalas,nrs:vNRs,ia:vIA,boletim:vBoletim,planos:vPlanos,boletos:vBoletos,certificados:vCerts,admin:vAdmin,config:vConfig,conteudos:vConteudos,materiais:vMateriais,exames:vExames};if(fn[S.view]){$('#mc').innerHTML=fn[S.view]();$('#mc').style.animation='none';$('#mc').offsetHeight;$('#mc').style.animation='fv .3s ease';bindPR()}}
+function bindPR(){if(S.view==='boletim'&&role()!=='aluno')setTimeout(drawChNotas,100);if(S.view==='admin')setTimeout(drawChAdmin,100);if(S.view==='boletos'&&role()!=='aluno')setTimeout(drawChPay,100)}
+/* ===== INICIO ===== */
+function vInicio(){const r=role(),c=S.aulas.filter(a=>a.uid===uid()).length,t=NRS.length,pct=t?Math.round(c/t*100):0,pen=t-c;
+let h=`<div class="btn-back" onclick="nav('${S.prevView||'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Ola, ${S.user?.nome||'Usuario'}</h2>`;
+h+=`<p class="wcs">Painel ${r==='admin'?'Administrativo (Modo Deus)':r==='professor'?'do Professor':'do Aluno'} — ${new Date().toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>`;
+if(r==='aluno'&&S.user?.acesso==='bloqueado'){h+=`<div class="warn-b"><i class="fas fa-lock"></i><div><strong>Acesso bloqueado.</strong> Assine um plano para liberar o conteudo completo. <a href="#" onclick="nav('planos');return false" style="color:var(--p);font-weight:700;text-decoration:underline">Ver planos</a></div></div>`;return h}
+if(r==='aluno'){const venc=S.boletos.filter(b=>b.uid===uid()&&b.status==='pendente'&&new Date(b.venc)<=new Date(Date.now()+7*864e5));if(venc.length)h+=`<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div><strong>Atencao:</strong> ${venc.length} boleto(s) vencendo em breve! <a href="#" onclick="nav('boletos');return false" style="color:var(--p);font-weight:700;text-decoration:underline">Ver boletos</a></div></div>`}
+h+=`<div class="stats">`;
+if(r==='aluno'){h+=stC(pct+'%','Progresso','fa-chart-line');h+=stC(c,'Videos Vistos','fa-check-circle');h+=stC(pen,'Videos Pendentes','fa-clock');h+=stC(S.boletos.filter(b=>b.uid===uid()&&b.status==='pago').length,'Pagos','fa-circle-check')}
+else{const al=S.users.filter(u=>u.role==='aluno').length,rec=S.boletos.filter(b=>b.status==='pago').reduce((a,b)=>a+Number(b.valor||0),0);
+h+=stC(al,'Alunos','fa-users');h+=stC(S.salas.filter(s=>s.ativa).length,'Salas Ativas','fa-tower-broadcast');h+=stC(fmtM(rec),'Receita','fa-dollar-sign');h+=stC(NRS.length,'NRs','fa-book')}
+h+=`</div>`;
+if(r==='aluno'){h+=`<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Progresso Geral</span><span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><p style="font-size:11px;color:var(--tx3);margin-top:6px">${c} de ${t} NRs concluidas — ${pen} pendentes</p></div>`}
+h+=`<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rapido</h3><div class="cards">`;
+h+=cC('fa-play-circle','Videoaulas','38 NRs em videoaulas HD','videoaulas');h+=cC('fa-tower-broadcast','Salas ao Vivo','Participe ao vivo','salas');h+=cC('fa-book','Catalogo de NRs','Consulte as 38 Normas','nrs');h+=cC('fa-robot','Assistente IA','Duvidas sobre NRs 24/7','ia');
+if(r==='aluno'){h+=cC('fa-file-lines','Meu Boletim','Acompanhe suas notas','boletim');h+=cC('fa-crown','Planos','Assine e desbloqueie tudo','planos');h+=cC('fa-file-invoice-dollar','Financeiro','Boletos e PIX','boletos');h+=cC('fa-folder-open','Materiais','Material complementar','materiais');h+=cC('fa-file-pen-to-square','Provas','Provas e exames','exames')}
+if(isProf()){h+=cC('fa-file-pen','Lancar Notas','Notas dos alunos','boletim');h+=cC('fa-plus-circle','Gerenciar Conteudo','Videos e materiais','conteudos');h+=cC('fa-folder-open','Materiais','Material complementar','materiais');h+=cC('fa-file-pen-to-square','Criar Prova','Provas e exames','exames');h+=cC('fa-certificate','Certificados','Emitir certificados','certificados')}
+if(isAdmin()){h+=cC('fa-file-pen','Notas','Gerenciar notas','boletim');h+=cC('fa-chart-pie','Pagamentos','Metricas financeiras','boletos');h+=cC('fa-certificate','Certificados','Emitir certificados','certificados');h+=cC('fa-shield-halved','Modo Deus','Controle total','admin')}
+h+=`</div>`;return h}
+function stC(v,l,ic){return`<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>`}
+function cCard(ic,t,d,v){return`<div class="card" onclick="nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>`}
+/* ===== VIDEOAULAS (YouTube embed) ===== */
+function vVideoaulas(){const r=role(),concluidas=S.aulas.filter(a=>a.uid===uid()).map(a=>a.nrid);const pct=Math.round(concluidas.length/NRS.length*100);
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Videoaulas</h2><p class="wcs">Assista as aulas das 38 NRs hospedadas no YouTube, direto na plataforma.</p>`;
+if(r==='aluno')h+=`<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Seu Progresso</span><span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
+h+=`<input class="search" placeholder="Buscar NR..." oninput="filterVA(this.value)">`;
+h+=`<div class="nr-g" id="vaGrid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr)">`;
+NRS.forEach(nr=>{const done=concluidas.includes(nr.id);const vid=S.materias.find(m=>m.tipo==='video'&&m.nrid===nr.id);
+h+=`<div class="nr-c" data-s="${nr.nm.toLowerCase()} ${nr.id}" style="flex-direction:column;align-items:stretch;gap:0"><div style="display:flex;align-items:center;gap:12px;padding:14px"><div class="nr-ic"><i class="fas fa-play-circle"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>${done?'<span class="badge bg-ok" style="margin-left:auto">Concluida</span>':''}</div>`;
+if(vid){h+=`<div style="padding:10px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end"><button class="btn btn-p btn-sm" onclick="assistirVideo('${vid.id}')"><i class="fas fa-play"></i> Assistir aula</button></div>`}
+else if(r==='aluno'){h+=`<div style="padding:8px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end"><span style="font-size:11px;color:var(--tx3)"><i class="fas fa-lock" style="margin-right:4px"></i> Requer assinatura</span></div>`}
+else{h+=`<div style="padding:8px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end"><span style="font-size:11px;color:var(--tx3)">Sem video</span></div>`}
+h+=`</div></div>`});
+h+=`</div>`;return h}
+function filterVA(q){q=q.toLowerCase();$$('#vaGrid .nr-c').forEach(c=>{c.style.display=c.dataset.s.includes(q)?'':'none'})}
+function assistirVideo(id){const v=S.materias.find(m=>m.id===id);if(!v)return toast('Video nao encontrado','err');
+openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center"><h2 style="font-size:16px;font-weight:700;color:var(--p);margin-bottom:4px">NR ${v.nrid} — ${v.titulo||''}</h2><p style="font-size:12px;color:var(--tx2);margin-bottom:16px">${v.desc||'Aula sobre NR '+v.nrid}</p><div class="vid-player" id="vidPlayer"><div class="vid-overlay" onclick="togglePlay()"><i class="fas fa-play"></i></div><div class="vid-title-bar"><span id="vidTitle">${v.titulo||'NR '+v.nrid}</span></div></div></div></div>`)}
+function togglePlay(){const p=$('#vidPlayer iframe');if(p.src){p.src=p.src;p.style.display=p.style.display==='none'?'block':'none'}}
+/* ===== SALAS ===== */
+function vSalas(){const r=role(),ativas=S.salas.filter(s=>s.ativa);
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r==='aluno'?'Participe das aulas em tempo real.':'Crie e gerencie salas ao vivo.'}</p>`;
+if(canM()){h+=`<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><input class="search" id="salaTop" placeholder="Topico da aula" style="flex:2;min-width:200px;margin:0"><input class="search" id="salaMeet" placeholder="ID da reuniao" style="flex:1;min-width:140px;margin:0"><button class="btn btn-p" onclick="criarSala()"><i class="fas fa-plus"></i> Criar Sala</button></div>`}
+if(!ativas.length)h+=`<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`;
+ativas.forEach(s=>{const cr=S.users.find(u=>u.id===s.criadoPor);
+h+=`<div class="mt-c"><div><div class="mt-topic">${s.topico}</div><div class="mt-id">ID: ${s.meetId||'N/A'}</div><div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${cr?.nome||'—'} — ${fmtD(s.ts)}</div></div><div style="display:flex;gap:8px"><a href="https://meet.google.com/${s.meetId||''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>${canM()?`<button class="btn btn-d btn-sm" onclick="encSala('${s.id}')"><i class="fas fa-times"></i></button>`:''}</div></div>`});
+return h}
+function criarSala(){const t=$('#salaTop')?.value?.trim(),m=$('#salaMeet')?.value?.trim();if(!t){toast('Informe o topico','err');return}
+S.salas.unshift({id:gid(),topico:t,meetId:m,criadoPor:uid(),ativa:true,ts:Date.now()});sv('salas',S.salas);pushN('Nova sala ao vivo: "'+t+'"','Entrar','salas');toast('Sala criada!');renderV()}
+function encSala(id){const s=S.salas.find(x=>x.id===id);if(s)s.ativa=false;sv('salas',S.salas);toast('Sala encerrada','info');renderV()}
+/* ===== NRs ===== */
+function vNRs(){let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Catalogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`;
+h+=`<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button><button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button><button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Especificas</button><button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saude</button><button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button></div>`;
+h+=`<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)"><div class="nr-g" id="nrGrid">`;
+NRS.forEach(nr=>{h+=`<div class="nr-c" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" onclick="verNR('${nr.id}')"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div></div>`});
+h+=`</div>`;return h}
+function filterNR(c){$$('#nrGrid .nr-c').forEach(e=>{e.style.display=(c==='all'||e.dataset.cat===c)?'':'none'})}
+function filterNRT(q){q=q.toLowerCase();$$('#nrGrid .nr-c').forEach(e=>{e.style.display=e.dataset.s.includes(q)?'':'none'})}
+function verNR(id){const nr=NRS.find(n=>n.id===id);
+openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0"><i class="fas ${nr.ic}"></i></div><div><div style="font-size:11px;font-weight:800;color:var(--gd);letter-spacing:1px">NR ${nr.id}</div><h2 style="font-size:18px;font-weight:700">${nr.nm}</h2></div></div><p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">Esta NR estabelece os requisitos minimos para ${nr.nm.toLowerCase()}.</p><button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()"><i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}</button>`)}
+/* ===== IA ===== */
+function vIA(){let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Assistente IA</h2><p class="wcs">Tire duvidas sobre NRs e seguranca do trabalho.</p>`;
+h+=`<div class="pnl"><div class="chat-box"><div class="chat-msgs" id="chatMsgs"><div class="chat-m b">Ola! Sou o assistente IA da SulSafe. Pergunte sobre qualquer NR, EPI, CIPA, PPP, PCMSO e muito mais.</div></div><div class="chat-row"><input id="chatIn" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendIA()"><button class="btn btn-p btn-sm" onclick="sendIA()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>`;return h}
+function sendIA(){const inp=$('#chatIn'),msg=inp.value.trim();if(!msg)return;const msgs=$('#chatMsgs');
+msgs.innerHTML+=`<div class="chat-m u">${msg}</div>`;inp.value='';msgs.scrollTop=msgs.scrollHeight;
+setTimeout(()=>{msgs.innerHTML+=`<div class="chat-m b">${genIA(msg)}</div>`;msgs.scrollTop=msgs.scrollHeight},500+Math.random()*700)}
+function genIA(q){const ql=q.toLowerCase();
+if(ql.includes('nr 10')||ql.includes('eletricidade'))return'A <strong>NR 10</strong> — Seguranca em eletricidade. Treinamento basico 40h, complementar SEP 40h. EPIs: luvas isolantes, botas dieletricas, cinto tipo paraquedista com duplo talabarte, pontos de ancoragem 15kN.';
+if(ql.includes('nr 35')||ql.includes('altura'))return'A <strong>NR 35</strong> — Trabalho acima de 2m. Exige: Analise de Risco, Permissao de Trabalho, treinamento 8h, cinto tipo paraquedista com duplo talabarte.';
+if(ql.includes('nr 6')||ql.includes('epi'))return'A <strong>NR 6</strong> — EPIs. Empregador fornece gratuitamente. Trabalhador obrigado a usar. Todo EPI com CA do MTE. Exemplos: capacete, oculos, luvas, protetor auricular, cinto, calçado.';
+if(ql.includes('nr 5')||ql.includes('cipa'))return'A <strong>NR 5</strong> — CIPA. Obrigatória para mais de 20 empregados. Composicao paritaria, mandato 1 ano. Realiza mapas de risco, investiga acidentes, promove campanhas de prevencao.';
+if(ql.includes('certificado'))return'Certificados sao emitidos pelo admin ou professor ao concluir o curso com nota minima. Contem: nome, NR, carga horaria, data, codigo de verificacao unico.';
+if(ql.includes('pagamento')||ql.includes('boleto')||ql.includes('pix'))return'Aceitamos <strong>PIX</strong> (aprovacao instantanea) e <strong>Boleto</strong> (ate 3 dias uteis). Apos confirmacao, acesso liberado automaticamente.';
+return `Sobre "<strong>${q}</strong>": Consulte o catalogo da plataforma. Tente perguntar sobre uma NR especifica.`;}
+/* ===== BOLETIM ===== */
+function vBoletim(){const r=role();let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+if(r==='aluno')return vBoletosAluno(h);return vBoletosAdmin(h)}
+function vBoletosAluno(h){const meus=S.boletos.filter(b=>b.uid===uid());
+const vencendo=meus.filter(b=>b.status==='pendente'&&new Date(b.venc)<=new Date(Date.now()+7*864e5));
+h+=`<div class="god-hd"><h2><i class="fas fa-file-invoice-dollar"></i> Cobrancas e Pagamentos</h2><p>Acompanhe suas mensalidades</p></div>`;
+if(vencendo.length)h+=`<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div><strong>Atencao:</strong> ${vencendo.length} boleto(s) vencendo em breve!</div></div>`;
+h+=`<div class="tabs"><button class="tab-b on" onclick="tTabBol(this,'bolAbertos')">Em Aberto (${meus.filter(b=>b.status==='pendente').length})</button><button class="tab-b" onclick="tTabBol(this,'bolPagos')">Pagos (${meus.filter(b=>b.status==='pago').length})</button></div>`;
+h+=`<div class="tab-c on" id="bolAbertos">`;
+const pend=meus.filter(b=>b.status==='pendente');
+if(!pend.length)h+=`<div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum boleto em aberto</h4></div>`;
+else{h+=`<div class="tw"><table><thead><tr><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`;pend.forEach(b=>{h+=`<tr><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge bg-warn">Pendente</span></td><td><button class="btn btn-sm btn-p" onclick="verBol('${b.id}')"><i class="fas fa-eye"></i> Ver</button> <button class="btn btn-sm btn-s" onclick="genPixBol('${b.id}')"><i class="fas fa-qrcode"></i> PIX</button></td></tr>`});h+=`</tbody></table></div>`}
+h+=`</div><div class="tab-c" id="bolPagos">`;
+const pagos=meus.filter(b=>b.status==='pago');
+if(!pagos.length)h+=`<div class="empty"><i class="fas fa-receipt"></i><h4>Nenhum pagamento registrado</h4></div>`;
+else{h+=`<div class="tw"><table><thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead><tbody>`;pagos.forEach(b=>{h+=`<tr><td>${fmtD(b.ts)}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${b.plano}</td><td><span class="badge bg-ok">Pago</span></td></tr>`});h+=`</tbody></table></div>`}
+h+=`</div>`;return h}
+function vBoletosAdmin(h){const pagos=S.boletos.filter(b=>b.status==='pago'),pend=S.boletos.filter(b=>b.status==='pendente'),rec=pagos.reduce((a,b)=>a+Number(b.valor||0),0),penVal=pend.reduce((a,b)=>a+Number(b.valor||0),0);
+h+=`<div class="god-hd"><h2><i class="fas fa-chart-pie"></i> Metricas de Pagamentos</h2><p>Acompanhe receita e inadimplencia</p></div>`;
+h+=`<div class="stats">${stC(fmtM(rec),'Receita Recebida','fa-dollar-sign')}${stC(fmtM(penVal),'A Receber','fa-clock')}${stC(pagos.length,'Pagos','fa-circle-check')}${stC(pend.length,'Pendentes','fa-hourglass-half')}</div>`;
+h+=`<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Status dos Pagamentos</h3><canvas id="chPaySt" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Receita Mensal</h3><canvas id="chPayMes" height="200"></canvas></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-check-double"></i> Detalhamento por Aluno</div></div><input class="search" placeholder="Buscar aluno..." oninput="filterPayT(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="payTB">`;
+S.boletos.forEach(b=>{const al=S.users.find(u=>u.id===b.uid);const sc=b.status==='pago'?'bg-ok':'bg-warn';h+=`<tr data-an="${(al?.nome||'').toLowerCase()}"><td>${al?.nome||'—'}</td><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge ${sc}">${b.status}</span></td><td>${b.status==='pendente'?`<button class="btn btn-sm btn-p" onclick="confPay('${b.id}')"><i class="fas fa-check"></i> Confirmar</button>`:''}</td></tr>`});
+h+=`</tbody></table></div></div></div>`;return h}
+function tTabBol(btn,id){$$('.tab-b').forEach(b=>b.classList.remove('on'));btn.classList.add('on');$$('.tab-c').forEach(c=>c.classList.remove('on'));$('#'+id).classList.add('on')}
+function filterPayT(q){q=q.toLowerCase();$$('#payTB tr').forEach(r=>{r.style.display=r.dataset.an.includes(q)?'':'none'})}
+function verBol(id){const b=S.boletos.find(x=>x.id===id);if(!b)return;
+openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>${b.plano} — Boleto</h3><div style="font-size:32px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><span class="badge ${b.status==='pago'?'bg-ok':'bg-warn'}" style="font-size:13px;padding:6px 16px">${b.status.toUpperCase()}</span><p style="font-size:12px;color:var(--tx3);margin:10px 0">Vencimento: <strong>${fmtD(b.venc)}</strong></p><p style="font-size:12px;font-weight:600;margin-bottom:6px">Linha Digitavel:</p><div class="copy-b" onclick="cpTxt(this,'${b.linha}')">${b.linha} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="genPixBol('${b.id}')"><i class="fas fa-qrcode"></i> Pagar via PIX</button></div></div></div>`)}
+function genPixBol(id){const b=S.boletos.find(x=>x.id===id);if(!b)return;
+openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>PIX — ${b.plano}</h3><div style="font-size:28px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><div class="qr-box"><canvas id="qrCv" width="180" height="180"></canvas><p style="font-size:12px;color:var(--tx2);margin-top:8px">Escaneie com o app do banco</p></div><p style="font-size:12px;font-weight:600;margin-bottom:6px">Codigo PIX:</p><div class="copy-b" onclick="cpTxt(this,'${b.pix}')">${b.pix} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><p style="font-size:11px;color:var(--tx3);margin-top:10px">Vencimento: ${fmtD(b.venc)}</p></div></div>`)}
+function cpTxt(el,t){navigator.clipboard.writeText(t).then(()=>toast('Copiado!')).catch(()=>toast('Erro ao copiar','err'))}
+function confPay(id){const b=S.boletos.find(x=>x.id===id);if(b){b.status='pago';sv('boletos',S.boletos);toast('Pagamento confirmado!');renderV()}}
+/* ===== BOLETIM (gerar boleto + PIX) ===== */
+function vBoletosAluno(h){return vBoletosAluno(h)}
+/* ===== PLANOS ===== */
+function vPlanos(){let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<div class="god-hd"><h2><i class="fas fa-crown"></i> Planos de Assinatura</h2><p>Escolha o plano ideal para voce</p></div>`;
+h+=`<div class="planos-g"><div class="plan-c"><h3>Mensal</h3><p class="pst">Flexivel para comecar</p><div class="pr">R$ <span>49</span>,90</div><p class="bl">por mes — 12 boletos mensais</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li class="off">Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Mensal',49.90,12)">Assinar Mensal</button></div>
+<div class="plan-c dest"><span class="badge-plan">Melhor custo-beneficio</span><h3>Trimestral</h3><p class="pst">Economia garantida</p><div class="pr">R$ <span>129</span>,90</div><p class="bl">a cada 3 meses — 3 boletos</p><p class="eco">Economize 13%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-p btn-block" onclick="assinarPlano('Trimestral',129.90,3)">Assinar Trimestral</button></div>
+<div class="plan-c"><h3>Anual</h3><p class="pst">Maxima economia</p><div class="pr">R$ <span>399</span>,90</div><p class="bl">por ano — 1 boleto anual</p><p class="eco">Economize 33%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li>Certificado reconhecido</li>Assistente IA 24/7</li>Aulas ao vivo ilimitadas<li>Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Anual',399.90,1)">Assinar Anual</button></div></div></div>`;return h}
+function assinarPlano(nome,valor,qtd){const intv=qtd===12?1:qtd===3?3:12;const hoje=new Date();const novos=[];
+for(let i=0;i<qtd;i++){const v=new Date(hoje);v.setMonth(v.getMonth()+i*intv);if(v.getDay()===0)v.setDate(v.getDate()+1);novos.push({id:gid(),uid:uid(),plano:nome,valor,metodo:'boleto',status:'pendente',venc:v.toISOString().split('T')[0],linha:gDig(),pix:gPix(),ts:Date.now()});}
+S.boletos.push(...novos);sv('boletos',S.boletos);toast(`${qtd} boleto(s) do plano ${nome} gerados!`);verBol(novos[0].id);renderV()}
+/* ===== BOLETIM ADMIN ===== */
+function vBoletosAdmin(h){const pagos=S.boletos.filter(b=>b.status==='pago'),pend=S.boletos.filter(b=>b.status==='pendente'),rec=pagos.reduce((a,b)=>a+Number(b.valor||0),0),penVal=pend.reduce((a,b)=>a+Number(b.valor||0),0);
+h+=`<div class="god-hd"><h2><i class="fas fa-chart-pie"></i> Metricas de Pagamentos</h2><p>Acompanhe receita e inadimplencia</p></div>`;
+h+=`<div class="stats">${stC(fmtM(rec),'Receita','fa-dollar-sign')}${stC(fmtM(penVal),'A Receber','fa-clock')}${stC(pagos.length,'Pagos','fa-circle-check')}${stC(pend.length,'Pendentes','fa-hourglass-half')}</div>`;
+h+=`<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Status dos Pagamentos</h3><canvas id="chPaySt" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Receita Mensal</h3><canvas id="chPayMes" height="200"></canvas></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-check-double"></i> Detalhamento por Aluno</div></div><input class="search" placeholder="Buscar aluno..." oninput="filterPayT(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="payTB">`;
+S.boletos.forEach(b=>{const al=S.users.find(u=>u.id===b.uid);const sc=b.status==='pago'?'bg-ok':'bg-warn';h+=`<tr data-an="${(al?.nome||'').toLowerCase()}"><td>${al?.nome||'—'}</td><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge ${sc}">${b.status}</span></td><td>${b.status==='pendente'?`<button class="btn btn-p btn-sm" onclick="confPay('${b.id}')"><i class="fas fa-check"></i> Confirmar</button>`:''}</td></tr>`});h+=`</tbody></table></div></div></div>`;return h}
+/* ===== CONTEUDOS ===== */
+function vConteudos(){const r=role();let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Gerenciar Conteudo</h2><p class="wcs">${r==='professor'?'Adicione videos do YouTube e materiais complementares.':'Gerencie conteudo para os alunos.'}</p>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-plus-circle"></i> Adicionar Video</div></div>
+<div class="fld"><label>Titulo do video</label><input type="text" id="vidTitulo" placeholder="Ex: NR 10 — Eletricidade" required></div>
+<div class="fld"><label>Link do YouTube</label><input type="url" id="vidUrl" placeholder="https://www.youtube.com/watch?v=..." required></div>
+<div class="fld"><label>NR</label><select id="vidNR">${NRS.map(n=>`<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+<div class="fld"><label>Descricao</label><textarea id="vidDesc" rows="3" placeholder="Descricao da aula..." style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical"></textarea></div>
+<button class="btn btn-p" onclick="addVideo()"><i class="fas fa-plus"></i> Adicionar Video</button></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-file-pdf"></i> Adicionar Material</div></div>
+<div class="fld"><label>Tipo</label><select id="matTipo"><option value="link">Link</option><option value="pdf">PDF</option></select></div>
+<div class="fld"><label>Titulo</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR 10" required></div>
+<div class="fld"><label>URL ou conteudo</label><input type="text" id="matUrl" placeholder="https://..." required></div>
+<div class="fld"><label>NR (opcional)</label><select id="matNR">${NRS.map(n=>`<option value="">Selecione...</option><option value="${n.id}">NR ${n.id}</option>`).join('')}</select></div>
+<div class="fld"><label>Descricao</label><textarea id="matDesc" rows="3" placeholder="Descricao..." style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical"></textarea></div>
+<button class="btn btn-p" onclick="addMat()"><i class="fas fa-plus"></i> Adicionar Material</button></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-folder-open"></i> Materiais Cadastrados</div></div>`;
+const mats=S.materias.filter(m=>m.uid===uid());
+if(!mats.length)h+=`<div class="empty"><i class="fas fa-folder-open"></i><p>Nenhum material cadastrado.</p></div>`;
+else{
+h+=`<div class="tw"><table><thead><tr><th>Tipo</th><th>Titulo</th><th>NR</th><th>Data</th><th>Acoes</th></tr></thead><tbody>`;
+mats.forEach(m=>{h+=`<tr><td><span class="badge ${m.tipo==='pdf'?'bg-err':'bg-info'}">${m.tipo==='pdf'?'PDF':'Link'}</span></td><td>${m.titulo}</td><td>${m.nrid?'NR '+m.nrid:'—'}</td><td>${fmtD(m.ts)}</td><td><button class="btn btn-sm btn-s" onclick="delMat('${m.id}')"><i class="fas fa-trash"></i></button></td></tr>`});h+=`</tbody></table></div></div></div>`;return h}
+function addVideo(){const tid=$('#vidTitulo')?.value?.trim(),url=$('#vidUrl')?.value?.trim(),nr=$('#vidNR')?.value;
+if(!tid||!url||!nr){toast('Preencha todos os campos','err');return}
+const nr=NRS.find(n=>n.id===nr);
+S.materias.push({id:gid(),uid:uid(),tipo:$('#matTipo').value,titulo:tid,url,nrid:nr,id:gid(),ts:Date.now()});
+sv('mats',S.materias);pushN('Video adicionado: '+tid);toast('Video adicionado!');renderV()}
+function addMat(){const tipo=$('#matTipo')?.value,tit=$('#matTitulo')?.value?.trim(),url=$('#matUrl')?.value?.trim(),nr=$('#matNR')?.value;
+if(!tit||!url){toast('Preencha titulo, URL e NR','err');return}
+if(!nr){toast('Selecione a NR','err');return}
+S.materias.push({id:gid(),uid:uid(),tipo,titulo,url,nrid:nr,id:gid(),ts:Date.now()});
+sv('mats',S.materias);pushN('Material adicionado: '+tit);toast('Material adicionado!');renderV()}
+function delMat(id){if(!confirm('Excluir este material?'))return;S.materias=S.materias.filter(m=>m.id!==id);sv('mats',S.materias);toast('Excluido','info');renderV()}
+/* ===== EXAMES ===== */
+function vExames(){const r=role();
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">${r==='aluno'?'Minhas Provas':'Gerenciar Provas'}</h2><p class="wcs">${r==='aluno'?'Provas disponive para voce responder.':'Crie e gerencie provas para os alunos.'}</p>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-file-pen-to-square"></i> Criar Prova</div></div>
+<div class="fld"><label>Titulo da prova</label><input type="text" id="exTitulo" placeholder="Ex: Prova NR 10" required></div>
+<div class="fld"><label>NR</label><select id="exNR">${NRS.map(n=>`<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+<div class="fld"><label>Arquivo PDF (opcional)</label><input type="file" id="exPdf" accept=".pdf" accept=".pdf,application/pdf" style="display:block;margin-bottom:4px"></div>
+<div class="fld"><label>Instrucoes (opcional)</label><textarea id="exInst" rows="3" placeholder="Instrucoes da prova..." style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical"></textarea></div>
+<button class="btn btn-p" onclick="addExam()"><i class="fas fa-plus"></i> Criar Prova</button></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list-check-double"></i> Provas Cadastradas</div></div>`;
+const exams=S.exams.filter(e=>e.criadoPor===uid());
+if(!exams.length)h+=`<div class="empty"><i class="fas fa-file-pen-to-square"></i><p>Nenhuma prova disponivel.</p></div>`;
+else{
+h+=`<div class="tw"><table><thead><tr><th>Titulo</th><th>NR</th><th>Nota</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`;
+exams.forEach(e=>{const sc=e.status==='finalizado'?'bg-ok':e.status==='corrigido'?'bg-warn':'bg-info';
+h+=`<tr><td><strong>${e.titulo}</td><td>NR ${e.nrid}</td><td>${e.nota!=null?e.nota+'/10':'—'}</td><td><span class="badge ${sc}">${e.status==='finalizado'?'Finalizada':e.status==='corrigido'?'Corrigida':'Pendente'}</span></td><td>${e.status!=='finalizado'?`<button class="btn btn-p btn-sm" onclick="respExame('${e.id}')"><i class="fas fa-pen"></i> Responder</button>`:''}</td></tr>`});
+h+=`</tbody></table></div></div></div>`;return h}
+function addExam(){const tid=$('#exTitulo')?.value?.trim(),nr=$('#exNR')?.value,nr=NRS.find(n=>n.id===nr),pdf=$('#exPdf')?.files[0],inst=$('#exInst')?.value?.trim();
+if(!tid||!nr){toast('Preencha titulo, NR e PDF','err');return}
+S.exams.push({id:gid(),criadoPor:uid(),titulo:tid,nrid:nr,pdf:pdf,inst:inst,nota:null,status:'pendente',ts:Date.now()});
+sv('exams',S.exams);pushN('Prova criada: '+tid);toast('Prova criada!');renderV()}
+function respExame(eid){const e=S.exams.find(x=>x.id===eid);if(!e)return;openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:20px 0"><h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:8px">${e.titulo}</h2><p style="font-size:12px;color:var(--tx2);margin-bottom:16px">NR ${e.nrid} — Prova</p>
+<p style="font-size:11px;color:var(--tx3);margin-bottom:12px">${e.inst||'Sem instrucoes adicionais'}</p>
+<div style="text-align:left;margin:0 0 14px 0"><p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">${e.inst||'Sem instrucoes.'}</p></div>
+<div style="text-align:left;margin:0 0 14px 0"><p style="font-size:13px;font-weight:700;color:var(--p);margin-bottom:8px"><i class="fas fa-list-check" style="margin-right:8px;color:var(--p)"></i> Responda corretamente</p></div></div>
+<div style="text-align:left;margin:12px 0 0"><p style="font-size:12px;color:var(--tx2)">Nota: ${e.nota!=null?e.nota+'/10':'—'}</p></div>
+<button class="btn btn-p btn-block" onclick="enviarExame('${e.id}')"><i class="fas fa-paper-plane"></i> Enviar Resposta</button></div></div>`}
+function enviarExame(eid){const e=S.exams.find(x=>x.id===eid);if(!e){toast('Prova nao encontrada','err');return}
+const sel=document.querySelector(`input[name="q_${eid}"]');if(!sel){toast('Selecione uma resposta','err');return}
+let nota=0,total=0;
+document.querySelectorAll(`input[name="q_${eid}"]`).forEach(inp=>{if(inp.checked&&inp.value)nota+=10;total+=10});
+const pct=total?Math.round(nota/total*100):0;
+e.nota=pct;e.status='corrigido';sv('exams',S.exams);
+if(pct>=70){e.status='finalizado'}
+toast('Resposta enviada! Nota: '+pct+'%','ok');renderV()}
+/* ===== CERTIFICADOS ===== */
+function vCerts(){const r=role();
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Certificados</h2>`;
+if(r==='aluno'){const meus=S.certs.filter(c=>c.uid===uid());
+h+=`<p class="wcs">Certificados emitidos para voce.</p>`;
+if(!meus.length)h+=`<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`;
+else{h+=`<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Codigo</th><th>Emitido em</th><th>Acao</th></tr></thead><tbody>`;meus.forEach(c=>{h+=`<tr><td><strong>NR ${c.nrid}</strong></td><td>${c.nota??'—'}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td>${fmtD(c.ts)}</td><td><button class="btn btn-p btn-sm" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>`});h+=`</tbody></table></div></div>`}else{
+h+=`<p class="wcs">Emita certificados para alunos.</p>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div>
+<div class="fld"><label>Aluno</label><select id="cAluno" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${S.users.filter(u=>u.role==='aluno').map(a=>`<option value="${a.id}">${a.nome}</option>`).join('')}</select></div>
+<div class="fld"><label>NR</label><select id="cNR" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${NRS.map(n=>`<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+<div class="fld"><label>Carga Horaria</label><input type="number" id="cCH" value="40" min="1" max="999" class="search" style="margin:0;border-radius:var(--r)"></div>
+<button class="btn btn-g" onclick="emitCert()"><i class="fas fa-award"></i> Emitir Certificado</button></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Emitidos (${S.certs.length})</div></div>`;
+if(!S.certs.length)h+=`<div class="empty" style="padding:30px"><p>Nenhum certificado emitido.</p></div>`;
+else{h+=`<div class="tw"><table><thead><tr><th>Aluno</th><th>NR</th><th>Codigo</th><th>Acoes</th></tr></thead><tbody>`;S.certs.forEach(c=>{const al=S.users.find(u=>u.id===c.uid);h+=`<tr><td>${al?.nome||'—'}</td><td>NR ${c.nrid}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td><button class="btn btn-sm btn-s" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i></button> <button class="btn btn-d btn-sm" onclick="delCert('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`});h+=`</tbody></table></div></div></div>`;return h}
+function emitCert(){const aid=$('#cAluno')?.value,nrid=$('#cNR')?.value,ch=parseInt($('#cCH')||40;
+if(!aid||!nrid){toast('Selecione aluno e NR','err');return}
+const nr=NRS.find(n=>n.id===nrid),ne=S.notas.find(n=>n.uid===aid&&n.nrid===nrid);
+S.certs.push({id:gid(),uid:aid,nrid,nrn:nr?.nm,codigo:'SS-'+Math.random().toString(36).substr(2,8).toUpperCase(),nota:ne?.nota,ch,by:uid(),ts:Date.now()});
+sv('certs',S.certs);toast('Certificado emitido!');renderV();const al=S.users.find(u=>u.id===aid);
+if(al)pushN(`Certificado emitido para NR ${nrid}!`,'certificados')}
+function delCert(id){if(!confirm('Excluir?'))return;S.certs=S.certs.filter(c=>c.id!==id);sv('certs',S.certs);toast('Excluido','info');renderV()}
+function dlCert(id){const c=S.certs.find(x=>x.id===id);if(!c)return;
+const al=S.users.find(u=>u.id===c.uid),nr=NRS.find(n=>n.id===c.nrid),em=S.users.find(u=>u.id===c.by);
+const de=new Date(c.ts);try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+doc.setFillColor(255,255,255);doc.rect(0,0,297,210,'F');
+doc.setDrawColor(46,125,50);doc.setLineWidth(4);doc.rect(6,6,285,198);
+doc.setDrawColor(201,176,55);doc.setLineWidth(1.5);doc.rect(10,10,277,190);
+doc.setDrawColor(46,125,50);doc.setLineWidth(.3);doc.rect(13,13,271,184);
+doc.setFillColor(46,125,50);doc.roundedRect(18,18,45,8,8,'F');
+doc.setTextColor(255,255,255);doc.setFontSize(24);doc.setFont('helvetica','bold');
+doc.text('SS',40.5,46);doc.setFontSize(7);doc.text('SULSAFE',40.5,52);
+doc.setFillColor(201,176,55);doc.roundedRect(230,18,48,16,4,4,'F');
+doc.setTextColor(26,26,26);doc.setFontSize(8);doc.setFont('helvetica','bold');
+doc.text('VALIDO DIGITALMENTE',254,29,29);doc.setDrawColor(46,125,50);doc.setLineWidth(1);doc.line(80,55,217,55);
+doc.setTextColor(80,80,80);doc.setFontSize(10);
+doc.text('CERTIFICADO',148.5,50,center);doc.setDrawColor(46,125,50);doc.setLineWidth(.5);doc.line(90,175,170,175);
+doc.setTextColor(60,60,60);doc.setFontSize(10);
+doc.text((emiteente?.nome||'Nome do Aluno'),130,182,{align:'center'});
+doc.setFontSize(8);doc.setTextColor(120,120,120);
+doc.text(`${emitente?.email||ADMIN_EMAIL}`,130,188,{align:'center'});
+doc.text('SulSafe Treinamentos — Seguranca do Trabalho',130,194,{align:'center'});
+doc.setFontSize(7);doc.setTextColor(180,180,180);
+doc.text('Documento gerado pela plataforma SulSafe. Verifique em sulsafe.com.br/verificar',148.5,206,{align:'center'});
+doc.save(`Certificado-NR${c.nrid}-${(al?.nome||'aluno').replace(/\s+/g,'-')}.pdf`);toast('PDF gerado!')}catch(e){toast('Erro ao gerar PDF: '+e.message,'err')}}
+/* ===== ADMIN MODO DEUS ===== */
+function vAdmin(){if(!isAdmin())return vInicio();
+const al=S.users.filter(u=>u.role==='aluno').length,pf=S.users.filter(u=>u.role==='professor').length;
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`;
+h+=`<div class="stats">${stC(S.users.length,'Usuarios','fa-users')}${stC(al,'Alunos','fa-user-graduate')}${stC(pf,'Professores','fa-chalkboard-user')}${stC(S.salas.length,'Salas','fa-tower-broadcast')}${stC(S.notas.length,'Notas','fa-file-pen');}${stC(S.certs.length,'Certificados','fa-certificate')}${stC(S.materias.length,'Materiais','fa-folder-open')}${stC(S.exames.length,'Exames','fa-file-pen-to-square')}${stC(S.notifs.length,'Notificacoes','fa-bell')}</div>`;
+h+=`<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuicao de Roles</h3><canvas id="chAdmRoles" height="200"></canvas></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios</div></div><input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)">
+<div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`;
+S.users.forEach(u=>{const rc=u.role==='admin'?'bg-warn':u.role==='professor'?'bg-ok':'bg-info';
+h+=`<tr data-un="${u.nome.toLowerCase()} ${u.email.toLowerCase()}"><td><strong>${u.nome}</td><td>${u.email}</td><td><span class="badge ${rc}">${u.role}</span></td><td>${u.email!==ADMIN_EMAIL?`<select onchange="chRole('${u.id}',this.value)" style="background:var(--ip);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--tx)"><option value="aluno" ${u.role==='aluno'?'selected':''}><option value="professor" ${u.role==='professor'?'selected':''}>Professor</option></select>`:''}</td></tr>`});
+h+=`</tbody></table></div></div></div>`;
+h+=`<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma. Use para limpar antes de recolocar conteudo.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div></div>`;
+return h}
+function filterU(q){q=q.toLowerCase();$$('#uTB tr').forEach(r=>{r.style.display=r.dataset.un.includes(q)?'':'none'})}
+function chRole(id,r){const u=S.users.find(x=>x.id===id);if(u){u.role=r;sv('users',S.users)}}
+function modalApagarTudo(){openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagara: salas, notas, boletos, certificados e aulas.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px">
+<button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div></div>`)
+function execApagar(){if($('#cfmApagar')?.value?.trim()!=='APAGAR'){toast('Digite "APAGAR" para confirmar','err');return}S.salas=[];S.notas=[];S.boletos=[];S.certs=[];S.aulas=[];S.materias=[];S.exams=[];
+sa();toast('TODOS os dados foram apagados!','warn');closeMdl();renderV()}
+/* ===== CONFIGURACOES ===== */
+function vConfig(){const c=S.cfg,temas=[{id:'verde',cor:'#2E7D32',nm:'Verde'},{id:'azul',cor:'#1565C0',nm:'Azul'},{id:'roxo',cor:'#7B1FA2',nm:'Roxo'},{id:'vermelho',cor:'#C62828',nm:'Vermelho'},{id:'laranja',cor:'#E65100',nm:'Laranja'},{id:'escuro',cor:'#1a1a1a',nm:'Escuro'}];
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Configuracoes</h2><p class="wcs">Personalize sua experiencia.</p>`;
+h+=`<div class="cfg-w"><div class="cfg-sb"><div class="cfg-tb on" onclick="cfgTab('tema',this)"><i class="fas fa-palette"></i><span>Tema</span></div><div class="cfg-tb" onclick="cfgTab('video',this)"><i class="fas fa-video"></i><span>Video</span></div><div class="cfg-tb" onclick="cfgTab('audio',this)"><i class="fas fa-volume-high"></i><span>Audio</span></div><div class="cfg-tb" onclick="cfgTab('geral',this)"><i class="fas fa-sliders-h"></i><span>Geral</span></div></div>`;
+h+=`<div class="cfg-bd">`;
+h+=`<div class="cfg-sc on" id="cfgTema"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Cores do Tema</h3><div class="tema-g">`;
+temas.forEach(t=>{h+=`<div class="tema-o${c.tema===t.id?' on':''}" onclick="setTema('${t.id}')"><div class="tema-dot" style="background:${t.cor};${t.id==='escuro'?'border:2px solid #555':''}"></div>${t.nm}</div>`});
+h+=`</div></div>`;
+h+=`<div class="cfg-sc" id="cfgVideo"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Video</h3><div class="cfg-grp"><label>Qualidade Padrao</label><select id="cfgQual" onchange="saveCfg()"><option value="sd"${c.qual==='sd'?' selected':''}>SD (480p)</option><option value="hd"${c.qual==='hd'?' selected':''}>HD (720p)</option><option value="fhd"${c.qual==='fhd'?' selected':''}>Full HD (1080p)</option><option value="auto"${c.qual==='auto'?' selected':''}>Automatico</option></select></div><div class="cfg-grp"><label>Velocidade</label><select id="cfgSpeed" onchange="saveCfg()"><option value="0.75"${c.speed==='0.75'?' selected':''}>0.75x</option><option value="1"${c.speed==='1'?' selected':''>1x</option><option value="1.25"${c.speed==='1.25'?' selected':''}>1.25x</option><option value="1.5"${c.speed==='1.5'?' selected':''>1.5x</option><option value="2"${c.speed==='2'?' selected':''>2x</option></select></div><div class="cfg-grp"><label>Reproducao Automatica</label><select onchange="S.cfg.autoPlay=this.value==='true';saveCfg()"><option value="true"${c.autoPlay!==false?' selected':''}>Ativada</option><option value="false"${c.autoPlay===false?' selected':''>Desativada</option></select></div></div></div>`;
+h+=`<div class="cfg-sc" id="cfgAudio"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Audio</h3><div class="cfg-grp"><label>Volume Geral: <strong id="volVal">${c.vol}%</strong></label><input type="range" id="cfgVol" min="0" max="100" value="${c.vol}" oninput="$('#volVal').textContent=this.value+'%';saveCfg()"></div><div class="cfg-grp"><label>Volume da IA</label><input type="range" min="0" max="100" value="80"></div></div></div>`;
+h+=`<div class="cfg-sc" id="cfgGeral"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes Gerais</h3><div class="cfg-grp"><label>Notificacoes de Novo Conteudo</label><select onchange="S.cfg.notifs=this.value==='true';saveCfg()"><option value="true"${S.cfg.notifs!==false?' selected':''}>Ativadas</option><option value="false"${S.cfg.notifs===false?' selected':''}>Desativadas</option></select></div><div class="cfg-grp"><label>Nome de Exibicao</label><input type="text" value="${S.user?.nome||''}" onchange="S.user.nome=this.value;sv('users',S.users);renderSB()"></div></div></div></div></div></div>`;
+return h}
+function cfgTab(id,el){$$('.cfg-tb').forEach(t=>t.classList.remove('on'));el.classList.add('on');const map={tema:'cfgTema',video:'cfgVideo',audio:'cfgAudio',geral:'cfgGeral'};$$('.cfg-sc').forEach(s=>s.classList.remove('on'));$('#'+map[id]).classList.add('on')}
+function setTema(id){document.body.className=id==='verde'?'':'t-'+id;$$('.tema-o').forEach(o=>o.classList.remove('on'));o.classList.add('on');event.currentTarget.classList.add('on');S.cfg.tema=id;saveCfg()}
+function saveCfg(){const q=$('#cfgQual')?.value,sp=$('#cfgSpeed')?.value,v=$('#cfgVol')?.value;if(q)S.cfg.qual=q;if(sp)S.cfg.speed=sp;if(v)S.cfg.vol=parseInt(v);save('cfg',S.cfg)}
+function loadCfg(){document.body.className=S.cfg.tema==='verde'?'':'t-'+S.cfg.tema}
+function cfgTab(id,el){$$('.cfg-tb').forEach(t=>t.classList.remove('on'));el.classList.add('on');const map={tema:'cfgTema',video:'cfgVideo',audio:'cfgAudio',geral:'cfgGeral'};$('#'+map[id]).classList.add('on')}
+/* ===== MATERIAIS (aluno envia PDF) ===== */
+function vMateriais(){const r=role();
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Materiais</h2><p class="wcs">Envie materiais complementares para aprofundamento.</p>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-upload"></i> Enviar Material</div></div>
+<div class="fld"><label>Tipo</label><select id="matTipo"><option value="link">Link</option><option value="pdf">PDF</option></select></div>
+<div class="fld"><label>Titulo</label><input type="text" id="matTitulo" placeholder="Ex: Apostila NR 10" required></div>
+<div class="fld"><label>URL / Conteudo</label><input type="text" id="matUrl" placeholder="https://..." required></div>
+<div class="fld"><label>NR (opcional)</label><select id="matNR">${NRS.map(n=>`<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+<div class="fld"><label>Descricao</label><textarea id="matDesc" rows="3" placeholder="Descricao..." style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical"></textarea></div>
+<button class="btn btn-p" onclick="addMat()"><i class="fas fa-cloud-upload"></i> Enviar Material</button></div></div></div>`;
+const mats=S.materias.filter(m=>m.uid===uid());
+if(!mats.length)h+=`<div class="empty"><i class="fas fa-folder-open"></i><p>Nenhum material cadastrado.</p></div>`;
+else{
+h+=`<div class="tw"><table><thead><tr><th>Tipo</th><th>Titulo</th><th>NR</th>Data</th>Acoes</th></tr></thead><tbody>`;
+mats.forEach(m=>{h+=`<tr data-mid="${m.id}"><td><span class="badge ${m.tipo==='pdf'?'bg-err':'bg-info'}">${m.tipo==='pdf'?'PDF':'Link'}</span></td><td>${m.titulo}</td><td>${m.nrid?'NR '+m.nrid:'—'}</td><td>${fmtD(m.ts)}</td><td><button class="btn btn-sm btn-s" onclick="dlMat('${m.id}')"><i class="fas fa-download"></i></button></td></tr>`});
+h+=`</tbody></table></div></div></div></div>`;return h}
+function addMat(){const tp=$('#matTipo')?.value,tit=$('#matTitulo')?.value?.trim(),url=$('#matUrl')?.value?.trim(),nr=$('#matNR')?.value;
+if(!tit||!url||!nr){toast('Preencha todos os campos','err');return}
+S.materias.push({id:gid(),uid:uid(),tipo:tp,titulo:tit,url,nrid:nr,id:gid(),ts:Date.now()});
+sv('mats',S.materias);pushN('Material adicionado: '+tit);toast('Material adicionado!');renderV()}
+function dlMat(id){if(!confirm('Excluir material?'))return;S.materias=S.materias.filter(m=>m.id!==id);sv('mats',S.materias);toast('Excluido','info');renderV()}
+/* ===== EXAMES ===== */
+function vExames(){const r=role();
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">${r==='aluno'?'Minhas Provas':'Gerenciar Provas'}</h2><p class="wcs">${r==='aluno'?'Provas disponive para voce responder.':'Crie e gere provas para os alunos.'}</p>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-file-pen-to-square"></i> Criar Prova</div></div>
+<div class="fld"><label>Titulo da prova</label><input type="text" id="exTitulo" placeholder="Ex: Prova NR 10" required></div>
+<div class="fld"><label>NR</label><select id="exNR">${NRS.map(n=>`<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+<div class="fld"><label>Arquivo PDF (obrigatorio)</label><input type="file" id="exPdf" accept=".pdf,.pdf" class="search" style="margin:0;margin-bottom:4px"></div>
+<div class="fld"><label>Instrucoes (opcional)</label><textarea id="exInst" rows="3" placeholder="Instrucoes da prova..." style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical"></textarea></div>
+<button class="btn btn-p" onclick="addExam()"><i class="fas fa-file-pen-to-square"></i> Criar Prova</button></div></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Provas Cadastradas</div></div>`;
+const exams=S.exams.filter(e=>e.criadoPor===uid());
+if(!exams.length)h+=`<div class="empty"><i class="fas fa-file-pen-to-square"></i><p>Nenhuma prova disponivel.</p></div>`;
+else{
+h+=`<div class="tw"><table><thead><tr><th>Titulo</th><th>NR</th><th>Nota</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`;
+exams.forEach(e=>{const sc=e.status==='finalizado'?'bg-ok':e.status==='corrigido'?'bg-warn':'bg-info';
+h+=`<tr data-mid="${e.id}"><td><strong>${e.titulo}</td><td>NR ${e.nrid}</td>${e.nota!=null?e.nota+'/10':'—'}</td><td><span class="badge ${sc}">${e.status==='finalizado'?'Finalizada':'Pendente'}</span></td>${e.status!=='finalizado'?`<button class="btn btn-p btn-sm" onclick="respExame('${e.id}')"><i class="fas fa-pen"></i> Responder</button>`:''}</td></tr>`});
+h+=`</tbody></table></div></div></div></div>`;return h}
+function addExam(){const tid=$('#exTitulo')?.value?.trim(),nr=$('#exNR')?.value,nr=NRS.find(n=>n.id===nr),pdf=$('#exPdf')?.files?.[0],inst=$('#exInst')?.value?.trim();
+if(!tid||!nr||!pdf){toast('Preencha titulo, NR, PDF e instrucoes','err');return}
+S.exams.push({id:gid(),criadoPor:uid(),titulo:tid,nrid:nr,pdf:pdf,inst:inst,nota:null,status:'pendente',ts:Date.now()});
+sv('exams',S.exams);toast('Prova criada!');renderV();const al=S.users.find(u=>u.id===ex.criadoPor);
+if(al)pushN(`Prova disponivel: "${tid}" — ${al?.nome||'}`,'certificados','exames')}
+function respExame(eid){const e=S.exams.find(x=>x.id===eid);if(!e)return;
+const sel=document.querySelector(`input[name="q_${eid}"]`);
+let nota=0,total=0;
+document.querySelectorAll(`input[name="q_${eid}"]`).forEach(inp=>{if(inp.checked)nota+=10;total+=10});
+const pct=total?Math.round(nota/total*100):0;
+e.nota=pct;e.status='corrigido';
+sv('exams',S.exams);toast('Resposta enviada! Nota: '+pct+'%','ok');renderV()}
+/* ===== CERTIFICADOS ===== */
+function vCerts(){const r=role();
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<h2 class="wc">Certificados</h2>`;
+if(r==='aluno'){const meus=S.certs.filter(c=>c.uid===uid());
+h+=`<p class="wcs">Certificados emitidos para voce.</p>`;
+if(!meus.length)h+=`<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`;
+else{
+h+=`<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th>Codigo</th>Emitido em</th><th>Acao</th></tr></thead><tbody>`;
+meus.forEach(c=>{const al=S.users.find(u=>u.id===c.uid);
+h+=`<tr><td><strong>NR ${c.nrid}</strong></td><td>${c.nota!=null?c.nota+'/10':'—'}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td>${fmtD(c.ts)}</td><td><button class="btn btn-sm btn-p" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i> PDF</button> <button class="btn btn-d btn-sm" onclick="delCert('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`});h+=`</tbody></table></div></div></div></div>`;return h}
+function emitCert(){const aid=$('#cAluno')?.value,nrid=$('#cNR')?.value,ch=parseInt($('#cCH')||40;
+if(!aid||!nrid){toast('Selecione aluno e NR','err');return}
+const nr=NRS.find(n=>n.id===nrid);
+S.certs.push({id:gid(),uid:aid,nrid,nrn:nr?.nm,codigo:'SS-'+Math.random().toString(36).substr(2,8).toUpperCase(),nota:ne?.nota,ch,by:uid(),ts:Date.now()});
+sv('certs',S.certs);toast('Certificado emitido!');renderV();const al=S.users.find(u=>u.id===aid);
+if(al)pushN(`Certificado emitido para NR ${nrid}!`,'certificados')}
+function delCert(id){if(!confirm('Excluir?'))return;S.certs=S.certs.filter(c=>c.id!==id);sv('certs',S.certs);toast('Excluido','info');renderV()}
+/* ===== ADMIN MODO DEUS ===== */
+function vAdmin(){if(!isAdmin())return vInicio();
+const al=S.users.filter(u=>u.role==='aluno').length,pf=S.users.filter(u=>u.role==='professor').length;
+const rec=S.boletos.filter(b=>b.status==='pago').reduce((a,b)=>a+Number(b.valor||0),0),penVal=S.boletos.filter(b=>b.status==='pendente').reduce((a,b)=>a+Number(b.valor||0),0);
+let h=`<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
+h+=`<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`;
+h+=`<div class="stats">${stC(S.users.length,'Usuarios','fa-users')}${stC(al,'Alunos','fa-user-graduate')}${stC(pf,'Professores','fa-chalkboard-user')}${stC(S.salas.length,'Salas Ativas','fa-tower-broadcast')}${stC(NRS.length,'NRs','fa-book')}${stC(S.notas.length,'Notas','fa-file-pen-to-square')}${stC(S.certs.length,'Certificados','fa-certificate')}${stC(S.materias.length,'Materiais','fa-folder-open')}${stC(S.exams.length,'Exames','fa-file-pen-to-square')}${stC(S.notifs.length,'Notificacoes','fa-bell')}</div>`;
+h+=`<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuicao de Roles</h3><canvas id="chAdmRoles" height="200"></canvas></div></div>`;
+h+=`<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios</div></div>
+<input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)">
+<div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`;
+S.users.forEach(u=>{const rc=u.role==='admin'?'bg-warn':u.role==='professor'?'bg-ok':'bg-info';
+h+=`<tr data-un="${u.nome.toLowerCase()} ${u.email.toLowerCase()}"><td><strong>${u.nome}</td><td>${u.email}</td><span class="badge ${rc}">${u.role}</span></td>${u.email!==ADMIN_EMAIL?`<select onchange="chRole('${u.id}',this.value)" style="background:var(--ip);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--tx);text-align:left"'><option value="aluno" ${u.role==='aluno'?'selected':''}>Aluno</option><option value="professor" ${u.role==='professor'?'selected':''}>Professor</option></select></td></tr>`});
+h+=`</tbody></table></div></div></div>`;
+h+=`<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h" style="color:#D32F2F"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma. Use para limpar antes de recolocar conteudo.</p><button class="btn btn-d btn-block" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div></div></div>`;
+h+=`</div></div>`;return h}
+function filterU(q){q=q.toLowerCase();$$('#uTB tr').forEach(r=>{r.style.display=r.dataset.un.includes(q)?'':'none'})}
+function chRole(id,r){const u=S.users.find(x=>x.id===id);if(u){u.role=r;sv('users',S.users)}}
+function modalApagarTudo(){openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagara: salas, notas, boletos, certificados, aulas e materiais.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px">
+<button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div></div>`)
 }
-
-function showT(id) { $$('.t').forEach(t => t.classList.remove('on')); $('#' + id).classList.add('on'); }
-function openMdl(h) { $('#mdlBox').innerHTML = h; $('#mdlBg').classList.add('on'); }
-function closeMdl() { $('#mdlBg').classList.remove('on'); }
- $('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) closeMdl(); });
-function closeNotif() { $('#notifPopup').classList.remove('show'); }
-
-/* ============================================================
-   AUTH — LOGIN / CADASTRO
-   ============================================================ */
- $('#frmLogin').addEventListener('submit', e => {
-    e.preventDefault();
-    const email = $('#lEmail').value.trim().toLowerCase();
-    const pass = $('#lPass').value;
-    let u = S.users.find(x => x.email === email && x.pass === pass);
-    if (!u) {
-        if (email === ADMIN_EMAIL) {
-            u = { id: genId(), nome: 'Administrador SulSafe', email, pass, role: 'admin', created: Date.now() };
-            S.users.push(u); save('users', S.users);
-        } else { toast('Email ou senha incorretos', 'err'); return; }
-    }
-    S.user = u;
-    localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
-    loadCfg();
-    enterDash();
-    toast('Bem-vindo(a), ' + u.nome + '!');
-});
-
- $('#frmCad').addEventListener('submit', e => {
-    e.preventDefault();
-    const nome = $('#cNome').value.trim(), email = $('#cEmail').value.trim().toLowerCase();
-    const p1 = $('#cPass').value, p2 = $('#cPass2').value;
-    if (p1 !== p2) { toast('As senhas nao coincidem', 'err'); return; }
-    if (S.users.find(x => x.email === email)) { toast('Email ja cadastrado', 'err'); return; }
-    const u = { id: genId(), nome, email, pass: p1, role: 'aluno', created: Date.now() };
-    S.users.push(u); save('users', S.users);
-    S.user = u;
-    localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
-    loadCfg();
-    enterDash();
-    toast('Conta criada com sucesso!');
-});
-
-/* ============================================================
-   LOGOUT — Volta para a landing page (index.html)
-   ============================================================ */
-function logout() {
-    S.user = null;
-    localStorage.removeItem('ss_session');
-    destroyCharts();
-    /* REDIRECIONA PARA A LANDING PAGE */
-    window.location.href = LANDING_URL;
-}
-
-/* ============================================================
-   AUTO-LOGIN — Se ja tem sessao, entra direto no dashboard
-   ============================================================ */
-(function () {
-    const s = localStorage.getItem('ss_session');
-    if (s) {
-        const { id } = JSON.parse(s);
-        const u = S.users.find(x => x.id === id);
-        if (u) { S.user = u; loadCfg(); enterDash(); }
-    }
-})();
-
-function enterDash() {
-    $('#authWrap').classList.add('off');
-    $('#dash').classList.add('on');
-    S.view = 'inicio';
-    renderSB();
-    renderV();
-    checkNotifs();
-}
-
-/* ============================================================
-   NOTIFICAÇÕES
-   ============================================================ */
-function pushNotif(msg, action, actionView) {
-    S.notifs.push({ id: genId(), msg, action: action || 'Ver', view: actionView || 'inicio', ts: Date.now(), readBy: [] });
-    save('notifs', S.notifs);
-    if (S.user && role() !== 'admin') showNotifPopup(S.notifs[S.notifs.length - 1]);
-}
-
-function showNotifPopup(n) {
-    $('#notifBody').innerHTML = `<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(n.ts)}</p>`;
-    $('#notifAction').onclick = () => { closeNotif(); nav(n.view || 'inicio'); };
-    $('#notifPopup').classList.add('show');
-    setTimeout(closeNotif, 8000);
-}
-
-function checkNotifs() {
-    if (!S.user || role() === 'admin') return;
-    const unread = S.notifs.filter(n => !n.readBy?.includes(uid()));
-    if (unread.length) { const last = unread[unread.length - 1]; if (Date.now() - last.ts < 60000) showNotifPopup(last); }
-}
-
-/* ============================================================
-   SIDEBAR
-   ============================================================ */
-function renderSB() {
-    const r = role();
-    const items = [
-        { id: 'inicio', ic: 'fa-house', lb: 'Inicio' },
-        { id: 'videoaulas', ic: 'fa-play-circle', lb: 'Videoaulas' },
-        { id: 'salas', ic: 'fa-tower-broadcast', lb: 'Salas ao Vivo' },
-        { id: 'nrs', ic: 'fa-book', lb: 'NRs' },
-        { id: 'ia', ic: 'fa-robot', lb: 'Assistente IA' },
-    ];
-    if (r === 'aluno') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-lines', lb: 'Meu Boletim' });
-        items.push({ sep: 'FINANCEIRO' });
-        items.push({ id: 'planos', ic: 'fa-crown', lb: 'Planos' });
-        items.push({ id: 'boletos', ic: 'fa-file-invoice-dollar', lb: 'Meus Boletos' });
-    }
-    if (r === 'professor') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Lancar Notas' });
-        items.push({ sep: 'DOCUMENTOS' });
-        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' });
-    }
-    if (r === 'admin') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Notas' });
-        items.push({ sep: 'FINANCEIRO' });
-        items.push({ id: 'boletos', ic: 'fa-chart-pie', lb: 'Pagamentos' });
-        items.push({ sep: 'DOCUMENTOS' });
-        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' });
-        items.push({ sep: 'SISTEMA' });
-        items.push({ id: 'admin', ic: 'fa-shield-halved', lb: 'Modo Deus' });
-    }
-    items.push({ sep: 'CONTA' });
-    items.push({ id: 'config', ic: 'fa-gear', lb: 'Configuracoes' });
-
-    let h = `<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div>`;
-    h += `<div class="sb-role ${r}"><i class="fas fa-${r === 'admin' ? 'crown' : r === 'professor' ? 'chalkboard-user' : 'user-graduate'}"></i> <span>${r}</span></div>`;
-    h += `<nav class="sb-nav">`;
-    items.forEach(i => {
-        if (i.sep) h += `<div class="sb-lbl">${i.sep}</div>`;
-        else h += `<div class="ni${S.view === i.id ? ' on' : ''}" onclick="nav('${i.id}')"><i class="fas ${i.ic}"></i><span>${i.lb}</span></div>`;
-    });
-    h += `</nav><div class="sb-ft"><span class="sb-name">${S.user?.nome || ''}</span><div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-right-from-bracket"></i></div></div>`;
-    $('#sidebar').innerHTML = h;
-}
-
-function nav(v) { S.prevView = S.view; S.view = v; destroyCharts(); renderSB(); renderV(); }
-
-/* ============================================================
-   ROUTER
-   ============================================================ */
-function renderV() {
-    const fn = { inicio: vInicio, videoaulas: vVideoaulas, salas: vSalas, nrs: vNRs, ia: vIA, boletim: vBoletim, planos: vPlanos, boletos: vBoletos, certificados: vCerts, admin: vAdmin, config: vConfig };
-    if (fn[S.view]) { $('#mc').innerHTML = fn[S.view](); $('#mc').style.animation = 'none'; $('#mc').offsetHeight; $('#mc').style.animation = 'fv .3s ease'; bindPostRender(); }
-}
-
-function bindPostRender() {
-    if (S.view === 'boletim' && role() !== 'aluno') setTimeout(drawChartNotas, 100);
-    if (S.view === 'admin') setTimeout(drawChartAdmin, 100);
-    if (S.view === 'boletos' && role() !== 'aluno') setTimeout(drawChartPay, 100);
-}
-
-/* ============================================================
-   VIEW: INICIO
-   ============================================================ */
-function vInicio() {
-    const r = role();
-    const concluidas = S.aulas.filter(a => a.uid === uid()).length;
-    const total = NRS.length;
-    const pct = total ? Math.round(concluidas / total * 100) : 0;
-    const pendentes = total - concluidas;
-    let h = `<div class="btn-back" onclick="nav('${S.prevView || 'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Ola, ${S.user?.nome || 'Usuario'}</h2>`;
-    h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`;
-    if (r === 'aluno') {
-        const vencendo = S.boletos.filter(b => b.uid === uid() && b.status === 'pendente' && new Date(b.venc) <= new Date(Date.now() + 7 * 864e5));
-        if (vencendo.length) h += `<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div>Voce tem <strong>${vencendo.length} boleto(s)</strong> vencendo em breve! <a href="#" onclick="nav('boletos');return false" style="color:var(--p);font-weight:700;text-decoration:underline">Ver boletos</a></div></div>`;
-    }
-    h += `<div class="stats">`;
-    if (r === 'aluno') {
-        h += stC(pct + '%', 'Progresso', 'fa-chart-line');
-        h += stC(concluidas, 'Videos Vistos', 'fa-check-circle');
-        h += stC(pendentes, 'Videos Pendentes', 'fa-clock');
-        h += stC(S.boletos.filter(b => b.uid === uid() && b.status === 'pago').length, 'Pagos', 'fa-circle-check');
-    } else {
-        const al = S.users.filter(u => u.role === 'aluno').length;
-        const rec = S.boletos.filter(b => b.status === 'pago').reduce((a, b) => a + Number(b.valor || 0), 0);
-        h += stC(al, 'Alunos', 'fa-users');
-        h += stC(S.salas.filter(s => s.ativa).length, 'Salas Ativas', 'fa-tower-broadcast');
-        h += stC(fmtM(rec), 'Receita', 'fa-dollar-sign');
-        h += stC(NRS.length, 'NRs', 'fa-book');
-    }
-    h += `</div>`;
-    if (r === 'aluno') {
-        h += `<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Progresso Geral — Videos</span><span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><p style="font-size:11px;color:var(--tx3);margin-top:6px">${concluidas} de ${total} NRs concluidas — ${pendentes} pendentes</p></div>`;
-    }
-    h += `<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rapido</h3><div class="cards">`;
-    h += cCard('fa-play-circle', 'Videoaulas', '38 NRs em videoaulas HD', 'videoaulas');
-    h += cCard('fa-tower-broadcast', 'Salas ao Vivo', 'Participe ao vivo', 'salas');
-    h += cCard('fa-book', 'Catalogo de NRs', 'Consulte as 38 Normas', 'nrs');
-    h += cCard('fa-robot', 'Assistente IA', 'Duvidas sobre NRs 24/7', 'ia');
-    if (r === 'aluno') {
-        h += cCard('fa-file-lines', 'Meu Boletim', 'Acompanhe suas notas', 'boletim');
-        h += cCard('fa-crown', 'Planos', 'Assine e desbloqueie tudo', 'planos');
-        h += cCard('fa-file-invoice-dollar', 'Meus Boletos', 'Boletos e PIX', 'boletos');
-    }
-    if (isProf()) {
-        h += cCard('fa-file-pen', 'Lancar Notas', 'Notas dos alunos', 'boletim');
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados');
-    }
-    if (isAdmin()) {
-        h += cCard('fa-file-pen', 'Notas', 'Gerenciar notas', 'boletim');
-        h += cCard('fa-chart-pie', 'Pagamentos', 'Metricas financeiras', 'boletos');
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados');
-        h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin');
-    }
-    h += `</div>`;
-    return h;
-}
-
-function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>`; }
-function cCard(ic, t, d, v) { return `<div class="card" onclick="nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>`; }
-
-/* ============================================================
-   VIEW: VIDEOAULAS
-   ============================================================ */
-function vVideoaulas() {
-    const r = role();
-    const concluidas = S.aulas.filter(a => a.uid === uid()).map(a => a.nrid);
-    const pct = Math.round(concluidas.length / NRS.length * 100);
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Videoaulas</h2><p class="wcs">Assista as aulas das 38 NRs no seu ritmo.</p>`;
-    if (r === 'aluno') h += `<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Seu Progresso</span><span style="font-weight:800;color:var(--p)">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
-    h += `<input class="search" placeholder="Buscar NR..." oninput="filterVA(this.value)">`;
-    h += `<div class="nr-g" id="vaGrid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">`;
-    NRS.forEach(nr => {
-        const done = concluidas.includes(nr.id);
-        h += `<div class="nr-c" data-s="${nr.nm.toLowerCase()} ${nr.id}" style="flex-direction:column;align-items:stretch;gap:0"><div style="display:flex;align-items:center;gap:12px;padding:14px"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>${done ? '<span class="badge bg-ok" style="margin-left:auto">Concluida</span>' : ''}</div>${r === 'aluno' ? `<div style="padding:8px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end"><button class="btn btn-sm ${done ? 'btn-p' : 'btn-s'}" onclick="toggleAula('${nr.id}',this)">${done ? '<i class="fas fa-check"></i> Concluida' : 'Marcar como concluida'}</button></div>` : ''}</div>`;
-    });
-    h += `</div>`;
-    return h;
-}
-
-function filterVA(q) { q = q.toLowerCase(); $$('#vaGrid .nr-c').forEach(c => { c.style.display = c.dataset.s.includes(q) ? '' : 'none'; }); }
-
-function toggleAula(nrId, btn) {
-    const idx = S.aulas.findIndex(a => a.uid === uid() && a.nrid === nrId);
-    if (idx >= 0) { S.aulas.splice(idx, 1); btn.className = 'btn btn-sm btn-s'; btn.innerHTML = 'Marcar como concluida'; toast('Aula desmarcada', 'info'); }
-    else { S.aulas.push({ id: genId(), uid: uid(), nrid: nrId, ts: Date.now() }); btn.className = 'btn btn-sm btn-p'; btn.innerHTML = '<i class="fas fa-check"></i> Concluida'; toast('Aula concluida!'); }
-    save('aulas', S.aulas); renderV();
-}
-
-/* ============================================================
-   VIEW: SALAS AO VIVO
-   ============================================================ */
-function vSalas() {
-    const r = role();
-    const ativas = S.salas.filter(s => s.ativa);
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`;
-    if (canManage()) {
-        h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><input class="search" id="salaTop" placeholder="Topico da aula" style="flex:2;min-width:200px;margin:0"><input class="search" id="salaMeet" placeholder="ID da reuniao" style="flex:1;min-width:160px;margin:0"><button class="btn btn-p" onclick="criarSala()"><i class="fas fa-plus"></i> Criar Sala</button></div>`;
-    }
-    if (!ativas.length) h += `<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`;
-    ativas.forEach(s => {
-        const criador = S.users.find(u => u.id === s.criadoPor);
-        h += `<div class="mt-c"><div><div class="mt-topic">${s.topico}</div><div class="mt-id">ID: ${s.meetId || 'N/A'}</div><div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${criador?.nome || '—'} — ${fmtD(s.ts)}</div></div><div style="display:flex;gap:8px"><a href="https://meet.google.com/${s.meetId || ''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>${canManage() ? `<button class="btn btn-d btn-sm" onclick="encerrarSala('${s.id}')"><i class="fas fa-times"></i></button>` : ''}</div></div>`;
-    });
-    return h;
-}
-
-function criarSala() {
-    const top = $('#salaTop')?.value?.trim();
-    const meet = $('#salaMeet')?.value?.trim();
-    if (!top) { toast('Informe o topico', 'err'); return; }
-    S.salas.unshift({ id: genId(), topico: top, meetId: meet, criadoPor: uid(), ativa: true, ts: Date.now() });
-    save('salas', S.salas);
-    pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas');
-    toast('Sala criada!'); renderV();
-}
-
-function encerrarSala(id) { const s = S.salas.find(x => x.id === id); if (s) s.ativa = false; save('salas', S.salas); toast('Sala encerrada', 'info'); renderV(); }
-
-/* ============================================================
-   VIEW: NRs
-   ============================================================ */
-function vNRs() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Catalogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`;
-    h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button><button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button><button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Especificas</button><button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saude</button><button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button></div>`;
-    h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)"><div class="nr-g" id="nrGrid">`;
-    NRS.forEach(nr => { h += `<div class="nr-c" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" onclick="verNR('${nr.id}')"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div></div>`; });
-    h += `</div>`;
-    return h;
-}
-function filterNR(c) { $$('#nrGrid .nr-c').forEach(e => { e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none'; }); }
-function filterNRT(q) { q = q.toLowerCase(); $$('#nrGrid .nr-c').forEach(e => { e.style.display = e.dataset.s.includes(q) ? '' : 'none'; }); }
-
-function verNR(id) {
-    const nr = NRS.find(n => n.id === id);
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0"><i class="fas ${nr.ic}"></i></div><div><div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div><h2 style="font-size:18px;font-weight:700">${nr.nm}</h2></div></div><p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">Esta Norma Regulamentadora estabelece os requisitos minimos para ${nr.nm.toLowerCase()}.</p><button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()"><i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}</button>`);
-}
-
-/* ============================================================
-   VIEW: IA
-   ============================================================ */
-function vIA() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Assistente IA</h2><p class="wcs">Tire duvidas sobre NRs e seguranca do trabalho.</p>`;
-    h += `<div class="pnl"><div class="chat-box"><div class="chat-msgs" id="chatMsgs"><div class="chat-m b">Ola! Sou o assistente IA da SulSafe. Pergunte sobre qualquer NR, EPI, CIPA, PPP, PCMSO e muito mais.</div></div><div class="chat-row"><input id="chatIn" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendIA()"><button class="btn btn-p btn-sm" onclick="sendIA()"><i class="fas fa-paper-plane"></i></button></div></div></div>`;
-    return h;
-}
-
-function sendIA() {
-    const inp = $('#chatIn'), msg = inp.value.trim(); if (!msg) return;
-    const msgs = $('#chatMsgs');
-    msgs.innerHTML += `<div class="chat-m u">${msg}</div>`; inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-    setTimeout(() => { msgs.innerHTML += `<div class="chat-m b">${genIA(msg)}</div>`; msgs.scrollTop = msgs.scrollHeight; }, 500 + Math.random() * 700);
-}
-
-function genIA(q) {
-    const ql = q.toLowerCase();
-    if (ql.includes('nr 10') || ql.includes('eletricidade')) return 'A <strong>NR 10</strong> estabelece requisitos de seguranca em instalacoes e servicos em eletricidade. Exige treinamento especifico (SEP), EPIs adequados, e que as instalacoes atendam a NBR 5410. Curso basico: 40h, complementar SEP: 40h.';
-    if (ql.includes('nr 35') || ql.includes('altura')) return 'A <strong>NR 35</strong> regulamenta trabalho em altura (acima de 2m). Exige: Analise de Risco, Permissao de Trabalho, treinamento 8h, cinto tipo paraquedista com duplo talabarte, pontos de ancoragem com resistencia minima 15kN.';
-    if (ql.includes('nr 6') || ql.includes('epi')) return 'A <strong>NR 6</strong> regulamenta os EPIs. O empregador deve fornecer gratuitamente, adequados ao risco. Todo EPI deve ter CA do MTE. Exemplos: capacete, oculos, luvas, protetor auricular, cinto de seguranca.';
-    if (ql.includes('nr 5') || ql.includes('cipa')) return 'A <strong>NR 5</strong> regulamenta a CIPA. Obrigatória para empresas com mais de 20 empregados. Composicao paritaria, mandato 1 ano. Realiza mapas de risco, investiga acidentes.';
-    if (ql.includes('nr 9') || ql.includes('ppra')) return 'A <strong>NR 9</strong> exige o PPRA. Deve abranger todos os trabalhadores, identificar e avaliar riscos, definir medidas de controle. Atualizado anualmente. Mantido por 20 anos.';
-    if (ql.includes('certificado')) return 'Os certificados sao emitidos pelo admin ou professor ao concluir o curso com nota minima. Contem: nome, NR, carga horaria, data e codigo de verificacao unico.';
-    if (ql.includes('pagamento') || ql.includes('boleto') || ql.includes('pix')) return 'Aceitamos <strong>PIX</strong> (aprovacao instantanea) e <strong>Boleto Bancario</strong> (ate 3 dias uteis). Apos confirmacao, seu acesso e liberado automaticamente.';
-    return `Sobre "<strong>${q}</strong>": As NRs sao extensas. Recomendo consultar o catalogo da plataforma. Tente perguntar sobre uma NR especifica (ex: "NR 10", "EPI", "CIPA").`;
-}
-
-/* ============================================================
-   VIEW: BOLETIM
-   ============================================================ */
-function vBoletim() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">${r === 'aluno' ? 'Meu Boletim' : 'Gerenciar Notas'}</h2>`;
-    h += `<p class="wcs">${r === 'aluno' ? 'Acompanhe suas notas e progresso.' : 'Lance notas e observacoes dos alunos.'}</p>`;
-    if (r === 'aluno') {
-        const minhas = S.notas.filter(n => n.uid === uid());
-        if (!minhas.length) h += `<div class="empty"><i class="fas fa-file-lines"></i><p>Nenhuma nota lancada ainda.</p></div>`;
-        else {
-            const media = minhas.reduce((a, n) => a + Number(n.nota || 0), 0) / minhas.length;
-            h += `<div class="stats">${stC(media.toFixed(1), 'Media Geral', 'fa-chart-line')}${stC(minhas.length, 'NRs Avaliadas', 'fa-list')}</div>`;
-            h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Observacao</th><th>Data</th></tr></thead><tbody>`;
-            minhas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td><strong>NR ${n.nrid}</strong> — ${n.nrn || ''}</td><td><span class="badge ${cor}">${n.nota ?? '—'}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.ts)}</td></tr>`; });
-            h += `</tbody></table></div>`;
-            h += `<div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Minhas Notas por NR</h3><canvas id="chartBoletimAluno" height="200"></canvas></div>`;
-            setTimeout(drawChartAluno, 100);
-        }
-    } else {
-        const alunos = S.users.filter(u => u.role === 'aluno');
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-filter"></i> Selecionar Aluno</div><button class="btn btn-p btn-sm" onclick="modalNota()"><i class="fas fa-plus"></i> Lancar Nota</button></div><select id="selAlunoN" class="search" style="margin:0;border-radius:var(--r)" onchange="renderNotasAl()"><option value="">Selecione um aluno...</option>${alunos.map(a => `<option value="${a.id}">${a.nome} (${a.email})</option>`).join('')}</select></div><div id="notasAlC"></div>`;
-        h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Media de Notas por NR</h3><canvas id="chartMediasNR" height="200"></canvas></div></div>`;
-    }
-    return h;
-}
-
-function renderNotasAl() {
-    const aid = $('#selAlunoN')?.value; const c = $('#notasAlC'); if (!aid || !c) return;
-    const notas = S.notas.filter(n => n.uid === aid);
-    const al = S.users.find(u => u.id === aid);
-    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-user-graduate"></i> ${al?.nome || 'Aluno'}</div><button class="btn btn-p btn-sm" onclick="modalNota('${aid}')"><i class="fas fa-plus"></i> Lancar</button></div>`;
-    if (!notas.length) h += `<div class="empty" style="padding:30px"><p>Nenhuma nota lancada.</p></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Obs</th><th>Data</th><th>Acoes</th></tr></thead><tbody>`;
-        notas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td>NR ${n.nrid}</td><td><span class="badge ${cor}">${n.nota}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.ts)}</td><td><button class="btn btn-sm btn-s" onclick="modalNota('${aid}','${n.nrid}')"><i class="fas fa-pen"></i></button> <button class="btn btn-sm btn-d" onclick="delNota('${n.id}','${aid}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-        h += `</tbody></table></div>`;
-    }
-    h += `</div>`; c.innerHTML = h;
-}
-
-function modalNota(aid, nridEdit) {
-    const opts = NRS.map(n => `<option value="${n.id}" ${n.id === nridEdit ? 'selected' : ''}>NR ${n.id} — ${n.nm}</option>`).join('');
-    const ex = nridEdit ? S.notas.find(n => n.uid === aid && n.nrid === nridEdit) : null;
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">${ex ? 'Editar' : 'Lancar'} Nota</h2><form onsubmit="saveNota(event,'${aid}')"><div class="fld"><label>NR</label><select id="nNR" required>${opts}</select></div><div class="fld"><label>Nota (0 a 10)</label><input type="number" id="nVal" min="0" max="10" step="0.1" value="${ex?.nota || ''}" required></div><div class="fld"><label>Observacao</label><textarea id="nObs" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical">${ex?.obs || ''}</textarea></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar</button></form>`);
-}
-
-function saveNota(e, aid) {
-    e.preventDefault();
-    const nrid = $('#nNR').value, nota = parseFloat($('#nVal').value), obs = $('#nObs').value.trim();
-    const nr = NRS.find(n => n.id === nrid);
-    const ex = S.notas.find(n => n.uid === aid && n.nrid === nrid);
-    if (ex) { ex.nota = nota; ex.obs = obs; ex.nrn = nr?.nm; }
-    else S.notas.push({ id: genId(), uid: aid, nrid, nrn: nr?.nm, nota, obs, ts: Date.now(), by: uid() });
-    save('notas', S.notas); toast('Nota salva!'); closeMdl(); renderNotasAl();
-    const al = S.users.find(u => u.id === aid);
-    if (al) pushNotif(`Nova nota lancada para NR ${nrid}: ${nota}/10`, 'Ver boletim', 'boletim');
-}
-
-function delNota(nid, aid) { if (!confirm('Excluir esta nota?')) return; S.notas = S.notas.filter(n => n.id !== nid); save('notas', S.notas); toast('Nota excluida', 'info'); renderNotasAl(); }
-
-/* ============================================================
-   VIEW: PLANOS
-   ============================================================ */
-function vPlanos() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<div class="god-hd"><h2><i class="fas fa-crown"></i> Planos de Assinatura</h2><p>Escolha o plano ideal para voce</p></div>`;
-    h += `<div class="planos-g">
-        <div class="plan-c"><h3>Mensal</h3><p class="pst">Flexivel para comecar</p><div class="pr">R$ <span>49</span>,90</div><p class="bl">por mes — 12 boletos mensais</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li class="off">Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Mensal',49.90,12)">Assinar Mensal</button></div>
-        <div class="plan-c dest"><span class="badge-plan">Melhor custo-beneficio</span><h3>Trimestral</h3><p class="pst">Economia garantida</p><div class="pr">R$ <span>129</span>,90</div><p class="bl">a cada 3 meses — 3 boletos</p><p class="eco">Economize 13%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-p btn-block" onclick="assinarPlano('Trimestral',129.90,3)">Assinar Trimestral</button></div>
-        <div class="plan-c"><h3>Anual</h3><p class="pst">Maxima economia</p><div class="pr">R$ <span>399</span>,90</div><p class="bl">por ano — 1 boleto anual</p><p class="eco">Economize 33%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li>Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Anual',399.90,1)">Assinar Anual</button></div>
-    </div>`;
-    return h;
-}
-
-function assinarPlano(nome, valor, qtd) {
-    const intervalo = qtd === 12 ? 1 : qtd === 3 ? 3 : 12;
-    const hoje = new Date();
-    const novos = [];
-    for (let i = 0; i < qtd; i++) {
-        const venc = new Date(hoje); venc.setMonth(venc.getMonth() + i * intervalo);
-        if (venc.getDay() === 0) venc.setDate(venc.getDate() + 1);
-        novos.push({ id: genId(), uid: uid(), plano: nome, valor, metodo: 'boleto', status: 'pendente', venc: venc.toISOString().split('T')[0], linha: genDigitable(), pix: genPix(), ts: Date.now() });
-    }
-    S.boletos.push(...novos); save('boletos', S.boletos);
-    toast(`${qtd} boleto(s) do plano ${nome} gerados!`);
-    verBoleto(novos[0].id); renderV();
-}
-
-/* ============================================================
-   VIEW: BOLETOS
-   ============================================================ */
-function vBoletos() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    if (r === 'aluno') return vBoletosAluno(h);
-    return vBoletosAdmin(h);
-}
-
-function vBoletosAluno(h) {
-    const meus = S.boletos.filter(b => b.uid === uid());
-    const vencendo = meus.filter(b => b.status === 'pendente' && new Date(b.venc) <= new Date(Date.now() + 7 * 864e5));
-    h += `<div class="god-hd"><h2><i class="fas fa-file-invoice-dollar"></i> Cobrancas e Pagamentos</h2><p>Acompanhe suas mensalidades</p></div>`;
-    if (vencendo.length) h += `<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div><strong>Atencao:</strong> ${vencendo.length} boleto(s) vencendo em breve!</div></div>`;
-    h += `<div class="tabs"><button class="tab-b on" onclick="trocarTabBol(this,'bolAbertos')">Em Aberto (${meus.filter(b => b.status === 'pendente').length})</button><button class="tab-b" onclick="trocarTabBol(this,'bolPagos')">Pagos (${meus.filter(b => b.status === 'pago').length})</button></div>`;
-    h += `<div class="tab-c on" id="bolAbertos">`;
-    const pendentes = meus.filter(b => b.status === 'pendente');
-    if (!pendentes.length) h += `<div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum boleto em aberto</h4></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`;
-        pendentes.forEach(b => { h += `<tr><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge bg-warn">Pendente</span></td><td><button class="btn btn-sm btn-p" onclick="verBoleto('${b.id}')"><i class="fas fa-eye"></i> Ver</button> <button class="btn btn-sm btn-s" onclick="gerarPixBol('${b.id}')"><i class="fas fa-qrcode"></i> PIX</button></td></tr>`; });
-        h += `</tbody></table></div>`;
-    }
-    h += `</div><div class="tab-c" id="bolPagos">`;
-    const pagos = meus.filter(b => b.status === 'pago');
-    if (!pagos.length) h += `<div class="empty"><i class="fas fa-receipt"></i><h4>Nenhum pagamento registrado</h4></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead><tbody>`;
-        pagos.forEach(b => { h += `<tr><td>${fmtD(b.ts)}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${b.plano}</td><td><span class="badge bg-ok">Pago</span></td></tr>`; });
-        h += `</tbody></table></div>`;
-    }
-    h += `</div>`;
-    return h;
-}
-
-function vBoletosAdmin(h) {
-    const pagos = S.boletos.filter(b => b.status === 'pago');
-    const pendentes = S.boletos.filter(b => b.status === 'pendente');
-    const rec = pagos.reduce((a, b) => a + Number(b.valor || 0), 0);
-    const penVal = pendentes.reduce((a, b) => a + Number(b.valor || 0), 0);
-    h += `<div class="god-hd"><h2><i class="fas fa-chart-pie"></i> Metricas de Pagamentos</h2><p>Acompanhe receita e inadimplencia</p></div>`;
-    h += `<div class="stats">${stC(fmtM(rec), 'Receita Recebida', 'fa-dollar-sign')}${stC(fmtM(penVal), 'A Receber', 'fa-clock')}${stC(pagos.length, 'Pagos', 'fa-circle-check')}${stC(pendentes.length, 'Pendentes', 'fa-hourglass-half')}</div>`;
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Status dos Pagamentos</h3><canvas id="chartPayStatus" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Receita Mensal</h3><canvas id="chartPayMes" height="200"></canvas></div></div>`;
-    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-check-double"></i> Detalhamento por Aluno</div></div><input class="search" placeholder="Buscar aluno..." oninput="filterPayT(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="payTB">`;
-    S.boletos.forEach(b => { const al = S.users.find(u => u.id === b.uid); const sc = b.status === 'pago' ? 'bg-ok' : 'bg-warn'; h += `<tr data-an="${(al?.nome || '').toLowerCase()}"><td>${al?.nome || '—'}</td><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge ${sc}">${b.status}</span></td><td>${b.status === 'pendente' ? `<button class="btn btn-sm btn-p" onclick="confPay('${b.id}')"><i class="fas fa-check"></i> Confirmar</button>` : ''}</td></tr>`; });
-    h += `</tbody></table></div></div>`;
-    return h;
-}
-
-function trocarTabBol(btn, id) { $$('.tab-b').forEach(b => b.classList.remove('on')); btn.classList.add('on'); $$('.tab-c').forEach(c => c.classList.remove('on')); $('#' + id).classList.add('on'); }
-function filterPayT(q) { q = q.toLowerCase(); $$('#payTB tr').forEach(r => { r.style.display = r.dataset.an.includes(q) ? '' : 'none'; }); }
-
-function verBoleto(id) {
-    const b = S.boletos.find(x => x.id === id); if (!b) return;
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>${b.plano} — Boleto</h3><div style="font-size:32px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><span class="badge ${b.status === 'pago' ? 'bg-ok' : 'bg-warn'}" style="font-size:13px;padding:6px 16px">${b.status.toUpperCase()}</span><p style="font-size:12px;color:var(--tx3);margin:10px 0">Vencimento: <strong>${fmtD(b.venc)}</strong></p><p style="font-size:12px;font-weight:600;margin-bottom:6px">Linha Digitavel:</p><div class="copy-b" onclick="copyTxt(this,'${b.linha}')">${b.linha} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="gerarPixBol('${b.id}')"><i class="fas fa-qrcode"></i> Pagar via PIX</button></div></div>`);
-}
-
-function gerarPixBol(id) {
-    const b = S.boletos.find(x => x.id === id); if (!b) return;
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>PIX — ${b.plano}</h3><div style="font-size:28px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><div class="qr-box"><canvas id="qrCv" width="180" height="180"></canvas><p style="font-size:12px;color:var(--tx2);margin-top:8px">Escaneie com o app do banco</p></div><p style="font-size:12px;font-weight:600;margin-bottom:6px">Codigo Copia e Cola:</p><div class="copy-b" onclick="copyTxt(this,'${b.pix}')">${b.pix} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><p style="font-size:11px;color:var(--tx3);margin-top:10px">Vencimento: ${fmtD(b.venc)}</p></div>`);
-    setTimeout(() => { const cv = document.getElementById('qrCv'); if (cv) { const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 180, 180); ctx.fillStyle = '#000'; for (let i = 0; i < 180; i += 10) for (let j = 0; j < 180; j += 10) if (Math.random() > .3) ctx.fillRect(i, j, 8, 8); } }, 100);
-}
-
-function copyTxt(el, t) { navigator.clipboard.writeText(t).then(() => toast('Copiado!')).catch(() => toast('Erro ao copiar', 'err')); }
-function confPay(id) { const b = S.boletos.find(x => x.id === id); if (b) { b.status = 'pago'; save('boletos', S.boletos); toast('Pagamento confirmado!'); renderV(); } }
-
-/* ============================================================
-   VIEW: CERTIFICADOS
-   ============================================================ */
-function vCerts() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Certificados</h2>`;
-    if (r === 'aluno') {
-        const meus = S.certs.filter(c => c.uid === uid());
-        h += `<p class="wcs">Certificados emitidos para voce.</p>`;
-        if (!meus.length) h += `<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`;
-        else {
-            h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Codigo</th><th>Emitido em</th><th>Acao</th></tr></thead><tbody>`;
-            meus.forEach(c => { h += `<tr><td><strong>NR ${c.nrid}</strong></td><td>${c.nota ?? '—'}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td>${fmtD(c.ts)}</td><td><button class="btn btn-sm btn-p" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>`; });
-            h += `</tbody></table></div>`;
-        }
-    } else {
-        h += `<p class="wcs">Emita certificados para alunos.</p>`;
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div><div class="fld"><label>Aluno</label><select id="cAluno" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${S.users.filter(u => u.role === 'aluno').map(a => `<option value="${a.id}">${a.nome}</option>`).join('')}</select></div><div class="fld"><label>NR</label><select id="cNR" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div><div class="fld"><label>Carga Horaria</label><input type="number" id="cCH" value="40" min="1" max="999" class="search" style="margin:0;border-radius:var(--r)"></div><button class="btn btn-g" onclick="emitCert()"><i class="fas fa-award"></i> Emitir Certificado</button></div>`;
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Emitidos (${S.certs.length})</div></div>`;
-        if (!S.certs.length) h += `<div class="empty" style="padding:30px"><p>Nenhum certificado emitido.</p></div>`;
-        else {
-            h += `<div class="tw"><table><thead><tr><th>Aluno</th><th>NR</th><th>Codigo</th><th>Acoes</th></tr></thead><tbody>`;
-            S.certs.forEach(c => { const al = S.users.find(u => u.id === c.uid); h += `<tr><td>${al?.nome || '—'}</td><td>NR ${c.nrid}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td><button class="btn btn-sm btn-s" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i></button> <button class="btn btn-sm btn-d" onclick="delCert('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-            h += `</tbody></table></div>`;
-        }
-        h += `</div>`;
-    }
-    return h;
-}
-
-function emitCert() {
-    const aid = $('#cAluno')?.value, nrid = $('#cNR')?.value, ch = parseInt($('#cCH')?.value) || 40;
-    if (!aid || !nrid) { toast('Selecione aluno e NR', 'err'); return; }
-    const nr = NRS.find(n => n.id === nrid);
-    const notaEntry = S.notas.find(n => n.uid === aid && n.nrid === nrid);
-    S.certs.push({ id: genId(), uid: aid, nrid, nrn: nr?.nm, codigo: 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase(), nota: notaEntry?.nota, ch, by: uid(), ts: Date.now() });
-    save('certs', S.certs); toast('Certificado emitido!'); renderV();
-    const al = S.users.find(u => u.id === aid);
-    if (al) pushNotif(`Certificado emitido para NR ${nrid}!`, 'Ver certificado', 'certificados');
-}
-
-function delCert(id) { if (!confirm('Excluir?')) return; S.certs = S.certs.filter(c => c.id !== id); save('certs', S.certs); toast('Excluido', 'info'); renderV(); }
-
-/* ============================================================
-   CERTIFICADO PDF
-   ============================================================ */
-function dlCert(id) {
-    const c = S.certs.find(x => x.id === id); if (!c) return;
-    const al = S.users.find(u => u.id === c.uid);
-    const nr = NRS.find(n => n.id === c.nrid);
-    const emitente = S.users.find(u => u.id === c.by);
-    const de = new Date(c.ts);
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        doc.setFillColor(255, 255, 255); doc.rect(0, 0, 297, 210, 'F');
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(4); doc.rect(6, 6, 285, 198);
-        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1.5); doc.rect(10, 10, 277, 190);
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.3); doc.rect(13, 13, 271, 184);
-        doc.setFillColor(46, 125, 50); doc.roundedRect(18, 18, 45, 45, 8, 8, 'F');
-        doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold');
-        doc.text('SS', 40.5, 46, { align: 'center' }); doc.setFontSize(7); doc.text('SULSAFE', 40.5, 52, { align: 'center' });
-        doc.setFillColor(201, 176, 55); doc.roundedRect(230, 18, 48, 16, 4, 4, 'F');
-        doc.setTextColor(26, 26, 26); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('VALIDO DIGITALMENTE', 254, 29, { align: 'center' });
-        doc.setTextColor(46, 125, 50); doc.setFontSize(36); doc.setFont('helvetica', 'bold');
-        doc.text('CERTIFICADO', 148.5, 50, { align: 'center' });
-        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1); doc.line(80, 55, 217, 55);
-        doc.setTextColor(80, 80, 80); doc.setFontSize(12); doc.setFont('helvetica', 'normal');
-        doc.text('Certificamos que', 148.5, 70, { align: 'center' });
-        doc.setTextColor(26, 26, 26); doc.setFontSize(28); doc.setFont('helvetica', 'bold');
-        const nome = al?.nome || 'Nome do Aluno';
-        doc.text(nome, 148.5, 88, { align: 'center' });
-        const nw = doc.getTextWidth(nome); doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5);
-        doc.line(148.5 - nw / 2 - 5, 90, 148.5 + nw / 2 + 5, 90);
-        doc.setTextColor(60, 60, 60); doc.setFontSize(12);
-        doc.text(`concluiu com exito o curso da NR ${c.nrid} — ${c.nrn || nr?.nm || ''}`, 148.5, 105, { align: 'center' });
-        doc.text(`com carga horaria de ${c.ch} horas`, 148.5, 114, { align: 'center' });
-        if (c.nota != null) doc.text(`obtendo nota final: ${c.nota}/10,0`, 148.5, 123, { align: 'center' });
-        doc.setFontSize(10); doc.setTextColor(100, 100, 100);
-        doc.text(`Emitido em: ${de.toLocaleDateString('pt-BR')} as ${de.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 148.5, 140, { align: 'center' });
-        doc.setFillColor(244, 247, 246); doc.roundedRect(108, 146, 81, 14, 4, 4, 'F');
-        doc.setTextColor(46, 125, 50); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text(`VERIFICACAO: ${c.codigo}`, 148.5, 155, { align: 'center' });
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 175, 170, 175);
-        doc.setTextColor(80, 80, 80); doc.setFontSize(10);
-        doc.text((emitente?.nome || 'Administrador SulSafe'), 130, 182, { align: 'center' });
-        doc.setFontSize(8); doc.setTextColor(120, 120, 120);
-        doc.text(`${emitente?.email || ADMIN_EMAIL}`, 130, 188, { align: 'center' });
-        doc.text('SulSafe Treinamentos — Seguranca do Trabalho', 130, 194, { align: 'center' });
-        doc.setFontSize(7); doc.setTextColor(180, 180, 180);
-        doc.text('Documento gerado pela plataforma SulSafe. Verifique a autenticidade em sulsafe.com.br/verificar', 148.5, 206, { align: 'center' });
-        doc.save(`Certificado-NR${c.nrid}-${nome.replace(/\s+/g, '-')}.pdf`);
-        toast('PDF gerado!');
-    } catch (e) { toast('Erro ao gerar PDF: ' + e.message, 'err'); }
-}
-
-/* ============================================================
-   VIEW: ADMIN (MODO DEUS)
-   ============================================================ */
-function vAdmin() {
-    if (!isAdmin()) return vInicio();
-    const al = S.users.filter(u => u.role === 'aluno').length;
-    const pf = S.users.filter(u => u.role === 'professor').length;
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`;
-    h += `<div class="stats">${stC(S.users.length, 'Usuarios', 'fa-users')}${stC(al, 'Alunos', 'fa-user-graduate')}${stC(pf, 'Professores', 'fa-chalkboard-user')}${stC(S.salas.length, 'Salas', 'fa-tower-broadcast')}${stC(S.notas.length, 'Notas', 'fa-file-pen')}${stC(S.certs.length, 'Certificados', 'fa-certificate')}</div>`;
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuicao de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`;
-    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios</div></div><input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`;
-    S.users.forEach(u => { const rc = u.role === 'admin' ? 'bg-warn' : u.role === 'professor' ? 'bg-ok' : 'bg-info'; h += `<tr data-un="${u.nome.toLowerCase()} ${u.email.toLowerCase()}"><td><strong>${u.nome}</strong></td><td>${u.email}</td><td><span class="badge ${rc}">${u.role}</span></td><td>${u.email !== ADMIN_EMAIL ? `<select onchange="changeRole('${u.id}',this.value)" style="background:var(--ip);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--tx)"><option value="aluno" ${u.role === 'aluno' ? 'selected' : ''}>Aluno</option><option value="professor" ${u.role === 'professor' ? 'selected' : ''}>Professor</option></select>` : '<span style="font-size:11px;color:var(--tx3)">Protegido</span>'}</td></tr>`; });
-    h += `</tbody></table></div></div>`;
-    h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`;
-    return h;
-}
-
-function filterU(q) { q = q.toLowerCase(); $$('#uTB tr').forEach(r => { r.style.display = r.dataset.un.includes(q) ? '' : 'none'; }); }
-function changeRole(id, r) { const u = S.users.find(x => x.id === id); if (u) { u.role = r; save('users', S.users); toast('Role alterado para ' + r); renderV(); } }
-
-function modalApagarTudo() {
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagara: salas, notas, boletos, certificados e aulas.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`);
-}
-
-function execApagar() {
-    if ($('#cfmApagar')?.value?.trim() !== 'APAGAR') { toast('Digite "APAGAR" para confirmar', 'err'); return; }
-    S.salas = []; S.notas = []; S.boletos = []; S.certs = []; S.aulas = [];
-    saveAll(); closeMdl(); toast('TODOS os dados foram apagados!', 'warn'); renderV();
-}
-
-/* ============================================================
-   VIEW: CONFIGURACOES
-   ============================================================ */
-function vConfig() {
-    const c = S.cfg;
-    const temas = [{ id: 'verde', cor: '#2E7D32', nm: 'Verde' }, { id: 'azul', cor: '#1565C0', nm: 'Azul' }, { id: 'roxo', cor: '#7B1FA2', nm: 'Roxo' }, { id: 'vermelho', cor: '#C62828', nm: 'Vermelho' }, { id: 'laranja', cor: '#E65100', nm: 'Laranja' }, { id: 'escuro', cor: '#1a1a1a', nm: 'Escuro' }];
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Configuracoes</h2><p class="wcs">Personalize sua experiencia na plataforma.</p>`;
-    h += `<div class="cfg-w"><div class="cfg-sb"><div class="cfg-tb on" onclick="cfgTab('tema',this)"><i class="fas fa-palette"></i><span>Tema</span></div><div class="cfg-tb" onclick="cfgTab('video',this)"><i class="fas fa-video"></i><span>Video</span></div><div class="cfg-tb" onclick="cfgTab('audio',this)"><i class="fas fa-volume-high"></i><span>Audio</span></div><div class="cfg-tb" onclick="cfgTab('geral',this)"><i class="fas fa-sliders-h"></i><span>Geral</span></div></div>`;
-    h += `<div class="cfg-bd">`;
-    h += `<div class="cfg-sc on" id="cfgTema"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Cores do Tema</h3><div class="tema-g">`;
-    temas.forEach(t => { h += `<div class="tema-o${c.tema === t.id ? ' on' : ''}" onclick="setTema('${t.id}')"><div class="tema-dot" style="background:${t.cor};${t.id === 'escuro' ? 'border:2px solid #555' : ''}"></div>${t.nm}</div>`; });
-    h += `</div></div>`;
-    h += `<div class="cfg-sc" id="cfgVideo"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Video</h3><div class="cfg-grp"><label>Qualidade Padrao</label><select id="cfgQual" onchange="saveCfg()"><option value="sd"${c.qual === 'sd' ? ' selected' : ''}>SD (480p)</option><option value="hd"${c.qual === 'hd' ? ' selected' : ''}>HD (720p)</option><option value="fhd"${c.qual === 'fhd' ? ' selected' : ''}>Full HD (1080p)</option><option value="auto"${c.qual === 'auto' ? ' selected' : ''}>Automatico</option></select></div><div class="cfg-grp"><label>Velocidade</label><select id="cfgSpeed" onchange="saveCfg()"><option value="0.75"${c.speed === '0.75' ? ' selected' : ''}>0.75x</option><option value="1"${c.speed === '1' ? ' selected' : ''}>1x</option><option value="1.25"${c.speed === '1.25' ? ' selected' : ''}>1.25x</option><option value="1.5"${c.speed === '1.5' ? ' selected' : ''}>1.5x</option><option value="2"${c.speed === '2' ? ' selected' : ''}>2x</option></select></div></div>`;
-    h += `<div class="cfg-sc" id="cfgAudio"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Audio</h3><div class="cfg-grp"><label>Volume Geral: <strong id="volVal">${c.vol}%</strong></label><input type="range" id="cfgVol" min="0" max="100" value="${c.vol}" oninput="$('#volVal').textContent=this.value+'%';saveCfg()"></div><div class="cfg-grp"><label>Volume da IA</label><input type="range" min="0" max="100" value="80"></div></div>`;
-    h += `<div class="cfg-sc" id="cfgGeral"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes Gerais</h3><div class="cfg-grp"><label>Notificacoes de Novo Conteudo</label><select onchange="S.cfg.notifs=this.value==='true';saveCfg()"><option value="true"${c.notifs !== false ? ' selected' : ''}>Ativadas</option><option value="false"${c.notifs === false ? ' selected' : ''}>Desativadas</option></select></div><div class="cfg-grp"><label>Nome de Exibicao</label><input type="text" value="${S.user?.nome || ''}" onchange="S.user.nome=this.value;save('users',S.users);renderSB()"></div></div>`;
-    h += `</div></div>`;
-    return h;
-}
-
-function cfgTab(id, el) { $$('.cfg-tb').forEach(t => t.classList.remove('on')); el.classList.add('on'); $$('.cfg-sc').forEach(s => s.classList.remove('on')); const map = { tema: 'cfgTema', video: 'cfgVideo', audio: 'cfgAudio', geral: 'cfgGeral' }; $('#' + map[id])?.classList.add('on'); }
-function setTema(id) { document.body.className = id === 'verde' ? '' : 't-' + id; S.cfg.tema = id; saveCfg(); $$('.tema-o').forEach(o => o.classList.remove('on')); event.currentTarget.classList.add('on'); toast('Tema alterado!'); }
-function saveCfg() { const q = $('#cfgQual')?.value, sp = $('#cfgSpeed')?.value, v = $('#cfgVol')?.value; if (q) S.cfg.qual = q; if (sp) S.cfg.speed = sp; if (v) S.cfg.vol = parseInt(v); save('cfg', S.cfg); }
-function loadCfg() { document.body.className = S.cfg.tema === 'verde' ? '' : 't-' + S.cfg.tema; }
-
-/* ============================================================
-   GRAFICOS
-   ============================================================ */
-let charts = {};
-function destroyCharts() { Object.values(charts).forEach(c => { try { c.destroy() } catch (e) { } }); charts = {}; }
-
-function drawChartAluno() {
-    const cv = document.getElementById('chartBoletimAluno'); if (!cv) return;
-    const minhas = S.notas.filter(n => n.uid === uid());
-    if (charts.aluno) try { charts.aluno.destroy() } catch (e) { }
-    charts.aluno = new Chart(cv, { type: 'bar', data: { labels: minhas.map(n => 'NR ' + n.nrid), datasets: [{ label: 'Nota', data: minhas.map(n => Number(n.nota || 0)), backgroundColor: minhas.map(n => Number(n.nota) >= 7 ? 'rgba(46,125,50,.7)' : Number(n.nota) >= 5 ? 'rgba(255,152,0,.7)' : 'rgba(211,47,47,.7)'), borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } } } });
-}
-
-function drawChartNotas() {
-    const cv = document.getElementById('chartMediasNR'); if (!cv) return;
-    const map = {}; S.notas.forEach(n => { if (!map[n.nrid]) map[n.nrid] = { s: 0, c: 0 }; map[n.nrid].s += Number(n.nota || 0); map[n.nrid].c++; });
-    const labels = Object.keys(map).sort((a, b) => a - b).map(k => 'NR ' + k);
-    const data = Object.keys(map).sort((a, b) => a - b).map(k => +(map[k].s / map[k].c).toFixed(1));
-    if (charts.notas) try { charts.notas.destroy() } catch (e) { }
-    charts.notas = new Chart(cv, { type: 'bar', data: { labels, datasets: [{ label: 'Media', data, backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true, scales: { y: { min: 0, max: 10 } } } });
-}
-
-function drawChartPay() {
-    const cv1 = document.getElementById('chartPayStatus'), cv2 = document.getElementById('chartPayMes');
-    if (cv1) { const p = S.boletos.filter(b => b.status === 'pago').length, pe = S.boletos.filter(b => b.status === 'pendente').length; if (charts.paySt) try { charts.paySt.destroy() } catch (e) { } charts.paySt = new Chart(cv1, { type: 'doughnut', data: { labels: ['Pagos', 'Pendentes'], datasets: [{ data: [p, pe], backgroundColor: ['rgba(46,125,50,.8)', 'rgba(255,152,0,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } }); }
-    if (cv2) { const mm = {}; S.boletos.filter(b => b.status === 'pago').forEach(b => { const m = b.venc?.substr(0, 7) || 'N/A'; mm[m] = (mm[m] || 0) + Number(b.valor || 0); }); if (charts.payMes) try { charts.payMes.destroy() } catch (e) { } charts.payMes = new Chart(cv2, { type: 'bar', data: { labels: Object.keys(mm), datasets: [{ label: 'Receita (R$)', data: Object.values(mm), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true } }); }
-}
-
-function drawChartAdmin() {
-    const cv1 = document.getElementById('chartAdmProg'), cv2 = document.getElementById('chartAdmRoles');
-    const alunos = S.users.filter(u => u.role === 'aluno');
-    if (cv1) { let p0 = 0, p1 = 0, p2 = 0, p3 = 0; alunos.forEach(a => { const c = S.aulas.filter(x => x.uid === a.id).length; const pct = c / NRS.length * 100; if (pct === 0) p0++; else if (pct <= 50) p1++; else if (pct <= 80) p2++; else p3++; }); if (charts.admProg) try { charts.admProg.destroy() } catch (e) { } charts.admProg = new Chart(cv1, { type: 'bar', data: { labels: ['0%', '1-50%', '51-80%', '81-100%'], datasets: [{ label: 'Alunos', data: [p0, p1, p2, p3], backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); }
-    if (cv2) { const rc = { admin: 0, professor: 0, aluno: 0 }; S.users.forEach(u => { rc[u.role] = (rc[u.role] || 0) + 1; }); if (charts.admRoles) try { charts.admRoles.destroy() } catch (e) { } charts.admRoles = new Chart(cv2, { type: 'doughnut', data: { labels: ['Admin', 'Professor', 'Aluno'], datasets: [{ data: [rc.admin, rc.professor, rc.aluno], backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } }); }
-}
-</script>
-</body>
-</html>
+function execApagar(){if($('#cfmApagar')?.value?.trim()!=='APAGAR'){toast('Digite "APAGAR" para confirmar','err');return}
+S.salas=[];S.notas=[];S.boletos=[];S.certs=[];S.aulas=[];S.materias=[];S.exams=[];
+sa();toast('TODOS os dados foram apagados!','warn');closeMdl();renderV()}
+/* ===== GRÁFICOS ===== */
+let charts={};
+function destroyCh(){Object.values(charts).forEach(c=>{try{c.destroy()}catch(e){}})
+function drawChAluno(){const cv=document.getElementById('chBoletimAluno');if(!cv)return;
+const meus=S.notas.filter(n=>n.uid===uid());
+if(meus.length){if(charts.aluno)try{charts.aluno.destroy()}catch(e){}
+charts.aluno=new Chart(cv,{type:'bar',data:{labels:meus.map(n=>'NR '+n.nrid),datasets:[{label:'Nota',data:meus.map(n=>Number(n.nota||0)),backgroundColor:meus.map(n=>Number(n.nota)>=7?'rgba(46,125,50,.7)':'rgba(255,152,0,.7)'),borderRadius:6}]}}],options:{responsive:true,plugins:{legend:{display:false},scales:{y:{min:0,max:10,ticks:{stepSize:2}}}});toast('PDF gerado!')}
+function drawChNotas(){const cv=document.getElementById('chartMediasNR');if(!cv)return;
+const map={};S.notas.forEach(n=>{if(!map[n.nrid])map[n.nrid]={s:0,c:0};});
+const labels=Object.keys(map).sort((a,b)=>a.localeCompare?0).map(k=>'NR '+k),data:Object.values(map).map(v=>({label:v,dataset:[v]})),backgroundColor:map.map(v=>({label:v,dataset:[v.map(x=>x>=7?'rgba(46,125,50,.7)':'rgba(255,152,0,.7)')}])}}]),options:{responsive:true,plugins:{legend:{display:false}}});
+if(charts.notas)try{charts.notas.destroy()}catch(e){}}
+function drawChPay(){const cv1=document.getElementById('chPaySt'),cv2=document.getElementById('chPayMes');
+if(cv1){const p=S.boletos.filter(b=>b.status==='pago').length,pe=S.boletos.filter(b=>b.status==='pendente').length;
+if(charts.paySt)try{charts.paySt.destroy()}catch(e){}
+charts.paySt=new Chart(cv1,{type:'doughnut',data:{labels:['Pagos','Pendentes'],datasets:[{data:[p,pe],backgroundColor:['rgba(46,125,50,.8)'],borderWidth:2}],borderWidth:1}]}),options:{responsive:true,plugins:{legend:{position:'bottom'}}})}
+if(cv2){const mm={};S.boletos.filter(b=>b.status==='pago').forEach(b=>{const m=b.venc?.substr(0,7);if(!mm[m])mm[m]=[];mm.push(m);});
+if(charts.payMes)try{charts.payMes.destroy()}catch(e){}
+charts.payMes=new Chart(cv2,{type:'bar',data:{labels:Object.keys(mm).sort((a,b)=>a.localeCompare?0:1),datasets:[{label:'Receita (R$)',data:Object.values(mm)}],backgroundColor:'rgba(46,125,50,.7)',borderRadius:6}]}}),options:{responsive:true,plugins:{legend:{display:false}}})}catch(e){}}
+function drawChAdmin(){const cv1=document.getElementById('chAdmProg'),cv2=document.getElementById('chAdmRoles');
+if(cv1){let p0=0,p1=0,p2=0,p3=0;alunos.forEach(a=>{const c=S.aulas.filter(x=>x.uid===a.id
