@@ -50,21 +50,8 @@
             --glass-bg: rgba(19,26,21,0.72);
             --glass-border: rgba(255,255,255,0.08);
             --glass-shadow: 0 24px 60px rgba(0,0,0,0.55);
-            --botao-bg: linear-gradient(135deg, #2E7D32, #1B5E20);
             --nav-hover-bg: rgba(46,125,50,0.15);
             --card-hover-shadow: 0 18px 40px rgba(0,0,0,0.4);
-        }
-
-        body.tema-claro {
-            --bg-pagina: #F4F7F6;
-            --texto: #1A1A1A;
-            --texto-sec: #555;
-            --borda: #E0E0E0;
-            --input-bg: #FAFAFA;
-            --card-bg: #FFFFFF;
-            --glass-bg: rgba(255,255,255,0.72);
-            --glass-border: rgba(255,255,255,0.45);
-            --glass-shadow: 0 24px 60px rgba(0,0,0,0.12);
         }
 
         body.tema-azul {
@@ -393,7 +380,7 @@
             transition: background .35s;
         }
 
-        .dash-logo { display: flex; align-items: center; gap: 10px; }
+        .dash-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .dash-logo-icon {
             width: 42px; height: 42px;
             background: var(--botao-bg);
@@ -1601,6 +1588,22 @@
             box-shadow: 0 8px 20px rgba(211,47,47,.3);
         }
 
+        /* ===== BOLETIM ===== */
+        .boletim-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .boletim-table thead th {
+            background: var(--botao-bg);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+        .boletim-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--borda); color: var(--texto); }
+        .boletim-table tbody tr:nth-child(odd) td { background: var(--nav-hover-bg); }
+        .nota-aprovado { color: var(--sucesso); font-weight: 700; }
+        .nota-reprovado { color: var(--erro); font-weight: 700; }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .dash-sidebar { width: 64px; padding: .8rem .4rem; }
@@ -1651,7 +1654,7 @@
     <div class="auth-container" id="authContainer">
         <!-- LOGIN -->
         <div class="tela active" id="telaLogin">
-            <a class="link-voltar-inicio" href="#"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
+            <a class="link-voltar-inicio" href="#" onclick="voltarLandingPage()"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo">
                 <div class="logo-icon">SS</div>
                 <div class="logo-text">SulSafe</div>
@@ -1731,7 +1734,7 @@
     <!-- ===== DASHBOARD ===== -->
     <div class="dashboard" id="dashboard">
         <div class="dash-sidebar">
-            <div class="dash-logo">
+            <div class="dash-logo" onclick="voltarLandingPage()">
                 <div class="dash-logo-icon">SS</div>
                 <div class="dash-logo-text">SulSafe</div>
             </div>
@@ -1747,6 +1750,7 @@
                 <div class="nav-item" data-view="aluno" id="navAreaAluno"><i class="fas fa-user-graduate"></i><span>Área do aluno</span></div>
                 <div class="nav-section-label" id="labelEnsino">Ensino</div>
                 <div class="nav-item" data-view="certificado" id="navCertificado"><i class="fas fa-certificate"></i><span>Certificado</span></div>
+                <div class="nav-item" data-view="boletim" id="navBoletim"><i class="fas fa-clipboard-list"></i><span>Boletim</span></div>
                 <div class="nav-section-label" id="labelAdmin">Admin</div>
                 <div class="nav-item" data-view="financeiro" id="navFinanceiro"><i class="fas fa-credit-card"></i><span>Financeiro</span></div>
                 <div class="nav-item" data-view="planos" id="navPlanos"><i class="fas fa-tag"></i><span>Planos</span></div>
@@ -1822,7 +1826,6 @@
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-shield-alt"></i> Salas de Reunião</h2>
                 <p class="dash-subtitle">Crie ou entre em uma sala de videoconferência</p>
                 
-                <!-- Área de convite -->
                 <div class="convite-box" id="conviteBox" style="display:none;">
                     <i class="fas fa-link" style="color:var(--primaria);font-size:20px;"></i>
                     <span style="font-weight:600;font-size:13px;">Convite para sala:</span>
@@ -1900,7 +1903,14 @@
                 <button class="btn-voltar" onclick="alternarView('home')"><i class="fas fa-arrow-left"></i> Voltar</button>
                 <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-user-graduate"></i> Área do Aluno</h2>
                 <p class="dash-subtitle">Seu progresso e certificados</p>
-                <div class="painel-card"><p style="text-align:center;padding:40px">Em breve...</p></div>
+                <div class="painel-card">
+                    <h3 style="color:var(--primaria);margin-bottom:12px;">📊 Seu Progresso</h3>
+                    <div id="progressoAluno"></div>
+                    <div style="margin-top:16px;">
+                        <h3 style="color:var(--primaria);margin-bottom:12px;">🎯 Atividades Recentes</h3>
+                        <p style="color:var(--texto-sec);font-size:13px;">Continue assistindo às videoaulas para avançar no curso!</p>
+                    </div>
+                </div>
             </div>
 
             <!-- CERTIFICADO -->
@@ -1916,6 +1926,16 @@
                     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
                         <button class="btn-criar-sala" onclick="gerarCertificadoPDF()"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- BOLETIM -->
+            <div id="viewBoletim" style="display:none">
+                <button class="btn-voltar" onclick="alternarView('home')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                <h2 class="dash-welcome" style="font-size:22px"><i class="fas fa-clipboard-list"></i> Boletim</h2>
+                <p class="dash-subtitle">Acompanhe as notas e avaliações</p>
+                <div id="boletimContainer" class="painel-card">
+                    <div id="boletimContent"></div>
                 </div>
             </div>
 
@@ -2087,7 +2107,7 @@
                         <div class="config-tab active" onclick="trocarConfigTab('geral')"><i class="fas fa-sliders-h"></i> Geral</div>
                         <div class="config-tab" onclick="trocarConfigTab('aparencia')"><i class="fas fa-palette"></i> Aparência</div>
                         <div class="config-tab" onclick="trocarConfigTab('audio')"><i class="fas fa-volume-up"></i> Áudio e Vídeo</div>
-                        <div class="config-tab" onclick="trocarConfigTab('admin')"><i class="fas fa-tools"></i> Admin</div>
+                        <div class="config-tab" onclick="trocarConfigTab('admin')" id="configTabAdmin"><i class="fas fa-tools"></i> Admin</div>
                     </div>
                     <div class="config-content">
                         <div class="config-section active-section" id="config-geral">
@@ -2106,10 +2126,6 @@
                                     <option value="vermelho">🔴 Vermelho</option>
                                     <option value="roxo">🟣 Roxo</option>
                                 </select>
-                            </div>
-                            <div class="config-group">
-                                <label>Cor primária</label>
-                                <input type="color" id="cfgCorPrimaria" value="#2E7D32" onchange="aplicarCorPrimaria(this.value)">
                             </div>
                         </div>
                         <div class="config-section" id="config-audio">
@@ -2319,6 +2335,29 @@
             return 'sulsafe-' + Math.random().toString(36).substring(2, 8).toUpperCase();
         }
 
+        function getBoletim() {
+            try { return JSON.parse(localStorage.getItem('sulsafe_boletim') || '[]'); } catch { return []; }
+        }
+
+        function salvarBoletim(boletim) {
+            localStorage.setItem('sulsafe_boletim', JSON.stringify(boletim));
+        }
+
+        // ================================================================
+        //  LANDING PAGE
+        // ================================================================
+        window.voltarLandingPage = function() {
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('heroContainer').classList.remove('hidden');
+            document.getElementById('heroTexto').classList.remove('hidden');
+            document.getElementById('overlay').classList.remove('hidden');
+            // Mostra a tela de login
+            document.querySelectorAll('.tela').forEach(t => t.classList.remove('active'));
+            document.getElementById('telaLogin').classList.add('active');
+        };
+
         // ================================================================
         //  AUTENTICAÇÃO
         // ================================================================
@@ -2337,7 +2376,8 @@
             
             usuarioAtual = email;
             usuarioId = 'user-' + Date.now();
-            ehAdmin = email.includes('admin') || email === 'sulsafetreinamentos@gmail.com';
+            // Admin é sulsafetreinamentos@gmail.com
+            ehAdmin = email === 'sulsafetreinamentos@gmail.com';
             ehProfessor = ehAdmin || email.includes('professor');
             
             localStorage.setItem('sulsafe_user', JSON.stringify({ 
@@ -2388,6 +2428,7 @@
             document.getElementById('heroContainer').classList.add('hidden');
             document.getElementById('heroTexto').classList.add('hidden');
             document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('dashboard').classList.add('active');
             
             document.getElementById('dashUserName').textContent = usuarioAtual || 'Usuário';
@@ -2404,16 +2445,20 @@
             setDisplay('navFinanceiro', ehAdmin);
             setDisplay('navPlanos', !ehAdmin);
             setDisplay('navBoletos', !ehAdmin);
-            setDisplay('navConfig', ehAdmin);
+            setDisplay('navConfig', true); // Config sempre visível
             setDisplay('navCertificado', ehProfessor);
             setDisplay('navAreaAluno', !ehProfessor);
             setDisplay('labelEnsino', ehProfessor);
-            setDisplay('labelAdmin', ehAdmin || !ehProfessor);
+            setDisplay('labelAdmin', ehAdmin);
+            setDisplay('navBoletim', true); // Boletim visível para todos
+            
+            // Esconde a aba Admin nas configs para não-admin
+            const configTabAdmin = document.getElementById('configTabAdmin');
+            if (configTabAdmin) configTabAdmin.style.display = ehAdmin ? 'flex' : 'none';
             
             const btnProfessor = document.getElementById('btnPainelProfessor');
             if (btnProfessor) btnProfessor.style.display = ehProfessor ? 'inline-flex' : 'none';
 
-            // Botão criar sala só para admin/professor
             const btnCriarSala = document.getElementById('btnCriarSala');
             if (btnCriarSala) btnCriarSala.style.display = (ehAdmin || ehProfessor) ? 'inline-flex' : 'none';
 
@@ -2426,6 +2471,8 @@
             popularSelectsNR();
             carregarFinanceiro();
             carregarHistoricoPagamentos();
+            carregarBoletim();
+            carregarProgressoAluno();
         }
 
         // Verifica sessão salva
@@ -2446,7 +2493,7 @@
         //  NAVEGAÇÃO
         // ================================================================
         window.alternarView = function(viewId) {
-            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Financeiro', 'Nrs', 'Certificado', 'Planos', 'Boletos', 'Config'];
+            const views = ['Home', 'Videoaulas', 'Salas', 'Materiais', 'Aluno', 'Ia', 'Financeiro', 'Nrs', 'Certificado', 'Planos', 'Boletos', 'Config', 'Boletim'];
             views.forEach(v => { 
                 const el = document.getElementById(`view${v}`); 
                 if (el) el.style.display = 'none'; 
@@ -2463,6 +2510,8 @@
             if (viewId === 'nrs') renderizarNrs();
             if (viewId === 'financeiro') carregarFinanceiro();
             if (viewId === 'boletos') carregarHistoricoPagamentos();
+            if (viewId === 'boletim') carregarBoletim();
+            if (viewId === 'aluno') carregarProgressoAluno();
         };
 
         document.querySelectorAll('.nav-item').forEach(el => {
@@ -2522,7 +2571,6 @@
 
             const btnCert = document.getElementById('btnCertificado');
             if (btnCert) {
-                // Só mostra o botão de certificado para admin/professor
                 btnCert.style.display = (concluidas === aulas.length && aulas.length > 0 && ehProfessor) ? 'inline-flex' : 'none';
             }
         }
@@ -2534,6 +2582,7 @@
             localStorage.setItem(`sulsafe_progresso_${usuarioId || 'anon'}`, JSON.stringify(progresso));
             carregarVideoaulas();
             renderizarProgressoHome();
+            carregarProgressoAluno();
         };
 
         window.deletarVideoaula = function(id) {
@@ -2570,6 +2619,26 @@
                     <div class="progresso-header"><span>Progresso</span><span class="progresso-pct">${pct}%</span></div>
                     <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
                     <div>${concluidas} de ${aulas.length} aulas</div>
+                </div>
+            `;
+        }
+
+        function carregarProgressoAluno() {
+            const container = document.getElementById('progressoAluno');
+            if (!container) return;
+            const aulas = getAulasLocal();
+            if (!aulas.length) {
+                container.innerHTML = `<p style="color:var(--texto-sec);font-size:13px;">Nenhuma aula disponível.</p>`;
+                return;
+            }
+            const progresso = getProgressoLocal();
+            const concluidas = aulas.filter(a => progresso[a.id]).length;
+            const pct = Math.round((concluidas / aulas.length) * 100);
+            container.innerHTML = `
+                <div class="progresso-container">
+                    <div class="progresso-header"><span>Progresso</span><span class="progresso-pct">${pct}%</span></div>
+                    <div class="progresso-bar-wrap"><div class="progresso-bar" style="width:${pct}%"></div></div>
+                    <div>${concluidas} de ${aulas.length} aulas concluídas</div>
                 </div>
             `;
         }
@@ -2613,7 +2682,6 @@
             localStorage.setItem('sulsafe_salas', JSON.stringify(salas));
             document.getElementById('meetingName').value = '';
             
-            // Mostra o convite
             const conviteBox = document.getElementById('conviteBox');
             conviteBox.style.display = 'flex';
             document.getElementById('codigoConvite').textContent = codigo;
@@ -2629,12 +2697,13 @@
 
         window.copiarConvite = function() {
             const codigo = document.getElementById('codigoConvite').textContent;
+            const texto = `Entre na sala SulSafe: ${codigo} em https://meet.jit.si/SulSafe-${codigo}`;
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(`Entre na sala SulSafe: ${codigo} em https://meet.jit.si/SulSafe-${codigo}`);
+                navigator.clipboard.writeText(texto);
                 mostrarSucesso('Convite copiado!');
             } else {
                 const textarea = document.createElement('textarea');
-                textarea.value = `Entre na sala SulSafe: ${codigo} em https://meet.jit.si/SulSafe-${codigo}`;
+                textarea.value = texto;
                 document.body.appendChild(textarea);
                 textarea.select();
                 document.execCommand('copy');
@@ -2953,6 +3022,103 @@
             } catch (err) {
                 mostrarErro('Erro ao gerar certificado: ' + err.message);
             }
+        };
+
+        // ================================================================
+        //  BOLETIM
+        // ================================================================
+        function carregarBoletim() {
+            const container = document.getElementById('boletimContent');
+            if (!container) return;
+            
+            const boletim = getBoletim();
+            
+            if (!boletim.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h4>Nenhuma nota lançada</h4>
+                        ${ehProfessor ? '<p style="color:var(--texto-sec);font-size:13px;">Clique em "Lançar Nota" para adicionar avaliações.</p>' : ''}
+                    </div>
+                    ${ehProfessor ? `<button class="btn-criar-sala" onclick="abrirModalBoletim()"><i class="fas fa-plus"></i> Lançar Nota</button>` : ''}
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="boletim-table">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Curso/Disciplina</th>
+                            <th>Nota</th>
+                            <th>Status</th>
+                            ${ehProfessor ? '<th>Ações</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            boletim.forEach(item => {
+                const status = item.nota >= 7 ? 'Aprovado' : 'Reprovado';
+                const statusClass = item.nota >= 7 ? 'nota-aprovado' : 'nota-reprovado';
+                html += `
+                    <tr>
+                        <td>${escapeHtml(item.aluno)}</td>
+                        <td>${escapeHtml(item.curso)}</td>
+                        <td class="${statusClass}">${item.nota.toFixed(1)}</td>
+                        <td><span class="${statusClass}">${status}</span></td>
+                        ${ehProfessor ? `
+                            <td>
+                                <button class="btn-mini" style="background:#D32F2F;padding:4px 10px;font-size:11px;" onclick="deletarBoletim('${item.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        ` : ''}
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            
+            if (ehProfessor) {
+                html += `<button class="btn-criar-sala" style="margin-top:16px;" onclick="abrirModalBoletim()"><i class="fas fa-plus"></i> Lançar Nota</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        window.abrirModalBoletim = function() {
+            const nome = prompt('Nome do aluno:');
+            if (!nome) return;
+            const curso = prompt('Curso/Disciplina:');
+            if (!curso) return;
+            const nota = parseFloat(prompt('Nota (0-10):'));
+            if (isNaN(nota) || nota < 0 || nota > 10) {
+                mostrarErro('Nota inválida. Digite um valor entre 0 e 10.');
+                return;
+            }
+            
+            const boletim = getBoletim();
+            boletim.push({
+                id: 'bol-' + Date.now(),
+                aluno: nome,
+                curso: curso,
+                nota: nota,
+                data: new Date().toISOString()
+            });
+            salvarBoletim(boletim);
+            carregarBoletim();
+            mostrarSucesso('Nota lançada com sucesso!');
+        };
+
+        window.deletarBoletim = function(id) {
+            if (!confirm('Remover esta nota?')) return;
+            let boletim = getBoletim();
+            boletim = boletim.filter(b => b.id !== id);
+            salvarBoletim(boletim);
+            carregarBoletim();
+            mostrarSucesso('Nota removida!');
         };
 
         // ================================================================
@@ -3292,39 +3458,21 @@
             localStorage.setItem('sulsafe_tema', tema);
         };
 
-        window.aplicarCorPrimaria = function(cor) {
-            const root = document.documentElement;
-            root.style.setProperty('--primaria', cor);
-            // Ajusta variações
-            root.style.setProperty('--primaria-dark', cor);
-            root.style.setProperty('--primaria-light', cor + '99');
-            root.style.setProperty('--primaria-glow', cor + '44');
-            localStorage.setItem('sulsafe_cor_primaria', cor);
-        };
-
         const temaSalvo = localStorage.getItem('sulsafe_tema') || 'escuro';
         const cfgTema = document.getElementById('cfgTema');
         if (cfgTema) cfgTema.value = temaSalvo;
         aplicarTema(temaSalvo);
 
-        // Carrega cor primária salva
-        const corSalva = localStorage.getItem('sulsafe_cor_primaria');
-        if (corSalva) {
-            const cfgCor = document.getElementById('cfgCorPrimaria');
-            if (cfgCor) cfgCor.value = corSalva;
-            aplicarCorPrimaria(corSalva);
-        }
-
         window.limparSistema = function() {
             if (!ehAdmin) { mostrarErro('Apenas administradores podem limpar o sistema.'); return; }
-            if (!confirm('⚠️ ATENÇÃO: Isso removerá TODOS os dados (videoaulas, materiais, salas, transações). Esta ação não pode ser desfeita. Deseja continuar?')) return;
+            if (!confirm('⚠️ ATENÇÃO: Isso removerá TODOS os dados (videoaulas, materiais, salas, transações, boletim). Esta ação não pode ser desfeita. Deseja continuar?')) return;
             if (!confirm('Última chance! Tem certeza que deseja apagar tudo?')) return;
             
             localStorage.removeItem('sulsafe_videoaulas');
             localStorage.removeItem('sulsafe_materiais');
             localStorage.removeItem('sulsafe_salas');
             localStorage.removeItem('sulsafe_transacoes');
-            // Limpa progresso de todos os usuários
+            localStorage.removeItem('sulsafe_boletim');
             const keys = Object.keys(localStorage);
             keys.forEach(key => {
                 if (key.startsWith('sulsafe_progresso_')) {
