@@ -314,8 +314,10 @@ body.t-escuro .warn-b{background:rgba(230,81,0,.12);border-color:rgba(230,81,0,.
 <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
 </div>
 
-<!-- TOAST -->
+// TOAST
 <div id="toast"></div>
+
+<script>
 function adicionarBotaoMateriais() {
   const mc = document.getElementById('mc')
   if(!mc) return
@@ -337,7 +339,7 @@ function adicionarBotaoMateriais() {
       grid.after(btn)
       console.log('Botão Subir Materiais adicionado!')
     }
-  }, 500) // checa a cada 0.5s até achar
+  }, 500)
 }
 
 // Roda quando a página carregar
@@ -346,7 +348,7 @@ if(document.readyState === 'loading') {
 } else {
   adicionarBotaoMateriais()
 }
-<script>
+</script>
 /*
 =============================================================
   SULSAFE — LOGIN.HTML
