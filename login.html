@@ -316,7 +316,36 @@ body.t-escuro .warn-b{background:rgba(230,81,0,.12);border-color:rgba(230,81,0,.
 
 <!-- TOAST -->
 <div id="toast"></div>
+function adicionarBotaoMateriais() {
+  const mc = document.getElementById('mc')
+  if(!mc) return
+  
+  // Espera o conteúdo carregar
+  const checkInterval = setInterval(() => {
+    const titulo = [...mc.querySelectorAll('h2, h3, div')].find(el => el.innerText?.includes('Acesso Rápido'))
+    const grid = titulo?.nextElementSibling
+    
+    if(grid && !document.getElementById('btnSubirMateriais')) {
+      clearInterval(checkInterval)
+      
+      const btn = document.createElement('button')
+      btn.id = 'btnSubirMateriais'
+      btn.innerHTML = '<i class="fas fa-upload"></i> Subir Materiais'
+      btn.style.cssText = 'display:block; margin:30px auto 0; padding:14px 28px; background:#22c55e; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:16px; box-shadow:0 4px 12px rgba(34,197,94,0.3)'
+      btn.onclick = () => alert('Aqui tu abre teu modal de upload')
+      
+      grid.after(btn)
+      console.log('Botão Subir Materiais adicionado!')
+    }
+  }, 500) // checa a cada 0.5s até achar
+}
 
+// Roda quando a página carregar
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', adicionarBotaoMateriais)
+} else {
+  adicionarBotaoMateriais()
+}
 <script>
 /*
 =============================================================
