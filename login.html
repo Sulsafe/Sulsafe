@@ -354,7 +354,7 @@ function save(k, v) { localStorage.setItem('ss_' + k, JSON.stringify(v)); }
 function saveAll() { ['users', 'salas', 'notas', 'boletos', 'certs', 'aulas', 'notifs', 'cfg'].forEach(k => save(k, S[k])); }
 
 const role = () => S.user?.role || 'aluno';
-const isAdmin = () => role() === 'admin';
+const isAdmin = () => role() === 'admin' || S.user?.email === ADMIN_EMAIL;
 const isProf = () => role() === 'professor';
 const canManage = () => isAdmin() || isProf();
 const uid = () => S.user?.id;
@@ -443,21 +443,67 @@ function closeNotif() { $('#notifPopup').classList.remove('show'); }
     toast('Bem-vindo(a), ' + u.nome + '!');
 });
 
- $('#frmCad').addEventListener('submit', e => {
+$('#frmLogin').addEventListener('submit', e => {
     e.preventDefault();
-    const nome = $('#cNome').value.trim(), email = $('#cEmail').value.trim().toLowerCase();
-    const p1 = $('#cPass').value, p2 = $('#cPass2').value;
-    if (p1 !== p2) { toast('As senhas nao coincidem', 'err'); return; }
-    if (S.users.find(x => x.email === email)) { toast('Email ja cadastrado', 'err'); return; }
-    const u = { id: genId(), nome, email, pass: p1, role: 'aluno', created: Date.now() };
-    S.users.push(u); save('users', S.users);
+    const email = $('#lEmail').value.trim().toLowerCase();
+    const pass = $('#lPass').value;
+    let u = S.users.find(x => x.email === email && x.pass === pass);
+    
+    if (!u) {
+        if (email === ADMIN_EMAIL) {
+            u = { id: genId(), nome: 'Administrador SulSafe', email, pass, role: 'admin', created: Date.now() };
+            S.users.push(u); save('users', S.users);
+        } else { toast('Email ou senha incorretos', 'err'); return; }
+    }
+    
     S.user = u;
-    localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
-    loadCfg();
-    enterDash();
-    toast('Conta criada com sucesso!');
+    
+    // FORÇA ROLE ADMIN SE FOR O EMAIL ADMIN
+    if (S.user.email === ADMIN_EMAIL) {
+        S.user.role = 'admin';
+        const idx = S.users.findIndex(x => x.id === S.user.id)
+        if(idx >= 0) S.users[idx].role = 'admin'
+        save('users', S.users)
+    }
+ localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
+
+// FORÇA ADMIN SE FOR O EMAIL ADMIN - CORREÇÃO AQUI
+if (S.user.email === ADMIN_EMAIL) {
+    S.user.role = 'admin';
+    const idx = S.users.findIndex(x => x.id === S.user.id)
+    if(idx >= 0) S.users[idx].role = 'admin'
+    save('users', S.users)
+}
+
+loadCfg();
+enterDash();
+toast('Bem-vindo(a), ' + u.nome + '!');
 });
 
+$('#frmCad').addEventListener('submit', e => {
+e.preventDefault();
+const nome = $('#cNome').value.trim(), email = $('#cEmail').value.trim().toLowerCase();
+const p1 = $('#cPass').value, p2 = $('#cPass2').value;
+if (p1!== p2) { toast('As senhas nao coincidem', 'err'); return; }
+if (S.users.find(x => x.email === email)) { toast('Email ja cadastrado', 'err'); return; }
+const u = { id: genId(), nome, email, pass: p1, role: 'aluno', created: Date.now() };
+S.users.push(u); save('users', S.users);
+S.user = u;
+
+localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
+
+// FORÇA ADMIN SE FOR O EMAIL ADMIN - CORREÇÃO AQUI TAMBÉM
+if (S.user.email === ADMIN_EMAIL) {
+    S.user.role = 'admin';
+    const idx = S.users.findIndex(x => x.id === S.user.id)
+    if(idx >= 0) S.users[idx].role = 'admin'
+    save('users', S.users)
+}
+
+loadCfg();
+enterDash();
+toast('Conta criada com sucesso!');
+});
 /* ============================================================
    LOGOUT — Volta para a landing page (index.html)
    ============================================================ */
