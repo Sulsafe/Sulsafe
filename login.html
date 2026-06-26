@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
 <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-<!-- SEO Improvements -->
 <meta property="og:title" content="SulSafe - Segurança do Trabalho">
 <meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
 <meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
@@ -234,6 +233,40 @@ body.t-escuro {
     padding: 30px 36px; 
     min-height: 100vh; 
     background: var(--bg); 
+}
+
+/* WHATSAPP FLOATING BUTTON */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #25D366;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    z-index: 999;
+    animation: pulse-whatsapp 2s infinite;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.whatsapp-float:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+}
+.whatsapp-float i {
+    font-size: 24px;
+}
+@keyframes pulse-whatsapp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 /* CARDS / STATS */
@@ -576,7 +609,7 @@ body.t-escuro {
 }
 .mt-c:hover { transform: translateX(4px); box-shadow: var(--shadow-hover); }
 .mt-topic { font-weight: 700; font-size: 16px; }
-.mt-id { font-size: 12px; color: var(--tx3); }
+.mt-id { font-size: 12px; color: var(--tx3); margin-top: 4px; }
 
 /* KEYFRAMES */
 @keyframes fv { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -600,6 +633,14 @@ body.t-escuro {
     .card { padding: 16px 12px; }
     .card-ic { font-size: 24px; }
     .card-t { font-size: 13px; }
+    .whatsapp-float {
+        bottom: 16px;
+        right: 16px;
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+    .whatsapp-float i { font-size: 18px; }
+    .whatsapp-float span { display: none; }
 }
 </style>
 </head>
@@ -663,6 +704,12 @@ body.t-escuro {
 <!-- TOAST -->
 <div id="toast"></div>
 
+<!-- WHATSAPP FLOATING BUTTON -->
+<button class="whatsapp-float" onclick="redirecionarWhatsApp()">
+    <i class="fab fa-whatsapp"></i>
+    <span>Fale conosco</span>
+</button>
+
 <!-- TERMOS MODAL (escondido) -->
 <div style="display:none" id="termosHtml">
 <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
@@ -676,18 +723,13 @@ body.t-escuro {
 <script>
 /*
 =============================================================
-  SULSAFE — VERSÃO PRONTA PARA MERCADO
-  TODAS AS MELHORIAS IMPLEMENTADAS:
-  ✅ Autenticação correta com Supabase Auth
-  ✅ Upload real de arquivos (Storage)
-  ✅ Validação de entrada (sanitização)
-  ✅ Tratamento de erros avançado
-  ✅ Recuperação de senha
-  ✅ Termos de uso
-  ✅ SEO melhorado
-  ✅ Otimizações de performance
-  ✅ RLS configurável
-  ✅ Paginação (base)
+  SULSAFE — VERSÃO COMPLETA COM JITSI + WHATSAPP
+  ✅ Jitsi Meet no lugar do Google Meet
+  ✅ WhatsApp pós-inscrição (55 3997060864)
+  ✅ Erro 400 corrigido (ID BIGINT)
+  ✅ Links nos cards das NRs
+  ✅ Certificados com aprovação do admin
+  ✅ Botão WhatsApp flutuante
 =============================================================
 */
 
@@ -700,6 +742,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const LANDING_URL = 'index.html'
 const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
 const STORAGE_BUCKET = 'arquivos'
+
+// WHATSAPP CONFIG
+const WHATSAPP_NUMBER = '5553997060864'
+const WHATSAPP_MESSAGE = 'Olá! Acabei de me inscrever no SulSafe. Gostaria de saber mais sobre os treinamentos e valores.'
 
 // ============================================================
 // SUPABASE CLIENT
@@ -727,6 +773,13 @@ const uid = () => S.user?.id
 const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—'
 const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6)
 
+// FUNÇÃO PARA GERAR ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
+function gerarIdNumerico() {
+    const timestamp = Date.now()
+    const random = Math.floor(Math.random() * 10000)
+    return parseInt(`${timestamp}${random}`)
+}
+
 // Sanitização de entrada
 function sanitizar(texto) {
     if (!texto) return ''
@@ -747,6 +800,13 @@ function handleError(error, fallbackMsg = 'Ocorreu um erro. Tente novamente.') {
     } else {
         toast(error.message || fallbackMsg, 'err')
     }
+}
+
+// WHATSAPP - REDIRECIONAMENTO
+function redirecionarWhatsApp(mensagemPersonalizada = null) {
+    const mensagem = mensagemPersonalizada || WHATSAPP_MESSAGE
+    const linkWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`
+    window.open(linkWhatsApp, '_blank')
 }
 
 const NRS = [
@@ -817,29 +877,151 @@ function closeNotif() { $('#notifPopup').classList.remove('show') }
 function mostrarTermos() { openMdl(document.getElementById('termosHtml').innerHTML) }
 
 // ============================================================
-// SUPABASE CRUD (COM TRATAMENTO DE ERROS)
+// JITSI - SISTEMA DE VIDEOCONFERÊNCIA
 // ============================================================
 
-// USUÁRIOS
+// Carregar script do Jitsi dinamicamente
+function carregarJitsiScript() {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector('script[src*="external_api.js"]')) {
+            resolve()
+            return
+        }
+        const script = document.createElement('script')
+        script.src = 'https://meet.jit.si/external_api.js'
+        script.onload = resolve
+        script.onerror = reject
+        document.head.appendChild(script)
+    })
+}
+
+// Função para abrir sala Jitsi
+async function abrirSalaJitsi(roomName, displayName, topico) {
+    try {
+        await carregarJitsiScript()
+        
+        if (typeof JitsiMeetExternalAPI === 'undefined') {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+        
+        const domain = 'meet.jit.si'
+        const options = {
+            roomName: roomName,
+            width: '100%',
+            height: '100%',
+            parentNode: document.getElementById('jitsi-container') || document.body,
+            userInfo: {
+                displayName: displayName || 'Aluno SulSafe'
+            },
+            configOverwrite: {
+                enableWelcomePage: false,
+                disableDeepLinking: true,
+                prejoinPageEnabled: false,
+                startWithAudioMuted: true,
+                startWithVideoMuted: true
+            },
+            interfaceConfigOverwrite: {
+                BRAND_WATERMARK_LINK: 'https://sulsafe.com.br',
+                SHOW_JITSI_WATERMARK: false,
+                SHOW_WATERMARK_FOR_GUESTS: false,
+                TOOLBAR_BUTTONS: [
+                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                    'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+                    'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                    'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
+                    'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
+                    'security'
+                ]
+            }
+        }
+        
+        const api = new JitsiMeetExternalAPI(domain, options)
+        
+        api.addListener('videoConferenceJoined', () => {
+            toast('🎥 Conferência iniciada!', 'success')
+            console.log('✅ Sala Jitsi iniciada:', roomName)
+        })
+        
+        api.addListener('participantLeft', (participant) => {
+            console.log('👋 Participante saiu:', participant)
+        })
+        
+        api.addListener('participantJoined', (participant) => {
+            console.log('👤 Participante entrou:', participant)
+        })
+        
+        return api
+        
+    } catch (error) {
+        console.error('Erro ao abrir Jitsi:', error)
+        toast('Erro ao abrir sala de vídeo. Tente novamente.', 'err')
+        return null
+    }
+}
+
+// Função para criar sala com Jitsi
+async function sbCriarSalaJitsi(topico, criadorId, meetId = null) {
+    try {
+        const idNumerico = gerarIdNumerico()
+        const roomName = meetId || `sulsafe-${idNumerico}`
+        
+        const dadosSala = {
+            id: idNumerico,
+            topico: sanitizar(topico),
+            meet_id: roomName,
+            criado_por: criadorId,
+            ativa: true,
+            created_at: new Date().toISOString()
+        }
+        
+        console.log('📝 Criando sala Jitsi:', dadosSala)
+        
+        const { data, error } = await sb
+            .from('salas')
+            .insert([dadosSala])
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        return { data, error: null }
+        
+    } catch (error) {
+        console.error('❌ Erro ao criar sala Jitsi:', error)
+        return { data: null, error }
+    }
+}
+
+// ============================================================
+// SUPABASE CRUD
+// ============================================================
+
 async function sbGetUser(id) {
     try {
         const { data, error } = await sb.from('profiles')
             .select('id, nome_completo, email, role, status, created_at')
             .eq('id', id)
             .single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-async function sbGetUserByEmail(email) {
-    try {
-        const { data, error } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status')
-            .eq('email', email)
-            .single()
+        if (error && error.code === 'PGRST116') {
+            console.log('Perfil não encontrado, criando automaticamente...')
+            const { data: { user: authUser } } = await sb.auth.getUser()
+            if (!authUser) throw new Error('Usuário não encontrado')
+            const role = authUser.email === ADMIN_EMAIL ? 'admin' : 'aluno'
+            const nome = authUser.user_metadata?.nome_completo || authUser.email.split('@')[0]
+            const { data: newProfile, error: createError } = await sb
+                .from('profiles')
+                .insert({
+                    id: authUser.id,
+                    email: authUser.email,
+                    nome_completo: nome,
+                    role: role,
+                    status: role === 'admin' ? 'ativo' : 'pendente'
+                })
+                .select()
+                .single()
+            if (createError) throw createError
+            return { data: newProfile, error: null }
+        }
         if (error) throw error
         return { data, error: null }
     } catch (error) {
@@ -854,19 +1036,6 @@ async function sbUpdateUser(id, dados) {
         return { data, error: null }
     } catch (error) {
         return { data: null, error }
-    }
-}
-
-async function sbGetAllUsers(page = 0, limit = 20) {
-    try {
-        const { data, error, count } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status, created_at', { count: 'exact' })
-            .order('nome_completo')
-            .range(page * limit, (page + 1) * limit - 1)
-        if (error) throw error
-        return { data, error: null, count }
-    } catch (error) {
-        return { data: null, error, count: 0 }
     }
 }
 
@@ -907,7 +1076,6 @@ async function sbLiberarUsuario(id) {
     }
 }
 
-// VIDEOAULAS
 async function sbGetVideoaulas(nrId = null) {
     try {
         let query = sb.from('videoaulas').select('*, profiles(nome_completo)')
@@ -930,7 +1098,6 @@ async function sbCriarVideoaula(videoaula) {
     }
 }
 
-// MATERIAIS
 async function sbGetMateriais(nrId = null) {
     try {
         let query = sb.from('materiais').select('*, profiles(nome_completo)')
@@ -953,24 +1120,6 @@ async function sbCriarMaterial(material) {
     }
 }
 
-// UPLOAD DE ARQUIVOS (STORAGE)
-async function sbUploadArquivo(bucket, path, file) {
-    try {
-        const { data, error } = await sb.storage.from(bucket).upload(path, file, {
-            cacheControl: '3600',
-            upsert: false
-        })
-        if (error) throw error
-        
-        // Pega a URL pública
-        const { data: urlData } = sb.storage.from(bucket).getPublicUrl(path)
-        return { data: { ...data, publicUrl: urlData.publicUrl }, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// PROGRESSO
 async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
     try {
         const { data, error } = await sb.from('progresso_aulas').upsert({
@@ -1000,7 +1149,6 @@ async function sbGetProgressoUsuario(userId) {
     }
 }
 
-// NOTAS
 async function sbGetNotasAluno(userId) {
     try {
         const { data, error } = await sb.from('notas')
@@ -1040,7 +1188,6 @@ async function sbGetMediasNRs() {
     }
 }
 
-// CERTIFICADOS
 async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
     try {
         const codigo = 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase()
@@ -1072,7 +1219,6 @@ async function sbGetCertificadosAluno(userId) {
     }
 }
 
-// PROVAS
 async function sbEnviarProva(userId, nrId, titulo, arquivoUrl) {
     try {
         const { data, error } = await sb.from('provas').insert({
@@ -1082,6 +1228,19 @@ async function sbEnviarProva(userId, nrId, titulo, arquivoUrl) {
             arquivo_url: arquivoUrl, 
             status: 'pendente'
         }).select().single()
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        return { data: null, error }
+    }
+}
+
+async function sbGetProvasAluno(userId) {
+    try {
+        const { data, error } = await sb.from('provas')
+            .select('*')
+            .eq('usuario_id', userId)
+            .order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
     } catch (error) {
@@ -1115,18 +1274,22 @@ async function sbCorrigirProva(provaId, nota, status = 'corrigido') {
     }
 }
 
-// SALAS
+// FUNÇÃO CORRIGIDA - CRIAR SALA (SEM ERRO 400)
 async function sbCriarSala(topico, meetId, criadoPor) {
     try {
+        const idNumerico = gerarIdNumerico()
         const { data, error } = await sb.from('salas').insert({
-            topico: sanitizar(topico), 
-            meet_id: sanitizar(meetId), 
-            criado_por: criadoPor, 
-            ativa: true
+            id: idNumerico,
+            topico: sanitizar(topico),
+            meet_id: sanitizar(meetId) || `sulsafe-${idNumerico}`,
+            criado_por: criadoPor,
+            ativa: true,
+            created_at: new Date().toISOString()
         }).select().single()
         if (error) throw error
         return { data, error: null }
     } catch (error) {
+        console.error('❌ Erro ao criar sala:', error)
         return { data: null, error }
     }
 }
@@ -1144,7 +1307,6 @@ async function sbGetSalasAtivas() {
     }
 }
 
-// NOTIFICAÇÕES
 async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
     try {
         const { data, error } = await sb.from('notificacoes').insert({
@@ -1161,7 +1323,6 @@ async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
     }
 }
 
-// DASHBOARD
 async function sbGetDashboardMetrics() {
     try {
         const { data, error } = await sb.from('view_dashboard_admin').select('*').single()
@@ -1182,8 +1343,21 @@ async function sbGetRankingAlunos() {
     }
 }
 
+async function sbGetAllUsers(page = 0, limit = 20) {
+    try {
+        const { data, error, count } = await sb.from('profiles')
+            .select('id, nome_completo, email, role, status, created_at', { count: 'exact' })
+            .order('nome_completo')
+            .range(page * limit, (page + 1) * limit - 1)
+        if (error) throw error
+        return { data, error: null, count }
+    } catch (error) {
+        return { data: null, error, count: 0 }
+    }
+}
+
 // ============================================================
-// AUTH (CORRIGIDO COM SUPABASE AUTH)
+// AUTH
 // ============================================================
 $('#frmLogin').addEventListener('submit', async function(e) {
     e.preventDefault()
@@ -1191,14 +1365,12 @@ $('#frmLogin').addEventListener('submit', async function(e) {
     const pass = $('#lPass').value
     
     try {
-        // 1. Login com Supabase Auth
         const { data: authData, error: authError } = await sb.auth.signInWithPassword({
             email: email,
             password: pass
         })
         
         if (authError) {
-            // Se o admin não existe, cria
             if (email === ADMIN_EMAIL) {
                 const { data: signUpData, error: signUpError } = await sb.auth.signUp({ 
                     email, 
@@ -1208,21 +1380,15 @@ $('#frmLogin').addEventListener('submit', async function(e) {
                     }
                 })
                 if (signUpError) throw signUpError
-                
-                // Atualiza o perfil
                 const userId = signUpData.user.id
                 await sbUpdateUser(userId, { role: 'admin', status: 'ativo' })
-                
-                // Faz login novamente
                 const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({
                     email: email,
                     password: pass
                 })
                 if (loginError) throw loginError
-                
                 const { data: user } = await sbGetUser(loginData.user.id)
                 if (!user) throw new Error('Erro ao buscar usuário')
-                
                 S.user = user
                 localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
                 localStorage.setItem('ss_user', JSON.stringify(user))
@@ -1234,13 +1400,12 @@ $('#frmLogin').addEventListener('submit', async function(e) {
             throw new Error('Email ou senha incorretos')
         }
         
-        // 2. Busca o perfil do usuário
         const { data: user, error: userError } = await sbGetUser(authData.user.id)
         if (userError || !user) {
-            // Cria perfil se não existir
+            const { data: { user: authUser } } = await sb.auth.getUser()
             await sbUpdateUser(authData.user.id, {
-                nome_completo: authData.user.user_metadata?.nome_completo || 'Usuário',
-                role: authData.user.user_metadata?.role || 'aluno',
+                nome_completo: authUser?.user_metadata?.nome_completo || 'Usuário',
+                role: authUser?.user_metadata?.role || 'aluno',
                 status: 'ativo'
             })
             const { data: newUser } = await sbGetUser(authData.user.id)
@@ -1264,6 +1429,7 @@ $('#frmLogin').addEventListener('submit', async function(e) {
     }
 })
 
+// CADASTRO COM REDIRECIONAMENTO PARA WHATSAPP
 $('#frmCad').addEventListener('submit', async function(e) {
     e.preventDefault()
     const nome = sanitizar($('#cNome').value.trim())
@@ -1291,13 +1457,14 @@ $('#frmCad').addEventListener('submit', async function(e) {
         
         const userId = authData.user.id
 
-        if (role === 'admin') {
-            await sbUpdateUser(userId, { status: 'ativo' })
-        }
+        await sbUpdateUser(userId, { 
+            nome_completo: nome, 
+            role: role,
+            status: role === 'admin' ? 'ativo' : 'pendente'
+        })
 
-        const { data: user } = await sbGetUser(userId)
-
         if (role === 'admin') {
+            const { data: user } = await sbGetUser(userId)
             S.user = user
             localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
             localStorage.setItem('ss_user', JSON.stringify(user))
@@ -1305,10 +1472,24 @@ $('#frmCad').addEventListener('submit', async function(e) {
             enterDash()
             toast('Conta admin criada!', 'success')
         } else {
-            toast('Cadastro realizado! Aguarde aprovação.', 'info')
+            toast('✅ Cadastro realizado com sucesso!', 'success')
+            
+            // REDIRECIONA PARA WHATSAPP APÓS 2 SEGUNDOS
+            setTimeout(() => {
+                const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.
+                
+📧 Email: ${email}
+📱 Telefone: (informar no WhatsApp)
+🏢 Empresa: (informar no WhatsApp)
+
+Gostaria de saber mais sobre os treinamentos, valores e liberação de acesso.
+
+Aguardo seu contato!`
+                
+                redirecionarWhatsApp(mensagemWhats)
+            }, 2000)
+            
             showT('tLogin')
-            // Envia email de confirmação (simulado)
-            toast('Enviamos um email de confirmação para ' + email, 'info')
         }
 
     } catch (error) {
@@ -1322,7 +1503,6 @@ $('#frmCad').addEventListener('submit', async function(e) {
 async function recuperarSenha() {
     const email = prompt('Digite seu email para recuperar a senha:')
     if (!email) return
-    
     try {
         const { error } = await sb.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/reset-password.html'
@@ -1349,63 +1529,10 @@ async function logout() {
 }
 
 // ============================================================
-// FUNÇÃO CORRIGIDA - BUSCA OU CRIA PERFIL AUTOMATICAMENTE
-// ============================================================
-async function sbGetUser(id) {
-    try {
-        // 1. Tenta buscar o perfil
-        const { data, error } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status, created_at')
-            .eq('id', id)
-            .single()
-        
-        // 2. Se não encontrou, cria o perfil automaticamente
-        if (error && error.code === 'PGRST116') {
-            console.log('Perfil não encontrado, criando automaticamente...')
-            
-            // Busca os dados do usuário no Auth
-            const { data: { user: authUser } } = await sb.auth.getUser()
-            
-            if (!authUser) {
-                throw new Error('Usuário não encontrado no sistema')
-            }
-            
-            // Define role baseado no email
-            const role = authUser.email === ADMIN_EMAIL ? 'admin' : 'aluno'
-            const nome = authUser.user_metadata?.nome_completo || authUser.email.split('@')[0]
-            
-            // Cria o perfil
-            const { data: newProfile, error: createError } = await sb
-                .from('profiles')
-                .insert({
-                    id: authUser.id,
-                    email: authUser.email,
-                    nome_completo: nome,
-                    role: role,
-                    status: role === 'admin' ? 'ativo' : 'pendente'
-                })
-                .select()
-                .single()
-            
-            if (createError) throw createError
-            return { data: newProfile, error: null }
-        }
-        
-        if (error) throw error
-        return { data, error: null }
-        
-    } catch (error) {
-        console.error('Erro ao buscar/criar perfil:', error)
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// AUTO-LOGIN (CORRIGIDO)
+// AUTO-LOGIN
 // ============================================================
 ;(async function() {
     try {
-        // Verifica sessão do Supabase
         const { data: { session } } = await sb.auth.getSession()
         if (session) {
             const { data: user } = await sbGetUser(session.user.id)
@@ -1417,8 +1544,6 @@ async function sbGetUser(id) {
                 return
             }
         }
-        
-        // Fallback para sessão antiga
         const sessionData = localStorage.getItem('ss_session')
         if (sessionData) {
             const { id } = JSON.parse(sessionData)
@@ -1434,6 +1559,7 @@ async function sbGetUser(id) {
         console.log('Erro no auto-login:', e) 
     }
 })()
+
 // ============================================================
 // ENTER DASHBOARD
 // ============================================================
@@ -1791,28 +1917,36 @@ async function carregarMateriais() {
 }
 
 // ============================================================
-// VIEW: SALAS AO VIVO
+// VIEW: SALAS AO VIVO (COM JITSI)
 // ============================================================
 function vSalas() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
-    h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`
+    h += `<h2 class="wc">Salas ao Vivo</h2>`
+    h += `<p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real com Jitsi Meet.' : 'Crie e gerencie salas ao vivo com Jitsi.'}</p>`
+    
     if (canManage()) {
         h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-            <input class="search" id="salaTop" placeholder="Tópico da aula" style="flex:2;min-width:200px;margin:0">
-            <input class="search" id="salaMeet" placeholder="ID da reunião" style="flex:1;min-width:160px;margin:0">
-            <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-plus"></i> Criar Sala</button>
+            <input class="search" id="salaTop" placeholder="Tópico da sala" style="flex:2;min-width:200px;margin:0">
+            <input class="search" id="salaMeet" placeholder="Nome da sala (opcional)" style="flex:1;min-width:160px;margin:0">
+            <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-video"></i> Criar Sala Jitsi</button>
         </div>`
     }
+    
     h += `<div id="listaSalas"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando salas...</p></div></div>`
     setTimeout(carregarSalas, 200)
     return h
 }
 
 async function carregarSalas() {
-    const { data: salas } = await sbGetSalasAtivas()
+    const { data: salas, error } = await sbGetSalasAtivas()
     const container = document.getElementById('listaSalas')
     if (!container) return
+    
+    if (error) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i><p>Erro ao carregar salas.</p></div>`
+        return
+    }
     
     if (!salas || salas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`
@@ -1824,11 +1958,16 @@ async function carregarSalas() {
         h += `<div class="mt-c">
             <div>
                 <div class="mt-topic">${s.topico}</div>
-                <div class="mt-id">ID: ${s.meet_id || 'N/A'}</div>
+                <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+                    <span class="badge bg-info"><i class="fas fa-video"></i> Jitsi Meet</span>
+                    <span style="font-size:11px;color:var(--tx3)">ID: ${s.meet_id || 'N/A'}</span>
+                </div>
                 <div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${s.profiles?.nome_completo || '—'} — ${fmtD(s.created_at)}</div>
             </div>
             <div style="display:flex;gap:8px">
-                <a href="https://meet.google.com/${s.meet_id || ''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>
+                <button class="btn btn-p btn-sm" onclick="entrarSalaJitsi('${s.meet_id}', '${s.topico}')">
+                    <i class="fas fa-video"></i> Entrar na Sala
+                </button>
                 ${canManage() ? `<button class="btn btn-d btn-sm" onclick="encerrarSalaSupabase('${s.id}')"><i class="fas fa-times"></i></button>` : ''}
             </div>
         </div>`
@@ -1836,22 +1975,92 @@ async function carregarSalas() {
     container.innerHTML = h
 }
 
+// Função para entrar em uma sala Jitsi existente
+async function entrarSalaJitsi(meetId, topico) {
+    if (!meetId) {
+        toast('Sala sem identificador', 'err')
+        return
+    }
+    
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">
+            <i class="fas fa-video"></i> ${topico || 'Sala'}
+        </h2>
+        <div id="jitsi-container" style="width:100%;height:60vh;border-radius:12px;overflow:hidden;background:#1a1a1a"></div>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-s btn-sm" onclick="closeMdl()"><i class="fas fa-times"></i> Sair</button>
+        </div>
+    `)
+    
+    setTimeout(async () => {
+        await abrirSalaJitsi(meetId, S.user?.nome_completo || 'Aluno', topico)
+    }, 300)
+}
+
 async function criarSalaSupabase() {
     const top = sanitizar($('#salaTop')?.value?.trim())
     const meet = sanitizar($('#salaMeet')?.value?.trim())
-    if (!top) { toast('Informe o tópico', 'err'); return }
-    const { data, error } = await sbCriarSala(top, meet, uid())
-    if (error) { handleError(error); return }
-    toast('Sala criada!', 'success')
+    
+    if (!top) {
+        toast('Informe o tópico da sala', 'err')
+        return
+    }
+    
+    const resultado = await sbCriarSalaJitsi(top, uid(), meet)
+    
+    if (resultado.error) {
+        handleError(resultado.error)
+        return
+    }
+    
+    toast('🎥 Sala Jitsi criada com sucesso!', 'success')
     pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas')
     carregarSalas()
     $('#salaTop').value = ''
     $('#salaMeet').value = ''
 }
 
+// Função para criar sala com Jitsi (versão simplificada)
+async function sbCriarSalaJitsi(topico, criadorId, meetId = null) {
+    try {
+        const idNumerico = gerarIdNumerico()
+        const roomName = meetId || `sulsafe-${idNumerico}`
+        
+        const dadosSala = {
+            id: idNumerico,
+            topico: sanitizar(topico),
+            meet_id: roomName,
+            criado_por: criadorId,
+            ativa: true,
+            created_at: new Date().toISOString()
+        }
+        
+        console.log('📝 Criando sala Jitsi:', dadosSala)
+        
+        const { data, error } = await sb
+            .from('salas')
+            .insert([dadosSala])
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        // Abre a sala Jitsi automaticamente
+        await entrarSalaJitsi(roomName, topico)
+        
+        return { data, error: null }
+        
+    } catch (error) {
+        console.error('❌ Erro ao criar sala Jitsi:', error)
+        return { data: null, error }
+    }
+}
+
 async function encerrarSalaSupabase(id) {
     if (!confirm('Encerrar esta sala?')) return
-    await sb.from('salas').update({ ativa: false }).eq('id', id)
+    const { error } = await sb.from('salas').update({ ativa: false }).eq('id', id)
+    if (error) { handleError(error); return }
     toast('Sala encerrada', 'info')
     carregarSalas()
 }
@@ -2069,6 +2278,19 @@ function vProvas() {
     return h
 }
 
+async function sbGetProvasAluno(userId) {
+    try {
+        const { data, error } = await sb.from('provas')
+            .select('*')
+            .eq('usuario_id', userId)
+            .order('criado_em', { ascending: false })
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        return { data: null, error }
+    }
+}
+
 async function enviarProva(e) {
     e.preventDefault()
     const nrId = $('#pNR').value
@@ -2080,12 +2302,13 @@ async function enviarProva(e) {
     if (arquivo.size > 5 * 1024 * 1024) { toast('Arquivo muito grande. Máximo 5MB.', 'err'); return }
     
     try {
-        // Upload para o Storage do Supabase
         const path = `provas/${uid()}/${Date.now()}_${arquivo.name}`
-        const { data: uploadData, error: uploadError } = await sbUploadArquivo(STORAGE_BUCKET, path, arquivo)
+        const { data: uploadData, error: uploadError } = await sb.storage.from(STORAGE_BUCKET).upload(path, arquivo)
         if (uploadError) throw uploadError
         
-        const { data, error } = await sbEnviarProva(uid(), nrId, titulo, uploadData.publicUrl)
+        const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path)
+        
+        const { data, error } = await sbEnviarProva(uid(), nrId, titulo, urlData.publicUrl)
         if (error) throw error
         
         toast('Prova enviada com sucesso! Aguarde correção.', 'success')
@@ -2710,17 +2933,13 @@ async function drawChartAdmin() {
     }
 }
 
-console.log('🚀 SulSafe - Versão Pronta para Mercado!')
-console.log('📊 Todas as melhorias implementadas:')
-console.log('✅ Autenticação correta com Supabase Auth')
-console.log('✅ Upload real de arquivos (Storage)')
-console.log('✅ Validação e sanitização de entrada')
-console.log('✅ Tratamento de erros avançado')
-console.log('✅ Recuperação de senha')
-console.log('✅ Termos de uso')
-console.log('✅ SEO melhorado')
-console.log('✅ Otimizações de performance')
-console.log('✅ RLS configurável')
+console.log('🚀 SulSafe - Versão Completa com Jitsi + WhatsApp!')
+console.log('✅ Jitsi Meet no lugar do Google Meet')
+console.log('✅ WhatsApp pós-inscrição (55 3997060864)')
+console.log('✅ Erro 400 corrigido (ID BIGINT)')
+console.log('✅ Links nos cards das NRs')
+console.log('✅ Certificados com aprovação do admin')
+console.log('✅ Botão WhatsApp flutuante')
 </script>
 </body>
 </html>
