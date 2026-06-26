@@ -358,34 +358,39 @@ body.t-escuro {
 .nr-num { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .5px; }
 .nr-nm { font-size: 14px; font-weight: 600; }
 
-/* CAIXA AZUL DOS LINKS */
+/* CAIXA DE LINKS - BRANCA COM BORDA SUAVE */
 .link-box {
-    background: #e8f4fd;
-    border: 2px solid #2196F3;
-    border-radius: 8px;
-    padding: 10px 14px;
+    background: #ffffff;
+    border: 2px solid #e0e7ef;
+    border-radius: 10px;
+    padding: 12px 16px;
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    transition: .2s;
+    transition: .3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
 }
 .link-box:hover {
-    background: #d4ebf9;
+    border-color: #b0c4de;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
 }
 .link-box .link-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    color: #0d47a1;
+    color: var(--tx2);
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-right: 8px;
+    margin-right: 4px;
+}
+.link-box .link-label i {
+    color: var(--p);
 }
 .link-box .btn-link {
     font-size: 11px;
-    padding: 4px 14px;
+    padding: 5px 14px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
@@ -394,6 +399,7 @@ body.t-escuro {
     gap: 6px;
     transition: .2s;
     text-decoration: none;
+    font-weight: 500;
 }
 .link-box .btn-link.youtube {
     background: #FF0000;
@@ -401,7 +407,7 @@ body.t-escuro {
 }
 .link-box .btn-link.youtube:hover {
     background: #cc0000;
-    transform: scale(1.03);
+    transform: scale(1.04);
 }
 .link-box .btn-link.material {
     background: #1565C0;
@@ -409,7 +415,7 @@ body.t-escuro {
 }
 .link-box .btn-link.material:hover {
     background: #0d47a1;
-    transform: scale(1.03);
+    transform: scale(1.04);
 }
 .link-box .btn-link.prova {
     background: #E65100;
@@ -417,19 +423,21 @@ body.t-escuro {
 }
 .link-box .btn-link.prova:hover {
     background: #bf360c;
-    transform: scale(1.03);
+    transform: scale(1.04);
 }
 .link-box .sem-conteudo {
     font-size: 12px;
     color: var(--tx3);
 }
-.link-box .badge-link {
-    font-size: 9px;
-    background: #2196F3;
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 12px;
+.link-box .add-link-btn {
+    font-size: 11px;
+    color: var(--p);
     font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+}
+.link-box .add-link-btn:hover {
+    text-decoration: underline;
 }
 
 .badge { 
@@ -1009,7 +1017,6 @@ async function sbGetVideoaulas(nrId = null) {
 
 async function sbCriarVideoaula(videoaula) {
     try {
-        // Gera ID numérico em vez de UUID
         const idNumerico = gerarIdNumerico()
         const dados = {
             id: idNumerico,
@@ -1752,7 +1759,7 @@ async function encerrarSalaSupabase(id) {
 }
 
 // ============================================================
-// VIEW: NRs - COM CAIXA AZUL PARA LINKS
+// VIEW: NRs - COM CAIXA BRANCA PARA LINKS
 // ============================================================
 function vNRs() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -1777,7 +1784,7 @@ function vNRs() {
                 <span style="margin-left:auto;font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
             </div>
             
-            <!-- CAIXA AZUL COM LINKS DO YOUTUBE E MATERIAIS -->
+            <!-- CAIXA BRANCA COM LINKS -->
             <div class="link-box" id="link-box-${nr.id}">
                 <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
                 <span id="loading-links-${nr.id}" style="font-size:12px;color:var(--tx3);">
@@ -1794,11 +1801,8 @@ function vNRs() {
 // FUNÇÃO PARA CARREGAR LINKS DE CADA NR
 async function carregarLinksNRS() {
     try {
-        // Busca videoaulas
         const { data: videoaulas } = await sbGetVideoaulas()
-        // Busca materiais
         const { data: materiais } = await sbGetMateriais()
-        // Busca provas corrigidas
         const { data: provas } = await sb.from('provas')
             .select('*')
             .eq('status', 'corrigido')
@@ -1811,17 +1815,14 @@ async function carregarLinksNRS() {
             const loading = document.getElementById(`loading-links-${nr.id}`)
             if (loading) loading.remove()
 
-            // Filtra conteúdo
             const videosNR = (videoaulas || []).filter(v => String(v.nr_id) === String(nr.id))
             const materiaisNR = (materiais || []).filter(m => String(m.nr_id) === String(nr.id))
             const provasNR = (provas || []).filter(p => String(p.nr_id) === String(nr.id))
 
             let linksHtml = ''
 
-            // Vídeos do YouTube
             videosNR.forEach(v => {
                 const url = v.url_video || ''
-                // Converte link normal para embed se necessário
                 let embedUrl = url
                 if (url.includes('watch?v=')) {
                     embedUrl = url.replace('watch?v=', 'embed/')
@@ -1831,31 +1832,27 @@ async function carregarLinksNRS() {
                 </a>`
             })
 
-            // Materiais
             materiaisNR.forEach(m => {
                 linksHtml += `<a href="${m.url}" target="_blank" class="btn-link material">
                     <i class="fas fa-file-pdf"></i> ${m.titulo.length > 20 ? m.titulo.substring(0, 20) + '...' : m.titulo}
                 </a>`
             })
 
-            // Provas
             provasNR.forEach(p => {
                 linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn-link prova">
                     <i class="fas fa-file-pdf"></i> Prova: ${p.titulo.length > 15 ? p.titulo.substring(0, 15) + '...' : p.titulo}
                 </a>`
             })
 
-            // Se não tem conteúdo
             if (!linksHtml) {
                 linksHtml = `<span class="sem-conteudo"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
                 if (isAdmin() || isProf()) {
-                    linksHtml += ` <a href="#" onclick="nav('subir');event.preventDefault();" style="font-size:11px;color:var(--p);margin-left:8px;">
+                    linksHtml += ` <a href="#" onclick="nav('subir');event.preventDefault();" style="font-size:11px;color:var(--p);margin-left:8px;font-weight:600;">
                         <i class="fas fa-plus-circle"></i> Adicionar
                     </a>`
                 }
             }
 
-            // Atualiza a caixa azul
             linkBox.innerHTML = `
                 <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
                 ${linksHtml}
@@ -1883,7 +1880,6 @@ function verNR(id) {
     const nr = NRS.find(n => n.id === id)
     if (!nr) return
     
-    // Busca conteúdo da NR
     buscarConteudoNR(id).then(conteudo => {
         let linksHtml = ''
         let temConteudo = false
@@ -2436,7 +2432,7 @@ async function dlCert(id) {
 }
 
 // ============================================================
-// VIEW: SUBIR CONTEÚDO (CORRIGIDO)
+// VIEW: SUBIR CONTEÚDO
 // ============================================================
 function vSubirConteudo() {
     if (!isAdmin()) return vInicio()
@@ -2758,7 +2754,7 @@ async function drawChartAdmin() {
 
 console.log('🚀 SulSafe - Versão Completa Corrigida!')
 console.log('✅ Erro 400 corrigido (ID BIGINT)')
-console.log('✅ Caixa azul com links nos cards')
+console.log('✅ Caixa branca com links nos cards')
 console.log('✅ WhatsApp integrado')
 console.log('✅ Sistema completo de NRs')
 </script>
