@@ -329,17 +329,29 @@ body.t-escuro { --p: #66BB6A; --p2: #81C784; --p3: #388E3C; --bg: #121212; --tx:
 // ============================================================
 // CONFIGURAÇÕES - SUBSTITUA COM SUAS CREDENCIAIS
 // ============================================================
-const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'        // ← SUBSTITUA
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'            // ← SUBSTITUA
+const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 const MP_PUBLIC_KEY = 'APP_USR-7nheV5y1lCsdRV0p20n9suzz6FnLelwo'
 
 const LANDING_URL = 'index.html'
 const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
 
 // ============================================================
-// SUPABASE CLIENT
+// SUPABASE CLIENT - CORRIGIDO (sem erro de declaração duplicada)
 // ============================================================
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+let supabase
+
+// Inicializar apenas uma vez
+if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    console.log('✅ Supabase conectado com sucesso!')
+} else {
+    console.error('❌ Supabase não carregado! Verifique a conexão com a internet.')
+    // Fallback para evitar erro
+    supabase = {
+        from: () => ({ select: () => ({ data: null, error: new Error('Supabase não disponível') }) })
+    }
+}
 
 // ============================================================
 // DADOS GLOBAIS
@@ -430,9 +442,7 @@ $('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) close
 function closeNotif() { $('#notifPopup').classList.remove('show') }
 
 // ============================================================
-// ============================================================
 // SUPABASE CRUD COMPLETO
-// ============================================================
 // ============================================================
 
 // --------------------------------------------
@@ -1076,7 +1086,6 @@ function vInicio() {
     h += `<h2 class="wc">Olá, ${S.user?.nome || 'Usuário'}</h2>`
     h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`
     
-    // Dados serão carregados via Supabase nos gráficos
     h += `<div class="stats" id="statsInicio">`
     h += `<div class="st"><div class="st-v">...</div><div class="st-l"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div>`
     h += `</div>`
@@ -1194,7 +1203,6 @@ async function carregarProgressoVideoaulas() {
     const total = NRS.length
     const pct = total ? Math.round(concluidas.length / total * 100) : 0
     
-    // Atualizar progresso
     const progDiv = document.getElementById('progressoVideoaulas')
     if (progDiv) {
         progDiv.innerHTML = `
@@ -1206,7 +1214,6 @@ async function carregarProgressoVideoaulas() {
         `
     }
     
-    // Atualizar badges e botões
     NRS.forEach(nr => {
         const badge = document.getElementById(`badge-${nr.id}`)
         const btn = document.getElementById(`btn-${nr.id}`)
@@ -1225,14 +1232,12 @@ async function toggleAulaSupabase(nrId, btn) {
     const existente = progressos?.find(p => p.aula_id === nrId)
     
     if (existente) {
-        // Desmarcar
         await sbSalvarProgresso(S.user.id, nrId, 0, false)
         btn.className = 'btn btn-sm btn-s'
         btn.innerHTML = 'Marcar como concluida'
         document.getElementById(`badge-${nrId}`).style.display = 'none'
         toast('Aula desmarcada', 'info')
     } else {
-        // Marcar como concluída
         await sbSalvarProgresso(S.user.id, nrId, 300, true)
         btn.className = 'btn btn-sm btn-p'
         btn.innerHTML = '<i class="fas fa-check"></i> Concluida'
@@ -1923,5 +1928,3 @@ async function drawChartAdminSupabase() {
 console.log('🚀 SulSafe carregado com sucesso!')
 console.log('📊 Plataforma com Supabase 100% integrado')
 </script>
-</body>
-</html>
