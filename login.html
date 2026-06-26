@@ -337,21 +337,10 @@ const LANDING_URL = 'index.html'
 const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
 
 // ============================================================
-// SUPABASE CLIENT - CORRIGIDO (sem erro de declaração duplicada)
+// SUPABASE CLIENT - CORRIGIDO (NÃO USA "const supabase")
 // ============================================================
-let supabase
-
-// Inicializar apenas uma vez
-if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    console.log('✅ Supabase conectado com sucesso!')
-} else {
-    console.error('❌ Supabase não carregado! Verifique a conexão com a internet.')
-    // Fallback para evitar erro
-    supabase = {
-        from: () => ({ select: () => ({ data: null, error: new Error('Supabase não disponível') }) })
-    }
-}
+// Usamos "var" para evitar erro de declaração duplicada
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ============================================================
 // DADOS GLOBAIS
@@ -442,14 +431,14 @@ $('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) close
 function closeNotif() { $('#notifPopup').classList.remove('show') }
 
 // ============================================================
-// SUPABASE CRUD COMPLETO
+// SUPABASE CRUD COMPLETO (TODAS AS FUNÇÕES USAM "sb" em vez de "supabase")
 // ============================================================
 
 // --------------------------------------------
 // USUÁRIOS
 // --------------------------------------------
 async function sbGetUser(id) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .select('*')
         .eq('id', id)
@@ -458,7 +447,7 @@ async function sbGetUser(id) {
 }
 
 async function sbGetUserByEmail(email) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .select('*')
         .eq('email', email)
@@ -467,7 +456,7 @@ async function sbGetUserByEmail(email) {
 }
 
 async function sbCreateUser(nome, email, senha, role = 'aluno') {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .insert({
             nome: nome,
@@ -481,7 +470,7 @@ async function sbCreateUser(nome, email, senha, role = 'aluno') {
 }
 
 async function sbUpdateUser(id, dados) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .update(dados)
         .eq('id', id)
@@ -491,7 +480,7 @@ async function sbUpdateUser(id, dados) {
 }
 
 async function sbGetAllUsers() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .select('*')
         .order('nome')
@@ -499,7 +488,7 @@ async function sbGetAllUsers() {
 }
 
 async function sbGetAlunos() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('profiles')
         .select('*')
         .eq('role', 'aluno')
@@ -511,7 +500,7 @@ async function sbGetAlunos() {
 // PROGRESSO_AULAS
 // --------------------------------------------
 async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('progresso_aulas')
         .upsert({
             user_id: userId,
@@ -526,7 +515,7 @@ async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
 }
 
 async function sbGetProgressoUsuario(userId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('progresso_aulas')
         .select('*, videoaulas(*)')
         .eq('user_id', userId)
@@ -535,7 +524,7 @@ async function sbGetProgressoUsuario(userId) {
 }
 
 async function sbGetProgressoPorAula(userId, aulaId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('progresso_aulas')
         .select('*')
         .eq('user_id', userId)
@@ -545,7 +534,7 @@ async function sbGetProgressoPorAula(userId, aulaId) {
 }
 
 async function sbGetProgressoPorNR(userId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('view_progresso_aluno')
         .select('*')
         .eq('usuario_id', userId)
@@ -557,14 +546,14 @@ async function sbGetProgressoPorNR(userId) {
 // VIDEOAULAS
 // --------------------------------------------
 async function sbGetVideoaulas(nrId = null) {
-    let query = supabase.from('videoaulas').select('*')
+    let query = sb.from('videoaulas').select('*')
     if (nrId) query = query.eq('nr_id', nrId)
     const { data, error } = await query.order('ordem', { ascending: true })
     return { data, error }
 }
 
 async function sbCriarVideoaula(videoaula) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('videoaulas')
         .insert(videoaula)
         .select()
@@ -576,7 +565,7 @@ async function sbCriarVideoaula(videoaula) {
 // NOTAS
 // --------------------------------------------
 async function sbGetNotasAluno(userId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('notas')
         .select('*')
         .eq('usuario_id', userId)
@@ -585,7 +574,7 @@ async function sbGetNotasAluno(userId) {
 }
 
 async function sbLancarNota(userId, nrId, nota, obs = '', professorId = null) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('notas')
         .insert({
             usuario_id: userId,
@@ -600,7 +589,7 @@ async function sbLancarNota(userId, nrId, nota, obs = '', professorId = null) {
 }
 
 async function sbAtualizarNota(notaId, nota, obs) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('notas')
         .update({ nota: nota, obs: obs, atualizado_em: new Date().toISOString() })
         .eq('id', notaId)
@@ -610,7 +599,7 @@ async function sbAtualizarNota(notaId, nota, obs) {
 }
 
 async function sbDeletarNota(notaId) {
-    const { error } = await supabase
+    const { error } = await sb
         .from('notas')
         .delete()
         .eq('id', notaId)
@@ -618,7 +607,7 @@ async function sbDeletarNota(notaId) {
 }
 
 async function sbGetMediasNRs() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('view_medias_nrs')
         .select('*')
         .order('nr_id')
@@ -630,7 +619,7 @@ async function sbGetMediasNRs() {
 // --------------------------------------------
 async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
     const codigo = 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase()
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('certificados')
         .insert({
             usuario_id: userId,
@@ -646,7 +635,7 @@ async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
 }
 
 async function sbGetCertificadosAluno(userId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('certificados')
         .select('*')
         .eq('usuario_id', userId)
@@ -655,7 +644,7 @@ async function sbGetCertificadosAluno(userId) {
 }
 
 async function sbDeletarCertificado(certId) {
-    const { error } = await supabase
+    const { error } = await sb
         .from('certificados')
         .delete()
         .eq('id', certId)
@@ -666,7 +655,7 @@ async function sbDeletarCertificado(certId) {
 // TRANSACOES
 // --------------------------------------------
 async function sbCriarTransacao(userId, plano, valor, vencimento, linhaDigitavel = null, pixCopiaCola = null) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('transacoes')
         .insert({
             usuario_id: userId,
@@ -683,7 +672,7 @@ async function sbCriarTransacao(userId, plano, valor, vencimento, linhaDigitavel
 }
 
 async function sbConfirmarPagamento(transacaoId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('transacoes')
         .update({ 
             status: 'pago',
@@ -696,7 +685,7 @@ async function sbConfirmarPagamento(transacaoId) {
 }
 
 async function sbGetTransacoesUsuario(userId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('transacoes')
         .select('*')
         .eq('usuario_id', userId)
@@ -705,7 +694,7 @@ async function sbGetTransacoesUsuario(userId) {
 }
 
 async function sbGetAllTransacoes() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('transacoes')
         .select('*, profiles(nome, email)')
         .order('criado_em', { ascending: false })
@@ -716,7 +705,7 @@ async function sbGetAllTransacoes() {
 // NOTIFICACOES
 // --------------------------------------------
 async function sbGetNotificacoes(userId, lidas = false) {
-    let query = supabase
+    let query = sb
         .from('notificacoes')
         .select('*')
         .eq('usuario_id', userId)
@@ -727,7 +716,7 @@ async function sbGetNotificacoes(userId, lidas = false) {
 }
 
 async function sbMarcarNotificacaoLida(notificacaoId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('notificacoes')
         .update({ lida: true })
         .eq('id', notificacaoId)
@@ -737,7 +726,7 @@ async function sbMarcarNotificacaoLida(notificacaoId) {
 }
 
 async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('notificacoes')
         .insert({
             usuario_id: userId,
@@ -755,7 +744,7 @@ async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
 // SALAS
 // --------------------------------------------
 async function sbCriarSala(topico, meetId, criadoPor) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('salas')
         .insert({
             topico: topico,
@@ -769,7 +758,7 @@ async function sbCriarSala(topico, meetId, criadoPor) {
 }
 
 async function sbGetSalasAtivas() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('salas')
         .select('*, profiles(nome)')
         .eq('ativa', true)
@@ -778,7 +767,7 @@ async function sbGetSalasAtivas() {
 }
 
 async function sbEncerrarSala(salaId) {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('salas')
         .update({ ativa: false })
         .eq('id', salaId)
@@ -791,7 +780,7 @@ async function sbEncerrarSala(salaId) {
 // DASHBOARD - VIEWS
 // --------------------------------------------
 async function sbGetDashboardMetrics() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('view_dashboard_admin')
         .select('*')
         .single()
@@ -799,7 +788,7 @@ async function sbGetDashboardMetrics() {
 }
 
 async function sbGetRankingAlunos() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
         .from('view_ranking_alunos')
         .select('*')
     return { data, error }
@@ -814,10 +803,8 @@ $('#frmLogin').addEventListener('submit', async function(e) {
     const pass = $('#lPass').value
     
     try {
-        // Buscar usuário
         let { data: user, error } = await sbGetUserByEmail(email)
         
-        // Se não existir e for admin, criar automaticamente
         if (error || !user) {
             if (email === ADMIN_EMAIL) {
                 const result = await sbCreateUser('Administrador SulSafe', email, pass, 'admin')
@@ -828,7 +815,6 @@ $('#frmLogin').addEventListener('submit', async function(e) {
             }
         }
         
-        // Verificar senha (simples - em produção use bcrypt)
         if (user.senha_hash !== pass) {
             throw new Error('Senha incorreta')
         }
@@ -1111,7 +1097,6 @@ function vInicio() {
     }
     h += `</div>`
     
-    // Carregar dados do Supabase para o dashboard
     setTimeout(async () => {
         try {
             const { data: metrics } = await sbGetDashboardMetrics()
@@ -1133,7 +1118,6 @@ function vInicio() {
                     ${stC(pendentes, 'Videos Pendentes', 'fa-clock')}
                     ${stC(pagos, 'Pagos', 'fa-circle-check')}
                 `
-                // Progresso bar
                 const progDiv = document.createElement('div')
                 progDiv.className = 'prog-w'
                 progDiv.innerHTML = `
@@ -1191,7 +1175,6 @@ function vVideoaulas() {
     })
     h += `</div>`
     
-    // Carregar progresso do Supabase
     setTimeout(() => carregarProgressoVideoaulas(), 200)
     return h
 }
@@ -1657,7 +1640,7 @@ async function carregarCertsAdmin() {
     const container = document.getElementById('certsAdmin')
     if (!container) return
     const { data: alunos } = await sbGetAlunos()
-    const { data: certs } = await supabase.from('certificados').select('*, profiles(nome)').order('criado_em', { ascending: false })
+    const { data: certs } = await sb.from('certificados').select('*, profiles(nome)').order('criado_em', { ascending: false })
     
     let h = `<p class="wcs">Emita certificados para alunos.</p>`
     h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div>
@@ -1698,7 +1681,7 @@ async function delCertSupabase(id) {
 }
 
 async function dlCertSupabase(id) {
-    const { data: certs } = await supabase.from('certificados').select('*, profiles(*)').eq('id', id)
+    const { data: certs } = await sb.from('certificados').select('*, profiles(*)').eq('id', id)
     const c = certs?.[0]
     if (!c) return
     const al = c.profiles
@@ -1766,7 +1749,6 @@ function vAdmin() {
 }
 
 async function carregarAdminData() {
-    // Stats
     const { data: metrics } = await sbGetDashboardMetrics()
     const { data: users } = await sbGetAllUsers()
     const { data: ranking } = await sbGetRankingAlunos()
@@ -1784,7 +1766,6 @@ async function carregarAdminData() {
         `
     }
     
-    // Users
     const usersDiv = document.getElementById('adminUsers')
     if (usersDiv && users) {
         let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios (${users.length})</div></div><input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`
@@ -1810,11 +1791,11 @@ function modalApagarTudoSupabase() {
 
 async function execApagarSupabase() {
     if ($('#cfmApagar')?.value?.trim() !== 'APAGAR') { toast('Digite "APAGAR" para confirmar', 'err'); return }
-    await supabase.from('salas').delete().neq('id', '')
-    await supabase.from('notas').delete().neq('id', '')
-    await supabase.from('transacoes').delete().neq('id', '')
-    await supabase.from('certificados').delete().neq('id', '')
-    await supabase.from('progresso_aulas').delete().neq('id', '')
+    await sb.from('salas').delete().neq('id', '')
+    await sb.from('notas').delete().neq('id', '')
+    await sb.from('transacoes').delete().neq('id', '')
+    await sb.from('certificados').delete().neq('id', '')
+    await sb.from('progresso_aulas').delete().neq('id', '')
     closeMdl()
     toast('TODOS os dados foram apagados!', 'warn')
     carregarAdminData()
