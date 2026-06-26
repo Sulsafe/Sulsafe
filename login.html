@@ -1372,14 +1372,11 @@ function vPendentes() {
 }
 
 async function carregarPendentes() {
-    const container = document.getElementById('listaPendentes')
+    const container = document.getElementById('listaPendentes') // Usa o id do teu HTML
     if (!container) return
     
-async function carregarPendencias() {
-    const container = $('#pendenciasContainer') // troca pelo id real do teu div
-
     // 1. Vê se tem alguém logado
-    const { data: { user } = await sb.auth.getUser()
+    const { data: { user } = await sb.auth.getUser() // arrumei o }}
     if (!user) {
         container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--tx3)">Faça login como admin pra ver.</p>`
         return
@@ -1391,6 +1388,35 @@ async function carregarPendencias() {
         container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--tx3)">Acesso negado.</p>`
         return
     }
+
+    // 3. Busca os pendentes
+    const { data: pendentes, error } = await sbGetPendentes()
+    if (error) { toast('Erro ao carregar: ' + error.message, 'err'); return }
+    
+    const total = pendentes?.length || 0
+    
+    if (total === 0) {
+        container.innerHTML = `
+            <div class="pnl" style="text-align:center;padding:40px">
+                <i class="fas fa-check-circle" style="font-size:48px;color:var(--p);margin-bottom:12px;display:block"></i>
+                <h4 style="font-size:18px;font-weight:700">Ninguém na fila 🚀</h4>
+                <p style="color:var(--tx3)">Todos os alunos já foram liberados.</p>
+            </div>
+        `
+        return
+    }
+
+    // 4. Renderiza os cards aqui
+    container.innerHTML = pendentes.map(p => `
+        <div class="pnl" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div>
+                <b>${p.nome_completo}</b><br>
+                <small style="color:var(--tx3)">${p.email}</small>
+            </div>
+            <button onclick="liberar(${p.id})" class="btn">Liberar</button>
+        </div>
+    `).join('')
+}
 
     // 3. Agora sim pode buscar os pendentes, pq o RLS deixa
     const { data: pendentes, error } = await sbGetPendentes()
