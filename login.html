@@ -2071,6 +2071,9 @@ async function encerrarSalaSupabase(id) {
 // ============================================================
 // VIEW: NRs (COM LINKS PARA ADMIN E ALUNO)
 // ============================================================
+// ============================================================
+// VIEW: NRs (COM CONTEÚDO VINCULADO DO BANCO)
+// ============================================================
 function vNRs() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -2092,14 +2095,9 @@ function vNRs() {
     h += `<div class="nr-g" id="nrGrid" style="grid-template-columns:1fr;">`
     
     NRS.forEach(nr => {
-        // Busca os links salvos (se houver)
-        const linkVideo = nr.link_video || ''
-        const linkMaterial = nr.link_material || ''
-        const linkProva = nr.link_prova || ''
-        
         h += `<div class="nr-card-full" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" id="nr-card-${nr.id}" style="background:var(--card-bg);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:12px;border:2px solid transparent;transition:.2s;">
             
-            <!-- CABEÇALHO DO CARD (CLICÁVEL) -->
+            <!-- CABEÇALHO DO CARD -->
             <div style="display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="verNR('${nr.id}')">
                 <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
                 <div style="flex:1;">
@@ -2109,48 +2107,216 @@ function vNRs() {
                 <span style="font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
             </div>
             
-            <!-- LINKS - SÓ APARECE PARA ADMIN/PROFESSOR -->
-            ${isAdmin() || isProf() ? `
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd2);">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
-                    <div class="fld" style="margin:0;">
-                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">🎬 Link Vídeo</label>
-                        <input type="url" id="link_video_${nr.id}" value="${linkVideo}" placeholder="https://youtube.com/..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
-                    </div>
-                    <div class="fld" style="margin:0;">
-                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">📄 Link Material</label>
-                        <input type="url" id="link_material_${nr.id}" value="${linkMaterial}" placeholder="https://drive.google.com/..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
-                    </div>
-                    <div class="fld" style="margin:0;">
-                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">📝 Link Prova</label>
-                        <input type="url" id="link_prova_${nr.id}" value="${linkProva}" placeholder="https://..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
-                    </div>
-                    <div class="fld" style="margin:0;display:flex;align-items:flex-end;">
-                        <button class="btn btn-sm btn-p" onclick="salvarLinksNR('${nr.id}')" style="width:100%;padding:6px 10px;font-size:11px;">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                    </div>
+            <!-- CONTEÚDO VINCULADO (VIDEOAULAS + MATERIAIS + PROVAS) -->
+            <div id="conteudo-nr-${nr.id}" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd2);">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:30px;">
+                    <span style="font-size:11px;color:var(--tx3);margin-right:4px;"><i class="fas fa-paperclip"></i> Conteúdo:</span>
+                    <span id="loading-conteudo-${nr.id}" style="font-size:12px;color:var(--tx3);">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    </span>
                 </div>
-            </div>
-            ` : ''}
-            
-            <!-- LINKS VISUAIS PARA O ALUNO (E ADMIN TAMBÉM VÊ) -->
-            <div class="nr-links-visuais" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-                ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
-                ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
-                ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
-                ${!linkVideo && !linkMaterial && !linkProva && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
-                ${!linkVideo && !linkMaterial && !linkProva && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
             </div>
         </div>`
     })
     
     h += `</div>`
     
-    // CARREGA OS LINKS SALVOS DO BANCO (se tiver tabela nrs)
-    setTimeout(() => carregarLinksNRs(), 300)
+    // CARREGA O CONTEÚDO DE CADA NR
+    setTimeout(() => carregarConteudoPorNR(), 500)
     
     return h
+}
+
+// ============================================================
+// FUNÇÃO PARA CARREGAR CONTEÚDO DE CADA NR
+// ============================================================
+async function carregarConteudoPorNR() {
+    try {
+        // Busca videoaulas
+        const { data: videoaulas, error: errVideos } = await sb
+            .from('videoaulas')
+            .select('id, nr_id, titulo, url_video, descricao, criado_em')
+            .order('criado_em', { ascending: false })
+        
+        if (errVideos) console.error('Erro ao carregar videoaulas:', errVideos)
+        
+        // Busca materiais
+        const { data: materiais, error: errMateriais } = await sb
+            .from('materiais')
+            .select('id, nr_id, titulo, url, tipo, criado_em')
+            .order('criado_em', { ascending: false })
+        
+        if (errMateriais) console.error('Erro ao carregar materiais:', errMateriais)
+        
+        // Busca provas
+        const { data: provas, error: errProvas } = await sb
+            .from('provas')
+            .select('id, nr_id, titulo, arquivo_url, status, criado_em')
+            .eq('status', 'corrigido') // Só mostra provas corrigidas/aprovadas
+            .order('criado_em', { ascending: false })
+        
+        if (errProvas) console.error('Erro ao carregar provas:', errProvas)
+        
+        // Para cada NR, monta o conteúdo
+        NRS.forEach(nr => {
+            const container = document.getElementById(`conteudo-nr-${nr.id}`)
+            if (!container) return
+            
+            const loading = document.getElementById(`loading-conteudo-${nr.id}`)
+            if (loading) loading.remove()
+            
+            // Filtra conteúdo por NR
+            const videosNR = (videoaulas || []).filter(v => v.nr_id == nr.id)
+            const materiaisNR = (materiais || []).filter(m => m.nr_id == nr.id)
+            const provasNR = (provas || []).filter(p => p.nr_id == nr.id)
+            
+            // Monta os links
+            let linksHtml = ''
+            
+            // Videoaulas
+            videosNR.forEach(v => {
+                linksHtml += `<a href="${v.url_video}" target="_blank" class="btn btn-sm btn-p" style="font-size:10px;padding:3px 12px;margin:2px;" title="${v.descricao || v.titulo}">
+                    <i class="fas fa-play"></i> ${v.titulo.length > 25 ? v.titulo.substring(0, 25) + '...' : v.titulo}
+                </a>`
+            })
+            
+            // Materiais
+            materiaisNR.forEach(m => {
+                const icone = m.tipo === 'video' ? 'fa-video' : 'fa-file-pdf'
+                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="font-size:10px;padding:3px 12px;margin:2px;">
+                    <i class="fas ${icone}"></i> ${m.titulo.length > 25 ? m.titulo.substring(0, 25) + '...' : m.titulo}
+                </a>`
+            })
+            
+            // Provas
+            provasNR.forEach(p => {
+                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn btn-sm" style="font-size:10px;padding:3px 12px;margin:2px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+                    <i class="fas fa-file-pdf"></i> Prova: ${p.titulo.length > 20 ? p.titulo.substring(0, 20) + '...' : p.titulo}
+                </a>`
+            })
+            
+            // Se não tem conteúdo
+            if (!linksHtml) {
+                linksHtml = `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
+            }
+            
+            // Atualiza o container
+            container.innerHTML = `
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                    <span style="font-size:11px;color:var(--tx3);margin-right:4px;"><i class="fas fa-paperclip"></i> Conteúdo:</span>
+                    ${linksHtml}
+                    ${(isAdmin() || isProf()) ? `<span style="font-size:10px;color:var(--tx3);margin-left:4px;">
+                        <a href="#" onclick="nav('subir');event.preventDefault();" style="color:var(--p);">
+                            <i class="fas fa-plus-circle"></i> Adicionar
+                        </a>
+                    </span>` : ''}
+                </div>
+            `
+        })
+        
+    } catch (error) {
+        console.error('Erro ao carregar conteúdo:', error)
+    }
+}
+
+// ============================================================
+// FUNÇÕES DE FILTRO E VISUALIZAÇÃO
+// ============================================================
+function filterNR(c) { 
+    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
+        e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' 
+    }) 
+}
+
+function filterNRT(q) { 
+    q = q.toLowerCase(); 
+    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
+        e.style.display = e.dataset.s.includes(q) ? '' : 'none' 
+    }) 
+}
+
+function verNR(id) {
+    const nr = NRS.find(n => n.id === id)
+    if (!nr) return
+    
+    // Busca conteúdo da NR
+    buscarConteudoNR(id).then(conteudo => {
+        let linksHtml = ''
+        let temConteudo = false
+        
+        if (conteudo.videos && conteudo.videos.length > 0) {
+            temConteudo = true
+            linksHtml += `<div style="margin:8px 0;"><strong>🎬 Videoaulas:</strong><br>`
+            conteudo.videos.forEach(v => {
+                linksHtml += `<a href="${v.url_video}" target="_blank" class="btn btn-sm btn-p" style="margin:4px 4px 4px 0;">▶ ${v.titulo}</a>`
+            })
+            linksHtml += `</div>`
+        }
+        
+        if (conteudo.materiais && conteudo.materiais.length > 0) {
+            temConteudo = true
+            linksHtml += `<div style="margin:8px 0;"><strong>📄 Materiais:</strong><br>`
+            conteudo.materiais.forEach(m => {
+                const icone = m.tipo === 'video' ? 'fa-video' : 'fa-file-pdf'
+                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="margin:4px 4px 4px 0;"><i class="fas ${icone}"></i> ${m.titulo}</a>`
+            })
+            linksHtml += `</div>`
+        }
+        
+        if (conteudo.provas && conteudo.provas.length > 0) {
+            temConteudo = true
+            linksHtml += `<div style="margin:8px 0;"><strong>📝 Provas:</strong><br>`
+            conteudo.provas.forEach(p => {
+                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn btn-sm" style="margin:4px 4px 4px 0;background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;"><i class="fas fa-file-pdf"></i> ${p.titulo}</a>`
+            })
+            linksHtml += `</div>`
+        }
+        
+        openMdl(`
+            <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+                <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">
+                    <i class="fas ${nr.ic}"></i>
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div>
+                    <h2 style="font-size:18px;font-weight:700">${nr.nm}</h2>
+                </div>
+            </div>
+            <p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">
+                Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.
+            </p>
+            ${temConteudo ? `<div style="background:var(--bd2);border-radius:8px;padding:12px;margin:12px 0;">${linksHtml}</div>` : `<p style="color:var(--tx3);text-align:center;padding:12px;">📌 Nenhum conteúdo disponível para esta NR.</p>`}
+            <button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()">
+                <i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}
+            </button>
+            ${(isAdmin() || isProf()) ? `<button class="btn btn-s btn-block" onclick="nav('subir');closeMdl()" style="margin-top:8px;">
+                <i class="fas fa-upload"></i> Subir Conteúdo para esta NR
+            </button>` : ''}
+        `)
+    })
+}
+
+// ============================================================
+// FUNÇÃO PARA BUSCAR CONTEÚDO DE UMA NR
+// ============================================================
+async function buscarConteudoNR(nrId) {
+    try {
+        const [videosRes, materiaisRes, provasRes] = await Promise.all([
+            sb.from('videoaulas').select('id, nr_id, titulo, url_video, descricao, criado_em').eq('nr_id', nrId).order('criado_em', { ascending: false }),
+            sb.from('materiais').select('id, nr_id, titulo, url, tipo, criado_em').eq('nr_id', nrId).order('criado_em', { ascending: false }),
+            sb.from('provas').select('id, nr_id, titulo, arquivo_url, status, criado_em').eq('nr_id', nrId).eq('status', 'corrigido').order('criado_em', { ascending: false })
+        ])
+        
+        return {
+            videos: videosRes.data || [],
+            materiais: materiaisRes.data || [],
+            provas: provasRes.data || []
+        }
+    } catch (error) {
+        console.error('Erro ao buscar conteúdo:', error)
+        return { videos: [], materiais: [], provas: [] }
+    }
 }
 
 // ============================================================
