@@ -17,7 +17,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ============================================================
-   CSS COMPLETO - SULSAFE (OTIMIZADO PARA PRODUÇÃO)
+   CSS COMPLETO - SULSAFE
    ============================================================ */
 :root {
     --p: #2E7D32;
@@ -38,6 +38,7 @@
     --card-bg: #fff;
     --shadow: 0 8px 32px rgba(0,0,0,.06);
     --shadow-hover: 0 12px 48px rgba(0,0,0,.12);
+    --whatsapp: #25D366;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { 
@@ -62,6 +63,47 @@ body.t-escuro {
     --bd: #333; --bd2: #2a2a2a; --ip: #1e1e1e; 
     --card-bg: #1e1e1e; --shadow: 0 8px 32px rgba(0,0,0,.3); 
     --sb: #0a0a0a; --sb2: #1a1a1a; --sb-tx: #a0c8a0; 
+}
+
+/* WHATSAPP FLOATING BUTTON */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--whatsapp);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    z-index: 999;
+    animation: pulse-whatsapp 2s infinite;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.whatsapp-float:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(37,211,102,0.6);
+}
+.whatsapp-float i { font-size: 24px; }
+@keyframes pulse-whatsapp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+@media (max-width: 768px) {
+    .whatsapp-float {
+        bottom: 16px;
+        right: 16px;
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+    .whatsapp-float i { font-size: 18px; }
+    .whatsapp-float span { display: none; }
 }
 
 /* AUTH */
@@ -138,6 +180,8 @@ body.t-escuro {
 .btn-d:hover { background: #B71C1C; transform: translateY(-2px); }
 .btn-g { background: var(--gold); color: #1a1a1a; }
 .btn-g:hover { background: #b89f2a; transform: translateY(-2px); }
+.btn-whatsapp { background: var(--whatsapp); color: #fff; }
+.btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 16px; font-size: 12px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
@@ -235,40 +279,6 @@ body.t-escuro {
     background: var(--bg); 
 }
 
-/* WHATSAPP FLOATING BUTTON */
-.whatsapp-float {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #25D366;
-    color: white;
-    padding: 14px 20px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-    z-index: 999;
-    animation: pulse-whatsapp 2s infinite;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.whatsapp-float:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-}
-.whatsapp-float i {
-    font-size: 24px;
-}
-@keyframes pulse-whatsapp {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
 /* CARDS / STATS */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 20px 0 28px; }
 .st { 
@@ -318,21 +328,21 @@ body.t-escuro {
     transition: width .6s; 
 }
 
-/* NRs */
-.nr-g { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
-.nr-c { 
+/* NRs - CARDS COM LINKS */
+.nr-g { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+.nr-card-full { 
     background: var(--card-bg); 
     border-radius: var(--r); 
-    padding: 14px 18px; 
-    display: flex; 
-    align-items: center; 
-    gap: 14px; 
+    padding: 16px 18px; 
     box-shadow: var(--shadow); 
-    cursor: pointer; 
-    transition: .2s; 
+    margin-bottom: 12px; 
     border: 2px solid transparent; 
+    transition: .2s; 
 }
-.nr-c:hover { border-color: var(--p); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.nr-card-full:hover { 
+    border-color: var(--p); 
+    box-shadow: var(--shadow-hover); 
+}
 .nr-ic { 
     width: 40px; 
     height: 40px; 
@@ -347,6 +357,80 @@ body.t-escuro {
 }
 .nr-num { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .5px; }
 .nr-nm { font-size: 14px; font-weight: 600; }
+
+/* CAIXA AZUL DOS LINKS */
+.link-box {
+    background: #e8f4fd;
+    border: 2px solid #2196F3;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    transition: .2s;
+}
+.link-box:hover {
+    background: #d4ebf9;
+}
+.link-box .link-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 8px;
+}
+.link-box .btn-link {
+    font-size: 11px;
+    padding: 4px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: .2s;
+    text-decoration: none;
+}
+.link-box .btn-link.youtube {
+    background: #FF0000;
+    color: #fff;
+}
+.link-box .btn-link.youtube:hover {
+    background: #cc0000;
+    transform: scale(1.03);
+}
+.link-box .btn-link.material {
+    background: #1565C0;
+    color: #fff;
+}
+.link-box .btn-link.material:hover {
+    background: #0d47a1;
+    transform: scale(1.03);
+}
+.link-box .btn-link.prova {
+    background: #E65100;
+    color: #fff;
+}
+.link-box .btn-link.prova:hover {
+    background: #bf360c;
+    transform: scale(1.03);
+}
+.link-box .sem-conteudo {
+    font-size: 12px;
+    color: var(--tx3);
+}
+.link-box .badge-link {
+    font-size: 9px;
+    background: #2196F3;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
 
 .badge { 
     display: inline-block; 
@@ -609,7 +693,7 @@ body.t-escuro {
 }
 .mt-c:hover { transform: translateX(4px); box-shadow: var(--shadow-hover); }
 .mt-topic { font-weight: 700; font-size: 16px; }
-.mt-id { font-size: 12px; color: var(--tx3); margin-top: 4px; }
+.mt-id { font-size: 12px; color: var(--tx3); }
 
 /* KEYFRAMES */
 @keyframes fv { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -633,23 +717,15 @@ body.t-escuro {
     .card { padding: 16px 12px; }
     .card-ic { font-size: 24px; }
     .card-t { font-size: 13px; }
-    .whatsapp-float {
-        bottom: 16px;
-        right: 16px;
-        padding: 10px 14px;
-        font-size: 12px;
-    }
-    .whatsapp-float i { font-size: 18px; }
-    .whatsapp-float span { display: none; }
+    .link-box { flex-direction: column; align-items: stretch; }
 }
 </style>
 </head>
 <body>
 
-<!-- ==================== AUTH ==================== -->
+<!-- AUTH -->
 <div id="authWrap">
 <div class="auth-card">
-<!-- LOGIN -->
 <div class="t on" id="tLogin">
 <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -661,11 +737,10 @@ body.t-escuro {
 </form>
 <div class="divider">ou</div>
 <button class="btn btn-s btn-block" onclick="showT('tCad')">Cadastrar nova conta</button>
-<div style="margin-top: 12px; text-align: center;">
-    <a href="#" onclick="recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
+<div style="margin-top:12px;text-align:center;">
+<a href="#" onclick="recuperarSenha()" style="font-size:13px;color:var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
 </div>
 </div>
-<!-- CADASTRO -->
 <div class="t" id="tCad">
 <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -676,8 +751,8 @@ body.t-escuro {
 <div class="fld"><label>Senha (mínimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
 <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
 <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
-    <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="mostrarTermos()">termos de uso</a></label>
+<input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
+<label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="mostrarTermos()">termos de uso</a></label>
 </div>
 <button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
 </form>
@@ -685,7 +760,7 @@ body.t-escuro {
 </div>
 </div>
 
-<!-- ==================== DASHBOARD ==================== -->
+<!-- DASHBOARD -->
 <div id="dash">
 <aside class="sidebar" id="sidebar"></aside>
 <main class="main" id="mc"></main>
@@ -706,11 +781,11 @@ body.t-escuro {
 
 <!-- WHATSAPP FLOATING BUTTON -->
 <button class="whatsapp-float" onclick="redirecionarWhatsApp()">
-    <i class="fab fa-whatsapp"></i>
-    <span>Fale conosco</span>
+<i class="fab fa-whatsapp"></i>
+<span>Fale conosco</span>
 </button>
 
-<!-- TERMOS MODAL (escondido) -->
+<!-- TERMOS MODAL -->
 <div style="display:none" id="termosHtml">
 <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
 <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitação</strong><br>Ao utilizar a plataforma SulSafe, você concorda com estes termos.</p>
@@ -721,18 +796,6 @@ body.t-escuro {
 </div>
 
 <script>
-/*
-=============================================================
-  SULSAFE — VERSÃO COMPLETA COM JITSI + WHATSAPP
-  ✅ Jitsi Meet no lugar do Google Meet
-  ✅ WhatsApp pós-inscrição (55 3997060864)
-  ✅ Erro 400 corrigido (ID BIGINT)
-  ✅ Links nos cards das NRs
-  ✅ Certificados com aprovação do admin
-  ✅ Botão WhatsApp flutuante
-=============================================================
-*/
-
 // ============================================================
 // CONFIGURAÇÕES
 // ============================================================
@@ -742,10 +805,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const LANDING_URL = 'index.html'
 const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
 const STORAGE_BUCKET = 'arquivos'
-
-// WHATSAPP CONFIG
 const WHATSAPP_NUMBER = '5553997060864'
-const WHATSAPP_MESSAGE = 'Olá! Acabei de me inscrever no SulSafe. Gostaria de saber mais sobre os treinamentos e valores.'
 
 // ============================================================
 // SUPABASE CLIENT
@@ -771,22 +831,19 @@ const isProf = () => role() === 'professor'
 const canManage = () => isAdmin() || isProf()
 const uid = () => S.user?.id
 const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—'
-const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6)
 
-// FUNÇÃO PARA GERAR ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
+// GERAR ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
 function gerarIdNumerico() {
     const timestamp = Date.now()
     const random = Math.floor(Math.random() * 10000)
     return parseInt(`${timestamp}${random}`)
 }
 
-// Sanitização de entrada
 function sanitizar(texto) {
     if (!texto) return ''
     return texto.replace(/[<>]/g, '').trim()
 }
 
-// Tratamento de erros avançado
 function handleError(error, fallbackMsg = 'Ocorreu um erro. Tente novamente.') {
     console.error('Erro detalhado:', error)
     if (error.code === '23505') {
@@ -802,9 +859,8 @@ function handleError(error, fallbackMsg = 'Ocorreu um erro. Tente novamente.') {
     }
 }
 
-// WHATSAPP - REDIRECIONAMENTO
 function redirecionarWhatsApp(mensagemPersonalizada = null) {
-    const mensagem = mensagemPersonalizada || WHATSAPP_MESSAGE
+    const mensagem = mensagemPersonalizada || 'Olá! Acabei de me inscrever no SulSafe. Gostaria de saber mais sobre os treinamentos e valores.'
     const linkWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`
     window.open(linkWhatsApp, '_blank')
 }
@@ -877,122 +933,6 @@ function closeNotif() { $('#notifPopup').classList.remove('show') }
 function mostrarTermos() { openMdl(document.getElementById('termosHtml').innerHTML) }
 
 // ============================================================
-// JITSI - SISTEMA DE VIDEOCONFERÊNCIA
-// ============================================================
-
-// Carregar script do Jitsi dinamicamente
-function carregarJitsiScript() {
-    return new Promise((resolve, reject) => {
-        if (document.querySelector('script[src*="external_api.js"]')) {
-            resolve()
-            return
-        }
-        const script = document.createElement('script')
-        script.src = 'https://meet.jit.si/external_api.js'
-        script.onload = resolve
-        script.onerror = reject
-        document.head.appendChild(script)
-    })
-}
-
-// Função para abrir sala Jitsi
-async function abrirSalaJitsi(roomName, displayName, topico) {
-    try {
-        await carregarJitsiScript()
-        
-        if (typeof JitsiMeetExternalAPI === 'undefined') {
-            await new Promise(resolve => setTimeout(resolve, 1000))
-        }
-        
-        const domain = 'meet.jit.si'
-        const options = {
-            roomName: roomName,
-            width: '100%',
-            height: '100%',
-            parentNode: document.getElementById('jitsi-container') || document.body,
-            userInfo: {
-                displayName: displayName || 'Aluno SulSafe'
-            },
-            configOverwrite: {
-                enableWelcomePage: false,
-                disableDeepLinking: true,
-                prejoinPageEnabled: false,
-                startWithAudioMuted: true,
-                startWithVideoMuted: true
-            },
-            interfaceConfigOverwrite: {
-                BRAND_WATERMARK_LINK: 'https://sulsafe.com.br',
-                SHOW_JITSI_WATERMARK: false,
-                SHOW_WATERMARK_FOR_GUESTS: false,
-                TOOLBAR_BUTTONS: [
-                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                    'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
-                    'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                    'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
-                    'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
-                    'security'
-                ]
-            }
-        }
-        
-        const api = new JitsiMeetExternalAPI(domain, options)
-        
-        api.addListener('videoConferenceJoined', () => {
-            toast('🎥 Conferência iniciada!', 'success')
-            console.log('✅ Sala Jitsi iniciada:', roomName)
-        })
-        
-        api.addListener('participantLeft', (participant) => {
-            console.log('👋 Participante saiu:', participant)
-        })
-        
-        api.addListener('participantJoined', (participant) => {
-            console.log('👤 Participante entrou:', participant)
-        })
-        
-        return api
-        
-    } catch (error) {
-        console.error('Erro ao abrir Jitsi:', error)
-        toast('Erro ao abrir sala de vídeo. Tente novamente.', 'err')
-        return null
-    }
-}
-
-// Função para criar sala com Jitsi
-async function sbCriarSalaJitsi(topico, criadorId, meetId = null) {
-    try {
-        const idNumerico = gerarIdNumerico()
-        const roomName = meetId || `sulsafe-${idNumerico}`
-        
-        const dadosSala = {
-            id: idNumerico,
-            topico: sanitizar(topico),
-            meet_id: roomName,
-            criado_por: criadorId,
-            ativa: true,
-            created_at: new Date().toISOString()
-        }
-        
-        console.log('📝 Criando sala Jitsi:', dadosSala)
-        
-        const { data, error } = await sb
-            .from('salas')
-            .insert([dadosSala])
-            .select()
-            .single()
-        
-        if (error) throw error
-        
-        return { data, error: null }
-        
-    } catch (error) {
-        console.error('❌ Erro ao criar sala Jitsi:', error)
-        return { data: null, error }
-    }
-}
-
-// ============================================================
 // SUPABASE CRUD
 // ============================================================
 
@@ -1000,8 +940,7 @@ async function sbGetUser(id) {
     try {
         const { data, error } = await sb.from('profiles')
             .select('id, nome_completo, email, role, status, created_at')
-            .eq('id', id)
-            .single()
+            .eq('id', id).single()
         if (error && error.code === 'PGRST116') {
             console.log('Perfil não encontrado, criando automaticamente...')
             const { data: { user: authUser } } = await sb.auth.getUser()
@@ -1010,23 +949,14 @@ async function sbGetUser(id) {
             const nome = authUser.user_metadata?.nome_completo || authUser.email.split('@')[0]
             const { data: newProfile, error: createError } = await sb
                 .from('profiles')
-                .insert({
-                    id: authUser.id,
-                    email: authUser.email,
-                    nome_completo: nome,
-                    role: role,
-                    status: role === 'admin' ? 'ativo' : 'pendente'
-                })
-                .select()
-                .single()
+                .insert({ id: authUser.id, email: authUser.email, nome_completo: nome, role: role, status: role === 'admin' ? 'ativo' : 'pendente' })
+                .select().single()
             if (createError) throw createError
             return { data: newProfile, error: null }
         }
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbUpdateUser(id, dados) {
@@ -1034,36 +964,28 @@ async function sbUpdateUser(id, dados) {
         const { data, error } = await sb.from('profiles').update(dados).eq('id', id).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetAlunos() {
     try {
         const { data, error } = await sb.from('profiles')
             .select('id, nome_completo, email, role, status, created_at')
-            .eq('role', 'aluno')
-            .order('nome_completo')
+            .eq('role', 'aluno').order('nome_completo')
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetPendentes() {
     try {
         const { data, error } = await sb.from('profiles')
             .select('id, nome_completo, email, created_at')
-            .eq('status', 'pendente')
-            .eq('role', 'aluno')
+            .eq('status', 'pendente').eq('role', 'aluno')
             .order('created_at', { ascending: true })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbLiberarUsuario(id) {
@@ -1071,11 +993,10 @@ async function sbLiberarUsuario(id) {
         const { data, error } = await sb.from('profiles').update({ status: 'ativo' }).eq('id', id).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// VIDEOAULAS - CORRIGIDO COM ID NUMÉRICO
 async function sbGetVideoaulas(nrId = null) {
     try {
         let query = sb.from('videoaulas').select('*, profiles(nome_completo)')
@@ -1083,21 +1004,24 @@ async function sbGetVideoaulas(nrId = null) {
         const { data, error } = await query.order('ordem', { ascending: true })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbCriarVideoaula(videoaula) {
     try {
-        const { data, error } = await sb.from('videoaulas').insert(videoaula).select().single()
+        // Gera ID numérico em vez de UUID
+        const idNumerico = gerarIdNumerico()
+        const dados = {
+            id: idNumerico,
+            ...videoaula
+        }
+        const { data, error } = await sb.from('videoaulas').insert(dados).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// MATERIAIS
 async function sbGetMateriais(nrId = null) {
     try {
         let query = sb.from('materiais').select('*, profiles(nome_completo)')
@@ -1105,9 +1029,7 @@ async function sbGetMateriais(nrId = null) {
         const { data, error } = await query.order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbCriarMaterial(material) {
@@ -1115,25 +1037,18 @@ async function sbCriarMaterial(material) {
         const { data, error } = await sb.from('materiais').insert(material).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// PROGRESSO
 async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
     try {
         const { data, error } = await sb.from('progresso_aulas').upsert({
-            user_id: userId, 
-            aula_id: aulaId, 
-            assistiu_segundos: segundos, 
-            concluído: concluido, 
-            ultima_atualizacao: new Date().toISOString()
+            user_id: userId, aula_id: aulaId, assistiu_segundos: segundos, concluído: concluido, ultima_atualizacao: new Date().toISOString()
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetProgressoUsuario(userId) {
@@ -1144,108 +1059,61 @@ async function sbGetProgressoUsuario(userId) {
             .order('ultima_atualizacao', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// NOTAS
 async function sbGetNotasAluno(userId) {
     try {
         const { data, error } = await sb.from('notas')
-            .select('*')
-            .eq('usuario_id', userId)
+            .select('*').eq('usuario_id', userId)
             .order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbLancarNota(userId, nrId, nota, obs = '', professorId = null) {
     try {
         const { data, error } = await sb.from('notas').insert({
-            usuario_id: userId, 
-            nr_id: nrId, 
-            nota, 
-            obs: sanitizar(obs), 
-            professor_id: professorId
+            usuario_id: userId, nr_id: nrId, nota, obs: sanitizar(obs), professor_id: professorId
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
-async function sbGetMediasNRs() {
-    try {
-        const { data, error } = await sb.from('view_medias_nrs').select('*').order('nr_id')
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
+// CERTIFICADOS
 async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
     try {
         const codigo = 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase()
         const { data, error } = await sb.from('certificados').insert({
-            usuario_id: userId, 
-            nr_id: nrId, 
-            codigo, 
-            nota, 
-            carga_horaria: cargaHoraria, 
-            emitido_por: uid()
+            usuario_id: userId, nr_id: nrId, codigo, nota, carga_horaria: cargaHoraria, emitido_por: uid()
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetCertificadosAluno(userId) {
     try {
         const { data, error } = await sb.from('certificados')
-            .select('*')
-            .eq('usuario_id', userId)
+            .select('*').eq('usuario_id', userId)
             .order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// PROVAS
 async function sbEnviarProva(userId, nrId, titulo, arquivoUrl) {
     try {
         const { data, error } = await sb.from('provas').insert({
-            usuario_id: userId, 
-            nr_id: nrId, 
-            titulo: sanitizar(titulo), 
-            arquivo_url: arquivoUrl, 
-            status: 'pendente'
+            usuario_id: userId, nr_id: nrId, titulo: sanitizar(titulo), arquivo_url: arquivoUrl, status: 'pendente'
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-async function sbGetProvasAluno(userId) {
-    try {
-        const { data, error } = await sb.from('provas')
-            .select('*')
-            .eq('usuario_id', userId)
-            .order('criado_em', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetProvasPendentes() {
@@ -1256,42 +1124,33 @@ async function sbGetProvasPendentes() {
             .order('criado_em', { ascending: true })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbCorrigirProva(provaId, nota, status = 'corrigido') {
     try {
         const { data, error } = await sb.from('provas')
             .update({ nota, status, corrigido_em: new Date().toISOString() })
-            .eq('id', provaId)
-            .select().single()
+            .eq('id', provaId).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
-// FUNÇÃO CORRIGIDA - CRIAR SALA (SEM ERRO 400)
+// SALAS - CORRIGIDO COM ID NUMÉRICO
 async function sbCriarSala(topico, meetId, criadoPor) {
     try {
         const idNumerico = gerarIdNumerico()
         const { data, error } = await sb.from('salas').insert({
             id: idNumerico,
-            topico: sanitizar(topico),
-            meet_id: sanitizar(meetId) || `sulsafe-${idNumerico}`,
-            criado_por: criadoPor,
-            ativa: true,
-            created_at: new Date().toISOString()
+            topico: sanitizar(topico), 
+            meet_id: sanitizar(meetId) || `sala-${idNumerico}`, 
+            criado_por: criadoPor, 
+            ativa: true
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        console.error('❌ Erro ao criar sala:', error)
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetSalasAtivas() {
@@ -1302,35 +1161,27 @@ async function sbGetSalasAtivas() {
             .order('created_at', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// NOTIFICAÇÕES
 async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
     try {
         const { data, error } = await sb.from('notificacoes').insert({
-            usuario_id: userId, 
-            titulo: sanitizar(titulo), 
-            mensagem: sanitizar(mensagem), 
-            link, 
-            lida: false
+            usuario_id: userId, titulo: sanitizar(titulo), mensagem: sanitizar(mensagem), link, lida: false
         }).select().single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
+// DASHBOARD
 async function sbGetDashboardMetrics() {
     try {
         const { data, error } = await sb.from('view_dashboard_admin').select('*').single()
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetRankingAlunos() {
@@ -1338,9 +1189,7 @@ async function sbGetRankingAlunos() {
         const { data, error } = await sb.from('view_ranking_alunos').select('*')
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function sbGetAllUsers(page = 0, limit = 20) {
@@ -1351,9 +1200,7 @@ async function sbGetAllUsers(page = 0, limit = 20) {
             .range(page * limit, (page + 1) * limit - 1)
         if (error) throw error
         return { data, error: null, count }
-    } catch (error) {
-        return { data: null, error, count: 0 }
-    }
+    } catch (error) { return { data: null, error, count: 0 } }
 }
 
 // ============================================================
@@ -1363,29 +1210,18 @@ $('#frmLogin').addEventListener('submit', async function(e) {
     e.preventDefault()
     const email = $('#lEmail').value.trim().toLowerCase()
     const pass = $('#lPass').value
-    
     try {
-        const { data: authData, error: authError } = await sb.auth.signInWithPassword({
-            email: email,
-            password: pass
-        })
-        
+        const { data: authData, error: authError } = await sb.auth.signInWithPassword({ email, password: pass })
         if (authError) {
             if (email === ADMIN_EMAIL) {
                 const { data: signUpData, error: signUpError } = await sb.auth.signUp({ 
-                    email, 
-                    password: pass,
-                    options: { 
-                        data: { nome_completo: 'Administrador SulSafe', role: 'admin' }
-                    }
+                    email, password: pass,
+                    options: { data: { nome_completo: 'Administrador SulSafe', role: 'admin' } }
                 })
                 if (signUpError) throw signUpError
                 const userId = signUpData.user.id
                 await sbUpdateUser(userId, { role: 'admin', status: 'ativo' })
-                const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({
-                    email: email,
-                    password: pass
-                })
+                const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({ email, password: pass })
                 if (loginError) throw loginError
                 const { data: user } = await sbGetUser(loginData.user.id)
                 if (!user) throw new Error('Erro ao buscar usuário')
@@ -1399,7 +1235,6 @@ $('#frmLogin').addEventListener('submit', async function(e) {
             }
             throw new Error('Email ou senha incorretos')
         }
-        
         const { data: user, error: userError } = await sbGetUser(authData.user.id)
         if (userError || !user) {
             const { data: { user: authUser } } = await sb.auth.getUser()
@@ -1412,24 +1247,19 @@ $('#frmLogin').addEventListener('submit', async function(e) {
             if (!newUser) throw new Error('Erro ao buscar perfil')
             user = newUser
         }
-        
         if (user.status === 'pendente' && user.role === 'aluno') {
             throw new Error('Aguardando aprovação do administrador')
         }
         if (user.status === 'bloqueado') throw new Error('Usuário bloqueado')
-        
         S.user = user
         localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
         localStorage.setItem('ss_user', JSON.stringify(user))
         loadCfg()
         enterDash()
         toast('Bem-vindo(a), ' + user.nome_completo + '!', 'success')
-    } catch (error) {
-        handleError(error)
-    }
+    } catch (error) { handleError(error) }
 })
 
-// CADASTRO COM REDIRECIONAMENTO PARA WHATSAPP
 $('#frmCad').addEventListener('submit', async function(e) {
     e.preventDefault()
     const nome = sanitizar($('#cNome').value.trim())
@@ -1437,32 +1267,19 @@ $('#frmCad').addEventListener('submit', async function(e) {
     const p1 = $('#cPass').value
     const p2 = $('#cPass2').value
     const termos = $('#cTermos').checked
-    
     if (!termos) { toast('Você precisa aceitar os termos de uso', 'err'); return }
     if (p1 !== p2) { toast('As senhas não coincidem', 'err'); return }
     if (p1.length < 6) { toast('Senha deve ter no mínimo 6 caracteres', 'err'); return }
     if (!nome) { toast('Nome é obrigatório', 'err'); return }
-    
     try {
         const role = email === ADMIN_EMAIL ? 'admin' : 'aluno'
-        
         const { data: authData, error: authError } = await sb.auth.signUp({ 
-            email, 
-            password: p1,
-            options: { 
-                data: { nome_completo: nome, role: role }
-            }
+            email, password: p1,
+            options: { data: { nome_completo: nome, role: role } }
         })
         if (authError) throw authError
-        
         const userId = authData.user.id
-
-        await sbUpdateUser(userId, { 
-            nome_completo: nome, 
-            role: role,
-            status: role === 'admin' ? 'ativo' : 'pendente'
-        })
-
+        await sbUpdateUser(userId, { nome_completo: nome, role: role, status: role === 'admin' ? 'ativo' : 'pendente' })
         if (role === 'admin') {
             const { data: user } = await sbGetUser(userId)
             S.user = user
@@ -1472,34 +1289,16 @@ $('#frmCad').addEventListener('submit', async function(e) {
             enterDash()
             toast('Conta admin criada!', 'success')
         } else {
-            toast('✅ Cadastro realizado com sucesso!', 'success')
-            
-            // REDIRECIONA PARA WHATSAPP APÓS 2 SEGUNDOS
+            toast('✅ Cadastro realizado! Aguarde aprovação.', 'info')
             setTimeout(() => {
-                const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.
-                
-📧 Email: ${email}
-📱 Telefone: (informar no WhatsApp)
-🏢 Empresa: (informar no WhatsApp)
-
-Gostaria de saber mais sobre os treinamentos, valores e liberação de acesso.
-
-Aguardo seu contato!`
-                
+                const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.\n\n📧 Email: ${email}\n📱 Telefone: (informar no WhatsApp)\n🏢 Empresa: (informar no WhatsApp)\n\nGostaria de saber mais sobre os treinamentos, valores e liberação de acesso.\n\nAguardo seu contato!`
                 redirecionarWhatsApp(mensagemWhats)
             }, 2000)
-            
             showT('tLogin')
         }
-
-    } catch (error) {
-        handleError(error)
-    }
+    } catch (error) { handleError(error) }
 })
 
-// ============================================================
-// RECUPERAÇÃO DE SENHA
-// ============================================================
 async function recuperarSenha() {
     const email = prompt('Digite seu email para recuperar a senha:')
     if (!email) return
@@ -1509,18 +1308,11 @@ async function recuperarSenha() {
         })
         if (error) throw error
         toast('Email de recuperação enviado! Verifique sua caixa de entrada.', 'success')
-    } catch (error) {
-        handleError(error)
-    }
+    } catch (error) { handleError(error) }
 }
 
-// ============================================================
-// LOGOUT
-// ============================================================
 async function logout() {
-    try {
-        await sb.auth.signOut()
-    } catch (e) {}
+    try { await sb.auth.signOut() } catch (e) {}
     S.user = null
     localStorage.removeItem('ss_session')
     localStorage.removeItem('ss_user')
@@ -1555,14 +1347,9 @@ async function logout() {
                 enterDash()
             }
         }
-    } catch(e) { 
-        console.log('Erro no auto-login:', e) 
-    }
+    } catch(e) { console.log('Erro no auto-login:', e) }
 })()
 
-// ============================================================
-// ENTER DASHBOARD
-// ============================================================
 function enterDash() {
     $('#authWrap').classList.add('off')
     $('#dash').classList.add('on')
@@ -1585,11 +1372,8 @@ async function checkNotifs() {
     if (!S.user) return
     try {
         const { data } = await sb.from('notificacoes')
-            .select('*')
-            .eq('usuario_id', S.user.id)
-            .eq('lida', false)
-            .order('criado_em', { ascending: false })
-            .limit(1)
+            .select('*').eq('usuario_id', S.user.id).eq('lida', false)
+            .order('criado_em', { ascending: false }).limit(1)
         if (data && data.length > 0) {
             const last = data[0]
             if (Date.now() - new Date(last.criado_em).getTime() < 60000) {
@@ -1668,9 +1452,6 @@ function nav(v) {
     renderV()
 }
 
-// ============================================================
-// ROUTER
-// ============================================================
 function renderV() {
     const fn = {
         inicio: vInicio,
@@ -1702,6 +1483,7 @@ function bindPostRender() {
     if (S.view === 'pendentes') setTimeout(carregarPendentes, 100)
     if (S.view === 'provas') setTimeout(carregarProvas, 100)
     if (S.view === 'subir') setTimeout(carregarConteudosAdmin, 200)
+    if (S.view === 'nrs') setTimeout(carregarLinksNRS, 300)
 }
 
 // ============================================================
@@ -1712,10 +1494,7 @@ function vInicio() {
     let h = `<div class="btn-back" onclick="nav('${S.prevView || 'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">Olá, ${S.user?.nome_completo || 'Usuário'} 👋</h2>`
     h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`
-    
-    h += `<div class="stats" id="statsInicio">`
-    h += `<div class="st"><div class="st-v">...</div><div class="st-l"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div>`
-    h += `</div>`
+    h += `<div class="stats" id="statsInicio"><div class="st"><div class="st-v">...</div><div class="st-l"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div></div>`
     h += `<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rápido</h3><div class="cards">`
     h += cCard('fa-play-circle', 'Videoaulas', '38 NRs em videoaulas HD', 'videoaulas')
     h += cCard('fa-file-alt', 'Materiais', 'Arquivos e recursos', 'materiais')
@@ -1741,13 +1520,11 @@ function vInicio() {
         h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin')
     }
     h += `</div>`
-    
     setTimeout(async () => {
         try {
             const { data: metrics } = await sbGetDashboardMetrics()
             const statsDiv = document.getElementById('statsInicio')
             if (!statsDiv) return
-            
             if (r === 'aluno') {
                 const { data: progressos } = await sbGetProgressoUsuario(uid())
                 const concluidas = progressos?.filter(p => p.concluído === true).length || 0
@@ -1785,7 +1562,6 @@ function vInicio() {
             }
         } catch (e) { console.error('Erro ao carregar dashboard:', e) }
     }, 100)
-    
     return h
 }
 
@@ -1825,7 +1601,6 @@ async function carregarProgressoVideoaulas() {
     const concluidas = progressos?.filter(p => p.concluído === true).map(p => p.aula_id) || []
     const total = NRS.length
     const pct = total ? Math.round(concluidas.length / total * 100) : 0
-    
     const progDiv = document.getElementById('progressoVideoaulas')
     if (progDiv) {
         progDiv.innerHTML = `
@@ -1836,7 +1611,6 @@ async function carregarProgressoVideoaulas() {
             <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
         `
     }
-    
     NRS.forEach(nr => {
         const badge = document.getElementById(`badge-${nr.id}`)
         const btn = document.getElementById(`btn-${nr.id}`)
@@ -1853,7 +1627,6 @@ async function toggleAulaSupabase(nrId, btn) {
     if (!S.user) return
     const { data: progressos } = await sbGetProgressoUsuario(S.user.id)
     const existente = progressos?.find(p => p.aula_id === nrId)
-    
     if (existente) {
         await sbSalvarProgresso(S.user.id, nrId, 0, false)
         btn.className = 'btn btn-sm btn-s'
@@ -1887,12 +1660,10 @@ async function carregarMateriais() {
     const container = document.getElementById('materiaisGrid')
     if (!container) return
     const { data: materiais } = await sbGetMateriais()
-    
     if (!materiais || materiais.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-file-alt"></i><p>Nenhum material disponível ainda.</p></div>`
         return
     }
-    
     let h = `<div class="nr-g" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">`
     materiais.forEach(m => {
         const tipoIcon = m.tipo === 'video' ? 'fa-video' : 'fa-file-pdf'
@@ -1917,57 +1688,42 @@ async function carregarMateriais() {
 }
 
 // ============================================================
-// VIEW: SALAS AO VIVO (COM JITSI)
+// VIEW: SALAS AO VIVO
 // ============================================================
 function vSalas() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
-    h += `<h2 class="wc">Salas ao Vivo</h2>`
-    h += `<p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real com Jitsi Meet.' : 'Crie e gerencie salas ao vivo com Jitsi.'}</p>`
-    
+    h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`
     if (canManage()) {
         h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-            <input class="search" id="salaTop" placeholder="Tópico da sala" style="flex:2;min-width:200px;margin:0">
-            <input class="search" id="salaMeet" placeholder="Nome da sala (opcional)" style="flex:1;min-width:160px;margin:0">
-            <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-video"></i> Criar Sala Jitsi</button>
+            <input class="search" id="salaTop" placeholder="Tópico da aula" style="flex:2;min-width:200px;margin:0">
+            <input class="search" id="salaMeet" placeholder="ID da reunião" style="flex:1;min-width:160px;margin:0">
+            <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-plus"></i> Criar Sala</button>
         </div>`
     }
-    
     h += `<div id="listaSalas"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando salas...</p></div></div>`
     setTimeout(carregarSalas, 200)
     return h
 }
 
 async function carregarSalas() {
-    const { data: salas, error } = await sbGetSalasAtivas()
+    const { data: salas } = await sbGetSalasAtivas()
     const container = document.getElementById('listaSalas')
     if (!container) return
-    
-    if (error) {
-        container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i><p>Erro ao carregar salas.</p></div>`
-        return
-    }
-    
     if (!salas || salas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`
         return
     }
-    
     let h = ''
     salas.forEach(s => {
         h += `<div class="mt-c">
             <div>
                 <div class="mt-topic">${s.topico}</div>
-                <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
-                    <span class="badge bg-info"><i class="fas fa-video"></i> Jitsi Meet</span>
-                    <span style="font-size:11px;color:var(--tx3)">ID: ${s.meet_id || 'N/A'}</span>
-                </div>
+                <div class="mt-id">ID: ${s.meet_id || 'N/A'}</div>
                 <div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${s.profiles?.nome_completo || '—'} — ${fmtD(s.created_at)}</div>
             </div>
             <div style="display:flex;gap:8px">
-                <button class="btn btn-p btn-sm" onclick="entrarSalaJitsi('${s.meet_id}', '${s.topico}')">
-                    <i class="fas fa-video"></i> Entrar na Sala
-                </button>
+                <a href="https://meet.google.com/${s.meet_id || ''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>
                 ${canManage() ? `<button class="btn btn-d btn-sm" onclick="encerrarSalaSupabase('${s.id}')"><i class="fas fa-times"></i></button>` : ''}
             </div>
         </div>`
@@ -1975,111 +1731,32 @@ async function carregarSalas() {
     container.innerHTML = h
 }
 
-// Função para entrar em uma sala Jitsi existente
-async function entrarSalaJitsi(meetId, topico) {
-    if (!meetId) {
-        toast('Sala sem identificador', 'err')
-        return
-    }
-    
-    openMdl(`
-        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
-        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">
-            <i class="fas fa-video"></i> ${topico || 'Sala'}
-        </h2>
-        <div id="jitsi-container" style="width:100%;height:60vh;border-radius:12px;overflow:hidden;background:#1a1a1a"></div>
-        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
-            <button class="btn btn-s btn-sm" onclick="closeMdl()"><i class="fas fa-times"></i> Sair</button>
-        </div>
-    `)
-    
-    setTimeout(async () => {
-        await abrirSalaJitsi(meetId, S.user?.nome_completo || 'Aluno', topico)
-    }, 300)
-}
-
 async function criarSalaSupabase() {
     const top = sanitizar($('#salaTop')?.value?.trim())
     const meet = sanitizar($('#salaMeet')?.value?.trim())
-    
-    if (!top) {
-        toast('Informe o tópico da sala', 'err')
-        return
-    }
-    
-    const resultado = await sbCriarSalaJitsi(top, uid(), meet)
-    
-    if (resultado.error) {
-        handleError(resultado.error)
-        return
-    }
-    
-    toast('🎥 Sala Jitsi criada com sucesso!', 'success')
+    if (!top) { toast('Informe o tópico', 'err'); return }
+    const { data, error } = await sbCriarSala(top, meet, uid())
+    if (error) { handleError(error); return }
+    toast('Sala criada!', 'success')
     pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas')
     carregarSalas()
     $('#salaTop').value = ''
     $('#salaMeet').value = ''
 }
 
-// Função para criar sala com Jitsi (versão simplificada)
-async function sbCriarSalaJitsi(topico, criadorId, meetId = null) {
-    try {
-        const idNumerico = gerarIdNumerico()
-        const roomName = meetId || `sulsafe-${idNumerico}`
-        
-        const dadosSala = {
-            id: idNumerico,
-            topico: sanitizar(topico),
-            meet_id: roomName,
-            criado_por: criadorId,
-            ativa: true,
-            created_at: new Date().toISOString()
-        }
-        
-        console.log('📝 Criando sala Jitsi:', dadosSala)
-        
-        const { data, error } = await sb
-            .from('salas')
-            .insert([dadosSala])
-            .select()
-            .single()
-        
-        if (error) throw error
-        
-        // Abre a sala Jitsi automaticamente
-        await entrarSalaJitsi(roomName, topico)
-        
-        return { data, error: null }
-        
-    } catch (error) {
-        console.error('❌ Erro ao criar sala Jitsi:', error)
-        return { data: null, error }
-    }
-}
-
 async function encerrarSalaSupabase(id) {
     if (!confirm('Encerrar esta sala?')) return
-    const { error } = await sb.from('salas').update({ ativa: false }).eq('id', id)
-    if (error) { handleError(error); return }
+    await sb.from('salas').update({ ativa: false }).eq('id', id)
     toast('Sala encerrada', 'info')
     carregarSalas()
 }
 
 // ============================================================
-// VIEW: NRs
-// ============================================================
-// ============================================================
-// VIEW: NRs (COM LINKS PARA ADMIN E ALUNO)
-// ============================================================
-// ============================================================
-// VIEW: NRs (COM CONTEÚDO VINCULADO DO BANCO)
+// VIEW: NRs - COM CAIXA AZUL PARA LINKS
 // ============================================================
 function vNRs() {
-    const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">Catálogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`
-    
-    // FILTROS
     h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
         <button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button>
         <button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button>
@@ -2087,141 +1764,108 @@ function vNRs() {
         <button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saúde</button>
         <button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button>
     </div>`
-    
-    // BUSCA
     h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)">`
-    
-    // CARDS DAS NRS
-    h += `<div class="nr-g" id="nrGrid" style="grid-template-columns:1fr;">`
-    
+    h += `<div class="nr-g" id="nrGrid">`
     NRS.forEach(nr => {
-        h += `<div class="nr-card-full" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" id="nr-card-${nr.id}" style="background:var(--card-bg);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:12px;border:2px solid transparent;transition:.2s;">
-            
-            <!-- CABEÇALHO DO CARD -->
+        h += `<div class="nr-card-full" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" id="nr-card-${nr.id}">
             <div style="display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="verNR('${nr.id}')">
                 <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
-                <div style="flex:1;">
+                <div>
                     <div class="nr-num">NR ${nr.id}</div>
                     <div class="nr-nm">${nr.nm}</div>
                 </div>
-                <span style="font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
+                <span style="margin-left:auto;font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
             </div>
             
-            <!-- CONTEÚDO VINCULADO (VIDEOAULAS + MATERIAIS + PROVAS) -->
-            <div id="conteudo-nr-${nr.id}" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd2);">
-                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:30px;">
-                    <span style="font-size:11px;color:var(--tx3);margin-right:4px;"><i class="fas fa-paperclip"></i> Conteúdo:</span>
-                    <span id="loading-conteudo-${nr.id}" style="font-size:12px;color:var(--tx3);">
-                        <i class="fas fa-spinner fa-spin"></i> Carregando...
-                    </span>
-                </div>
+            <!-- CAIXA AZUL COM LINKS DO YOUTUBE E MATERIAIS -->
+            <div class="link-box" id="link-box-${nr.id}">
+                <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
+                <span id="loading-links-${nr.id}" style="font-size:12px;color:var(--tx3);">
+                    <i class="fas fa-spinner fa-spin"></i> Carregando...
+                </span>
             </div>
         </div>`
     })
-    
     h += `</div>`
-    
-    // CARREGA O CONTEÚDO DE CADA NR
-    setTimeout(() => carregarConteudoPorNR(), 500)
-    
+    setTimeout(() => carregarLinksNRS(), 500)
     return h
 }
 
-// ============================================================
-// FUNÇÃO PARA CARREGAR CONTEÚDO DE CADA NR
-// ============================================================
-async function carregarConteudoPorNR() {
+// FUNÇÃO PARA CARREGAR LINKS DE CADA NR
+async function carregarLinksNRS() {
     try {
         // Busca videoaulas
-        const { data: videoaulas, error: errVideos } = await sb
-            .from('videoaulas')
-            .select('id, nr_id, titulo, url_video, descricao, criado_em')
-            .order('criado_em', { ascending: false })
-        
-        if (errVideos) console.error('Erro ao carregar videoaulas:', errVideos)
-        
+        const { data: videoaulas } = await sbGetVideoaulas()
         // Busca materiais
-        const { data: materiais, error: errMateriais } = await sb
-            .from('materiais')
-            .select('id, nr_id, titulo, url, tipo, criado_em')
+        const { data: materiais } = await sbGetMateriais()
+        // Busca provas corrigidas
+        const { data: provas } = await sb.from('provas')
+            .select('*')
+            .eq('status', 'corrigido')
             .order('criado_em', { ascending: false })
-        
-        if (errMateriais) console.error('Erro ao carregar materiais:', errMateriais)
-        
-        // Busca provas
-        const { data: provas, error: errProvas } = await sb
-            .from('provas')
-            .select('id, nr_id, titulo, arquivo_url, status, criado_em')
-            .eq('status', 'corrigido') // Só mostra provas corrigidas/aprovadas
-            .order('criado_em', { ascending: false })
-        
-        if (errProvas) console.error('Erro ao carregar provas:', errProvas)
-        
-        // Para cada NR, monta o conteúdo
+
         NRS.forEach(nr => {
-            const container = document.getElementById(`conteudo-nr-${nr.id}`)
-            if (!container) return
-            
-            const loading = document.getElementById(`loading-conteudo-${nr.id}`)
+            const linkBox = document.getElementById(`link-box-${nr.id}`)
+            if (!linkBox) return
+
+            const loading = document.getElementById(`loading-links-${nr.id}`)
             if (loading) loading.remove()
-            
-            // Filtra conteúdo por NR
-            const videosNR = (videoaulas || []).filter(v => v.nr_id == nr.id)
-            const materiaisNR = (materiais || []).filter(m => m.nr_id == nr.id)
-            const provasNR = (provas || []).filter(p => p.nr_id == nr.id)
-            
-            // Monta os links
+
+            // Filtra conteúdo
+            const videosNR = (videoaulas || []).filter(v => String(v.nr_id) === String(nr.id))
+            const materiaisNR = (materiais || []).filter(m => String(m.nr_id) === String(nr.id))
+            const provasNR = (provas || []).filter(p => String(p.nr_id) === String(nr.id))
+
             let linksHtml = ''
-            
-            // Videoaulas
+
+            // Vídeos do YouTube
             videosNR.forEach(v => {
-                linksHtml += `<a href="${v.url_video}" target="_blank" class="btn btn-sm btn-p" style="font-size:10px;padding:3px 12px;margin:2px;" title="${v.descricao || v.titulo}">
-                    <i class="fas fa-play"></i> ${v.titulo.length > 25 ? v.titulo.substring(0, 25) + '...' : v.titulo}
+                const url = v.url_video || ''
+                // Converte link normal para embed se necessário
+                let embedUrl = url
+                if (url.includes('watch?v=')) {
+                    embedUrl = url.replace('watch?v=', 'embed/')
+                }
+                linksHtml += `<a href="${embedUrl}" target="_blank" class="btn-link youtube" title="${v.descricao || v.titulo}">
+                    <i class="fab fa-youtube"></i> ${v.titulo.length > 20 ? v.titulo.substring(0, 20) + '...' : v.titulo}
                 </a>`
             })
-            
+
             // Materiais
             materiaisNR.forEach(m => {
-                const icone = m.tipo === 'video' ? 'fa-video' : 'fa-file-pdf'
-                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="font-size:10px;padding:3px 12px;margin:2px;">
-                    <i class="fas ${icone}"></i> ${m.titulo.length > 25 ? m.titulo.substring(0, 25) + '...' : m.titulo}
+                linksHtml += `<a href="${m.url}" target="_blank" class="btn-link material">
+                    <i class="fas fa-file-pdf"></i> ${m.titulo.length > 20 ? m.titulo.substring(0, 20) + '...' : m.titulo}
                 </a>`
             })
-            
+
             // Provas
             provasNR.forEach(p => {
-                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn btn-sm" style="font-size:10px;padding:3px 12px;margin:2px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-                    <i class="fas fa-file-pdf"></i> Prova: ${p.titulo.length > 20 ? p.titulo.substring(0, 20) + '...' : p.titulo}
+                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn-link prova">
+                    <i class="fas fa-file-pdf"></i> Prova: ${p.titulo.length > 15 ? p.titulo.substring(0, 15) + '...' : p.titulo}
                 </a>`
             })
-            
+
             // Se não tem conteúdo
             if (!linksHtml) {
-                linksHtml = `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
+                linksHtml = `<span class="sem-conteudo"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
+                if (isAdmin() || isProf()) {
+                    linksHtml += ` <a href="#" onclick="nav('subir');event.preventDefault();" style="font-size:11px;color:var(--p);margin-left:8px;">
+                        <i class="fas fa-plus-circle"></i> Adicionar
+                    </a>`
+                }
             }
-            
-            // Atualiza o container
-            container.innerHTML = `
-                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-                    <span style="font-size:11px;color:var(--tx3);margin-right:4px;"><i class="fas fa-paperclip"></i> Conteúdo:</span>
-                    ${linksHtml}
-                    ${(isAdmin() || isProf()) ? `<span style="font-size:10px;color:var(--tx3);margin-left:4px;">
-                        <a href="#" onclick="nav('subir');event.preventDefault();" style="color:var(--p);">
-                            <i class="fas fa-plus-circle"></i> Adicionar
-                        </a>
-                    </span>` : ''}
-                </div>
+
+            // Atualiza a caixa azul
+            linkBox.innerHTML = `
+                <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
+                ${linksHtml}
             `
         })
-        
     } catch (error) {
-        console.error('Erro ao carregar conteúdo:', error)
+        console.error('Erro ao carregar links:', error)
     }
 }
 
-// ============================================================
-// FUNÇÕES DE FILTRO E VISUALIZAÇÃO
-// ============================================================
 function filterNR(c) { 
     $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
         e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' 
@@ -2248,7 +1892,11 @@ function verNR(id) {
             temConteudo = true
             linksHtml += `<div style="margin:8px 0;"><strong>🎬 Videoaulas:</strong><br>`
             conteudo.videos.forEach(v => {
-                linksHtml += `<a href="${v.url_video}" target="_blank" class="btn btn-sm btn-p" style="margin:4px 4px 4px 0;">▶ ${v.titulo}</a>`
+                let url = v.url_video || ''
+                if (url.includes('watch?v=')) {
+                    url = url.replace('watch?v=', 'embed/')
+                }
+                linksHtml += `<a href="${url}" target="_blank" class="btn btn-sm btn-p" style="margin:4px 4px 4px 0;background:#FF0000;color:#fff;"><i class="fab fa-youtube"></i> ${v.titulo}</a>`
             })
             linksHtml += `</div>`
         }
@@ -2257,8 +1905,7 @@ function verNR(id) {
             temConteudo = true
             linksHtml += `<div style="margin:8px 0;"><strong>📄 Materiais:</strong><br>`
             conteudo.materiais.forEach(m => {
-                const icone = m.tipo === 'video' ? 'fa-video' : 'fa-file-pdf'
-                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="margin:4px 4px 4px 0;"><i class="fas ${icone}"></i> ${m.titulo}</a>`
+                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="margin:4px 4px 4px 0;background:#1565C0;color:#fff;"><i class="fas fa-file-pdf"></i> ${m.titulo}</a>`
             })
             linksHtml += `</div>`
         }
@@ -2297,9 +1944,6 @@ function verNR(id) {
     })
 }
 
-// ============================================================
-// FUNÇÃO PARA BUSCAR CONTEÚDO DE UMA NR
-// ============================================================
 async function buscarConteudoNR(nrId) {
     try {
         const [videosRes, materiaisRes, provasRes] = await Promise.all([
@@ -2307,7 +1951,6 @@ async function buscarConteudoNR(nrId) {
             sb.from('materiais').select('id, nr_id, titulo, url, tipo, criado_em').eq('nr_id', nrId).order('criado_em', { ascending: false }),
             sb.from('provas').select('id, nr_id, titulo, arquivo_url, status, criado_em').eq('nr_id', nrId).eq('status', 'corrigido').order('criado_em', { ascending: false })
         ])
-        
         return {
             videos: videosRes.data || [],
             materiais: materiaisRes.data || [],
@@ -2317,163 +1960,6 @@ async function buscarConteudoNR(nrId) {
         console.error('Erro ao buscar conteúdo:', error)
         return { videos: [], materiais: [], provas: [] }
     }
-}
-
-// ============================================================
-// FUNÇÃO PARA CARREGAR LINKS DAS NRS DO BANCO
-// ============================================================
-async function carregarLinksNRs() {
-    try {
-        // Tenta buscar da tabela nrs se existir
-        const { data: nrs, error } = await sb
-            .from('nrs')
-            .select('id, link_video, link_material, link_prova')
-        
-        if (error) {
-            // Se a tabela não existir, apenas ignora
-            console.log('Tabela nrs não encontrada, usando dados locais')
-            return
-        }
-        
-        nrs.forEach(nr => {
-            const videoInput = document.getElementById(`link_video_${nr.id}`)
-            const materialInput = document.getElementById(`link_material_${nr.id}`)
-            const provaInput = document.getElementById(`link_prova_${nr.id}`)
-            
-            if (videoInput) videoInput.value = nr.link_video || ''
-            if (materialInput) materialInput.value = nr.link_material || ''
-            if (provaInput) provaInput.value = nr.link_prova || ''
-            
-            // Atualiza os links visuais
-            const card = document.getElementById(`nr-card-${nr.id}`)
-            if (card) {
-                const linksDiv = card.querySelector('.nr-links-visuais')
-                if (linksDiv) {
-                    const linkVideo = nr.link_video || ''
-                    const linkMaterial = nr.link_material || ''
-                    const linkProva = nr.link_prova || ''
-                    
-                    linksDiv.innerHTML = `
-                        ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
-                        ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
-                        ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
-                        ${!linkVideo && !linkMaterial && !linkProva && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
-                        ${!linkVideo && !linkMaterial && !linkProva && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
-                    `
-                }
-            }
-        })
-    } catch (error) {
-        console.log('Erro ao carregar links:', error)
-    }
-}
-
-// ============================================================
-// FUNÇÃO PARA SALVAR LINKS DA NR NO BANCO
-// ============================================================
-async function salvarLinksNR(nrId) {
-    try {
-        const videoLink = document.getElementById(`link_video_${nrId}`)?.value || ''
-        const materialLink = document.getElementById(`link_material_${nrId}`)?.value || ''
-        const provaLink = document.getElementById(`link_prova_${nrId}`)?.value || ''
-        
-        // Tenta salvar na tabela nrs
-        const { error } = await sb
-            .from('nrs')
-            .update({
-                link_video: videoLink,
-                link_material: materialLink,
-                link_prova: provaLink
-            })
-            .eq('id', nrId)
-        
-        if (error) {
-            // Se a tabela não existir, salva localmente
-            console.log('Tabela nrs não encontrada, salvando localmente')
-            const nr = NRS.find(n => n.id === nrId)
-            if (nr) {
-                nr.link_video = videoLink
-                nr.link_material = materialLink
-                nr.link_prova = provaLink
-            }
-            toast('✅ Links salvos localmente!', 'success')
-        } else {
-            toast('✅ Links salvos com sucesso!', 'success')
-        }
-        
-        // Atualiza a visualização dos links
-        const card = document.getElementById(`nr-card-${nrId}`)
-        if (card) {
-            const linksDiv = card.querySelector('.nr-links-visuais')
-            if (linksDiv) {
-                linksDiv.innerHTML = `
-                    ${videoLink ? `<a href="${videoLink}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
-                    ${materialLink ? `<a href="${materialLink}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
-                    ${provaLink ? `<a href="${provaLink}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
-                    ${!videoLink && !materialLink && !provaLink && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
-                    ${!videoLink && !materialLink && !provaLink && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
-                `
-            }
-        }
-        
-    } catch (error) {
-        console.error('Erro ao salvar links:', error)
-        toast('Erro ao salvar links', 'err')
-    }
-}
-
-// ============================================================
-// FUNÇÕES DE FILTRO E VISUALIZAÇÃO (MANTIDAS)
-// ============================================================
-function filterNR(c) { 
-    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
-        e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' 
-    }) 
-}
-
-function filterNRT(q) { 
-    q = q.toLowerCase(); 
-    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
-        e.style.display = e.dataset.s.includes(q) ? '' : 'none' 
-    }) 
-}
-
-function verNR(id) {
-    const nr = NRS.find(n => n.id === id)
-    if (!nr) return
-    
-    const linkVideo = nr.link_video || ''
-    const linkMaterial = nr.link_material || ''
-    const linkProva = nr.link_prova || ''
-    
-    let linksHtml = ''
-    if (linkVideo || linkMaterial || linkProva) {
-        linksHtml = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px;">
-            ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
-            ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s"><i class="fas fa-file-alt"></i> Material</a>` : ''}
-            ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
-        </div>`
-    }
-    
-    openMdl(`
-        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-            <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">
-                <i class="fas ${nr.ic}"></i>
-            </div>
-            <div>
-                <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div>
-                <h2 style="font-size:18px;font-weight:700">${nr.nm}</h2>
-            </div>
-        </div>
-        <p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">
-            Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.
-        </p>
-        ${linksHtml}
-        <button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()">
-            <i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}
-        </button>
-    `)
 }
 
 // ============================================================
@@ -2519,7 +2005,6 @@ function vBoletim() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">${r === 'aluno' ? 'Meu Boletim' : 'Gerenciar Notas'}</h2>`
     h += `<p class="wcs">${r === 'aluno' ? 'Acompanhe suas notas e progresso.' : 'Lance notas e observações dos alunos.'}</p>`
-    
     if (r === 'aluno') {
         h += `<div id="boletimAluno"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
         setTimeout(carregarBoletimAluno, 200)
@@ -2534,12 +2019,10 @@ async function carregarBoletimAluno() {
     const container = document.getElementById('boletimAluno')
     if (!container) return
     const { data: notas } = await sbGetNotasAluno(uid())
-    
     if (!notas || notas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-file-lines"></i><p>Nenhuma nota lançada ainda.</p></div>`
         return
     }
-    
     const media = notas.reduce((a, n) => a + Number(n.nota || 0), 0) / notas.length
     let h = `<div class="stats">${stC(media.toFixed(1), 'Média Geral', 'fa-chart-line')}${stC(notas.length, 'NRs Avaliadas', 'fa-list')}</div>`
     h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Observação</th><th>Data</th></tr></thead><tbody>`
@@ -2554,7 +2037,6 @@ async function carregarBoletimProfessor() {
     const container = document.getElementById('boletimProfessor')
     if (!container) return
     const { data: alunos } = await sbGetAlunos()
-    
     let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-filter"></i> Selecionar Aluno</div><button class="btn btn-p btn-sm" onclick="modalNota()"><i class="fas fa-plus"></i> Lançar Nota</button></div><select id="selAlunoN" class="search" style="margin:0;border-radius:var(--r)" onchange="renderNotasAl()"><option value="">Selecione um aluno...</option>${alunos.map(a => `<option value="${a.id}">${a.nome_completo} (${a.email})</option>`).join('')}</select></div><div id="notasAlC"></div>`
     h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Média de Notas por NR</h3><canvas id="chartMediasNR" height="200"></canvas></div></div>`
     container.innerHTML = h
@@ -2568,7 +2050,6 @@ async function renderNotasAl() {
     const { data: notas } = await sbGetNotasAluno(aid)
     const { data: alunos } = await sbGetAlunos()
     const al = alunos.find(u => u.id === aid)
-    
     let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-user-graduate"></i> ${al?.nome_completo || 'Aluno'}</div><button class="btn btn-p btn-sm" onclick="modalNota('${aid}')"><i class="fas fa-plus"></i> Lançar</button></div>`
     if (!notas || notas.length === 0) {
         h += `<div class="empty" style="padding:30px"><p>Nenhuma nota lançada.</p></div>`
@@ -2589,7 +2070,6 @@ async function modalNota(aid, notaIdEdit) {
         const { data: notas } = await sbGetNotasAluno(aid)
         nota = notas?.find(n => n.id === notaIdEdit)
     }
-    
     openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
         <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">${nota ? 'Editar' : 'Lançar'} Nota</h2>
         <form onsubmit="saveNota(event, '${aid || ''}', '${notaIdEdit || ''}')">
@@ -2609,12 +2089,10 @@ async function saveNota(e, aid, notaIdEdit) {
     const nrid = $('#nNR').value
     const nota = parseFloat($('#nVal').value)
     const obs = sanitizar($('#nObs').value.trim())
-    
     if (isNaN(nota) || nota < 0 || nota > 10) {
         toast('Nota deve ser entre 0 e 10', 'err')
         return
     }
-    
     if (notaIdEdit) {
         await sb.from('notas').update({ nota, obs }).eq('id', notaIdEdit)
         toast('Nota atualizada!', 'success')
@@ -2642,7 +2120,6 @@ function vProvas() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">${r === 'aluno' ? 'Minhas Provas' : 'Corrigir Provas'}</h2>`
-    
     if (r === 'aluno') {
         h += `<p class="wcs">Envie sua prova em PDF para correção.</p>`
         h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-upload"></i> Enviar Prova</div></div>
@@ -2672,14 +2149,11 @@ function vProvas() {
 async function sbGetProvasAluno(userId) {
     try {
         const { data, error } = await sb.from('provas')
-            .select('*')
-            .eq('usuario_id', userId)
+            .select('*').eq('usuario_id', userId)
             .order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    } catch (error) { return { data: null, error } }
 }
 
 async function enviarProva(e) {
@@ -2687,40 +2161,31 @@ async function enviarProva(e) {
     const nrId = $('#pNR').value
     const titulo = sanitizar($('#pTitulo').value.trim())
     const arquivo = $('#pArquivo').files[0]
-    
     if (!arquivo) { toast('Selecione um arquivo PDF', 'err'); return }
     if (arquivo.type !== 'application/pdf') { toast('Formato inválido. Envie um PDF.', 'err'); return }
     if (arquivo.size > 5 * 1024 * 1024) { toast('Arquivo muito grande. Máximo 5MB.', 'err'); return }
-    
     try {
         const path = `provas/${uid()}/${Date.now()}_${arquivo.name}`
         const { data: uploadData, error: uploadError } = await sb.storage.from(STORAGE_BUCKET).upload(path, arquivo)
         if (uploadError) throw uploadError
-        
         const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path)
-        
         const { data, error } = await sbEnviarProva(uid(), nrId, titulo, urlData.publicUrl)
         if (error) throw error
-        
         toast('Prova enviada com sucesso! Aguarde correção.', 'success')
         $('#pTitulo').value = ''
         $('#pArquivo').value = ''
         carregarMinhasProvas()
-    } catch (error) {
-        handleError(error)
-    }
+    } catch (error) { handleError(error) }
 }
 
 async function carregarMinhasProvas() {
     const container = document.getElementById('minhasProvas')
     if (!container) return
     const { data: provas } = await sbGetProvasAluno(uid())
-    
     if (!provas || provas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-file-pdf"></i><p>Nenhuma prova enviada.</p></div>`
         return
     }
-    
     let h = `<div class="tw"><table><thead><tr><th>NR</th><th>Título</th><th>Status</th><th>Nota</th><th>Data</th></tr></thead><tbody>`
     provas.forEach(p => {
         const statusCor = p.status === 'corrigido' ? 'bg-ok' : p.status === 'reprovado' ? 'bg-err' : 'bg-pendente'
@@ -2734,12 +2199,10 @@ async function carregarProvasPendentes() {
     const container = document.getElementById('provasPendentes')
     if (!container) return
     const { data: provas } = await sbGetProvasPendentes()
-    
     if (!provas || provas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-check-circle"></i><p>Todas as provas corrigidas!</p></div>`
         return
     }
-    
     let h = `<div class="tw"><table><thead><tr><th>Aluno</th><th>NR</th><th>Título</th><th>Ações</th></tr></thead><tbody>`
     provas.forEach(p => {
         h += `<tr>
@@ -2771,11 +2234,9 @@ function abrirCorrecao(provaId) {
 async function finalizarCorrecao(provaId, status) {
     const nota = parseFloat($('#corrNota').value)
     if (isNaN(nota) || nota < 0 || nota > 10) { toast('Nota inválida (0-10)', 'err'); return }
-    
     const statusFinal = status === 'aprovado' ? 'corrigido' : 'reprovado'
     const { error } = await sbCorrigirProva(provaId, nota, statusFinal)
     if (error) { handleError(error); return }
-    
     toast('Prova corrigida! Nota: ' + nota, 'success')
     closeMdl()
     carregarProvasPendentes()
@@ -2797,17 +2258,13 @@ function vPendentes() {
 async function carregarPendentes() {
     const container = document.getElementById('listaPendentes')
     if (!container) return
-    
     if (!S.user || !isAdmin()) {
         container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--tx3)">Acesso negado.</p>`
         return
     }
-
     const { data: pendentes, error } = await sbGetPendentes()
     if (error) { handleError(error); return }
-    
     const total = pendentes?.length || 0
-    
     if (total === 0) {
         container.innerHTML = `
             <div class="pnl" style="text-align:center;padding:40px">
@@ -2818,7 +2275,6 @@ async function carregarPendentes() {
         `
         return
     }
-
     let h = `<div class="pnl">
         <div class="pnl-h">
             <div class="pnl-t"><i class="fas fa-users"></i> ${total} usuário(s) aguardando</div>
@@ -2859,7 +2315,6 @@ function vCerts() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">Certificados</h2>`
-    
     if (r === 'aluno') {
         h += `<div id="certsAluno"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
         setTimeout(carregarCertsAluno, 200)
@@ -2874,7 +2329,6 @@ async function carregarCertsAluno() {
     const container = document.getElementById('certsAluno')
     if (!container) return
     const { data: certs } = await sbGetCertificadosAluno(uid())
-    
     let h = `<p class="wcs">Certificados emitidos para você.</p>`
     if (!certs || certs.length === 0) {
         h += `<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`
@@ -2891,7 +2345,6 @@ async function carregarCertsAdmin() {
     if (!container) return
     const { data: alunos } = await sbGetAlunos()
     const { data: certs } = await sb.from('certificados').select('*, profiles(nome_completo)').order('criado_em', { ascending: false })
-    
     let h = `<p class="wcs">Emita certificados para alunos.</p>`
     h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div>
         <div class="fld"><label>Aluno</label><select id="cAluno" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${alunos.map(a => `<option value="${a.id}">${a.nome_completo}</option>`).join('')}</select></div>
@@ -2983,19 +2436,17 @@ async function dlCert(id) {
 }
 
 // ============================================================
-// VIEW: SUBIR CONTEÚDO
+// VIEW: SUBIR CONTEÚDO (CORRIGIDO)
 // ============================================================
 function vSubirConteudo() {
     if (!isAdmin()) return vInicio()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<div class="god-hd"><h2><i class="fas fa-upload"></i> Subir Conteúdo</h2>
-        <p>Adicione videoaulas ou materiais de apoio.</p></div>`
-    
+        <p>Adicione videoaulas ou materiais de apoio. O conteúdo aparecerá automaticamente no card da NR.</p></div>`
     h += `<div class="tabs" style="margin-bottom:20px">
         <button class="tab-b on" onclick="switchSubirTab('video',this)"><i class="fas fa-video"></i> Videoaula</button>
         <button class="tab-b" onclick="switchSubirTab('material',this)"><i class="fas fa-file-alt"></i> Material</button>
     </div>`
-    
     h += `<div class="tab-c on" id="tabVideo">
         <div class="pnl">
             <form id="frmSubirVideo" onsubmit="subirVideo(event)">
@@ -3009,14 +2460,13 @@ function vSubirConteudo() {
                     <textarea id="videoDesc" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical" placeholder="Descrição da aula..."></textarea>
                 </div>
                 <div class="fld"><label>Link do YouTube</label>
-                    <input type="url" id="videoUrl" placeholder="https://www.youtube.com/embed/VIDEO_ID" required>
-                    <p style="font-size:11px;color:var(--tx3);margin-top:4px">Use o link de incorporação (embed) do YouTube</p>
+                    <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=VIDEO_ID" required>
+                    <p style="font-size:11px;color:var(--tx3);margin-top:4px">Use o link normal do YouTube (ex: https://www.youtube.com/watch?v=xxxx)</p>
                 </div>
                 <button type="submit" class="btn btn-p btn-block"><i class="fas fa-plus"></i> Adicionar Videoaula</button>
             </form>
         </div>
     </div>`
-    
     h += `<div class="tab-c" id="tabMaterial">
         <div class="pnl">
             <form id="frmSubirMaterial" onsubmit="subirMaterial(event)">
@@ -3036,9 +2486,7 @@ function vSubirConteudo() {
             </form>
         </div>
     </div>`
-    
     h += `<div id="conteudoLista"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando conteúdos...</p></div></div>`
-    
     setTimeout(carregarConteudosAdmin, 200)
     return h
 }
@@ -3056,15 +2504,13 @@ async function subirVideo(e) {
     const titulo = sanitizar($('#videoTitulo').value.trim())
     const descricao = sanitizar($('#videoDesc').value.trim())
     const url = $('#videoUrl').value.trim()
-    
     if (!nrId || !titulo || !url) { toast('Preencha todos os campos', 'err'); return }
     if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
         toast('Insira um link válido do YouTube', 'err')
         return
     }
-    
     const { data, error } = await sbCriarVideoaula({
-        nr_id: nrId,
+        nr_id: parseInt(nrId),
         titulo: titulo,
         descricao: descricao,
         url_video: url,
@@ -3072,14 +2518,13 @@ async function subirVideo(e) {
         ordem: 0,
         criado_por: uid()
     })
-    
     if (error) { handleError(error); return }
-    
-    toast('Videoaula adicionada com sucesso!', 'success')
+    toast('✅ Videoaula adicionada com sucesso!', 'success')
     $('#videoTitulo').value = ''
     $('#videoDesc').value = ''
     $('#videoUrl').value = ''
     carregarConteudosAdmin()
+    carregarLinksNRS()
 }
 
 async function subirMaterial(e) {
@@ -3088,42 +2533,35 @@ async function subirMaterial(e) {
     const titulo = sanitizar($('#materialTitulo').value.trim())
     const descricao = sanitizar($('#materialDesc').value.trim())
     const url = $('#materialUrl').value.trim()
-    
     if (!nrId || !titulo || !url) { toast('Preencha todos os campos', 'err'); return }
-    
     const { data, error } = await sbCriarMaterial({
-        nr_id: nrId,
+        nr_id: parseInt(nrId),
         titulo: titulo,
         descricao: descricao,
         url: url,
         tipo: 'material',
         criado_por: uid()
     })
-    
     if (error) { handleError(error); return }
-    
-    toast('Material adicionado com sucesso!', 'success')
+    toast('✅ Material adicionado com sucesso!', 'success')
     $('#materialTitulo').value = ''
     $('#materialDesc').value = ''
     $('#materialUrl').value = ''
     carregarConteudosAdmin()
+    carregarLinksNRS()
 }
 
 async function carregarConteudosAdmin() {
     const container = document.getElementById('conteudoLista')
     if (!container) return
-    
     const { data: videos } = await sbGetVideoaulas()
     const { data: materiais } = await sbGetMateriais()
-    
     if ((!videos || videos.length === 0) && (!materiais || materiais.length === 0)) {
         container.innerHTML = `<div class="empty"><i class="fas fa-upload"></i><p>Nenhum conteúdo cadastrado ainda.</p></div>`
         return
     }
-    
     let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Conteúdos Cadastrados</div></div>`
     h += `<div class="tw"><table><thead><tr><th>Tipo</th><th>NR</th><th>Título</th><th>Link</th><th>Criado por</th></tr></thead><tbody>`
-    
     if (videos) {
         videos.forEach(v => {
             h += `<tr>
@@ -3135,7 +2573,6 @@ async function carregarConteudosAdmin() {
             </tr>`
         })
     }
-    
     if (materiais) {
         materiais.forEach(m => {
             h += `<tr>
@@ -3147,7 +2584,6 @@ async function carregarConteudosAdmin() {
             </tr>`
         })
     }
-    
     h += `</tbody></table></div></div>`
     container.innerHTML = h
 }
@@ -3163,7 +2599,6 @@ function vAdmin() {
     h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuição de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`
     h += `<div id="adminUsers"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando usuários...</p></div></div>`
     h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`
-    
     setTimeout(carregarAdminData, 200)
     return h
 }
@@ -3185,7 +2620,6 @@ async function carregarAdminData() {
             </div>
         `
     }
-    
     const usersDiv = document.getElementById('adminUsers')
     if (usersDiv && users) {
         let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuários (${users.length})</div></div><input class="search" placeholder="Buscar usuário..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Status</th><th>Ações</th></tr></thead><tbody id="uTB">`
@@ -3209,7 +2643,6 @@ async function carregarAdminData() {
         h += `</tbody></table></div></div>`
         usersDiv.innerHTML = h
     }
-    
     setTimeout(drawChartAdmin, 100)
 }
 
@@ -3303,7 +2736,6 @@ async function drawChartAdmin() {
     const cv1 = document.getElementById('chartAdmProg'), cv2 = document.getElementById('chartAdmRoles')
     const { data: ranking } = await sbGetRankingAlunos()
     const { data: users } = await sbGetAllUsers()
-    
     if (cv1 && ranking) {
         let p0 = 0, p1 = 0, p2 = 0, p3 = 0
         ranking.forEach(a => {
@@ -3324,13 +2756,11 @@ async function drawChartAdmin() {
     }
 }
 
-console.log('🚀 SulSafe - Versão Completa com Jitsi + WhatsApp!')
-console.log('✅ Jitsi Meet no lugar do Google Meet')
-console.log('✅ WhatsApp pós-inscrição (55 3997060864)')
+console.log('🚀 SulSafe - Versão Completa Corrigida!')
 console.log('✅ Erro 400 corrigido (ID BIGINT)')
-console.log('✅ Links nos cards das NRs')
-console.log('✅ Certificados com aprovação do admin')
-console.log('✅ Botão WhatsApp flutuante')
+console.log('✅ Caixa azul com links nos cards')
+console.log('✅ WhatsApp integrado')
+console.log('✅ Sistema completo de NRs')
 </script>
 </body>
 </html>
