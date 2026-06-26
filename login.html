@@ -2068,21 +2068,246 @@ async function encerrarSalaSupabase(id) {
 // ============================================================
 // VIEW: NRs
 // ============================================================
+// ============================================================
+// VIEW: NRs (COM LINKS PARA ADMIN E ALUNO)
+// ============================================================
 function vNRs() {
+    const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">Catálogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`
-    h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button><button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button><button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Específicas</button><button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saúde</button><button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button></div>`
-    h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)"><div class="nr-g" id="nrGrid">`
-    NRS.forEach(nr => { h += `<div class="nr-c" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" onclick="verNR('${nr.id}')"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div></div>` })
+    
+    // FILTROS
+    h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button>
+        <button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button>
+        <button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Específicas</button>
+        <button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saúde</button>
+        <button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button>
+    </div>`
+    
+    // BUSCA
+    h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)">`
+    
+    // CARDS DAS NRS
+    h += `<div class="nr-g" id="nrGrid" style="grid-template-columns:1fr;">`
+    
+    NRS.forEach(nr => {
+        // Busca os links salvos (se houver)
+        const linkVideo = nr.link_video || ''
+        const linkMaterial = nr.link_material || ''
+        const linkProva = nr.link_prova || ''
+        
+        h += `<div class="nr-card-full" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" id="nr-card-${nr.id}" style="background:var(--card-bg);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:12px;border:2px solid transparent;transition:.2s;">
+            
+            <!-- CABEÇALHO DO CARD (CLICÁVEL) -->
+            <div style="display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="verNR('${nr.id}')">
+                <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
+                <div style="flex:1;">
+                    <div class="nr-num">NR ${nr.id}</div>
+                    <div class="nr-nm">${nr.nm}</div>
+                </div>
+                <span style="font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
+            </div>
+            
+            <!-- LINKS - SÓ APARECE PARA ADMIN/PROFESSOR -->
+            ${isAdmin() || isProf() ? `
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd2);">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+                    <div class="fld" style="margin:0;">
+                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">🎬 Link Vídeo</label>
+                        <input type="url" id="link_video_${nr.id}" value="${linkVideo}" placeholder="https://youtube.com/..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
+                    </div>
+                    <div class="fld" style="margin:0;">
+                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">📄 Link Material</label>
+                        <input type="url" id="link_material_${nr.id}" value="${linkMaterial}" placeholder="https://drive.google.com/..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
+                    </div>
+                    <div class="fld" style="margin:0;">
+                        <label style="font-size:10px;font-weight:600;color:var(--tx3);">📝 Link Prova</label>
+                        <input type="url" id="link_prova_${nr.id}" value="${linkProva}" placeholder="https://..." style="width:100%;padding:6px 10px;background:var(--ip);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx);">
+                    </div>
+                    <div class="fld" style="margin:0;display:flex;align-items:flex-end;">
+                        <button class="btn btn-sm btn-p" onclick="salvarLinksNR('${nr.id}')" style="width:100%;padding:6px 10px;font-size:11px;">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
+            
+            <!-- LINKS VISUAIS PARA O ALUNO (E ADMIN TAMBÉM VÊ) -->
+            <div class="nr-links-visuais" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
+                ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
+                ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
+                ${!linkVideo && !linkMaterial && !linkProva && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
+                ${!linkVideo && !linkMaterial && !linkProva && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
+            </div>
+        </div>`
+    })
+    
     h += `</div>`
+    
+    // CARREGA OS LINKS SALVOS DO BANCO (se tiver tabela nrs)
+    setTimeout(() => carregarLinksNRs(), 300)
+    
     return h
 }
-function filterNR(c) { $$('#nrGrid .nr-c').forEach(e => { e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' }) }
-function filterNRT(q) { q = q.toLowerCase(); $$('#nrGrid .nr-c').forEach(e => { e.style.display = e.dataset.s.includes(q) ? '' : 'none' }) }
+
+// ============================================================
+// FUNÇÃO PARA CARREGAR LINKS DAS NRS DO BANCO
+// ============================================================
+async function carregarLinksNRs() {
+    try {
+        // Tenta buscar da tabela nrs se existir
+        const { data: nrs, error } = await sb
+            .from('nrs')
+            .select('id, link_video, link_material, link_prova')
+        
+        if (error) {
+            // Se a tabela não existir, apenas ignora
+            console.log('Tabela nrs não encontrada, usando dados locais')
+            return
+        }
+        
+        nrs.forEach(nr => {
+            const videoInput = document.getElementById(`link_video_${nr.id}`)
+            const materialInput = document.getElementById(`link_material_${nr.id}`)
+            const provaInput = document.getElementById(`link_prova_${nr.id}`)
+            
+            if (videoInput) videoInput.value = nr.link_video || ''
+            if (materialInput) materialInput.value = nr.link_material || ''
+            if (provaInput) provaInput.value = nr.link_prova || ''
+            
+            // Atualiza os links visuais
+            const card = document.getElementById(`nr-card-${nr.id}`)
+            if (card) {
+                const linksDiv = card.querySelector('.nr-links-visuais')
+                if (linksDiv) {
+                    const linkVideo = nr.link_video || ''
+                    const linkMaterial = nr.link_material || ''
+                    const linkProva = nr.link_prova || ''
+                    
+                    linksDiv.innerHTML = `
+                        ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
+                        ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
+                        ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
+                        ${!linkVideo && !linkMaterial && !linkProva && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
+                        ${!linkVideo && !linkMaterial && !linkProva && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
+                    `
+                }
+            }
+        })
+    } catch (error) {
+        console.log('Erro ao carregar links:', error)
+    }
+}
+
+// ============================================================
+// FUNÇÃO PARA SALVAR LINKS DA NR NO BANCO
+// ============================================================
+async function salvarLinksNR(nrId) {
+    try {
+        const videoLink = document.getElementById(`link_video_${nrId}`)?.value || ''
+        const materialLink = document.getElementById(`link_material_${nrId}`)?.value || ''
+        const provaLink = document.getElementById(`link_prova_${nrId}`)?.value || ''
+        
+        // Tenta salvar na tabela nrs
+        const { error } = await sb
+            .from('nrs')
+            .update({
+                link_video: videoLink,
+                link_material: materialLink,
+                link_prova: provaLink
+            })
+            .eq('id', nrId)
+        
+        if (error) {
+            // Se a tabela não existir, salva localmente
+            console.log('Tabela nrs não encontrada, salvando localmente')
+            const nr = NRS.find(n => n.id === nrId)
+            if (nr) {
+                nr.link_video = videoLink
+                nr.link_material = materialLink
+                nr.link_prova = provaLink
+            }
+            toast('✅ Links salvos localmente!', 'success')
+        } else {
+            toast('✅ Links salvos com sucesso!', 'success')
+        }
+        
+        // Atualiza a visualização dos links
+        const card = document.getElementById(`nr-card-${nrId}`)
+        if (card) {
+            const linksDiv = card.querySelector('.nr-links-visuais')
+            if (linksDiv) {
+                linksDiv.innerHTML = `
+                    ${videoLink ? `<a href="${videoLink}" target="_blank" class="btn btn-sm btn-p" style="font-size:11px;padding:4px 14px;"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
+                    ${materialLink ? `<a href="${materialLink}" target="_blank" class="btn btn-sm btn-s" style="font-size:11px;padding:4px 14px;"><i class="fas fa-file-alt"></i> Material</a>` : ''}
+                    ${provaLink ? `<a href="${provaLink}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:4px 14px;background:#E65100;color:#fff;border:none;border-radius:6px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
+                    ${!videoLink && !materialLink && !provaLink && role() === 'aluno' ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-clock"></i> Conteúdo em breve</span>` : ''}
+                    ${!videoLink && !materialLink && !provaLink && (isAdmin() || isProf()) ? `<span style="font-size:12px;color:var(--tx3);"><i class="fas fa-info-circle"></i> Adicione links acima</span>` : ''}
+                `
+            }
+        }
+        
+    } catch (error) {
+        console.error('Erro ao salvar links:', error)
+        toast('Erro ao salvar links', 'err')
+    }
+}
+
+// ============================================================
+// FUNÇÕES DE FILTRO E VISUALIZAÇÃO (MANTIDAS)
+// ============================================================
+function filterNR(c) { 
+    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
+        e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' 
+    }) 
+}
+
+function filterNRT(q) { 
+    q = q.toLowerCase(); 
+    $$('#nrGrid .nr-card-full, #nrGrid .nr-c').forEach(e => { 
+        e.style.display = e.dataset.s.includes(q) ? '' : 'none' 
+    }) 
+}
 
 function verNR(id) {
     const nr = NRS.find(n => n.id === id)
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0"><i class="fas ${nr.ic}"></i></div><div><div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div><h2 style="font-size:18px;font-weight:700">${nr.nm}</h2></div></div><p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.</p><button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()"><i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}</button>`)
+    if (!nr) return
+    
+    const linkVideo = nr.link_video || ''
+    const linkMaterial = nr.link_material || ''
+    const linkProva = nr.link_prova || ''
+    
+    let linksHtml = ''
+    if (linkVideo || linkMaterial || linkProva) {
+        linksHtml = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px;">
+            ${linkVideo ? `<a href="${linkVideo}" target="_blank" class="btn btn-sm btn-p"><i class="fas fa-play"></i> Assistir Aula</a>` : ''}
+            ${linkMaterial ? `<a href="${linkMaterial}" target="_blank" class="btn btn-sm btn-s"><i class="fas fa-file-alt"></i> Material</a>` : ''}
+            ${linkProva ? `<a href="${linkProva}" target="_blank" class="btn btn-sm" style="background:#E65100;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;"><i class="fas fa-file-pdf"></i> Prova</a>` : ''}
+        </div>`
+    }
+    
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+            <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">
+                <i class="fas ${nr.ic}"></i>
+            </div>
+            <div>
+                <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div>
+                <h2 style="font-size:18px;font-weight:700">${nr.nm}</h2>
+            </div>
+        </div>
+        <p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">
+            Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.
+        </p>
+        ${linksHtml}
+        <button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()">
+            <i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}
+        </button>
+    `)
 }
 
 // ============================================================
