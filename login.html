@@ -404,21 +404,22 @@ function closeNotif() { $('#notifPopup').classList.remove('show') }
 
 // USUÁRIOS
 async function sbGetUser(id) {
-    const { data, error } = await sb.from('profiles').select('*').eq('id', id).single()
+    const { data, error } = await sb.from('profiles')
+      .select('id, nome_completo, email, role, status, created_at') // tira senha_hash
+      .eq('id', id)
+      .single()
     return { data, error }
 }
 
 async function sbGetUserByEmail(email) {
-    const { data, error } = await sb.from('profiles').select('*').eq('email', email).single()
+    const { data, error } = await sb.from('profiles')
+      .select('id, nome_completo, email, role, status') // tira senha_hash e *
+      .eq('email', email)
+      .single()
     return { data, error }
 }
 
-async function sbCreateUser(nome, email, senha, role = 'aluno') {
-    const { data, error } = await sb.from('profiles').insert({
-        nome, email, senha_hash: senha, role, status: 'pendente'
-    }).select().single()
-    return { data, error }
-}
+// TIREI A } SOBRANDO DAQUI ^^^
 
 async function sbUpdateUser(id, dados) {
     const { data, error } = await sb.from('profiles').update(dados).eq('id', id).select().single()
@@ -426,17 +427,17 @@ async function sbUpdateUser(id, dados) {
 }
 
 async function sbGetAllUsers() {
-    const { data, error } = await sb.from('profiles').select('*').order('nome')
+    const { data, error } = await sb.from('profiles').select('id, nome_completo, email, role, status, created_at').order('nome_completo') // * virou isso e nome virou nome_completo
     return { data, error }
 }
 
 async function sbGetAlunos() {
-    const { data, error } = await sb.from('profiles').select('*').eq('role', 'aluno').order('nome')
+    const { data, error } = await sb.from('profiles').select('id, nome_completo, email, role, status, created_at').eq('role', 'aluno').order('nome_completo') // * virou isso e nome virou nome_completo
     return { data, error }
 }
 
 async function sbGetPendentes() {
-    const { data, error } = await sb.from('profiles').select('id, nome, email, created_at').eq('status', 'pendente').eq('role', 'aluno').order('created_at', { ascending: true })
+    const { data, error } = await sb.from('profiles').select('id, nome_completo, email, created_at').eq('status', 'pendente').eq('role', 'aluno').order('created_at', { ascending: true }) // nome virou nome_completo
     return { data, error }
 }
 
@@ -444,7 +445,6 @@ async function sbLiberarUsuario(id) {
     const { data, error } = await sb.from('profiles').update({ status: 'ativo' }).eq('id', id).select().single()
     return { data, error }
 }
-
 // VIDEOAULAS
 async function sbGetVideoaulas(nrId = null) {
     let query = sb.from('videoaulas').select('*, profiles(nome)')
