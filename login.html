@@ -625,24 +625,43 @@ $('#frmCad').addEventListener('submit', async function(e) {
     
     try {
         const role = email === ADMIN_EMAIL ? 'admin' : 'aluno'
-        const { data: user, error } = await sbCreateUser(nome, email, p1, role)
-        if (error) throw new Error(error.message)
         
+        // 1. Cria no Auth do Supabase
+        const { data: authData, error: authErr } = await sb.auth.signUp({ 
+          email, 
+          password: p1,
+          options: { 
+            data: { nome_completo: nome, role: role } // Manda nome e role pro Trigger
+          }
+        })
+        if (authErr) throw new Error(authErr.message)
+        
+        const userId = authData.user.id
+
+        // 2. Se for admin, libera na hora. Se for aluno, fica pendente
         if (role === 'admin') {
-            await sbUpdateUser(user.id, { status: 'ativo' })
+            await sbUpdateUser(userId, { status: 'ativo' })
         }
-        
-        S.user = user
-        localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        loadCfg()
-        enterDash()
-        toast(role === 'admin' ? 'Conta admin criada!' : 'Cadastro realizado! Aguarde aprovação.')
+
+        // 3. Busca o perfil que o Trigger criou
+        const { data: user } = await sbGetUser(userId)
+
+        if (role === 'admin') {
+            S.user = user
+            localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
+            localStorage.setItem('ss_user', JSON.stringify(user))
+            loadCfg()
+            enterDash()
+            toast('Conta admin criada!')
+        } else {
+            toast('Cadastro realizado! Aguarde aprovação.')
+            showScreen('loginScreen') // Manda de volta pro login
+        }
+
     } catch (error) {
         toast(error.message, 'err')
     }
 })
-
 // ============================================================
 // LOGOUT
 // ============================================================
