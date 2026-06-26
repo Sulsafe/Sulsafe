@@ -322,42 +322,52 @@ body.t-escuro { --p: #66BB6A; --p2: #81C784; --p3: #388E3C; --bg: #121212; --tx:
 <script>
 /*
 =============================================================
-  SULSAFE — LOGIN.HTML (VERSÃO CORRIGIDA)
-  Landing page = index.html (NÃO mexer)
-  Dashboard   = login.html (este arquivo)
+  SULSAFE — VERSÃO COMPLETA COM SUPABASE 100% INTEGRADO
 =============================================================
 */
 
-const LANDING_URL = 'index.html';
-const MP_KEY = 'TEST-8e4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c';
-const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com';
+// ============================================================
+// CONFIGURAÇÕES - SUBSTITUA COM SUAS CREDENCIAIS
+// ============================================================
+const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'        // ← SUBSTITUA
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'            // ← SUBSTITUA
+const MP_PUBLIC_KEY = 'APP_USR-7nheV5y1lCsdRV0p20n9suzz6FnLelwo'
 
+const LANDING_URL = 'index.html'
+const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
+
+// ============================================================
+// SUPABASE CLIENT
+// ============================================================
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// ============================================================
+// DADOS GLOBAIS
+// ============================================================
 const S = {
-    user: null, view: 'inicio', prevView: null,
-    users: JSON.parse(localStorage.getItem('ss_users') || '[]'),
-    salas: JSON.parse(localStorage.getItem('ss_salas') || '[]'),
-    notas: JSON.parse(localStorage.getItem('ss_notas') || '[]'),
-    boletos: JSON.parse(localStorage.getItem('ss_boletos') || '[]'),
-    certs: JSON.parse(localStorage.getItem('ss_certs') || '[]'),
-    aulas: JSON.parse(localStorage.getItem('ss_aulas') || '[]'),
-    notifs: JSON.parse(localStorage.getItem('ss_notifs') || '[]'),
+    user: null, 
+    view: 'inicio', 
+    prevView: null,
     cfg: JSON.parse(localStorage.getItem('ss_cfg') || '{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true}')
-};
+}
 
-function save(k, v) { localStorage.setItem('ss_' + k, JSON.stringify(v)); }
-function saveAll() { ['users', 'salas', 'notas', 'boletos', 'certs', 'aulas', 'notifs', 'cfg'].forEach(k => save(k, S[k])); }
+// ============================================================
+// FUNÇÕES AUXILIARES
+// ============================================================
+const role = () => S.user?.role || 'aluno'
+const isAdmin = () => role() === 'admin' || S.user?.email === ADMIN_EMAIL
+const isProf = () => role() === 'professor'
+const canManage = () => isAdmin() || isProf()
+const uid = () => S.user?.id
+const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—'
+const fmtM = v => v != null ? 'R$ ' + Number(v).toFixed(2).replace('.', ',') : 'R$ 0,00'
+const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6)
+const genDigitable = () => { let s = ''; for (let i = 0; i < 47; i++) s += Math.random() > .3 ? String(Math.floor(Math.random() * 10)) : '.'; return s; }
+const genPix = () => '00020126580014br.gov.bcb.pix0136' + Math.random().toString(36).substr(2, 36).toUpperCase() + '5204000053039865802BR5925SULSAFE TREINAMENTOS LTDA6009SAO PAULO62070503***6304' + Math.random().toString(16).substr(2, 4).toUpperCase()
 
-const role = () => S.user?.role || 'aluno';
-const isAdmin = () => role() === 'admin' || S.user?.email === ADMIN_EMAIL;
-const isProf = () => role() === 'professor';
-const canManage = () => isAdmin() || isProf();
-const uid = () => S.user?.id;
-const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
-const fmtM = v => v != null ? 'R$ ' + Number(v).toFixed(2).replace('.', ',') : 'R$ 0,00';
-const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-const genDigitable = () => { let s = ''; for (let i = 0; i < 47; i++) s += Math.random() > .3 ? String(Math.floor(Math.random() * 10)) : '.'; return s; };
-const genPix = () => '00020126580014br.gov.bcb.pix0136' + Math.random().toString(36).substr(2, 36).toUpperCase() + '5204000053039865802BR5925SULSAFE TREINAMENTOS LTDA6009SAO PAULO62070503***6304' + Math.random().toString(16).substr(2, 4).toUpperCase();
-
+// ============================================================
+// NRs (38 Normas Regulamentadoras)
+// ============================================================
 const NRS = [
     { id: '1', nm: 'Disposicoes Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
     { id: '2', nm: 'Inspecao Previa', cat: 'geral', ic: 'fa-magnifying-glass' },
@@ -397,261 +407,638 @@ const NRS = [
     { id: '36', nm: 'Capacitacao e Treinamento', cat: 'geral', ic: 'fa-graduation-cap' },
     { id: '37', nm: 'Seguranca em Maquinas', cat: 'especifico', ic: 'fa-gear' },
     { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
-];
+]
 
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
+// ============================================================
+// DOM HELPERS
+// ============================================================
+const $ = s => document.querySelector(s)
+const $$ = s => document.querySelectorAll(s)
 
 function toast(m, t = 'ok') {
-    const e = document.createElement('div');
-    e.className = 'toast ' + t;
-    e.textContent = m;
-    $('#toast').appendChild(e);
-    setTimeout(() => { e.style.opacity = '0'; e.style.transform = 'translateY(10px)'; e.style.transition = '.3s'; setTimeout(() => e.remove(), 300); }, 3500);
+    const e = document.createElement('div')
+    e.className = 'toast ' + t
+    e.textContent = m
+    $('#toast').appendChild(e)
+    setTimeout(() => { e.style.opacity = '0'; e.style.transform = 'translateY(10px)'; e.style.transition = '.3s'; setTimeout(() => e.remove(), 300) }, 3500)
 }
 
-function showT(id) { $$('.t').forEach(t => t.classList.remove('on')); $('#' + id).classList.add('on'); }
-function openMdl(h) { $('#mdlBox').innerHTML = h; $('#mdlBg').classList.add('on'); }
-function closeMdl() { $('#mdlBg').classList.remove('on'); }
-$('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) closeMdl(); });
-function closeNotif() { $('#notifPopup').classList.remove('show'); }
+function showT(id) { $$('.t').forEach(t => t.classList.remove('on')); $('#' + id).classList.add('on') }
+function openMdl(h) { $('#mdlBox').innerHTML = h; $('#mdlBg').classList.add('on') }
+function closeMdl() { $('#mdlBg').classList.remove('on') }
+$('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) closeMdl() })
+function closeNotif() { $('#notifPopup').classList.remove('show') }
 
-/* ============================================================
-   AUTH — LOGIN / CADASTRO
-   ============================================================ */
-$('#frmLogin').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = $('#lEmail').value.trim().toLowerCase();
-    const pass = $('#lPass').value;
-    let u = S.users.find(x => x.email === email && x.pass === pass);
-    
-    if (!u) {
-        if (email === ADMIN_EMAIL) {
-            u = { id: genId(), nome: 'Administrador SulSafe', email, pass, role: 'admin', created: Date.now() };
-            S.users.push(u); 
-            save('users', S.users);
-        } else { 
-            toast('Email ou senha incorretos', 'err'); 
-            return; 
-        }
-    }
-    
-    S.user = u;
-    
-    if (S.user.email === ADMIN_EMAIL) {
-        S.user.role = 'admin';
-        const idx = S.users.findIndex(x => x.id === S.user.id);
-        if(idx >= 0) S.users[idx].role = 'admin';
-        save('users', S.users);
-    }
-    
-    localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
-    loadCfg();
-    enterDash();
-    toast('Bem-vindo(a), ' + u.nome + '!');
-});
+// ============================================================
+// ============================================================
+// SUPABASE CRUD COMPLETO
+// ============================================================
+// ============================================================
 
-$('#frmCad').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nome = $('#cNome').value.trim(), email = $('#cEmail').value.trim().toLowerCase();
-    const p1 = $('#cPass').value, p2 = $('#cPass2').value;
-    if (p1 !== p2) { toast('As senhas nao coincidem', 'err'); return; }
-    if (S.users.find(x => x.email === email)) { toast('Email ja cadastrado', 'err'); return; }
-    const u = { id: genId(), nome, email, pass: p1, role: 'aluno', created: Date.now() };
-    S.users.push(u); 
-    save('users', S.users);
-    S.user = u;
-    
-    localStorage.setItem('ss_session', JSON.stringify({ id: u.id }));
-    
-    if (S.user.email === ADMIN_EMAIL) {
-        S.user.role = 'admin';
-        const idx = S.users.findIndex(x => x.id === S.user.id);
-        if(idx >= 0) S.users[idx].role = 'admin';
-        save('users', S.users);
-    }
-    
-    loadCfg();
-    enterDash();
-    toast('Conta criada com sucesso!');
-});
-
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-function logout() {
-    S.user = null;
-    localStorage.removeItem('ss_session');
-    destroyCharts();
-    window.location.href = LANDING_URL;
+// --------------------------------------------
+// USUÁRIOS
+// --------------------------------------------
+async function sbGetUser(id) {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', id)
+        .single()
+    return { data, error }
 }
 
-/* ============================================================
-   AUTO-LOGIN
-   ============================================================ */
-(function() {
+async function sbGetUserByEmail(email) {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email)
+        .single()
+    return { data, error }
+}
+
+async function sbCreateUser(nome, email, senha, role = 'aluno') {
+    const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+            nome: nome,
+            email: email,
+            senha_hash: senha,
+            role: role
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbUpdateUser(id, dados) {
+    const { data, error } = await supabase
+        .from('profiles')
+        .update(dados)
+        .eq('id', id)
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbGetAllUsers() {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('nome')
+    return { data, error }
+}
+
+async function sbGetAlunos() {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'aluno')
+        .order('nome')
+    return { data, error }
+}
+
+// --------------------------------------------
+// PROGRESSO_AULAS
+// --------------------------------------------
+async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
+    const { data, error } = await supabase
+        .from('progresso_aulas')
+        .upsert({
+            user_id: userId,
+            aula_id: aulaId,
+            assistiu_segundos: segundos,
+            concluído: concluido,
+            ultima_atualizacao: new Date().toISOString()
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbGetProgressoUsuario(userId) {
+    const { data, error } = await supabase
+        .from('progresso_aulas')
+        .select('*, videoaulas(*)')
+        .eq('user_id', userId)
+        .order('ultima_atualizacao', { ascending: false })
+    return { data, error }
+}
+
+async function sbGetProgressoPorAula(userId, aulaId) {
+    const { data, error } = await supabase
+        .from('progresso_aulas')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('aula_id', aulaId)
+        .single()
+    return { data, error }
+}
+
+async function sbGetProgressoPorNR(userId) {
+    const { data, error } = await supabase
+        .from('view_progresso_aluno')
+        .select('*')
+        .eq('usuario_id', userId)
+        .single()
+    return { data, error }
+}
+
+// --------------------------------------------
+// VIDEOAULAS
+// --------------------------------------------
+async function sbGetVideoaulas(nrId = null) {
+    let query = supabase.from('videoaulas').select('*')
+    if (nrId) query = query.eq('nr_id', nrId)
+    const { data, error } = await query.order('ordem', { ascending: true })
+    return { data, error }
+}
+
+async function sbCriarVideoaula(videoaula) {
+    const { data, error } = await supabase
+        .from('videoaulas')
+        .insert(videoaula)
+        .select()
+        .single()
+    return { data, error }
+}
+
+// --------------------------------------------
+// NOTAS
+// --------------------------------------------
+async function sbGetNotasAluno(userId) {
+    const { data, error } = await supabase
+        .from('notas')
+        .select('*')
+        .eq('usuario_id', userId)
+        .order('criado_em', { ascending: false })
+    return { data, error }
+}
+
+async function sbLancarNota(userId, nrId, nota, obs = '', professorId = null) {
+    const { data, error } = await supabase
+        .from('notas')
+        .insert({
+            usuario_id: userId,
+            nr_id: nrId,
+            nota: nota,
+            obs: obs,
+            professor_id: professorId
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbAtualizarNota(notaId, nota, obs) {
+    const { data, error } = await supabase
+        .from('notas')
+        .update({ nota: nota, obs: obs, atualizado_em: new Date().toISOString() })
+        .eq('id', notaId)
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbDeletarNota(notaId) {
+    const { error } = await supabase
+        .from('notas')
+        .delete()
+        .eq('id', notaId)
+    return { error }
+}
+
+async function sbGetMediasNRs() {
+    const { data, error } = await supabase
+        .from('view_medias_nrs')
+        .select('*')
+        .order('nr_id')
+    return { data, error }
+}
+
+// --------------------------------------------
+// CERTIFICADOS
+// --------------------------------------------
+async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
+    const codigo = 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase()
+    const { data, error } = await supabase
+        .from('certificados')
+        .insert({
+            usuario_id: userId,
+            nr_id: nrId,
+            codigo: codigo,
+            nota: nota,
+            carga_horaria: cargaHoraria,
+            emitido_por: uid()
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbGetCertificadosAluno(userId) {
+    const { data, error } = await supabase
+        .from('certificados')
+        .select('*')
+        .eq('usuario_id', userId)
+        .order('criado_em', { ascending: false })
+    return { data, error }
+}
+
+async function sbDeletarCertificado(certId) {
+    const { error } = await supabase
+        .from('certificados')
+        .delete()
+        .eq('id', certId)
+    return { error }
+}
+
+// --------------------------------------------
+// TRANSACOES
+// --------------------------------------------
+async function sbCriarTransacao(userId, plano, valor, vencimento, linhaDigitavel = null, pixCopiaCola = null) {
+    const { data, error } = await supabase
+        .from('transacoes')
+        .insert({
+            usuario_id: userId,
+            plano: plano,
+            valor: valor,
+            vencimento: vencimento,
+            linha_digitavel: linhaDigitavel,
+            pix_copia_cola: pixCopiaCola,
+            status: 'pendente'
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbConfirmarPagamento(transacaoId) {
+    const { data, error } = await supabase
+        .from('transacoes')
+        .update({ 
+            status: 'pago',
+            atualizado_em: new Date().toISOString()
+        })
+        .eq('id', transacaoId)
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbGetTransacoesUsuario(userId) {
+    const { data, error } = await supabase
+        .from('transacoes')
+        .select('*')
+        .eq('usuario_id', userId)
+        .order('criado_em', { ascending: false })
+    return { data, error }
+}
+
+async function sbGetAllTransacoes() {
+    const { data, error } = await supabase
+        .from('transacoes')
+        .select('*, profiles(nome, email)')
+        .order('criado_em', { ascending: false })
+    return { data, error }
+}
+
+// --------------------------------------------
+// NOTIFICACOES
+// --------------------------------------------
+async function sbGetNotificacoes(userId, lidas = false) {
+    let query = supabase
+        .from('notificacoes')
+        .select('*')
+        .eq('usuario_id', userId)
+    if (lidas) query = query.eq('lida', true)
+    else query = query.eq('lida', false)
+    const { data, error } = await query.order('criado_em', { ascending: false })
+    return { data, error }
+}
+
+async function sbMarcarNotificacaoLida(notificacaoId) {
+    const { data, error } = await supabase
+        .from('notificacoes')
+        .update({ lida: true })
+        .eq('id', notificacaoId)
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
+    const { data, error } = await supabase
+        .from('notificacoes')
+        .insert({
+            usuario_id: userId,
+            titulo: titulo,
+            mensagem: mensagem,
+            link: link,
+            lida: false
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+// --------------------------------------------
+// SALAS
+// --------------------------------------------
+async function sbCriarSala(topico, meetId, criadoPor) {
+    const { data, error } = await supabase
+        .from('salas')
+        .insert({
+            topico: topico,
+            meet_id: meetId,
+            criado_por: criadoPor,
+            ativa: true
+        })
+        .select()
+        .single()
+    return { data, error }
+}
+
+async function sbGetSalasAtivas() {
+    const { data, error } = await supabase
+        .from('salas')
+        .select('*, profiles(nome)')
+        .eq('ativa', true)
+        .order('created_at', { ascending: false })
+    return { data, error }
+}
+
+async function sbEncerrarSala(salaId) {
+    const { data, error } = await supabase
+        .from('salas')
+        .update({ ativa: false })
+        .eq('id', salaId)
+        .select()
+        .single()
+    return { data, error }
+}
+
+// --------------------------------------------
+// DASHBOARD - VIEWS
+// --------------------------------------------
+async function sbGetDashboardMetrics() {
+    const { data, error } = await supabase
+        .from('view_dashboard_admin')
+        .select('*')
+        .single()
+    return { data, error }
+}
+
+async function sbGetRankingAlunos() {
+    const { data, error } = await supabase
+        .from('view_ranking_alunos')
+        .select('*')
+    return { data, error }
+}
+
+// ============================================================
+// AUTH — LOGIN / CADASTRO (COM SUPABASE)
+// ============================================================
+$('#frmLogin').addEventListener('submit', async function(e) {
+    e.preventDefault()
+    const email = $('#lEmail').value.trim().toLowerCase()
+    const pass = $('#lPass').value
+    
     try {
-        const s = localStorage.getItem('ss_session');
-        if (s) {
-            const { id } = JSON.parse(s);
-            const u = S.users.find(x => x.id === id);
-            if (u) { 
-                S.user = u; 
-                loadCfg(); 
-                enterDash(); 
+        // Buscar usuário
+        let { data: user, error } = await sbGetUserByEmail(email)
+        
+        // Se não existir e for admin, criar automaticamente
+        if (error || !user) {
+            if (email === ADMIN_EMAIL) {
+                const result = await sbCreateUser('Administrador SulSafe', email, pass, 'admin')
+                if (result.error) throw new Error(result.error.message)
+                user = result.data
+            } else {
+                throw new Error('Usuário não encontrado')
+            }
+        }
+        
+        // Verificar senha (simples - em produção use bcrypt)
+        if (user.senha_hash !== pass) {
+            throw new Error('Senha incorreta')
+        }
+        
+        S.user = user
+        localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
+        localStorage.setItem('ss_user', JSON.stringify(user))
+        loadCfg()
+        enterDash()
+        toast('Bem-vindo(a), ' + user.nome + '!')
+    } catch (error) {
+        toast(error.message, 'err')
+    }
+})
+
+$('#frmCad').addEventListener('submit', async function(e) {
+    e.preventDefault()
+    const nome = $('#cNome').value.trim()
+    const email = $('#cEmail').value.trim().toLowerCase()
+    const p1 = $('#cPass').value
+    const p2 = $('#cPass2').value
+    
+    if (p1 !== p2) { toast('As senhas não coincidem', 'err'); return }
+    if (p1.length < 6) { toast('Senha deve ter no mínimo 6 caracteres', 'err'); return }
+    
+    try {
+        const role = email === ADMIN_EMAIL ? 'admin' : 'aluno'
+        const { data: user, error } = await sbCreateUser(nome, email, p1, role)
+        
+        if (error) throw new Error(error.message)
+        
+        S.user = user
+        localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
+        localStorage.setItem('ss_user', JSON.stringify(user))
+        loadCfg()
+        enterDash()
+        toast('Conta criada com sucesso!')
+    } catch (error) {
+        toast(error.message, 'err')
+    }
+})
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function logout() {
+    S.user = null
+    localStorage.removeItem('ss_session')
+    localStorage.removeItem('ss_user')
+    destroyCharts()
+    window.location.href = LANDING_URL
+}
+
+// ============================================================
+// AUTO-LOGIN
+// ============================================================
+;(async function() {
+    try {
+        const session = localStorage.getItem('ss_session')
+        if (session) {
+            const { id } = JSON.parse(session)
+            const { data: user } = await sbGetUser(id)
+            if (user) {
+                S.user = user
+                localStorage.setItem('ss_user', JSON.stringify(user))
+                loadCfg()
+                enterDash()
             }
         }
     } catch(e) {
-        console.log('Erro no auto-login:', e);
+        console.log('Erro no auto-login:', e)
     }
-})();
+})()
 
+// ============================================================
+// ENTER DASHBOARD
+// ============================================================
 function enterDash() {
-    $('#authWrap').classList.add('off');
-    $('#dash').classList.add('on');
-    S.view = 'inicio';
-    renderSB();
-    renderV();
-    checkNotifs();
+    $('#authWrap').classList.add('off')
+    $('#dash').classList.add('on')
+    S.view = 'inicio'
+    renderSB()
+    renderV()
+    checkNotifs()
 }
 
-/* ============================================================
-   NOTIFICAÇÕES
-   ============================================================ */
-function pushNotif(msg, action, actionView) {
-    S.notifs.push({ id: genId(), msg, action: action || 'Ver', view: actionView || 'inicio', ts: Date.now(), readBy: [] });
-    save('notifs', S.notifs);
-    if (S.user && role() !== 'admin') showNotifPopup(S.notifs[S.notifs.length - 1]);
+// ============================================================
+// NOTIFICAÇÕES (SUPABASE)
+// ============================================================
+async function pushNotif(msg, action, actionView) {
+    if (!S.user) return
+    await sbCriarNotificacao(S.user.id, 'Novo Conteúdo', msg, actionView)
+    if (role() !== 'admin') showNotifPopup({ msg, view: actionView })
+}
+
+async function checkNotifs() {
+    if (!S.user || role() === 'admin') return
+    const { data } = await sbGetNotificacoes(S.user.id, false)
+    if (data && data.length > 0) {
+        const last = data[data.length - 1]
+        if (Date.now() - new Date(last.criado_em).getTime() < 60000) {
+            showNotifPopup({ msg: last.mensagem, view: last.link })
+        }
+    }
 }
 
 function showNotifPopup(n) {
-    $('#notifBody').innerHTML = `<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(n.ts)}</p>`;
-    $('#notifAction').onclick = () => { closeNotif(); nav(n.view || 'inicio'); };
-    $('#notifPopup').classList.add('show');
-    setTimeout(closeNotif, 8000);
+    $('#notifBody').innerHTML = `<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(Date.now())}</p>`
+    $('#notifAction').onclick = () => { closeNotif(); if (n.view) nav(n.view) }
+    $('#notifPopup').classList.add('show')
+    setTimeout(closeNotif, 8000)
 }
 
-function checkNotifs() {
-    if (!S.user || role() === 'admin') return;
-    const unread = S.notifs.filter(n => !n.readBy?.includes(uid()));
-    if (unread.length) { 
-        const last = unread[unread.length - 1]; 
-        if (Date.now() - last.ts < 60000) showNotifPopup(last); 
-    }
-}
-
-/* ============================================================
-   SIDEBAR
-   ============================================================ */
+// ============================================================
+// SIDEBAR
+// ============================================================
 function renderSB() {
-    const r = role();
+    const r = role()
     const items = [
         { id: 'inicio', ic: 'fa-house', lb: 'Inicio' },
         { id: 'videoaulas', ic: 'fa-play-circle', lb: 'Videoaulas' },
         { id: 'salas', ic: 'fa-tower-broadcast', lb: 'Salas ao Vivo' },
         { id: 'nrs', ic: 'fa-book', lb: 'NRs' },
-        { id: 'ia', ic: 'fa-robot', lb: 'Assistente IA' },
-    ];
+        { id: 'ia', ic: 'fa-robot', lb: 'Assistente IA' }
+    ]
     if (r === 'aluno') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-lines', lb: 'Meu Boletim' });
-        items.push({ sep: 'FINANCEIRO' });
-        items.push({ id: 'planos', ic: 'fa-crown', lb: 'Planos' });
-        items.push({ id: 'boletos', ic: 'fa-file-invoice-dollar', lb: 'Meus Boletos' });
+        items.push({ sep: 'ACADEMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-lines', lb: 'Meu Boletim' })
+        items.push({ sep: 'FINANCEIRO' })
+        items.push({ id: 'planos', ic: 'fa-crown', lb: 'Planos' })
+        items.push({ id: 'boletos', ic: 'fa-file-invoice-dollar', lb: 'Meus Boletos' })
     }
     if (r === 'professor') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Lancar Notas' });
-        items.push({ sep: 'DOCUMENTOS' });
-        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' });
+        items.push({ sep: 'ACADEMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Lancar Notas' })
+        items.push({ sep: 'DOCUMENTOS' })
+        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' })
     }
     if (r === 'admin') {
-        items.push({ sep: 'ACADEMICO' });
-        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Notas' });
-        items.push({ sep: 'FINANCEIRO' });
-        items.push({ id: 'boletos', ic: 'fa-chart-pie', lb: 'Pagamentos' });
-        items.push({ sep: 'DOCUMENTOS' });
-        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' });
-        items.push({ sep: 'SISTEMA' });
-        items.push({ id: 'admin', ic: 'fa-shield-halved', lb: 'Modo Deus' });
+        items.push({ sep: 'ACADEMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Notas' })
+        items.push({ sep: 'FINANCEIRO' })
+        items.push({ id: 'boletos', ic: 'fa-chart-pie', lb: 'Pagamentos' })
+        items.push({ sep: 'DOCUMENTOS' })
+        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' })
+        items.push({ sep: 'SISTEMA' })
+        items.push({ id: 'admin', ic: 'fa-shield-halved', lb: 'Modo Deus' })
     }
-    items.push({ sep: 'CONTA' });
-    items.push({ id: 'config', ic: 'fa-gear', lb: 'Configuracoes' });
+    items.push({ sep: 'CONTA' })
+    items.push({ id: 'config', ic: 'fa-gear', lb: 'Configuracoes' })
 
-    let h = `<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div>`;
-    h += `<div class="sb-role ${r}"><i class="fas fa-${r === 'admin' ? 'crown' : r === 'professor' ? 'chalkboard-user' : 'user-graduate'}"></i> <span>${r}</span></div>`;
-    h += `<nav class="sb-nav">`;
+    let h = `<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div>`
+    h += `<div class="sb-role ${r}"><i class="fas fa-${r === 'admin' ? 'crown' : r === 'professor' ? 'chalkboard-user' : 'user-graduate'}"></i> <span>${r}</span></div>`
+    h += `<nav class="sb-nav">`
     items.forEach(i => {
-        if (i.sep) h += `<div class="sb-lbl">${i.sep}</div>`;
-        else h += `<div class="ni${S.view === i.id ? ' on' : ''}" onclick="nav('${i.id}')"><i class="fas ${i.ic}"></i><span>${i.lb}</span></div>`;
-    });
-    h += `</nav><div class="sb-ft"><span class="sb-name">${S.user?.nome || ''}</span><div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-right-from-bracket"></i></div></div>`;
-    $('#sidebar').innerHTML = h;
+        if (i.sep) h += `<div class="sb-lbl">${i.sep}</div>`
+        else h += `<div class="ni${S.view === i.id ? ' on' : ''}" onclick="nav('${i.id}')"><i class="fas ${i.ic}"></i><span>${i.lb}</span></div>`
+    })
+    h += `</nav><div class="sb-ft"><span class="sb-name">${S.user?.nome || ''}</span><div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-right-from-bracket"></i></div></div>`
+    $('#sidebar').innerHTML = h
 }
 
-function nav(v) { 
-    S.prevView = S.view; 
-    S.view = v; 
-    destroyCharts(); 
-    renderSB(); 
-    renderV(); 
+function nav(v) {
+    S.prevView = S.view
+    S.view = v
+    destroyCharts()
+    renderSB()
+    renderV()
 }
 
-/* ============================================================
-   ROUTER
-   ============================================================ */
+// ============================================================
+// ROUTER
+// ============================================================
 function renderV() {
-    const fn = { 
-        inicio: vInicio, 
-        videoaulas: vVideoaulas, 
-        salas: vSalas, 
-        nrs: vNRs, 
-        ia: vIA, 
-        boletim: vBoletim, 
-        planos: vPlanos, 
-        boletos: vBoletos, 
-        certificados: vCerts, 
-        admin: vAdmin, 
-        config: vConfig 
-    };
-    if (fn[S.view]) { 
-        $('#mc').innerHTML = fn[S.view](); 
-        $('#mc').style.animation = 'none'; 
-        $('#mc').offsetHeight; 
-        $('#mc').style.animation = 'fv .3s ease'; 
-        bindPostRender(); 
+    const fn = {
+        inicio: vInicio,
+        videoaulas: vVideoaulas,
+        salas: vSalas,
+        nrs: vNRs,
+        ia: vIA,
+        boletim: vBoletim,
+        planos: vPlanos,
+        boletos: vBoletos,
+        certificados: vCerts,
+        admin: vAdmin,
+        config: vConfig
+    }
+    if (fn[S.view]) {
+        $('#mc').innerHTML = fn[S.view]()
+        $('#mc').style.animation = 'none'
+        $('#mc').offsetHeight
+        $('#mc').style.animation = 'fv .3s ease'
+        bindPostRender()
     }
 }
 
 function bindPostRender() {
-    if (S.view === 'boletim' && role() !== 'aluno') setTimeout(drawChartNotas, 100);
-    if (S.view === 'admin') setTimeout(drawChartAdmin, 100);
-    if (S.view === 'boletos' && role() !== 'aluno') setTimeout(drawChartPay, 100);
-    // Botão Subir Materiais - versão melhorada
-    adicionarBotaoMateriais();
+    if (S.view === 'boletim' && role() !== 'aluno') setTimeout(drawChartNotas, 100)
+    if (S.view === 'admin') setTimeout(drawChartAdmin, 100)
+    if (S.view === 'boletos' && role() !== 'aluno') setTimeout(drawChartPay, 100)
+    adicionarBotaoMateriais()
 }
 
-/* ============================================================
-   BOTÃO SUBIR MATERIAIS - CORRIGIDO
-   ============================================================ */
+// ============================================================
+// BOTÃO SUBIR MATERIAIS
+// ============================================================
 function adicionarBotaoMateriais() {
-    const mc = document.getElementById('mc');
-    if(!mc) return;
-    
-    const btnExistente = document.getElementById('btnSubirMateriais');
-    if(btnExistente) btnExistente.remove();
-    
-    if(S.view !== 'inicio') return;
-    
-    const cardsGrid = mc.querySelector('.cards');
-    if(!cardsGrid) return;
-    
-    const btn = document.createElement('button');
-    btn.id = 'btnSubirMateriais';
-    btn.innerHTML = '<i class="fas fa-upload"></i> Subir Materiais';
-    btn.style.cssText = 'display:block; margin:30px auto 0; padding:14px 28px; background:#22c55e; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:16px; box-shadow:0 4px 12px rgba(34,197,94,0.3); transition: transform 0.2s;';
-    btn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
-    btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+    const mc = document.getElementById('mc')
+    if (!mc) return
+    const btnExistente = document.getElementById('btnSubirMateriais')
+    if (btnExistente) btnExistente.remove()
+    if (S.view !== 'inicio') return
+    const cardsGrid = mc.querySelector('.cards')
+    if (!cardsGrid) return
+    const btn = document.createElement('button')
+    btn.id = 'btnSubirMateriais'
+    btn.innerHTML = '<i class="fas fa-upload"></i> Subir Materiais'
+    btn.style.cssText = 'display:block; margin:30px auto 0; padding:14px 28px; background:#22c55e; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:16px; box-shadow:0 4px 12px rgba(34,197,94,0.3); transition: transform 0.2s;'
+    btn.onmouseover = function() { this.style.transform = 'scale(1.02)' }
+    btn.onmouseout = function() { this.style.transform = 'scale(1)' }
     btn.onclick = function() {
         openMdl(`
             <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
@@ -675,526 +1062,866 @@ function adicionarBotaoMateriais() {
                 </select>
             </div>
             <button class="btn btn-p btn-block" onclick="closeMdl(); toast('Materiais enviados com sucesso!')"><i class="fas fa-upload"></i> Enviar</button>
-        `);
-    };
-    
-    cardsGrid.parentNode.insertBefore(btn, cardsGrid.nextSibling);
+        `)
+    }
+    cardsGrid.parentNode.insertBefore(btn, cardsGrid.nextSibling)
 }
 
-/* ============================================================
-   VIEW: INICIO
-   ============================================================ */
+// ============================================================
+// VIEW: INICIO
+// ============================================================
 function vInicio() {
-    const r = role();
-    const concluidas = S.aulas.filter(a => a.uid === uid()).length;
-    const total = NRS.length;
-    const pct = total ? Math.round(concluidas / total * 100) : 0;
-    const pendentes = total - concluidas;
-    let h = `<div class="btn-back" onclick="nav('${S.prevView || 'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Ola, ${S.user?.nome || 'Usuario'}</h2>`;
-    h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`;
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('${S.prevView || 'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Olá, ${S.user?.nome || 'Usuário'}</h2>`
+    h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`
+    
+    // Dados serão carregados via Supabase nos gráficos
+    h += `<div class="stats" id="statsInicio">`
+    h += `<div class="st"><div class="st-v">...</div><div class="st-l"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div>`
+    h += `</div>`
+    h += `<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rápido</h3><div class="cards">`
+    h += cCard('fa-play-circle', 'Videoaulas', '38 NRs em videoaulas HD', 'videoaulas')
+    h += cCard('fa-tower-broadcast', 'Salas ao Vivo', 'Participe ao vivo', 'salas')
+    h += cCard('fa-book', 'Catalogo de NRs', 'Consulte as 38 Normas', 'nrs')
+    h += cCard('fa-robot', 'Assistente IA', 'Duvidas sobre NRs 24/7', 'ia')
     if (r === 'aluno') {
-        const vencendo = S.boletos.filter(b => b.uid === uid() && b.status === 'pendente' && new Date(b.venc) <= new Date(Date.now() + 7 * 864e5));
-        if (vencendo.length) h += `<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div>Voce tem <strong>${vencendo.length} boleto(s)</strong> vencendo em breve! <a href="#" onclick="nav('boletos');return false" style="color:var(--p);font-weight:700;text-decoration:underline">Ver boletos</a></div></div>`;
-    }
-    h += `<div class="stats">`;
-    if (r === 'aluno') {
-        h += stC(pct + '%', 'Progresso', 'fa-chart-line');
-        h += stC(concluidas, 'Videos Vistos', 'fa-check-circle');
-        h += stC(pendentes, 'Videos Pendentes', 'fa-clock');
-        h += stC(S.boletos.filter(b => b.uid === uid() && b.status === 'pago').length, 'Pagos', 'fa-circle-check');
-    } else {
-        const al = S.users.filter(u => u.role === 'aluno').length;
-        const rec = S.boletos.filter(b => b.status === 'pago').reduce((a, b) => a + Number(b.valor || 0), 0);
-        h += stC(al, 'Alunos', 'fa-users');
-        h += stC(S.salas.filter(s => s.ativa).length, 'Salas Ativas', 'fa-tower-broadcast');
-        h += stC(fmtM(rec), 'Receita', 'fa-dollar-sign');
-        h += stC(NRS.length, 'NRs', 'fa-book');
-    }
-    h += `</div>`;
-    if (r === 'aluno') {
-        h += `<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Progresso Geral — Videos</span><span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><p style="font-size:11px;color:var(--tx3);margin-top:6px">${concluidas} de ${total} NRs concluidas — ${pendentes} pendentes</p></div>`;
-    }
-    h += `<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rapido</h3><div class="cards">`;
-    h += cCard('fa-play-circle', 'Videoaulas', '38 NRs em videoaulas HD', 'videoaulas');
-    h += cCard('fa-tower-broadcast', 'Salas ao Vivo', 'Participe ao vivo', 'salas');
-    h += cCard('fa-book', 'Catalogo de NRs', 'Consulte as 38 Normas', 'nrs');
-    h += cCard('fa-robot', 'Assistente IA', 'Duvidas sobre NRs 24/7', 'ia');
-    if (r === 'aluno') {
-        h += cCard('fa-file-lines', 'Meu Boletim', 'Acompanhe suas notas', 'boletim');
-        h += cCard('fa-crown', 'Planos', 'Assine e desbloqueie tudo', 'planos');
-        h += cCard('fa-file-invoice-dollar', 'Meus Boletos', 'Boletos e PIX', 'boletos');
+        h += cCard('fa-file-lines', 'Meu Boletim', 'Acompanhe suas notas', 'boletim')
+        h += cCard('fa-crown', 'Planos', 'Assine e desbloqueie tudo', 'planos')
+        h += cCard('fa-file-invoice-dollar', 'Meus Boletos', 'Boletos e PIX', 'boletos')
     }
     if (isProf()) {
-        h += cCard('fa-file-pen', 'Lancar Notas', 'Notas dos alunos', 'boletim');
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados');
+        h += cCard('fa-file-pen', 'Lancar Notas', 'Notas dos alunos', 'boletim')
+        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
     }
     if (isAdmin()) {
-        h += cCard('fa-file-pen', 'Notas', 'Gerenciar notas', 'boletim');
-        h += cCard('fa-chart-pie', 'Pagamentos', 'Metricas financeiras', 'boletos');
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados');
-        h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin');
+        h += cCard('fa-file-pen', 'Notas', 'Gerenciar notas', 'boletim')
+        h += cCard('fa-chart-pie', 'Pagamentos', 'Metricas financeiras', 'boletos')
+        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
+        h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin')
     }
-    h += `</div>`;
-    return h;
+    h += `</div>`
+    
+    // Carregar dados do Supabase para o dashboard
+    setTimeout(async () => {
+        try {
+            const { data: metrics } = await sbGetDashboardMetrics()
+            const { data: progresso } = await sbGetProgressoPorNR(uid())
+            const { data: transacoes } = await sbGetTransacoesUsuario(uid())
+            
+            const statsDiv = document.getElementById('statsInicio')
+            if (!statsDiv) return
+            
+            if (r === 'aluno') {
+                const total = NRS.length
+                const concluidas = progresso?.assistidas || 0
+                const pct = total ? Math.round(concluidas / total * 100) : 0
+                const pendentes = total - concluidas
+                const pagos = transacoes?.filter(t => t.status === 'pago').length || 0
+                statsDiv.innerHTML = `
+                    ${stC(pct + '%', 'Progresso', 'fa-chart-line')}
+                    ${stC(concluidas, 'Videos Vistos', 'fa-check-circle')}
+                    ${stC(pendentes, 'Videos Pendentes', 'fa-clock')}
+                    ${stC(pagos, 'Pagos', 'fa-circle-check')}
+                `
+                // Progresso bar
+                const progDiv = document.createElement('div')
+                progDiv.className = 'prog-w'
+                progDiv.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                        <span style="font-weight:600;font-size:13px">Progresso Geral — Videos</span>
+                        <span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span>
+                    </div>
+                    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+                    <p style="font-size:11px;color:var(--tx3);margin-top:6px">${concluidas} de ${total} NRs concluídas — ${pendentes} pendentes</p>
+                `
+                statsDiv.parentNode.insertBefore(progDiv, statsDiv.nextSibling)
+            } else {
+                const alunos = metrics?.total_alunos || 0
+                const receita = metrics?.receita_total || 0
+                const { data: salas } = await sbGetSalasAtivas()
+                statsDiv.innerHTML = `
+                    ${stC(alunos, 'Alunos', 'fa-users')}
+                    ${stC(salas?.length || 0, 'Salas Ativas', 'fa-tower-broadcast')}
+                    ${stC(fmtM(receita), 'Receita', 'fa-dollar-sign')}
+                    ${stC(NRS.length, 'NRs', 'fa-book')}
+                `
+            }
+        } catch (e) {
+            console.error('Erro ao carregar dashboard:', e)
+        }
+    }, 100)
+    
+    return h
 }
 
-function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>`; }
-function cCard(ic, t, d, v) { return `<div class="card" onclick="nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>`; }
+function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>` }
+function cCard(ic, t, d, v) { return `<div class="card" onclick="nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>` }
 
-/* ============================================================
-   VIEW: VIDEOAULAS
-   ============================================================ */
+// ============================================================
+// VIEW: VIDEOAULAS
+// ============================================================
 function vVideoaulas() {
-    const r = role();
-    const concluidas = S.aulas.filter(a => a.uid === uid()).map(a => a.nrid);
-    const pct = Math.round(concluidas.length / NRS.length * 100);
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Videoaulas</h2><p class="wcs">Assista as aulas das 38 NRs no seu ritmo.</p>`;
-    if (r === 'aluno') h += `<div class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Seu Progresso</span><span style="font-weight:800;color:var(--p)">${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
-    h += `<input class="search" placeholder="Buscar NR..." oninput="filterVA(this.value)">`;
-    h += `<div class="nr-g" id="vaGrid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">`;
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Videoaulas</h2><p class="wcs">Assista as aulas das 38 NRs no seu ritmo.</p>`
+    h += `<div id="progressoVideoaulas" class="prog-w"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Carregando...</span><span style="font-weight:800;color:var(--p)">0%</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div></div>`
+    h += `<input class="search" placeholder="Buscar NR..." oninput="filterVA(this.value)">`
+    h += `<div class="nr-g" id="vaGrid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">`
     NRS.forEach(nr => {
-        const done = concluidas.includes(nr.id);
-        h += `<div class="nr-c" data-s="${nr.nm.toLowerCase()} ${nr.id}" style="flex-direction:column;align-items:stretch;gap:0"><div style="display:flex;align-items:center;gap:12px;padding:14px"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>${done ? '<span class="badge bg-ok" style="margin-left:auto">Concluida</span>' : ''}</div>${r === 'aluno' ? `<div style="padding:8px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end"><button class="btn btn-sm ${done ? 'btn-p' : 'btn-s'}" onclick="toggleAula('${nr.id}',this)">${done ? '<i class="fas fa-check"></i> Concluida' : 'Marcar como concluida'}</button></div>` : ''}</div>`;
-    });
-    h += `</div>`;
-    return h;
+        h += `<div class="nr-c" data-s="${nr.nm.toLowerCase()} ${nr.id}" style="flex-direction:column;align-items:stretch;gap:0" id="nr-${nr.id}">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px">
+                <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
+                <div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>
+                <span class="badge bg-ok" style="margin-left:auto;display:none" id="badge-${nr.id}">Concluida</span>
+            </div>
+            ${r === 'aluno' ? `<div style="padding:8px 14px;border-top:1px solid var(--bd2);display:flex;justify-content:flex-end">
+                <button class="btn btn-sm btn-s" id="btn-${nr.id}" onclick="toggleAulaSupabase('${nr.id}',this)">Marcar como concluida</button>
+            </div>` : ''}
+        </div>`
+    })
+    h += `</div>`
+    
+    // Carregar progresso do Supabase
+    setTimeout(() => carregarProgressoVideoaulas(), 200)
+    return h
 }
 
-function filterVA(q) { q = q.toLowerCase(); $$('#vaGrid .nr-c').forEach(c => { c.style.display = c.dataset.s.includes(q) ? '' : 'none'; }); }
-
-function toggleAula(nrId, btn) {
-    const idx = S.aulas.findIndex(a => a.uid === uid() && a.nrid === nrId);
-    if (idx >= 0) { S.aulas.splice(idx, 1); btn.className = 'btn btn-sm btn-s'; btn.innerHTML = 'Marcar como concluida'; toast('Aula desmarcada', 'info'); }
-    else { S.aulas.push({ id: genId(), uid: uid(), nrid: nrId, ts: Date.now() }); btn.className = 'btn btn-sm btn-p'; btn.innerHTML = '<i class="fas fa-check"></i> Concluida'; toast('Aula concluida!'); }
-    save('aulas', S.aulas); renderV();
-}
-
-/* ============================================================
-   VIEW: SALAS AO VIVO
-   ============================================================ */
-function vSalas() {
-    const r = role();
-    const ativas = S.salas.filter(s => s.ativa);
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`;
-    if (canManage()) {
-        h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><input class="search" id="salaTop" placeholder="Topico da aula" style="flex:2;min-width:200px;margin:0"><input class="search" id="salaMeet" placeholder="ID da reuniao" style="flex:1;min-width:160px;margin:0"><button class="btn btn-p" onclick="criarSala()"><i class="fas fa-plus"></i> Criar Sala</button></div>`;
+async function carregarProgressoVideoaulas() {
+    if (!S.user) return
+    const { data: progressos } = await sbGetProgressoUsuario(S.user.id)
+    const concluidas = progressos?.filter(p => p.concluído === true).map(p => p.aula_id) || []
+    const total = NRS.length
+    const pct = total ? Math.round(concluidas.length / total * 100) : 0
+    
+    // Atualizar progresso
+    const progDiv = document.getElementById('progressoVideoaulas')
+    if (progDiv) {
+        progDiv.innerHTML = `
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                <span style="font-weight:600;font-size:13px">Seu Progresso</span>
+                <span style="font-weight:800;color:var(--p)">${pct}%</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        `
     }
-    if (!ativas.length) h += `<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`;
-    ativas.forEach(s => {
-        const criador = S.users.find(u => u.id === s.criadoPor);
-        h += `<div class="mt-c"><div><div class="mt-topic">${s.topico}</div><div class="mt-id">ID: ${s.meetId || 'N/A'}</div><div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${criador?.nome || '—'} — ${fmtD(s.ts)}</div></div><div style="display:flex;gap:8px"><a href="https://meet.google.com/${s.meetId || ''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>${canManage() ? `<button class="btn btn-d btn-sm" onclick="encerrarSala('${s.id}')"><i class="fas fa-times"></i></button>` : ''}</div></div>`;
-    });
-    return h;
+    
+    // Atualizar badges e botões
+    NRS.forEach(nr => {
+        const badge = document.getElementById(`badge-${nr.id}`)
+        const btn = document.getElementById(`btn-${nr.id}`)
+        const done = concluidas.includes(nr.id)
+        if (badge) badge.style.display = done ? 'inline-block' : 'none'
+        if (btn) {
+            btn.className = `btn btn-sm ${done ? 'btn-p' : 'btn-s'}`
+            btn.innerHTML = done ? '<i class="fas fa-check"></i> Concluida' : 'Marcar como concluida'
+        }
+    })
 }
 
-function criarSala() {
-    const top = $('#salaTop')?.value?.trim();
-    const meet = $('#salaMeet')?.value?.trim();
-    if (!top) { toast('Informe o topico', 'err'); return; }
-    S.salas.unshift({ id: genId(), topico: top, meetId: meet, criadoPor: uid(), ativa: true, ts: Date.now() });
-    save('salas', S.salas);
-    pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas');
-    toast('Sala criada!'); renderV();
+async function toggleAulaSupabase(nrId, btn) {
+    if (!S.user) return
+    const { data: progressos } = await sbGetProgressoUsuario(S.user.id)
+    const existente = progressos?.find(p => p.aula_id === nrId)
+    
+    if (existente) {
+        // Desmarcar
+        await sbSalvarProgresso(S.user.id, nrId, 0, false)
+        btn.className = 'btn btn-sm btn-s'
+        btn.innerHTML = 'Marcar como concluida'
+        document.getElementById(`badge-${nrId}`).style.display = 'none'
+        toast('Aula desmarcada', 'info')
+    } else {
+        // Marcar como concluída
+        await sbSalvarProgresso(S.user.id, nrId, 300, true)
+        btn.className = 'btn btn-sm btn-p'
+        btn.innerHTML = '<i class="fas fa-check"></i> Concluida'
+        document.getElementById(`badge-${nrId}`).style.display = 'inline-block'
+        toast('Aula concluída! 🎉')
+    }
+    carregarProgressoVideoaulas()
 }
 
-function encerrarSala(id) { const s = S.salas.find(x => x.id === id); if (s) s.ativa = false; save('salas', S.salas); toast('Sala encerrada', 'info'); renderV(); }
+function filterVA(q) { q = q.toLowerCase(); $$('#vaGrid .nr-c').forEach(c => { c.style.display = c.dataset.s.includes(q) ? '' : 'none' }) }
 
-/* ============================================================
-   VIEW: NRs
-   ============================================================ */
+// ============================================================
+// VIEW: SALAS AO VIVO
+// ============================================================
+function vSalas() {
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`
+    if (canManage()) {
+        h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+            <input class="search" id="salaTop" placeholder="Topico da aula" style="flex:2;min-width:200px;margin:0">
+            <input class="search" id="salaMeet" placeholder="ID da reuniao" style="flex:1;min-width:160px;margin:0">
+            <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-plus"></i> Criar Sala</button>
+        </div>`
+    }
+    h += `<div id="listaSalas"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando salas...</p></div></div>`
+    setTimeout(carregarSalas, 200)
+    return h
+}
+
+async function carregarSalas() {
+    const { data: salas } = await sbGetSalasAtivas()
+    const container = document.getElementById('listaSalas')
+    if (!container) return
+    
+    if (!salas || salas.length === 0) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-tower-broadcast"></i><p>Nenhuma sala ativa no momento.</p></div>`
+        return
+    }
+    
+    let h = ''
+    salas.forEach(s => {
+        h += `<div class="mt-c">
+            <div>
+                <div class="mt-topic">${s.topico}</div>
+                <div class="mt-id">ID: ${s.meet_id || 'N/A'}</div>
+                <div style="font-size:11px;color:var(--tx3);margin-top:4px">Criada por: ${s.profiles?.nome || '—'} — ${fmtD(s.created_at)}</div>
+            </div>
+            <div style="display:flex;gap:8px">
+                <a href="https://meet.google.com/${s.meet_id || ''}" target="_blank" class="btn btn-p btn-sm"><i class="fas fa-video"></i> Entrar na Sala</a>
+                ${canManage() ? `<button class="btn btn-d btn-sm" onclick="encerrarSalaSupabase('${s.id}')"><i class="fas fa-times"></i></button>` : ''}
+            </div>
+        </div>`
+    })
+    container.innerHTML = h
+}
+
+async function criarSalaSupabase() {
+    const top = $('#salaTop')?.value?.trim()
+    const meet = $('#salaMeet')?.value?.trim()
+    if (!top) { toast('Informe o topico', 'err'); return }
+    const { data, error } = await sbCriarSala(top, meet, uid())
+    if (error) { toast('Erro ao criar sala: ' + error.message, 'err'); return }
+    toast('Sala criada!')
+    pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas')
+    carregarSalas()
+    $('#salaTop').value = ''
+    $('#salaMeet').value = ''
+}
+
+async function encerrarSalaSupabase(id) {
+    if (!confirm('Encerrar esta sala?')) return
+    await sbEncerrarSala(id)
+    toast('Sala encerrada', 'info')
+    carregarSalas()
+}
+
+// ============================================================
+// VIEW: NRs
+// ============================================================
 function vNRs() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Catalogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`;
-    h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button><button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button><button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Especificas</button><button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saude</button><button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button></div>`;
-    h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)"><div class="nr-g" id="nrGrid">`;
-    NRS.forEach(nr => { h += `<div class="nr-c" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" onclick="verNR('${nr.id}')"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div></div>`; });
-    h += `</div>`;
-    return h;
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Catalogo de NRs</h2><p class="wcs">Consulte todas as 38 Normas Regulamentadoras.</p>`
+    h += `<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-sm btn-p" onclick="filterNR('all')">Todas</button><button class="btn btn-sm btn-s" onclick="filterNR('geral')">Gerais</button><button class="btn btn-sm btn-s" onclick="filterNR('especifico')">Especificas</button><button class="btn btn-sm btn-s" onclick="filterNR('saude')">Saude</button><button class="btn btn-sm btn-s" onclick="filterNR('setorial')">Setoriais</button></div>`
+    h += `<input class="search" placeholder="Buscar NR..." oninput="filterNRT(this.value)"><div class="nr-g" id="nrGrid">`
+    NRS.forEach(nr => { h += `<div class="nr-c" data-cat="${nr.cat}" data-s="nr ${nr.id} ${nr.nm.toLowerCase()}" onclick="verNR('${nr.id}')"><div class="nr-ic"><i class="fas ${nr.ic}"></i></div><div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div></div>` })
+    h += `</div>`
+    return h
 }
-function filterNR(c) { $$('#nrGrid .nr-c').forEach(e => { e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none'; }); }
-function filterNRT(q) { q = q.toLowerCase(); $$('#nrGrid .nr-c').forEach(e => { e.style.display = e.dataset.s.includes(q) ? '' : 'none'; }); }
+function filterNR(c) { $$('#nrGrid .nr-c').forEach(e => { e.style.display = (c === 'all' || e.dataset.cat === c) ? '' : 'none' }) }
+function filterNRT(q) { q = q.toLowerCase(); $$('#nrGrid .nr-c').forEach(e => { e.style.display = e.dataset.s.includes(q) ? '' : 'none' }) }
 
 function verNR(id) {
-    const nr = NRS.find(n => n.id === id);
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0"><i class="fas ${nr.ic}"></i></div><div><div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div><h2 style="font-size:18px;font-weight:700">${nr.nm}</h2></div></div><p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">Esta Norma Regulamentadora estabelece os requisitos minimos para ${nr.nm.toLowerCase()}.</p><button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()"><i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}</button>`);
+    const nr = NRS.find(n => n.id === id)
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0"><i class="fas ${nr.ic}"></i></div><div><div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div><h2 style="font-size:18px;font-weight:700">${nr.nm}</h2></div></div><p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">Esta Norma Regulamentadora estabelece os requisitos minimos para ${nr.nm.toLowerCase()}.</p><button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()"><i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}</button>`)
 }
 
-/* ============================================================
-   VIEW: IA
-   ============================================================ */
+// ============================================================
+// VIEW: IA
+// ============================================================
 function vIA() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Assistente IA</h2><p class="wcs">Tire duvidas sobre NRs e seguranca do trabalho.</p>`;
-    h += `<div class="pnl"><div class="chat-box"><div class="chat-msgs" id="chatMsgs"><div class="chat-m b">Ola! Sou o assistente IA da SulSafe. Pergunte sobre qualquer NR, EPI, CIPA, PPP, PCMSO e muito mais.</div></div><div class="chat-row"><input id="chatIn" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendIA()"><button class="btn btn-p btn-sm" onclick="sendIA()"><i class="fas fa-paper-plane"></i></button></div></div></div>`;
-    return h;
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Assistente IA</h2><p class="wcs">Tire duvidas sobre NRs e seguranca do trabalho.</p>`
+    h += `<div class="pnl"><div class="chat-box"><div class="chat-msgs" id="chatMsgs"><div class="chat-m b">Ola! Sou o assistente IA da SulSafe. Pergunte sobre qualquer NR, EPI, CIPA, PPP, PCMSO e muito mais.</div></div><div class="chat-row"><input id="chatIn" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendIA()"><button class="btn btn-p btn-sm" onclick="sendIA()"><i class="fas fa-paper-plane"></i></button></div></div></div>`
+    return h
 }
 
 function sendIA() {
-    const inp = $('#chatIn'), msg = inp.value.trim(); if (!msg) return;
-    const msgs = $('#chatMsgs');
-    msgs.innerHTML += `<div class="chat-m u">${msg}</div>`; inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-    setTimeout(() => { msgs.innerHTML += `<div class="chat-m b">${genIA(msg)}</div>`; msgs.scrollTop = msgs.scrollHeight; }, 500 + Math.random() * 700);
+    const inp = $('#chatIn'), msg = inp.value.trim()
+    if (!msg) return
+    const msgs = $('#chatMsgs')
+    msgs.innerHTML += `<div class="chat-m u">${msg}</div>`
+    inp.value = ''
+    msgs.scrollTop = msgs.scrollHeight
+    setTimeout(() => {
+        msgs.innerHTML += `<div class="chat-m b">${genIA(msg)}</div>`
+        msgs.scrollTop = msgs.scrollHeight
+    }, 500 + Math.random() * 700)
 }
 
 function genIA(q) {
-    const ql = q.toLowerCase();
-    if (ql.includes('nr 10') || ql.includes('eletricidade')) return 'A <strong>NR 10</strong> estabelece requisitos de seguranca em instalacoes e servicos em eletricidade. Exige treinamento especifico (SEP), EPIs adequados, e que as instalacoes atendam a NBR 5410. Curso basico: 40h, complementar SEP: 40h.';
-    if (ql.includes('nr 35') || ql.includes('altura')) return 'A <strong>NR 35</strong> regulamenta trabalho em altura (acima de 2m). Exige: Analise de Risco, Permissao de Trabalho, treinamento 8h, cinto tipo paraquedista com duplo talabarte, pontos de ancoragem com resistencia minima 15kN.';
-    if (ql.includes('nr 6') || ql.includes('epi')) return 'A <strong>NR 6</strong> regulamenta os EPIs. O empregador deve fornecer gratuitamente, adequados ao risco. Todo EPI deve ter CA do MTE. Exemplos: capacete, oculos, luvas, protetor auricular, cinto de seguranca.';
-    if (ql.includes('nr 5') || ql.includes('cipa')) return 'A <strong>NR 5</strong> regulamenta a CIPA. Obrigatória para empresas com mais de 20 empregados. Composicao paritaria, mandato 1 ano. Realiza mapas de risco, investiga acidentes.';
-    if (ql.includes('nr 9') || ql.includes('ppra')) return 'A <strong>NR 9</strong> exige o PPRA. Deve abranger todos os trabalhadores, identificar e avaliar riscos, definir medidas de controle. Atualizado anualmente. Mantido por 20 anos.';
-    if (ql.includes('certificado')) return 'Os certificados sao emitidos pelo admin ou professor ao concluir o curso com nota minima. Contem: nome, NR, carga horaria, data e codigo de verificacao unico.';
-    if (ql.includes('pagamento') || ql.includes('boleto') || ql.includes('pix')) return 'Aceitamos <strong>PIX</strong> (aprovacao instantanea) e <strong>Boleto Bancario</strong> (ate 3 dias uteis). Apos confirmacao, seu acesso e liberado automaticamente.';
-    return `Sobre "<strong>${q}</strong>": As NRs sao extensas. Recomendo consultar o catalogo da plataforma. Tente perguntar sobre uma NR especifica (ex: "NR 10", "EPI", "CIPA").`;
+    const ql = q.toLowerCase()
+    if (ql.includes('nr 10') || ql.includes('eletricidade')) return 'A <strong>NR 10</strong> estabelece requisitos de seguranca em instalacoes e servicos em eletricidade. Exige treinamento especifico (SEP), EPIs adequados, e que as instalacoes atendam a NBR 5410. Curso basico: 40h, complementar SEP: 40h.'
+    if (ql.includes('nr 35') || ql.includes('altura')) return 'A <strong>NR 35</strong> regulamenta trabalho em altura (acima de 2m). Exige: Analise de Risco, Permissao de Trabalho, treinamento 8h, cinto tipo paraquedista com duplo talabarte, pontos de ancoragem com resistencia minima 15kN.'
+    if (ql.includes('nr 6') || ql.includes('epi')) return 'A <strong>NR 6</strong> regulamenta os EPIs. O empregador deve fornecer gratuitamente, adequados ao risco. Todo EPI deve ter CA do MTE. Exemplos: capacete, oculos, luvas, protetor auricular, cinto de seguranca.'
+    if (ql.includes('nr 5') || ql.includes('cipa')) return 'A <strong>NR 5</strong> regulamenta a CIPA. Obrigatória para empresas com mais de 20 empregados. Composicao paritaria, mandato 1 ano. Realiza mapas de risco, investiga acidentes.'
+    if (ql.includes('nr 9') || ql.includes('ppra')) return 'A <strong>NR 9</strong> exige o PPRA. Deve abranger todos os trabalhadores, identificar e avaliar riscos, definir medidas de controle. Atualizado anualmente. Mantido por 20 anos.'
+    if (ql.includes('certificado')) return 'Os certificados sao emitidos pelo admin ou professor ao concluir o curso com nota minima. Contem: nome, NR, carga horaria, data e codigo de verificacao unico.'
+    if (ql.includes('pagamento') || ql.includes('boleto') || ql.includes('pix')) return 'Aceitamos <strong>PIX</strong> (aprovacao instantanea) e <strong>Boleto Bancario</strong> (ate 3 dias uteis). Apos confirmacao, seu acesso e liberado automaticamente.'
+    return `Sobre "<strong>${q}</strong>": As NRs sao extensas. Recomendo consultar o catalogo da plataforma. Tente perguntar sobre uma NR especifica (ex: "NR 10", "EPI", "CIPA").`
 }
 
-/* ============================================================
-   VIEW: BOLETIM
-   ============================================================ */
+// ============================================================
+// VIEW: BOLETIM
+// ============================================================
 function vBoletim() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">${r === 'aluno' ? 'Meu Boletim' : 'Gerenciar Notas'}</h2>`;
-    h += `<p class="wcs">${r === 'aluno' ? 'Acompanhe suas notas e progresso.' : 'Lance notas e observacoes dos alunos.'}</p>`;
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">${r === 'aluno' ? 'Meu Boletim' : 'Gerenciar Notas'}</h2>`
+    h += `<p class="wcs">${r === 'aluno' ? 'Acompanhe suas notas e progresso.' : 'Lance notas e observacoes dos alunos.'}</p>`
+    
     if (r === 'aluno') {
-        const minhas = S.notas.filter(n => n.uid === uid());
-        if (!minhas.length) h += `<div class="empty"><i class="fas fa-file-lines"></i><p>Nenhuma nota lancada ainda.</p></div>`;
-        else {
-            const media = minhas.reduce((a, n) => a + Number(n.nota || 0), 0) / minhas.length;
-            h += `<div class="stats">${stC(media.toFixed(1), 'Media Geral', 'fa-chart-line')}${stC(minhas.length, 'NRs Avaliadas', 'fa-list')}</div>`;
-            h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Observacao</th><th>Data</th></tr></thead><tbody>`;
-            minhas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td><strong>NR ${n.nrid}</strong> — ${n.nrn || ''}</td><td><span class="badge ${cor}">${n.nota ?? '—'}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.ts)}</td></tr>`; });
-            h += `</tbody></table></div>`;
-            h += `<div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Minhas Notas por NR</h3><canvas id="chartBoletimAluno" height="200"></canvas></div>`;
-            setTimeout(drawChartAluno, 100);
-        }
+        h += `<div id="boletimAluno"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
+        setTimeout(carregarBoletimAluno, 200)
     } else {
-        const alunos = S.users.filter(u => u.role === 'aluno');
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-filter"></i> Selecionar Aluno</div><button class="btn btn-p btn-sm" onclick="modalNota()"><i class="fas fa-plus"></i> Lancar Nota</button></div><select id="selAlunoN" class="search" style="margin:0;border-radius:var(--r)" onchange="renderNotasAl()"><option value="">Selecione um aluno...</option>${alunos.map(a => `<option value="${a.id}">${a.nome} (${a.email})</option>`).join('')}</select></div><div id="notasAlC"></div>`;
-        h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Media de Notas por NR</h3><canvas id="chartMediasNR" height="200"></canvas></div></div>`;
+        h += `<div id="boletimProfessor"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando alunos...</p></div></div>`
+        setTimeout(carregarBoletimProfessor, 200)
     }
-    return h;
+    return h
 }
 
-function renderNotasAl() {
-    const aid = $('#selAlunoN')?.value; const c = $('#notasAlC'); if (!aid || !c) return;
-    const notas = S.notas.filter(n => n.uid === aid);
-    const al = S.users.find(u => u.id === aid);
-    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-user-graduate"></i> ${al?.nome || 'Aluno'}</div><button class="btn btn-p btn-sm" onclick="modalNota('${aid}')"><i class="fas fa-plus"></i> Lancar</button></div>`;
-    if (!notas.length) h += `<div class="empty" style="padding:30px"><p>Nenhuma nota lancada.</p></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Obs</th><th>Data</th><th>Acoes</th></tr></thead><tbody>`;
-        notas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td>NR ${n.nrid}</td><td><span class="badge ${cor}">${n.nota}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.ts)}</td><td><button class="btn btn-sm btn-s" onclick="modalNota('${aid}','${n.nrid}')"><i class="fas fa-pen"></i></button> <button class="btn btn-sm btn-d" onclick="delNota('${n.id}','${aid}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-        h += `</tbody></table></div>`;
+async function carregarBoletimAluno() {
+    const container = document.getElementById('boletimAluno')
+    if (!container) return
+    const { data: notas } = await sbGetNotasAluno(uid())
+    
+    if (!notas || notas.length === 0) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-file-lines"></i><p>Nenhuma nota lancada ainda.</p></div>`
+        return
     }
-    h += `</div>`; c.innerHTML = h;
+    
+    const media = notas.reduce((a, n) => a + Number(n.nota || 0), 0) / notas.length
+    let h = `<div class="stats">${stC(media.toFixed(1), 'Media Geral', 'fa-chart-line')}${stC(notas.length, 'NRs Avaliadas', 'fa-list')}</div>`
+    h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Observacao</th><th>Data</th></tr></thead><tbody>`
+    notas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td><strong>NR ${n.nr_id}</strong></td><td><span class="badge ${cor}">${n.nota ?? '—'}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.criado_em)}</td></tr>` })
+    h += `</tbody></table></div>`
+    h += `<div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Minhas Notas por NR</h3><canvas id="chartBoletimAluno" height="200"></canvas></div>`
+    container.innerHTML = h
+    setTimeout(drawChartAlunoSupabase, 100)
 }
 
-function modalNota(aid, nridEdit) {
-    const opts = NRS.map(n => `<option value="${n.id}" ${n.id === nridEdit ? 'selected' : ''}>NR ${n.id} — ${n.nm}</option>`).join('');
-    const ex = nridEdit ? S.notas.find(n => n.uid === aid && n.nrid === nridEdit) : null;
-    openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">' + (ex ? 'Editar' : 'Lancar') + ' Nota</h2><form onsubmit="saveNota(event,\'' + aid + '\')"><div class="fld"><label>NR</label><select id="nNR" required>' + opts + '</select></div><div class="fld"><label>Nota (0 a 10)</label><input type="number" id="nVal" min="0" max="10" step="0.1" value="' + (ex && ex.nota != null ? ex.nota : '') + '" required></div><div class="fld"><label>Observacao</label><textarea id="nObs" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical">' + (ex && ex.obs ? ex.obs : '') + '</textarea></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar</button></form>');
-}
-function saveNota(e, aid) {
-    e.preventDefault();
-    const nrid = $('#nNR').value, nota = parseFloat($('#nVal').value), obs = $('#nObs').value.trim();
-    const nr = NRS.find(n => n.id === nrid);
-    const ex = S.notas.find(n => n.uid === aid && n.nrid === nrid);
-    if (ex) { ex.nota = nota; ex.obs = obs; ex.nrn = nr?.nm; }
-    else S.notas.push({ id: genId(), uid: aid, nrid, nrn: nr?.nm, nota, obs, ts: Date.now(), by: uid() });
-    save('notas', S.notas); toast('Nota salva!'); closeMdl(); renderNotasAl();
-    const al = S.users.find(u => u.id === aid);
-    if (al) pushNotif(`Nova nota lancada para NR ${nrid}: ${nota}/10`, 'Ver boletim', 'boletim');
+async function carregarBoletimProfessor() {
+    const container = document.getElementById('boletimProfessor')
+    if (!container) return
+    const { data: alunos } = await sbGetAlunos()
+    
+    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-filter"></i> Selecionar Aluno</div><button class="btn btn-p btn-sm" onclick="modalNotaSupabase()"><i class="fas fa-plus"></i> Lancar Nota</button></div><select id="selAlunoN" class="search" style="margin:0;border-radius:var(--r)" onchange="renderNotasAlSupabase()"><option value="">Selecione um aluno...</option>${alunos.map(a => `<option value="${a.id}">${a.nome} (${a.email})</option>`).join('')}</select></div><div id="notasAlC"></div>`
+    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Media de Notas por NR</h3><canvas id="chartMediasNR" height="200"></canvas></div></div>`
+    container.innerHTML = h
+    setTimeout(drawChartNotasSupabase, 100)
 }
 
-function delNota(nid, aid) { if (!confirm('Excluir esta nota?')) return; S.notas = S.notas.filter(n => n.id !== nid); save('notas', S.notas); toast('Nota excluida', 'info'); renderNotasAl(); }
+async function renderNotasAlSupabase() {
+    const aid = $('#selAlunoN')?.value
+    const c = $('#notasAlC')
+    if (!aid || !c) return
+    const { data: notas } = await sbGetNotasAluno(aid)
+    const { data: alunos } = await sbGetAlunos()
+    const al = alunos.find(u => u.id === aid)
+    
+    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-user-graduate"></i> ${al?.nome || 'Aluno'}</div><button class="btn btn-p btn-sm" onclick="modalNotaSupabase('${aid}')"><i class="fas fa-plus"></i> Lancar</button></div>`
+    if (!notas || notas.length === 0) {
+        h += `<div class="empty" style="padding:30px"><p>Nenhuma nota lancada.</p></div>`
+    } else {
+        h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Obs</th><th>Data</th><th>Acoes</th></tr></thead><tbody>`
+        notas.forEach(n => { const cor = Number(n.nota) >= 7 ? 'bg-ok' : Number(n.nota) >= 5 ? 'bg-warn' : 'bg-err'; h += `<tr><td>NR ${n.nr_id}</td><td><span class="badge ${cor}">${n.nota}</span></td><td>${n.obs || '—'}</td><td>${fmtD(n.criado_em)}</td><td><button class="btn btn-sm btn-s" onclick="modalNotaSupabase('${aid}','${n.id}')"><i class="fas fa-pen"></i></button> <button class="btn btn-sm btn-d" onclick="delNotaSupabase('${n.id}','${aid}')"><i class="fas fa-trash"></i></button></td></tr>` })
+        h += `</tbody></table></div>`
+    }
+    h += `</div>`
+    c.innerHTML = h
+}
 
-/* ============================================================
-   VIEW: PLANOS
-   ============================================================ */
+async function modalNotaSupabase(aid, notaIdEdit) {
+    const alunos = (await sbGetAlunos()).data || []
+    const opts = NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')
+    let nota = null
+    if (notaIdEdit) {
+        const { data: notas } = await sbGetNotasAluno(aid)
+        nota = notas?.find(n => n.id === notaIdEdit)
+    }
+    
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">${nota ? 'Editar' : 'Lancar'} Nota</h2>
+        <form onsubmit="saveNotaSupabase(event, '${aid || ''}', '${notaIdEdit || ''}')">
+            <div class="fld"><label>Aluno</label>
+                <select id="nAluno" required>${alunos.map(a => `<option value="${a.id}" ${a.id === aid ? 'selected' : ''}>${a.nome}</option>`).join('')}</select>
+            </div>
+            <div class="fld"><label>NR</label><select id="nNR" required>${opts}</select></div>
+            <div class="fld"><label>Nota (0 a 10)</label><input type="number" id="nVal" min="0" max="10" step="0.1" value="${nota?.nota || ''}" required></div>
+            <div class="fld"><label>Observacao</label><textarea id="nObs" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical">${nota?.obs || ''}</textarea></div>
+            <button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar</button>
+        </form>`)
+}
+
+async function saveNotaSupabase(e, aid, notaIdEdit) {
+    e.preventDefault()
+    const alunoId = $('#nAluno').value
+    const nrid = $('#nNR').value
+    const nota = parseFloat($('#nVal').value)
+    const obs = $('#nObs').value.trim()
+    
+    if (notaIdEdit) {
+        await sbAtualizarNota(notaIdEdit, nota, obs)
+        toast('Nota atualizada!')
+    } else {
+        await sbLancarNota(alunoId, nrid, nota, obs, uid())
+        toast('Nota lancada!')
+        pushNotif(`Nova nota lancada para NR ${nrid}: ${nota}/10`, 'Ver boletim', 'boletim')
+    }
+    closeMdl()
+    renderNotasAlSupabase()
+    carregarBoletimProfessor()
+}
+
+async function delNotaSupabase(notaId, aid) {
+    if (!confirm('Excluir esta nota?')) return
+    await sbDeletarNota(notaId)
+    toast('Nota excluida', 'info')
+    renderNotasAlSupabase()
+}
+
+// ============================================================
+// VIEW: PLANOS
+// ============================================================
 function vPlanos() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<div class="god-hd"><h2><i class="fas fa-crown"></i> Planos de Assinatura</h2><p>Escolha o plano ideal para voce</p></div>`;
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<div class="god-hd"><h2><i class="fas fa-crown"></i> Planos de Assinatura</h2><p>Escolha o plano ideal para voce</p></div>`
     h += `<div class="planos-g">
-        <div class="plan-c"><h3>Mensal</h3><p class="pst">Flexivel para comecar</p><div class="pr">R$ <span>49</span>,90</div><p class="bl">por mes — 12 boletos mensais</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li class="off">Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Mensal',49.90,12)">Assinar Mensal</button></div>
-        <div class="plan-c dest"><span class="badge-plan">Melhor custo-beneficio</span><h3>Trimestral</h3><p class="pst">Economia garantida</p><div class="pr">R$ <span>129</span>,90</div><p class="bl">a cada 3 meses — 3 boletos</p><p class="eco">Economize 13%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-p btn-block" onclick="assinarPlano('Trimestral',129.90,3)">Assinar Trimestral</button></div>
-        <div class="plan-c"><h3>Anual</h3><p class="pst">Maxima economia</p><div class="pr">R$ <span>399</span>,90</div><p class="bl">por ano — 1 boleto anual</p><p class="eco">Economize 33%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li>Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlano('Anual',399.90,1)">Assinar Anual</button></div>
-    </div>`;
-    return h;
+        <div class="plan-c"><h3>Mensal</h3><p class="pst">Flexivel para comecar</p><div class="pr">R$ <span>49</span>,90</div><p class="bl">por mes — 12 boletos mensais</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li class="off">Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlanoSupabase('Mensal',49.90,12)">Assinar Mensal</button></div>
+        <div class="plan-c dest"><span class="badge-plan">Melhor custo-beneficio</span><h3>Trimestral</h3><p class="pst">Economia garantida</p><div class="pr">R$ <span>129</span>,90</div><p class="bl">a cada 3 meses — 3 boletos</p><p class="eco">Economize 13%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li class="off">Suporte prioritario</li></ul><button class="btn btn-p btn-block" onclick="assinarPlanoSupabase('Trimestral',129.90,3)">Assinar Trimestral</button></div>
+        <div class="plan-c"><h3>Anual</h3><p class="pst">Maxima economia</p><div class="pr">R$ <span>399</span>,90</div><p class="bl">por ano — 1 boleto anual</p><p class="eco">Economize 33%</p><ul><li>Acesso a todas as 38 NRs</li><li>Videoaulas em HD</li><li>Certificado reconhecido</li><li>Assistente IA 24/7</li><li>Aulas ao vivo ilimitadas</li><li>Suporte prioritario</li></ul><button class="btn btn-s btn-block" onclick="assinarPlanoSupabase('Anual',399.90,1)">Assinar Anual</button></div>
+    </div>`
+    return h
 }
 
-function assinarPlano(nome, valor, qtd) {
-    const intervalo = qtd === 12 ? 1 : qtd === 3 ? 3 : 12;
-    const hoje = new Date();
-    const novos = [];
+async function assinarPlanoSupabase(nome, valor, qtd) {
+    const intervalo = qtd === 12 ? 1 : qtd === 3 ? 3 : 12
+    const hoje = new Date()
+    let criados = 0
     for (let i = 0; i < qtd; i++) {
-        const venc = new Date(hoje); venc.setMonth(venc.getMonth() + i * intervalo);
-        if (venc.getDay() === 0) venc.setDate(venc.getDate() + 1);
-        novos.push({ id: genId(), uid: uid(), plano: nome, valor, metodo: 'boleto', status: 'pendente', venc: venc.toISOString().split('T')[0], linha: genDigitable(), pix: genPix(), ts: Date.now() });
+        const venc = new Date(hoje)
+        venc.setMonth(venc.getMonth() + i * intervalo)
+        if (venc.getDay() === 0) venc.setDate(venc.getDate() + 1)
+        const linha = genDigitable()
+        const pix = genPix()
+        const { error } = await sbCriarTransacao(
+            uid(), nome, valor, venc.toISOString().split('T')[0], linha, pix
+        )
+        if (!error) criados++
     }
-    S.boletos.push(...novos); save('boletos', S.boletos);
-    toast(`${qtd} boleto(s) do plano ${nome} gerados!`);
-    verBoleto(novos[0].id); renderV();
+    toast(`${criados} boleto(s) do plano ${nome} gerados!`)
+    if (criados > 0) {
+        const { data: transacoes } = await sbGetTransacoesUsuario(uid())
+        if (transacoes && transacoes.length > 0) verBoletoSupabase(transacoes[0].id)
+    }
+    renderV()
 }
 
-/* ============================================================
-   VIEW: BOLETOS
-   ============================================================ */
+// ============================================================
+// VIEW: BOLETOS
+// ============================================================
 function vBoletos() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    if (r === 'aluno') return vBoletosAluno(h);
-    return vBoletosAdmin(h);
-}
-
-function vBoletosAluno(h) {
-    const meus = S.boletos.filter(b => b.uid === uid());
-    const vencendo = meus.filter(b => b.status === 'pendente' && new Date(b.venc) <= new Date(Date.now() + 7 * 864e5));
-    h += `<div class="god-hd"><h2><i class="fas fa-file-invoice-dollar"></i> Cobrancas e Pagamentos</h2><p>Acompanhe suas mensalidades</p></div>`;
-    if (vencendo.length) h += `<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div><strong>Atencao:</strong> ${vencendo.length} boleto(s) vencendo em breve!</div></div>`;
-    h += `<div class="tabs"><button class="tab-b on" onclick="trocarTabBol(this,'bolAbertos')">Em Aberto (${meus.filter(b => b.status === 'pendente').length})</button><button class="tab-b" onclick="trocarTabBol(this,'bolPagos')">Pagos (${meus.filter(b => b.status === 'pago').length})</button></div>`;
-    h += `<div class="tab-c on" id="bolAbertos">`;
-    const pendentes = meus.filter(b => b.status === 'pendente');
-    if (!pendentes.length) h += `<div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum boleto em aberto</h4></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`;
-        pendentes.forEach(b => { h += `<tr><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge bg-warn">Pendente</span></td><td><button class="btn btn-sm btn-p" onclick="verBoleto('${b.id}')"><i class="fas fa-eye"></i> Ver</button> <button class="btn btn-sm btn-s" onclick="gerarPixBol('${b.id}')"><i class="fas fa-qrcode"></i> PIX</button></td></tr>`; });
-        h += `</tbody></table></div>`;
-    }
-    h += `</div><div class="tab-c" id="bolPagos">`;
-    const pagos = meus.filter(b => b.status === 'pago');
-    if (!pagos.length) h += `<div class="empty"><i class="fas fa-receipt"></i><h4>Nenhum pagamento registrado</h4></div>`;
-    else {
-        h += `<div class="tw"><table><thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead><tbody>`;
-        pagos.forEach(b => { h += `<tr><td>${fmtD(b.ts)}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${b.plano}</td><td><span class="badge bg-ok">Pago</span></td></tr>`; });
-        h += `</tbody></table></div>`;
-    }
-    h += `</div>`;
-    return h;
-}
-
-function vBoletosAdmin(h) {
-    const pagos = S.boletos.filter(b => b.status === 'pago');
-    const pendentes = S.boletos.filter(b => b.status === 'pendente');
-    const rec = pagos.reduce((a, b) => a + Number(b.valor || 0), 0);
-    const penVal = pendentes.reduce((a, b) => a + Number(b.valor || 0), 0);
-    h += `<div class="god-hd"><h2><i class="fas fa-chart-pie"></i> Metricas de Pagamentos</h2><p>Acompanhe receita e inadimplencia</p></div>`;
-    h += `<div class="stats">${stC(fmtM(rec), 'Receita Recebida', 'fa-dollar-sign')}${stC(fmtM(penVal), 'A Receber', 'fa-clock')}${stC(pagos.length, 'Pagos', 'fa-circle-check')}${stC(pendentes.length, 'Pendentes', 'fa-hourglass-half')}</div>`;
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Status dos Pagamentos</h3><canvas id="chartPayStatus" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Receita Mensal</h3><canvas id="chartPayMes" height="200"></canvas></div></div>`;
-    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-check-double"></i> Detalhamento por Aluno</div></div><input class="search" placeholder="Buscar aluno..." oninput="filterPayT(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="payTB">`;
-    S.boletos.forEach(b => { const al = S.users.find(u => u.id === b.uid); const sc = b.status === 'pago' ? 'bg-ok' : 'bg-warn'; h += `<tr data-an="${(al?.nome || '').toLowerCase()}"><td>${al?.nome || '—'}</td><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.venc)}</td><td><span class="badge ${sc}">${b.status}</span></td><td>${b.status === 'pendente' ? `<button class="btn btn-sm btn-p" onclick="confPay('${b.id}')"><i class="fas fa-check"></i> Confirmar</button>` : ''}</td></tr>`; });
-    h += `</tbody></table></div></div>`;
-    return h;
-}
-
-function trocarTabBol(btn, id) { $$('.tab-b').forEach(b => b.classList.remove('on')); btn.classList.add('on'); $$('.tab-c').forEach(c => c.classList.remove('on')); $('#' + id).classList.add('on'); }
-function filterPayT(q) { q = q.toLowerCase(); $$('#payTB tr').forEach(r => { r.style.display = r.dataset.an.includes(q) ? '' : 'none'; }); }
-
-function verBoleto(id) {
-    const b = S.boletos.find(x => x.id === id); if (!b) return;
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>${b.plano} — Boleto</h3><div style="font-size:32px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><span class="badge ${b.status === 'pago' ? 'bg-ok' : 'bg-warn'}" style="font-size:13px;padding:6px 16px">${b.status.toUpperCase()}</span><p style="font-size:12px;color:var(--tx3);margin:10px 0">Vencimento: <strong>${fmtD(b.venc)}</strong></p><p style="font-size:12px;font-weight:600;margin-bottom:6px">Linha Digitavel:</p><div class="copy-b" onclick="copyTxt(this,'${b.linha}')">${b.linha} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="gerarPixBol('${b.id}')"><i class="fas fa-qrcode"></i> Pagar via PIX</button></div></div>`);
-}
-
-function gerarPixBol(id) {
-    const b = S.boletos.find(x => x.id === id); if (!b) return;
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>PIX — ${b.plano}</h3><div style="font-size:28px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><div class="qr-box"><canvas id="qrCv" width="180" height="180"></canvas><p style="font-size:12px;color:var(--tx2);margin-top:8px">Escaneie com o app do banco</p></div><p style="font-size:12px;font-weight:600;margin-bottom:6px">Codigo Copia e Cola:</p><div class="copy-b" onclick="copyTxt(this,'${b.pix}')">${b.pix} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><p style="font-size:11px;color:var(--tx3);margin-top:10px">Vencimento: ${fmtD(b.venc)}</p></div>`);
-    setTimeout(() => { const cv = document.getElementById('qrCv'); if (cv) { const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 180, 180); ctx.fillStyle = '#000'; for (let i = 0; i < 180; i += 10) for (let j = 0; j < 180; j += 10) if (Math.random() > .3) ctx.fillRect(i, j, 8, 8); } }, 100);
-}
-
-function copyTxt(el, t) { navigator.clipboard.writeText(t).then(() => toast('Copiado!')).catch(() => toast('Erro ao copiar', 'err')); }
-function confPay(id) { const b = S.boletos.find(x => x.id === id); if (b) { b.status = 'pago'; save('boletos', S.boletos); toast('Pagamento confirmado!'); renderV(); } }
-
-/* ============================================================
-   VIEW: CERTIFICADOS
-   ============================================================ */
-function vCerts() {
-    const r = role();
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Certificados</h2>`;
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     if (r === 'aluno') {
-        const meus = S.certs.filter(c => c.uid === uid());
-        h += `<p class="wcs">Certificados emitidos para voce.</p>`;
-        if (!meus.length) h += `<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`;
-        else {
-            h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Codigo</th><th>Emitido em</th><th>Acao</th></tr></thead><tbody>`;
-            meus.forEach(c => { h += `<tr><td><strong>NR ${c.nrid}</strong></td><td>${c.nota ?? '—'}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td>${fmtD(c.ts)}</td><td><button class="btn btn-sm btn-p" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>`; });
-            h += `</tbody></table></div>`;
-        }
+        h += `<div id="boletosAluno"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
+        setTimeout(carregarBoletosAluno, 200)
     } else {
-        h += `<p class="wcs">Emita certificados para alunos.</p>`;
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div><div class="fld"><label>Aluno</label><select id="cAluno" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${S.users.filter(u => u.role === 'aluno').map(a => `<option value="${a.id}">${a.nome}</option>`).join('')}</select></div><div class="fld"><label>NR</label><select id="cNR" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div><div class="fld"><label>Carga Horaria</label><input type="number" id="cCH" value="40" min="1" max="999" class="search" style="margin:0;border-radius:var(--r)"></div><button class="btn btn-g" onclick="emitCert()"><i class="fas fa-award"></i> Emitir Certificado</button></div>`;
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Emitidos (${S.certs.length})</div></div>`;
-        if (!S.certs.length) h += `<div class="empty" style="padding:30px"><p>Nenhum certificado emitido.</p></div>`;
-        else {
-            h += `<div class="tw"><table><thead><tr><th>Aluno</th><th>NR</th><th>Codigo</th><th>Acoes</th></tr></thead><tbody>`;
-            S.certs.forEach(c => { const al = S.users.find(u => u.id === c.uid); h += `<tr><td>${al?.nome || '—'}</td><td>NR ${c.nrid}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td><button class="btn btn-sm btn-s" onclick="dlCert('${c.id}')"><i class="fas fa-download"></i></button> <button class="btn btn-sm btn-d" onclick="delCert('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-            h += `</tbody></table></div>`;
-        }
-        h += `</div>`;
+        h += `<div id="boletosAdmin"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando dados...</p></div></div>`
+        setTimeout(carregarBoletosAdmin, 200)
     }
-    return h;
+    return h
 }
 
-function emitCert() {
-    const aid = $('#cAluno')?.value, nrid = $('#cNR')?.value, ch = parseInt($('#cCH')?.value) || 40;
-    if (!aid || !nrid) { toast('Selecione aluno e NR', 'err'); return; }
-    const nr = NRS.find(n => n.id === nrid);
-    const notaEntry = S.notas.find(n => n.uid === aid && n.nrid === nrid);
-    S.certs.push({ id: genId(), uid: aid, nrid, nrn: nr?.nm, codigo: 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase(), nota: notaEntry?.nota, ch, by: uid(), ts: Date.now() });
-    save('certs', S.certs); toast('Certificado emitido!'); renderV();
-    const al = S.users.find(u => u.id === aid);
-    if (al) pushNotif(`Certificado emitido para NR ${nrid}!`, 'Ver certificado', 'certificados');
+async function carregarBoletosAluno() {
+    const container = document.getElementById('boletosAluno')
+    if (!container) return
+    const { data: transacoes } = await sbGetTransacoesUsuario(uid())
+    const meus = transacoes || []
+    const vencendo = meus.filter(b => b.status === 'pendente' && new Date(b.vencimento) <= new Date(Date.now() + 7 * 864e5))
+    
+    let h = `<div class="god-hd"><h2><i class="fas fa-file-invoice-dollar"></i> Cobrancas e Pagamentos</h2><p>Acompanhe suas mensalidades</p></div>`
+    if (vencendo.length) h += `<div class="warn-b"><i class="fas fa-exclamation-triangle"></i><div><strong>Atencao:</strong> ${vencendo.length} boleto(s) vencendo em breve!</div></div>`
+    h += `<div class="tabs"><button class="tab-b on" onclick="trocarTabBol(this,'bolAbertos')">Em Aberto (${meus.filter(b => b.status === 'pendente').length})</button><button class="tab-b" onclick="trocarTabBol(this,'bolPagos')">Pagos (${meus.filter(b => b.status === 'pago').length})</button></div>`
+    h += `<div class="tab-c on" id="bolAbertos">`
+    const pendentes = meus.filter(b => b.status === 'pendente')
+    if (!pendentes.length) h += `<div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum boleto em aberto</h4></div>`
+    else {
+        h += `<div class="tw"><table><thead><tr><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody>`
+        pendentes.forEach(b => { h += `<tr><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.vencimento)}</td><td><span class="badge bg-warn">Pendente</span></td><td><button class="btn btn-sm btn-p" onclick="verBoletoSupabase('${b.id}')"><i class="fas fa-eye"></i> Ver</button> <button class="btn btn-sm btn-s" onclick="gerarPixBolSupabase('${b.id}')"><i class="fas fa-qrcode"></i> PIX</button></td></tr>` })
+        h += `</tbody></table></div>`
+    }
+    h += `</div><div class="tab-c" id="bolPagos">`
+    const pagos = meus.filter(b => b.status === 'pago')
+    if (!pagos.length) h += `<div class="empty"><i class="fas fa-receipt"></i><h4>Nenhum pagamento registrado</h4></div>`
+    else {
+        h += `<div class="tw"><table><thead><tr><th>Data</th><th>Valor</th><th>Plano</th><th>Status</th></tr></thead><tbody>`
+        pagos.forEach(b => { h += `<tr><td>${fmtD(b.criado_em)}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${b.plano}</td><td><span class="badge bg-ok">Pago</span></td></tr>` })
+        h += `</tbody></table></div>`
+    }
+    h += `</div>`
+    container.innerHTML = h
 }
 
-function delCert(id) { if (!confirm('Excluir?')) return; S.certs = S.certs.filter(c => c.id !== id); save('certs', S.certs); toast('Excluido', 'info'); renderV(); }
+async function carregarBoletosAdmin() {
+    const container = document.getElementById('boletosAdmin')
+    if (!container) return
+    const { data: transacoes } = await sbGetAllTransacoes()
+    const { data: metrics } = await sbGetDashboardMetrics()
+    const pagos = transacoes?.filter(b => b.status === 'pago') || []
+    const pendentes = transacoes?.filter(b => b.status === 'pendente') || []
+    const rec = pagos.reduce((a, b) => a + Number(b.valor || 0), 0)
+    const penVal = pendentes.reduce((a, b) => a + Number(b.valor || 0), 0)
+    
+    let h = `<div class="god-hd"><h2><i class="fas fa-chart-pie"></i> Metricas de Pagamentos</h2><p>Acompanhe receita e inadimplencia</p></div>`
+    h += `<div class="stats">${stC(fmtM(rec), 'Receita Recebida', 'fa-dollar-sign')}${stC(fmtM(penVal), 'A Receber', 'fa-clock')}${stC(pagos.length, 'Pagos', 'fa-circle-check')}${stC(pendentes.length, 'Pendentes', 'fa-hourglass-half')}</div>`
+    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Status dos Pagamentos</h3><canvas id="chartPayStatus" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Receita Mensal</h3><canvas id="chartPayMes" height="200"></canvas></div></div>`
+    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-check-double"></i> Detalhamento por Aluno</div></div><input class="search" placeholder="Buscar aluno..." oninput="filterPayT(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Aluno</th><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="payTB">`
+    ;(transacoes || []).forEach(b => { const sc = b.status === 'pago' ? 'bg-ok' : 'bg-warn'; h += `<tr data-an="${(b.profiles?.nome || '').toLowerCase()}"><td>${b.profiles?.nome || '—'}</td><td>${b.plano}</td><td><strong>${fmtM(b.valor)}</strong></td><td>${fmtD(b.vencimento)}</td><td><span class="badge ${sc}">${b.status}</span></td><td>${b.status === 'pendente' ? `<button class="btn btn-sm btn-p" onclick="confPaySupabase('${b.id}')"><i class="fas fa-check"></i> Confirmar</button>` : ''}</td></tr>` })
+    h += `</tbody></table></div></div>`
+    container.innerHTML = h
+    setTimeout(drawChartPaySupabase, 100)
+}
 
-/* ============================================================
-   CERTIFICADO PDF
-   ============================================================ */
-function dlCert(id) {
-    const c = S.certs.find(x => x.id === id); if (!c) return;
-    const al = S.users.find(u => u.id === c.uid);
-    const nr = NRS.find(n => n.id === c.nrid);
-    const emitente = S.users.find(u => u.id === c.by);
-    const de = new Date(c.ts);
+function trocarTabBol(btn, id) { $$('.tab-b').forEach(b => b.classList.remove('on')); btn.classList.add('on'); $$('.tab-c').forEach(c => c.classList.remove('on')); $('#' + id).classList.add('on') }
+function filterPayT(q) { q = q.toLowerCase(); $$('#payTB tr').forEach(r => { r.style.display = r.dataset.an.includes(q) ? '' : 'none' }) }
+
+async function verBoletoSupabase(id) {
+    const { data: transacoes } = await sbGetTransacoesUsuario(uid())
+    const b = transacoes?.find(x => x.id === id)
+    if (!b) return
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>${b.plano} — Boleto</h3><div style="font-size:32px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><span class="badge ${b.status === 'pago' ? 'bg-ok' : 'bg-warn'}" style="font-size:13px;padding:6px 16px">${b.status.toUpperCase()}</span><p style="font-size:12px;color:var(--tx3);margin:10px 0">Vencimento: <strong>${fmtD(b.vencimento)}</strong></p><p style="font-size:12px;font-weight:600;margin-bottom:6px">Linha Digitavel:</p><div class="copy-b" onclick="copyTxt(this,'${b.linha_digitavel}')">${b.linha_digitavel} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="gerarPixBolSupabase('${b.id}')"><i class="fas fa-qrcode"></i> Pagar via PIX</button></div></div>`)
+}
+
+async function gerarPixBolSupabase(id) {
+    const { data: transacoes } = await sbGetTransacoesUsuario(uid())
+    const b = transacoes?.find(x => x.id === id)
+    if (!b) return
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div class="pay-c"><h3>PIX — ${b.plano}</h3><div style="font-size:28px;font-weight:900;color:var(--p);margin:12px 0">${fmtM(b.valor)}</div><div class="qr-box"><canvas id="qrCv" width="180" height="180"></canvas><p style="font-size:12px;color:var(--tx2);margin-top:8px">Escaneie com o app do banco</p></div><p style="font-size:12px;font-weight:600;margin-bottom:6px">Codigo Copia e Cola:</p><div class="copy-b" onclick="copyTxt(this,'${b.pix_copia_cola}')">${b.pix_copia_cola} <i class="fas fa-copy" style="float:right;color:var(--p)"></i></div><p style="font-size:11px;color:var(--tx3);margin-top:10px">Vencimento: ${fmtD(b.vencimento)}</p></div>`)
+    setTimeout(() => { const cv = document.getElementById('qrCv'); if (cv) { const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 180, 180); ctx.fillStyle = '#000'; for (let i = 0; i < 180; i += 10) for (let j = 0; j < 180; j += 10) if (Math.random() > .3) ctx.fillRect(i, j, 8, 8) } }, 100)
+}
+
+function copyTxt(el, t) { navigator.clipboard.writeText(t).then(() => toast('Copiado!')).catch(() => toast('Erro ao copiar', 'err')) }
+
+async function confPaySupabase(id) {
+    await sbConfirmarPagamento(id)
+    toast('Pagamento confirmado!')
+    carregarBoletosAdmin()
+    carregarBoletosAluno()
+}
+
+// ============================================================
+// VIEW: CERTIFICADOS
+// ============================================================
+function vCerts() {
+    const r = role()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Certificados</h2>`
+    
+    if (r === 'aluno') {
+        h += `<div id="certsAluno"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
+        setTimeout(carregarCertsAluno, 200)
+    } else {
+        h += `<div id="certsAdmin"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
+        setTimeout(carregarCertsAdmin, 200)
+    }
+    return h
+}
+
+async function carregarCertsAluno() {
+    const container = document.getElementById('certsAluno')
+    if (!container) return
+    const { data: certs } = await sbGetCertificadosAluno(uid())
+    
+    let h = `<p class="wcs">Certificados emitidos para voce.</p>`
+    if (!certs || certs.length === 0) {
+        h += `<div class="empty"><i class="fas fa-certificate"></i><p>Nenhum certificado emitido.</p></div>`
+    } else {
+        h += `<div class="tw"><table><thead><tr><th>NR</th><th>Nota</th><th>Codigo</th><th>Emitido em</th><th>Acao</th></tr></thead><tbody>`
+        certs.forEach(c => { h += `<tr><td><strong>NR ${c.nr_id}</strong></td><td>${c.nota ?? '—'}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td>${fmtD(c.criado_em)}</td><td><button class="btn btn-sm btn-p" onclick="dlCertSupabase('${c.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>` })
+        h += `</tbody></table></div>`
+    }
+    container.innerHTML = h
+}
+
+async function carregarCertsAdmin() {
+    const container = document.getElementById('certsAdmin')
+    if (!container) return
+    const { data: alunos } = await sbGetAlunos()
+    const { data: certs } = await supabase.from('certificados').select('*, profiles(nome)').order('criado_em', { ascending: false })
+    
+    let h = `<p class="wcs">Emita certificados para alunos.</p>`
+    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-certificate"></i> Emitir Novo</div></div>
+        <div class="fld"><label>Aluno</label><select id="cAluno" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${alunos.map(a => `<option value="${a.id}">${a.nome}</option>`).join('')}</select></div>
+        <div class="fld"><label>NR</label><select id="cNR" class="search" style="margin:0;border-radius:var(--r)"><option value="">Selecione...</option>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select></div>
+        <div class="fld"><label>Carga Horaria</label><input type="number" id="cCH" value="40" min="1" max="999" class="search" style="margin:0;border-radius:var(--r)"></div>
+        <button class="btn btn-g" onclick="emitCertSupabase()"><i class="fas fa-award"></i> Emitir Certificado</button>
+    </div>`
+    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Emitidos (${certs?.length || 0})</div></div>`
+    if (!certs || certs.length === 0) {
+        h += `<div class="empty" style="padding:30px"><p>Nenhum certificado emitido.</p></div>`
+    } else {
+        h += `<div class="tw"><table><thead><tr><th>Aluno</th><th>NR</th><th>Codigo</th><th>Acoes</th></tr></thead><tbody>`
+        certs.forEach(c => { h += `<tr><td>${c.profiles?.nome || '—'}</td><td>NR ${c.nr_id}</td><td><code style="background:var(--ip);padding:2px 8px;border-radius:4px;font-size:11px">${c.codigo}</code></td><td><button class="btn btn-sm btn-s" onclick="dlCertSupabase('${c.id}')"><i class="fas fa-download"></i></button> <button class="btn btn-sm btn-d" onclick="delCertSupabase('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>` })
+        h += `</tbody></table></div>`
+    }
+    h += `</div>`
+    container.innerHTML = h
+}
+
+async function emitCertSupabase() {
+    const aid = $('#cAluno')?.value, nrid = $('#cNR')?.value, ch = parseInt($('#cCH')?.value) || 40
+    if (!aid || !nrid) { toast('Selecione aluno e NR', 'err'); return }
+    const { data: notas } = await sbGetNotasAluno(aid)
+    const notaEntry = notas?.find(n => n.nr_id === nrid)
+    const { data, error } = await sbEmitirCertificado(aid, nrid, notaEntry?.nota, ch)
+    if (error) { toast('Erro ao emitir: ' + error.message, 'err'); return }
+    toast('Certificado emitido!')
+    pushNotif(`Certificado emitido para NR ${nrid}!`, 'Ver certificado', 'certificados')
+    carregarCertsAdmin()
+}
+
+async function delCertSupabase(id) {
+    if (!confirm('Excluir?')) return
+    await sbDeletarCertificado(id)
+    toast('Excluido', 'info')
+    carregarCertsAdmin()
+}
+
+async function dlCertSupabase(id) {
+    const { data: certs } = await supabase.from('certificados').select('*, profiles(*)').eq('id', id)
+    const c = certs?.[0]
+    if (!c) return
+    const al = c.profiles
+    const nr = NRS.find(n => n.id === c.nr_id)
+    const de = new Date(c.criado_em)
     try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        doc.setFillColor(255, 255, 255); doc.rect(0, 0, 297, 210, 'F');
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(4); doc.rect(6, 6, 285, 198);
-        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1.5); doc.rect(10, 10, 277, 190);
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.3); doc.rect(13, 13, 271, 184);
-        doc.setFillColor(46, 125, 50); doc.roundedRect(18, 18, 45, 45, 8, 8, 'F');
-        doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold');
-        doc.text('SS', 40.5, 46, { align: 'center' }); doc.setFontSize(7); doc.text('SULSAFE', 40.5, 52, { align: 'center' });
-        doc.setFillColor(201, 176, 55); doc.roundedRect(230, 18, 48, 16, 4, 4, 'F');
-        doc.setTextColor(26, 26, 26); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('VALIDO DIGITALMENTE', 254, 29, { align: 'center' });
-        doc.setTextColor(46, 125, 50); doc.setFontSize(36); doc.setFont('helvetica', 'bold');
-        doc.text('CERTIFICADO', 148.5, 50, { align: 'center' });
-        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1); doc.line(80, 55, 217, 55);
-        doc.setTextColor(80, 80, 80); doc.setFontSize(12); doc.setFont('helvetica', 'normal');
-        doc.text('Certificamos que', 148.5, 70, { align: 'center' });
-        doc.setTextColor(26, 26, 26); doc.setFontSize(28); doc.setFont('helvetica', 'bold');
-        const nome = al?.nome || 'Nome do Aluno';
-        doc.text(nome, 148.5, 88, { align: 'center' });
-        const nw = doc.getTextWidth(nome); doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5);
-        doc.line(148.5 - nw / 2 - 5, 90, 148.5 + nw / 2 + 5, 90);
-        doc.setTextColor(60, 60, 60); doc.setFontSize(12);
-        doc.text(`concluiu com exito o curso da NR ${c.nrid} — ${c.nrn || nr?.nm || ''}`, 148.5, 105, { align: 'center' });
-        doc.text(`com carga horaria de ${c.ch} horas`, 148.5, 114, { align: 'center' });
-        if (c.nota != null) doc.text(`obtendo nota final: ${c.nota}/10,0`, 148.5, 123, { align: 'center' });
-        doc.setFontSize(10); doc.setTextColor(100, 100, 100);
-        doc.text(`Emitido em: ${de.toLocaleDateString('pt-BR')} as ${de.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 148.5, 140, { align: 'center' });
-        doc.setFillColor(244, 247, 246); doc.roundedRect(108, 146, 81, 14, 4, 4, 'F');
-        doc.setTextColor(46, 125, 50); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text(`VERIFICACAO: ${c.codigo}`, 148.5, 155, { align: 'center' });
-        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 175, 170, 175);
-        doc.setTextColor(80, 80, 80); doc.setFontSize(10);
-        doc.text((emitente?.nome || 'Administrador SulSafe'), 130, 182, { align: 'center' });
-        doc.setFontSize(8); doc.setTextColor(120, 120, 120);
-        doc.text(`${emitente?.email || ADMIN_EMAIL}`, 130, 188, { align: 'center' });
-        doc.text('SulSafe Treinamentos — Seguranca do Trabalho', 130, 194, { align: 'center' });
-        doc.setFontSize(7); doc.setTextColor(180, 180, 180);
-        doc.text('Documento gerado pela plataforma SulSafe. Verifique a autenticidade em sulsafe.com.br/verificar', 148.5, 206, { align: 'center' });
-        doc.save(`Certificado-NR${c.nrid}-${nome.replace(/\s+/g, '-')}.pdf`);
-        toast('PDF gerado!');
-    } catch (e) { toast('Erro ao gerar PDF: ' + e.message, 'err'); }
+        const { jsPDF } = window.jspdf
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
+        doc.setFillColor(255, 255, 255); doc.rect(0, 0, 297, 210, 'F')
+        doc.setDrawColor(46, 125, 50); doc.setLineWidth(4); doc.rect(6, 6, 285, 198)
+        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1.5); doc.rect(10, 10, 277, 190)
+        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.3); doc.rect(13, 13, 271, 184)
+        doc.setFillColor(46, 125, 50); doc.roundedRect(18, 18, 45, 45, 8, 8, 'F')
+        doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold')
+        doc.text('SS', 40.5, 46, { align: 'center' }); doc.setFontSize(7); doc.text('SULSAFE', 40.5, 52, { align: 'center' })
+        doc.setFillColor(201, 176, 55); doc.roundedRect(230, 18, 48, 16, 4, 4, 'F')
+        doc.setTextColor(26, 26, 26); doc.setFontSize(8); doc.setFont('helvetica', 'bold')
+        doc.text('VALIDO DIGITALMENTE', 254, 29, { align: 'center' })
+        doc.setTextColor(46, 125, 50); doc.setFontSize(36); doc.setFont('helvetica', 'bold')
+        doc.text('CERTIFICADO', 148.5, 50, { align: 'center' })
+        doc.setDrawColor(201, 176, 55); doc.setLineWidth(1); doc.line(80, 55, 217, 55)
+        doc.setTextColor(80, 80, 80); doc.setFontSize(12); doc.setFont('helvetica', 'normal')
+        doc.text('Certificamos que', 148.5, 70, { align: 'center' })
+        doc.setTextColor(26, 26, 26); doc.setFontSize(28); doc.setFont('helvetica', 'bold')
+        const nome = al?.nome || 'Nome do Aluno'
+        doc.text(nome, 148.5, 88, { align: 'center' })
+        const nw = doc.getTextWidth(nome); doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5)
+        doc.line(148.5 - nw / 2 - 5, 90, 148.5 + nw / 2 + 5, 90)
+        doc.setTextColor(60, 60, 60); doc.setFontSize(12)
+        doc.text(`concluiu com exito o curso da NR ${c.nr_id} — ${nr?.nm || ''}`, 148.5, 105, { align: 'center' })
+        doc.text(`com carga horaria de ${c.carga_horaria} horas`, 148.5, 114, { align: 'center' })
+        if (c.nota != null) doc.text(`obtendo nota final: ${c.nota}/10,0`, 148.5, 123, { align: 'center' })
+        doc.setFontSize(10); doc.setTextColor(100, 100, 100)
+        doc.text(`Emitido em: ${de.toLocaleDateString('pt-BR')} as ${de.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 148.5, 140, { align: 'center' })
+        doc.setFillColor(244, 247, 246); doc.roundedRect(108, 146, 81, 14, 4, 4, 'F')
+        doc.setTextColor(46, 125, 50); doc.setFontSize(8); doc.setFont('helvetica', 'bold')
+        doc.text(`VERIFICACAO: ${c.codigo}`, 148.5, 155, { align: 'center' })
+        doc.setDrawColor(46, 125, 50); doc.setLineWidth(0.5); doc.line(90, 175, 170, 175)
+        doc.setTextColor(80, 80, 80); doc.setFontSize(10)
+        doc.text((S.user?.nome || 'Administrador SulSafe'), 130, 182, { align: 'center' })
+        doc.setFontSize(8); doc.setTextColor(120, 120, 120)
+        doc.text(`${S.user?.email || ADMIN_EMAIL}`, 130, 188, { align: 'center' })
+        doc.text('SulSafe Treinamentos — Seguranca do Trabalho', 130, 194, { align: 'center' })
+        doc.setFontSize(7); doc.setTextColor(180, 180, 180)
+        doc.text('Documento gerado pela plataforma SulSafe. Verifique a autenticidade em sulsafe.com.br/verificar', 148.5, 206, { align: 'center' })
+        doc.save(`Certificado-NR${c.nr_id}-${nome.replace(/\s+/g, '-')}.pdf`)
+        toast('PDF gerado!')
+    } catch (e) { toast('Erro ao gerar PDF: ' + e.message, 'err') }
 }
 
-/* ============================================================
-   VIEW: ADMIN (MODO DEUS)
-   ============================================================ */
+// ============================================================
+// VIEW: ADMIN (MODO DEUS)
+// ============================================================
 function vAdmin() {
-    if (!isAdmin()) return vInicio();
-    const al = S.users.filter(u => u.role === 'aluno').length;
-    const pf = S.users.filter(u => u.role === 'professor').length;
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`;
-    h += `<div class="stats">${stC(S.users.length, 'Usuarios', 'fa-users')}${stC(al, 'Alunos', 'fa-user-graduate')}${stC(pf, 'Professores', 'fa-chalkboard-user')}${stC(S.salas.length, 'Salas', 'fa-tower-broadcast')}${stC(S.notas.length, 'Notas', 'fa-file-pen')}${stC(S.certs.length, 'Certificados', 'fa-certificate')}</div>`;
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuicao de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`;
-    h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios</div></div><input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`;
-    S.users.forEach(u => { const rc = u.role === 'admin' ? 'bg-warn' : u.role === 'professor' ? 'bg-ok' : 'bg-info'; h += `<tr data-un="${u.nome.toLowerCase()} ${u.email.toLowerCase()}"><td><strong>${u.nome}</strong></td><td>${u.email}</td><td><span class="badge ${rc}">${u.role}</span></td><td>${u.email !== ADMIN_EMAIL ? `<select onchange="changeRole('${u.id}',this.value)" style="background:var(--ip);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--tx)"><option value="aluno" ${u.role === 'aluno' ? 'selected' : ''}>Aluno</option><option value="professor" ${u.role === 'professor' ? 'selected' : ''}>Professor</option></select>` : '<span style="font-size:11px;color:var(--tx3)">Protegido</span>'}</td></tr>`; });
-    h += `</tbody></table></div></div>`;
-    h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`;
-    return h;
+    if (!isAdmin()) return vInicio()
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`
+    h += `<div id="adminStats"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando dados...</p></div></div>`
+    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuicao de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`
+    h += `<div id="adminUsers"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando usuarios...</p></div></div>`
+    h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudoSupabase()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`
+    
+    setTimeout(carregarAdminData, 200)
+    return h
 }
 
-function filterU(q) { q = q.toLowerCase(); $$('#uTB tr').forEach(r => { r.style.display = r.dataset.un.includes(q) ? '' : 'none'; }); }
-function changeRole(id, r) { const u = S.users.find(x => x.id === id); if (u) { u.role = r; save('users', S.users); toast('Role alterado para ' + r); renderV(); } }
-
-function modalApagarTudo() {
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagara: salas, notas, boletos, certificados e aulas.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`);
+async function carregarAdminData() {
+    // Stats
+    const { data: metrics } = await sbGetDashboardMetrics()
+    const { data: users } = await sbGetAllUsers()
+    const { data: ranking } = await sbGetRankingAlunos()
+    const statsDiv = document.getElementById('adminStats')
+    if (statsDiv && metrics) {
+        statsDiv.innerHTML = `
+            <div class="stats">
+                ${stC(metrics.total_usuarios || 0, 'Usuarios', 'fa-users')}
+                ${stC(metrics.total_alunos || 0, 'Alunos', 'fa-user-graduate')}
+                ${stC(metrics.total_professores || 0, 'Professores', 'fa-chalkboard-user')}
+                ${stC(metrics.total_concluidas || 0, 'Aulas Concluidas', 'fa-check-circle')}
+                ${stC(fmtM(metrics.receita_total || 0), 'Receita', 'fa-dollar-sign')}
+                ${stC(fmtM(metrics.a_receber || 0), 'A Receber', 'fa-clock')}
+            </div>
+        `
+    }
+    
+    // Users
+    const usersDiv = document.getElementById('adminUsers')
+    if (usersDiv && users) {
+        let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuarios (${users.length})</div></div><input class="search" placeholder="Buscar usuario..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Acoes</th></tr></thead><tbody id="uTB">`
+        users.forEach(u => { const rc = u.role === 'admin' ? 'bg-warn' : u.role === 'professor' ? 'bg-ok' : 'bg-info'; h += `<tr data-un="${u.nome.toLowerCase()} ${u.email.toLowerCase()}"><td><strong>${u.nome}</strong></td><td>${u.email}</td><td><span class="badge ${rc}">${u.role}</span></td><td>${u.email !== ADMIN_EMAIL ? `<select onchange="changeRoleSupabase('${u.id}',this.value)" style="background:var(--ip);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--tx)"><option value="aluno" ${u.role === 'aluno' ? 'selected' : ''}>Aluno</option><option value="professor" ${u.role === 'professor' ? 'selected' : ''}>Professor</option></select>` : '<span style="font-size:11px;color:var(--tx3)">Protegido</span>'}</td></tr>` })
+        h += `</tbody></table></div></div>`
+        usersDiv.innerHTML = h
+    }
+    
+    setTimeout(drawChartAdminSupabase, 100)
 }
 
-function execApagar() {
-    if ($('#cfmApagar')?.value?.trim() !== 'APAGAR') { toast('Digite "APAGAR" para confirmar', 'err'); return; }
-    S.salas = []; S.notas = []; S.boletos = []; S.certs = []; S.aulas = [];
-    saveAll(); closeMdl(); toast('TODOS os dados foram apagados!', 'warn'); renderV();
+function filterU(q) { q = q.toLowerCase(); $$('#uTB tr').forEach(r => { r.style.display = r.dataset.un.includes(q) ? '' : 'none' }) }
+
+async function changeRoleSupabase(id, role) {
+    await sbUpdateUser(id, { role: role })
+    toast('Role alterado para ' + role)
+    carregarAdminData()
 }
 
-/* ============================================================
-   VIEW: CONFIGURACOES
-   ============================================================ */
+function modalApagarTudoSupabase() {
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagara: salas, notas, boletos, certificados e aulas.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagarSupabase()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`)
+}
+
+async function execApagarSupabase() {
+    if ($('#cfmApagar')?.value?.trim() !== 'APAGAR') { toast('Digite "APAGAR" para confirmar', 'err'); return }
+    await supabase.from('salas').delete().neq('id', '')
+    await supabase.from('notas').delete().neq('id', '')
+    await supabase.from('transacoes').delete().neq('id', '')
+    await supabase.from('certificados').delete().neq('id', '')
+    await supabase.from('progresso_aulas').delete().neq('id', '')
+    closeMdl()
+    toast('TODOS os dados foram apagados!', 'warn')
+    carregarAdminData()
+}
+
+// ============================================================
+// VIEW: CONFIGURACOES
+// ============================================================
 function vConfig() {
-    const c = S.cfg;
-    const temas = [{ id: 'verde', cor: '#2E7D32', nm: 'Verde' }, { id: 'azul', cor: '#1565C0', nm: 'Azul' }, { id: 'roxo', cor: '#7B1FA2', nm: 'Roxo' }, { id: 'vermelho', cor: '#C62828', nm: 'Vermelho' }, { id: 'laranja', cor: '#E65100', nm: 'Laranja' }, { id: 'escuro', cor: '#1a1a1a', nm: 'Escuro' }];
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`;
-    h += `<h2 class="wc">Configuracoes</h2><p class="wcs">Personalize sua experiencia na plataforma.</p>`;
-    h += `<div class="cfg-w"><div class="cfg-sb"><div class="cfg-tb on" onclick="cfgTab('tema',this)"><i class="fas fa-palette"></i><span>Tema</span></div><div class="cfg-tb" onclick="cfgTab('video',this)"><i class="fas fa-video"></i><span>Video</span></div><div class="cfg-tb" onclick="cfgTab('audio',this)"><i class="fas fa-volume-high"></i><span>Audio</span></div><div class="cfg-tb" onclick="cfgTab('geral',this)"><i class="fas fa-sliders-h"></i><span>Geral</span></div></div>`;
-    h += `<div class="cfg-bd">`;
-    h += `<div class="cfg-sc on" id="cfgTema"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Cores do Tema</h3><div class="tema-g">`;
-    temas.forEach(t => { h += `<div class="tema-o${c.tema === t.id ? ' on' : ''}" onclick="setTema('${t.id}')"><div class="tema-dot" style="background:${t.cor};${t.id === 'escuro' ? 'border:2px solid #555' : ''}"></div>${t.nm}</div>`; });
-    h += `</div></div>`;
-    h += `<div class="cfg-sc" id="cfgVideo"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Video</h3><div class="cfg-grp"><label>Qualidade Padrao</label><select id="cfgQual" onchange="saveCfg()"><option value="sd"${c.qual === 'sd' ? ' selected' : ''}>SD (480p)</option><option value="hd"${c.qual === 'hd' ? ' selected' : ''}>HD (720p)</option><option value="fhd"${c.qual === 'fhd' ? ' selected' : ''}>Full HD (1080p)</option><option value="auto"${c.qual === 'auto' ? ' selected' : ''}>Automatico</option></select></div><div class="cfg-grp"><label>Velocidade</label><select id="cfgSpeed" onchange="saveCfg()"><option value="0.75"${c.speed === '0.75' ? ' selected' : ''}>0.75x</option><option value="1"${c.speed === '1' ? ' selected' : ''}>1x</option><option value="1.25"${c.speed === '1.25' ? ' selected' : ''}>1.25x</option><option value="1.5"${c.speed === '1.5' ? ' selected' : ''}>1.5x</option><option value="2"${c.speed === '2' ? ' selected' : ''}>2x</option></select></div></div>`;
-    h += `<div class="cfg-sc" id="cfgAudio"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Audio</h3><div class="cfg-grp"><label>Volume Geral: <strong id="volVal">${c.vol}%</strong></label><input type="range" id="cfgVol" min="0" max="100" value="${c.vol}" oninput="$('#volVal').textContent=this.value+'%';saveCfg()"></div><div class="cfg-grp"><label>Volume da IA</label><input type="range" min="0" max="100" value="80"></div></div>`;
-    h += `<div class="cfg-sc" id="cfgGeral"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes Gerais</h3><div class="cfg-grp"><label>Notificacoes de Novo Conteudo</label><select onchange="S.cfg.notifs=this.value==='true';saveCfg()"><option value="true"${c.notifs !== false ? ' selected' : ''}>Ativadas</option><option value="false"${c.notifs === false ? ' selected' : ''}>Desativadas</option></select></div><div class="cfg-grp"><label>Nome de Exibicao</label><input type="text" value="${S.user?.nome || ''}" onchange="S.user.nome=this.value;save('users',S.users);renderSB()"></div></div>`;
-    h += `</div></div>`;
-    return h;
+    const c = S.cfg
+    const temas = [{ id: 'verde', cor: '#2E7D32', nm: 'Verde' }, { id: 'azul', cor: '#1565C0', nm: 'Azul' }, { id: 'roxo', cor: '#7B1FA2', nm: 'Roxo' }, { id: 'vermelho', cor: '#C62828', nm: 'Vermelho' }, { id: 'laranja', cor: '#E65100', nm: 'Laranja' }, { id: 'escuro', cor: '#1a1a1a', nm: 'Escuro' }]
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<h2 class="wc">Configuracoes</h2><p class="wcs">Personalize sua experiencia na plataforma.</p>`
+    h += `<div class="cfg-w"><div class="cfg-sb"><div class="cfg-tb on" onclick="cfgTab('tema',this)"><i class="fas fa-palette"></i><span>Tema</span></div><div class="cfg-tb" onclick="cfgTab('video',this)"><i class="fas fa-video"></i><span>Video</span></div><div class="cfg-tb" onclick="cfgTab('audio',this)"><i class="fas fa-volume-high"></i><span>Audio</span></div><div class="cfg-tb" onclick="cfgTab('geral',this)"><i class="fas fa-sliders-h"></i><span>Geral</span></div></div>`
+    h += `<div class="cfg-bd">`
+    h += `<div class="cfg-sc on" id="cfgTema"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Cores do Tema</h3><div class="tema-g">`
+    temas.forEach(t => { h += `<div class="tema-o${c.tema === t.id ? ' on' : ''}" onclick="setTema('${t.id}')"><div class="tema-dot" style="background:${t.cor};${t.id === 'escuro' ? 'border:2px solid #555' : ''}"></div>${t.nm}</div>` })
+    h += `</div></div>`
+    h += `<div class="cfg-sc" id="cfgVideo"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Video</h3><div class="cfg-grp"><label>Qualidade Padrao</label><select id="cfgQual" onchange="saveCfg()"><option value="sd"${c.qual === 'sd' ? ' selected' : ''}>SD (480p)</option><option value="hd"${c.qual === 'hd' ? ' selected' : ''}>HD (720p)</option><option value="fhd"${c.qual === 'fhd' ? ' selected' : ''}>Full HD (1080p)</option><option value="auto"${c.qual === 'auto' ? ' selected' : ''}>Automatico</option></select></div><div class="cfg-grp"><label>Velocidade</label><select id="cfgSpeed" onchange="saveCfg()"><option value="0.75"${c.speed === '0.75' ? ' selected' : ''}>0.75x</option><option value="1"${c.speed === '1' ? ' selected' : ''}>1x</option><option value="1.25"${c.speed === '1.25' ? ' selected' : ''}>1.25x</option><option value="1.5"${c.speed === '1.5' ? ' selected' : ''}>1.5x</option><option value="2"${c.speed === '2' ? ' selected' : ''}>2x</option></select></div></div>`
+    h += `<div class="cfg-sc" id="cfgAudio"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de Audio</h3><div class="cfg-grp"><label>Volume Geral: <strong id="volVal">${c.vol}%</strong></label><input type="range" id="cfgVol" min="0" max="100" value="${c.vol}" oninput="$('#volVal').textContent=this.value+'%';saveCfg()"></div><div class="cfg-grp"><label>Volume da IA</label><input type="range" min="0" max="100" value="80"></div></div>`
+    h += `<div class="cfg-sc" id="cfgGeral"><h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes Gerais</h3><div class="cfg-grp"><label>Notificacoes de Novo Conteudo</label><select onchange="S.cfg.notifs=this.value==='true';saveCfg()"><option value="true"${c.notifs !== false ? ' selected' : ''}>Ativadas</option><option value="false"${c.notifs === false ? ' selected' : ''}>Desativadas</option></select></div><div class="cfg-grp"><label>Nome de Exibicao</label><input type="text" value="${S.user?.nome || ''}" onchange="atualizarNomeSupabase(this.value)"></div></div>`
+    h += `</div></div>`
+    return h
 }
 
-function cfgTab(id, el) { $$('.cfg-tb').forEach(t => t.classList.remove('on')); el.classList.add('on'); $$('.cfg-sc').forEach(s => s.classList.remove('on')); const map = { tema: 'cfgTema', video: 'cfgVideo', audio: 'cfgAudio', geral: 'cfgGeral' }; $('#' + map[id])?.classList.add('on'); }
-function setTema(id) { document.body.className = id === 'verde' ? '' : 't-' + id; S.cfg.tema = id; saveCfg(); $$('.tema-o').forEach(o => o.classList.remove('on')); event.currentTarget.classList.add('on'); toast('Tema alterado!'); }
-function saveCfg() { const q = $('#cfgQual')?.value, sp = $('#cfgSpeed')?.value, v = $('#cfgVol')?.value; if (q) S.cfg.qual = q; if (sp) S.cfg.speed = sp; if (v) S.cfg.vol = parseInt(v); save('cfg', S.cfg); }
-function loadCfg() { document.body.className = S.cfg.tema === 'verde' ? '' : 't-' + S.cfg.tema; }
-
-/* ============================================================
-   GRAFICOS
-   ============================================================ */
-let charts = {};
-function destroyCharts() { Object.values(charts).forEach(c => { try { c.destroy() } catch (e) { } }); charts = {}; }
-
-function drawChartAluno() {
-    const cv = document.getElementById('chartBoletimAluno'); if (!cv) return;
-    const minhas = S.notas.filter(n => n.uid === uid());
-    if (charts.aluno) try { charts.aluno.destroy() } catch (e) { }
-    charts.aluno = new Chart(cv, { type: 'bar', data: { labels: minhas.map(n => 'NR ' + n.nrid), datasets: [{ label: 'Nota', data: minhas.map(n => Number(n.nota || 0)), backgroundColor: minhas.map(n => Number(n.nota) >= 7 ? 'rgba(46,125,50,.7)' : Number(n.nota) >= 5 ? 'rgba(255,152,0,.7)' : 'rgba(211,47,47,.7)'), borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } } } });
+async function atualizarNomeSupabase(nome) {
+    if (!S.user) return
+    await sbUpdateUser(S.user.id, { nome: nome })
+    S.user.nome = nome
+    localStorage.setItem('ss_user', JSON.stringify(S.user))
+    renderSB()
+    toast('Nome atualizado!')
 }
 
-function drawChartNotas() {
-    const cv = document.getElementById('chartMediasNR'); if (!cv) return;
-    const map = {}; S.notas.forEach(n => { if (!map[n.nrid]) map[n.nrid] = { s: 0, c: 0 }; map[n.nrid].s += Number(n.nota || 0); map[n.nrid].c++; });
-    const labels = Object.keys(map).sort((a, b) => a - b).map(k => 'NR ' + k);
-    const data = Object.keys(map).sort((a, b) => a - b).map(k => +(map[k].s / map[k].c).toFixed(1));
-    if (charts.notas) try { charts.notas.destroy() } catch (e) { }
-    charts.notas = new Chart(cv, { type: 'bar', data: { labels, datasets: [{ label: 'Media', data, backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true, scales: { y: { min: 0, max: 10 } } } });
+function cfgTab(id, el) { $$('.cfg-tb').forEach(t => t.classList.remove('on')); el.classList.add('on'); $$('.cfg-sc').forEach(s => s.classList.remove('on')); const map = { tema: 'cfgTema', video: 'cfgVideo', audio: 'cfgAudio', geral: 'cfgGeral' }; $('#' + map[id])?.classList.add('on') }
+
+function setTema(id) { document.body.className = id === 'verde' ? '' : 't-' + id; S.cfg.tema = id; saveCfg(); $$('.tema-o').forEach(o => o.classList.remove('on')); event.currentTarget.classList.add('on'); toast('Tema alterado!') }
+
+function saveCfg() { const q = $('#cfgQual')?.value, sp = $('#cfgSpeed')?.value, v = $('#cfgVol')?.value; if (q) S.cfg.qual = q; if (sp) S.cfg.speed = sp; if (v) S.cfg.vol = parseInt(v); localStorage.setItem('ss_cfg', JSON.stringify(S.cfg)) }
+
+function loadCfg() { document.body.className = S.cfg.tema === 'verde' ? '' : 't-' + S.cfg.tema }
+
+// ============================================================
+// GRAFICOS (SUPABASE)
+// ============================================================
+let charts = {}
+
+function destroyCharts() { Object.values(charts).forEach(c => { try { c.destroy() } catch (e) {} }); charts = {} }
+
+async function drawChartAlunoSupabase() {
+    const cv = document.getElementById('chartBoletimAluno')
+    if (!cv) return
+    const { data: notas } = await sbGetNotasAluno(uid())
+    if (charts.aluno) try { charts.aluno.destroy() } catch (e) {}
+    charts.aluno = new Chart(cv, { type: 'bar', data: { labels: notas.map(n => 'NR ' + n.nr_id), datasets: [{ label: 'Nota', data: notas.map(n => Number(n.nota || 0)), backgroundColor: notas.map(n => Number(n.nota) >= 7 ? 'rgba(46,125,50,.7)' : Number(n.nota) >= 5 ? 'rgba(255,152,0,.7)' : 'rgba(211,47,47,.7)'), borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } } } })
 }
 
-function drawChartPay() {
-    const cv1 = document.getElementById('chartPayStatus'), cv2 = document.getElementById('chartPayMes');
-    if (cv1) { const p = S.boletos.filter(b => b.status === 'pago').length, pe = S.boletos.filter(b => b.status === 'pendente').length; if (charts.paySt) try { charts.paySt.destroy() } catch (e) { } charts.paySt = new Chart(cv1, { type: 'doughnut', data: { labels: ['Pagos', 'Pendentes'], datasets: [{ data: [p, pe], backgroundColor: ['rgba(46,125,50,.8)', 'rgba(255,152,0,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } }); }
-    if (cv2) { const mm = {}; S.boletos.filter(b => b.status === 'pago').forEach(b => { const m = b.venc?.substr(0, 7) || 'N/A'; mm[m] = (mm[m] || 0) + Number(b.valor || 0); }); if (charts.payMes) try { charts.payMes.destroy() } catch (e) { } charts.payMes = new Chart(cv2, { type: 'bar', data: { labels: Object.keys(mm), datasets: [{ label: 'Receita (R$)', data: Object.values(mm), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true } }); }
+async function drawChartNotasSupabase() {
+    const cv = document.getElementById('chartMediasNR')
+    if (!cv) return
+    const { data: medias } = await sbGetMediasNRs()
+    if (charts.notas) try { charts.notas.destroy() } catch (e) {}
+    charts.notas = new Chart(cv, { type: 'bar', data: { labels: medias.map(m => 'NR ' + m.nr_id), datasets: [{ label: 'Media', data: medias.map(m => Number(m.media_nota || 0)), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true, scales: { y: { min: 0, max: 10 } } } })
 }
 
-function drawChartAdmin() {
-    const cv1 = document.getElementById('chartAdmProg'), cv2 = document.getElementById('chartAdmRoles');
-    const alunos = S.users.filter(u => u.role === 'aluno');
-    if (cv1) { let p0 = 0, p1 = 0, p2 = 0, p3 = 0; alunos.forEach(a => { const c = S.aulas.filter(x => x.uid === a.id).length; const pct = c / NRS.length * 100; if (pct === 0) p0++; else if (pct <= 50) p1++; else if (pct <= 80) p2++; else p3++; }); if (charts.admProg) try { charts.admProg.destroy() } catch (e) { } charts.admProg = new Chart(cv1, { type: 'bar', data: { labels: ['0%', '1-50%', '51-80%', '81-100%'], datasets: [{ label: 'Alunos', data: [p0, p1, p2, p3], backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); }
-    if (cv2) { const rc = { admin: 0, professor: 0, aluno: 0 }; S.users.forEach(u => { rc[u.role] = (rc[u.role] || 0) + 1; }); if (charts.admRoles) try { charts.admRoles.destroy() } catch (e) { } charts.admRoles = new Chart(cv2, { type: 'doughnut', data: { labels: ['Admin', 'Professor', 'Aluno'], datasets: [{ data: [rc.admin, rc.professor, rc.aluno], backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } }); }
+async function drawChartPaySupabase() {
+    const cv1 = document.getElementById('chartPayStatus'), cv2 = document.getElementById('chartPayMes')
+    const { data: transacoes } = await sbGetAllTransacoes()
+    if (cv1) {
+        const p = transacoes?.filter(b => b.status === 'pago').length || 0
+        const pe = transacoes?.filter(b => b.status === 'pendente').length || 0
+        if (charts.paySt) try { charts.paySt.destroy() } catch (e) {}
+        charts.paySt = new Chart(cv1, { type: 'doughnut', data: { labels: ['Pagos', 'Pendentes'], datasets: [{ data: [p, pe], backgroundColor: ['rgba(46,125,50,.8)', 'rgba(255,152,0,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } })
+    }
+    if (cv2) {
+        const mm = {}
+        ;(transacoes || []).filter(b => b.status === 'pago').forEach(b => { const m = b.vencimento?.substr(0, 7) || 'N/A'; mm[m] = (mm[m] || 0) + Number(b.valor || 0) })
+        if (charts.payMes) try { charts.payMes.destroy() } catch (e) {}
+        charts.payMes = new Chart(cv2, { type: 'bar', data: { labels: Object.keys(mm), datasets: [{ label: 'Receita (R$)', data: Object.values(mm), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true } })
+    }
 }
+
+async function drawChartAdminSupabase() {
+    const cv1 = document.getElementById('chartAdmProg'), cv2 = document.getElementById('chartAdmRoles')
+    const { data: ranking } = await sbGetRankingAlunos()
+    const { data: users } = await sbGetAllUsers()
+    
+    if (cv1 && ranking) {
+        let p0 = 0, p1 = 0, p2 = 0, p3 = 0
+        ranking.forEach(a => {
+            const pct = a.progresso || 0
+            if (pct === 0) p0++
+            else if (pct <= 50) p1++
+            else if (pct <= 80) p2++
+            else p3++
+        })
+        if (charts.admProg) try { charts.admProg.destroy() } catch (e) {}
+        charts.admProg = new Chart(cv1, { type: 'bar', data: { labels: ['0%', '1-50%', '51-80%', '81-100%'], datasets: [{ label: 'Alunos', data: [p0, p1, p2, p3], backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } } } })
+    }
+    if (cv2 && users) {
+        const rc = { admin: 0, professor: 0, aluno: 0 }
+        users.forEach(u => { rc[u.role] = (rc[u.role] || 0) + 1 })
+        if (charts.admRoles) try { charts.admRoles.destroy() } catch (e) {}
+        charts.admRoles = new Chart(cv2, { type: 'doughnut', data: { labels: ['Admin', 'Professor', 'Aluno'], datasets: [{ data: [rc.admin, rc.professor, rc.aluno], backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } })
+    }
+}
+
+// ============================================================
+// TOAST INICIAL
+// ============================================================
+console.log('🚀 SulSafe carregado com sucesso!')
+console.log('📊 Plataforma com Supabase 100% integrado')
 </script>
 </body>
 </html>
