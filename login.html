@@ -1349,7 +1349,59 @@ async function logout() {
 }
 
 // ============================================================
-// AUTO-LOGIN
+// FUNÇÃO CORRIGIDA - BUSCA OU CRIA PERFIL AUTOMATICAMENTE
+// ============================================================
+async function sbGetUser(id) {
+    try {
+        // 1. Tenta buscar o perfil
+        const { data, error } = await sb.from('profiles')
+            .select('id, nome_completo, email, role, status, created_at')
+            .eq('id', id)
+            .single()
+        
+        // 2. Se não encontrou, cria o perfil automaticamente
+        if (error && error.code === 'PGRST116') {
+            console.log('Perfil não encontrado, criando automaticamente...')
+            
+            // Busca os dados do usuário no Auth
+            const { data: { user: authUser } } = await sb.auth.getUser()
+            
+            if (!authUser) {
+                throw new Error('Usuário não encontrado no sistema')
+            }
+            
+            // Define role baseado no email
+            const role = authUser.email === ADMIN_EMAIL ? 'admin' : 'aluno'
+            const nome = authUser.user_metadata?.nome_completo || authUser.email.split('@')[0]
+            
+            // Cria o perfil
+            const { data: newProfile, error: createError } = await sb
+                .from('profiles')
+                .insert({
+                    id: authUser.id,
+                    email: authUser.email,
+                    nome_completo: nome,
+                    role: role,
+                    status: role === 'admin' ? 'ativo' : 'pendente'
+                })
+                .select()
+                .single()
+            
+            if (createError) throw createError
+            return { data: newProfile, error: null }
+        }
+        
+        if (error) throw error
+        return { data, error: null }
+        
+    } catch (error) {
+        console.error('Erro ao buscar/criar perfil:', error)
+        return { data: null, error }
+    }
+}
+
+// ============================================================
+// AUTO-LOGIN (CORRIGIDO)
 // ============================================================
 ;(async function() {
     try {
@@ -1378,9 +1430,10 @@ async function logout() {
                 enterDash()
             }
         }
-    } catch(e) { console.log('Erro no auto-login:', e) }
+    } catch(e) { 
+        console.log('Erro no auto-login:', e) 
+    }
 })()
-
 // ============================================================
 // ENTER DASHBOARD
 // ============================================================
