@@ -1375,7 +1375,27 @@ async function carregarPendentes() {
     const container = document.getElementById('listaPendentes')
     if (!container) return
     
-    const { data: pendentes } = await sbGetPendentes()
+async function carregarPendencias() {
+    const container = $('#pendenciasContainer') // troca pelo id real do teu div
+
+    // 1. Vê se tem alguém logado
+    const { data: { user } = await sb.auth.getUser()
+    if (!user) {
+        container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--tx3)">Faça login como admin pra ver.</p>`
+        return
+    }
+
+    // 2. Vê se é admin
+    const { data: profile } = await sbGetUser(user.id)
+    if (!profile || profile.role !== 'admin') {
+        container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--tx3)">Acesso negado.</p>`
+        return
+    }
+
+    // 3. Agora sim pode buscar os pendentes, pq o RLS deixa
+    const { data: pendentes, error } = await sbGetPendentes()
+    if (error) { toast('Erro ao carregar: ' + error.message, 'err'); return }
+    
     const total = pendentes?.length || 0
     
     if (total === 0) {
@@ -1388,7 +1408,9 @@ async function carregarPendentes() {
         `
         return
     }
-    
+
+    // ... aqui vai teu código pra renderizar a lista de pendentes
+}
     let h = `<div class="pnl">
         <div class="pnl-h">
             <div class="pnl-t"><i class="fas fa-users"></i> ${total} usuário(s) aguardando</div>
