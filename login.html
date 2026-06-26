@@ -447,7 +447,7 @@ async function sbLiberarUsuario(id) {
 }
 // VIDEOAULAS
 async function sbGetVideoaulas(nrId = null) {
-    let query = sb.from('videoaulas').select('*, profiles(nome)')
+    let query = sb.from('videoaulas').select('*, profiles(nome_completo)') // nome virou nome_completo
     if (nrId) query = query.eq('nr_id', nrId)
     const { data, error } = await query.order('ordem', { ascending: true })
     return { data, error }
