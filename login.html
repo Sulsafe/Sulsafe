@@ -65,11 +65,17 @@ body.t-escuro {
     --sb: #0a0a0a; --sb2: #1a1a1a; --sb-tx: #a0c8a0; 
 }
 
-/* WHATSAPP FLOATING BUTTON */
-.whatsapp-float {
+/* WHATSAPP - SÓ NA TELA DE LOGIN */
+#whatsappContainer {
     position: fixed;
     bottom: 30px;
     right: 30px;
+    z-index: 999;
+}
+#whatsappContainer.hidden {
+    display: none !important;
+}
+.whatsapp-float {
     background: var(--whatsapp);
     color: #fff;
     padding: 14px 20px;
@@ -80,11 +86,10 @@ body.t-escuro {
     font-weight: 600;
     font-size: 14px;
     box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-    z-index: 999;
-    animation: pulse-whatsapp 2s infinite;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    animation: pulse-whatsapp 2s infinite;
 }
 .whatsapp-float:hover {
     transform: scale(1.08);
@@ -96,12 +101,8 @@ body.t-escuro {
     50% { transform: scale(1.05); }
 }
 @media (max-width: 768px) {
-    .whatsapp-float {
-        bottom: 16px;
-        right: 16px;
-        padding: 10px 14px;
-        font-size: 12px;
-    }
+    #whatsappContainer { bottom: 16px; right: 16px; }
+    .whatsapp-float { padding: 10px 14px; font-size: 12px; }
     .whatsapp-float i { font-size: 18px; }
     .whatsapp-float span { display: none; }
 }
@@ -180,8 +181,6 @@ body.t-escuro {
 .btn-d:hover { background: #B71C1C; transform: translateY(-2px); }
 .btn-g { background: var(--gold); color: #1a1a1a; }
 .btn-g:hover { background: #b89f2a; transform: translateY(-2px); }
-.btn-whatsapp { background: var(--whatsapp); color: #fff; }
-.btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 16px; font-size: 12px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
@@ -439,6 +438,56 @@ body.t-escuro {
 .link-box .add-link-btn:hover {
     text-decoration: underline;
 }
+.link-box .admin-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+.link-box .admin-actions button {
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+/* PROVAS */
+.prova-container {
+    background: var(--card-bg);
+    border-radius: var(--r);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+.prova-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.prova-status {
+    padding: 4px 16px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.prova-status.aberto { background: #28a745; color: #fff; }
+.prova-status.finalizado { background: #6c757d; color: #fff; }
+.prova-status.encerrado { background: #dc3545; color: #fff; }
+.prova-status.pendente { background: #ffc107; color: #333; }
+
+.prova-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.prova-info-grid .label {
+    color: var(--tx3);
+    font-size: 12px;
+}
 
 .badge { 
     display: inline-block; 
@@ -452,6 +501,7 @@ body.t-escuro {
 .bg-err { background: rgba(211,47,47,.15); color: #C62828; }
 .bg-info { background: rgba(33,150,243,.15); color: #1565C0; }
 .bg-pendente { background: rgba(255,152,0,.15); color: #E65100; }
+.bg-success { background: #28a745; color: #fff; }
 
 /* TABLES */
 .tw { overflow-x: auto; background: var(--card-bg); border-radius: var(--r); box-shadow: var(--shadow); }
@@ -515,9 +565,9 @@ body.t-escuro {
     background: var(--card-bg); 
     border-radius: 24px; 
     padding: 32px 28px; 
-    max-width: 520px; 
-    width: 100%; 
+    max-width: 90vw; 
     max-height: 90vh; 
+    width: 100%; 
     overflow-y: auto; 
     position: relative; 
     box-shadow: 0 20px 60px rgba(0,0,0,.3); 
@@ -540,6 +590,7 @@ body.t-escuro {
     transition: .2s; 
 }
 .mdl-x:hover { background: var(--tx3); color: #fff; transform: rotate(90deg); }
+.mdl-lg { max-width: 90vw; }
 
 /* NOTIF POPUP */
 .notif-popup { 
@@ -726,14 +777,16 @@ body.t-escuro {
     .card-ic { font-size: 24px; }
     .card-t { font-size: 13px; }
     .link-box { flex-direction: column; align-items: stretch; }
+    .mdl { padding: 20px 16px; max-width: 95vw; }
 }
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
+<!-- ==================== AUTH ==================== -->
 <div id="authWrap">
 <div class="auth-card">
+<!-- LOGIN -->
 <div class="t on" id="tLogin">
 <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -749,6 +802,7 @@ body.t-escuro {
 <a href="#" onclick="recuperarSenha()" style="font-size:13px;color:var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
 </div>
 </div>
+<!-- CADASTRO -->
 <div class="t" id="tCad">
 <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
 <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -768,7 +822,15 @@ body.t-escuro {
 </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- WHATSAPP - SÓ NA TELA DE LOGIN -->
+<div id="whatsappContainer">
+    <button class="whatsapp-float" onclick="redirecionarWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+        <span>Fale conosco</span>
+    </button>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
 <div id="dash">
 <aside class="sidebar" id="sidebar"></aside>
 <main class="main" id="mc"></main>
@@ -786,12 +848,6 @@ body.t-escuro {
 
 <!-- TOAST -->
 <div id="toast"></div>
-
-<!-- WHATSAPP FLOATING BUTTON -->
-<button class="whatsapp-float" onclick="redirecionarWhatsApp()">
-<i class="fab fa-whatsapp"></i>
-<span>Fale conosco</span>
-</button>
 
 <!-- TERMOS MODAL -->
 <div style="display:none" id="termosHtml">
@@ -839,6 +895,7 @@ const isProf = () => role() === 'professor'
 const canManage = () => isAdmin() || isProf()
 const uid = () => S.user?.id
 const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—'
+const fmtFullDate = d => d ? new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
 
 // GERAR ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
 function gerarIdNumerico() {
@@ -873,6 +930,7 @@ function redirecionarWhatsApp(mensagemPersonalizada = null) {
     window.open(linkWhatsApp, '_blank')
 }
 
+// NRS (dados locais)
 const NRS = [
     { id: '1', nm: 'Disposições Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
     { id: '2', nm: 'Inspeção Prévia', cat: 'geral', ic: 'fa-magnifying-glass' },
@@ -934,7 +992,11 @@ function toast(m, t = 'success') {
 }
 
 function showT(id) { $$('.t').forEach(t => t.classList.remove('on')); $('#' + id).classList.add('on') }
-function openMdl(h) { $('#mdlBox').innerHTML = h; $('#mdlBg').classList.add('on') }
+function openMdl(h, lg = false) { 
+    $('#mdlBox').innerHTML = h
+    $('#mdlBox').className = 'mdl' + (lg ? ' mdl-lg' : '')
+    $('#mdlBg').classList.add('on') 
+}
 function closeMdl() { $('#mdlBg').classList.remove('on') }
 $('#mdlBg').addEventListener('click', e => { if (e.target === $('#mdlBg')) closeMdl() })
 function closeNotif() { $('#notifPopup').classList.remove('show') }
@@ -1004,7 +1066,7 @@ async function sbLiberarUsuario(id) {
     } catch (error) { return { data: null, error } }
 }
 
-// VIDEOAULAS - CORRIGIDO COM ID NUMÉRICO
+// VIDEOAULAS
 async function sbGetVideoaulas(nrId = null) {
     try {
         let query = sb.from('videoaulas').select('*, profiles(nome_completo)')
@@ -1018,10 +1080,7 @@ async function sbGetVideoaulas(nrId = null) {
 async function sbCriarVideoaula(videoaula) {
     try {
         const idNumerico = gerarIdNumerico()
-        const dados = {
-            id: idNumerico,
-            ...videoaula
-        }
+        const dados = { id: idNumerico, ...videoaula }
         const { data, error } = await sb.from('videoaulas').insert(dados).select().single()
         if (error) throw error
         return { data, error: null }
@@ -1144,7 +1203,7 @@ async function sbCorrigirProva(provaId, nota, status = 'corrigido') {
     } catch (error) { return { data: null, error } }
 }
 
-// SALAS - CORRIGIDO COM ID NUMÉRICO
+// SALAS
 async function sbCriarSala(topico, meetId, criadoPor) {
     try {
         const idNumerico = gerarIdNumerico()
@@ -1208,6 +1267,145 @@ async function sbGetAllUsers(page = 0, limit = 20) {
         if (error) throw error
         return { data, error: null, count }
     } catch (error) { return { data: null, error, count: 0 } }
+}
+
+// ============================================================
+// NRS - FUNÇÕES DE LINK
+// ============================================================
+async function carregarLinksNRS() {
+    try {
+        const { data: nrs, error } = await sb
+            .from('nrs')
+            .select('id, numero, link_video, link_material, link_prova')
+        
+        if (error) {
+            console.log('Erro ao carregar links:', error)
+            return
+        }
+        
+        nrs.forEach(nr => {
+            const linkBox = document.querySelector(`#link-box-${nr.id}`)
+            if (!linkBox) return
+            
+            const loading = document.querySelector(`#loading-links-${nr.id}`)
+            if (loading) loading.remove()
+            
+            let linksHtml = ''
+            
+            if (nr.link_video) {
+                linksHtml += `<a href="${nr.link_video}" target="_blank" class="btn-link youtube">
+                    <i class="fab fa-youtube"></i> Assistir Aula
+                </a>`
+            }
+            
+            if (nr.link_material) {
+                linksHtml += `<a href="${nr.link_material}" target="_blank" class="btn-link material">
+                    <i class="fas fa-file-pdf"></i> Material
+                </a>`
+            }
+            
+            if (nr.link_prova) {
+                linksHtml += `<a href="#" onclick="abrirProva('${nr.id}'); return false;" class="btn-link prova">
+                    <i class="fas fa-file-pdf"></i> Prova
+                </a>`
+            }
+            
+            if (!linksHtml) {
+                linksHtml = `<span class="sem-conteudo"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
+                if (isAdmin() || isProf()) {
+                    linksHtml += ` <a href="#" onclick="abrirAddLink('${nr.id}'); return false;" class="add-link-btn">
+                        <i class="fas fa-plus-circle"></i> Adicionar
+                    </a>`
+                }
+            }
+            
+            // Admin actions
+            let adminActions = ''
+            if (isAdmin() || isProf()) {
+                adminActions = `
+                    <div class="admin-actions">
+                        <button onclick="abrirAddLink('${nr.id}')" class="btn btn-sm btn-s" style="font-size:10px;padding:2px 8px;">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button onclick="editarLink('${nr.id}')" class="btn btn-sm btn-s" style="font-size:10px;padding:2px 8px;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                `
+            }
+            
+            linkBox.innerHTML = `
+                <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
+                ${linksHtml}
+                ${adminActions}
+            `
+        })
+    } catch (error) {
+        console.error('Erro ao carregar links:', error)
+    }
+}
+
+// ============================================================
+// NRS - FUNÇÕES DE ADIÇÃO DE LINKS
+// ============================================================
+function abrirAddLink(nrId) {
+    const nr = NRS.find(n => n.id === nrId)
+    if (!nr) return
+    
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">
+            <i class="fas fa-link"></i> Adicionar Links - ${nr.nm}
+        </h2>
+        <form onsubmit="salvarLinks(event, '${nrId}')">
+            <div class="fld">
+                <label>🎬 Link do Vídeo (YouTube)</label>
+                <input type="url" id="addVideo_${nrId}" placeholder="https://www.youtube.com/watch?v=..." value="">
+            </div>
+            <div class="fld">
+                <label>📄 Link do Material</label>
+                <input type="url" id="addMaterial_${nrId}" placeholder="https://drive.google.com/..." value="">
+            </div>
+            <div class="fld">
+                <label>📝 Link da Prova</label>
+                <input type="url" id="addProva_${nrId}" placeholder="Link da prova..." value="">
+            </div>
+            <button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar Links</button>
+        </form>
+    `)
+}
+
+async function salvarLinks(e, nrId) {
+    e.preventDefault()
+    
+    const videoLink = document.getElementById(`addVideo_${nrId}`)?.value || ''
+    const materialLink = document.getElementById(`addMaterial_${nrId}`)?.value || ''
+    const provaLink = document.getElementById(`addProva_${nrId}`)?.value || ''
+    
+    try {
+        const { error } = await sb
+            .from('nrs')
+            .update({
+                link_video: videoLink,
+                link_material: materialLink,
+                link_prova: provaLink
+            })
+            .eq('id', nrId)
+        
+        if (error) throw error
+        
+        toast('✅ Links salvos com sucesso!', 'success')
+        closeMdl()
+        carregarLinksNRS()
+        
+    } catch (error) {
+        console.error('Erro ao salvar links:', error)
+        toast('Erro ao salvar links', 'err')
+    }
+}
+
+function editarLink(nrId) {
+    abrirAddLink(nrId)
 }
 
 // ============================================================
@@ -1324,6 +1522,8 @@ async function logout() {
     localStorage.removeItem('ss_session')
     localStorage.removeItem('ss_user')
     destroyCharts()
+    // Mostra WhatsApp novamente
+    document.getElementById('whatsappContainer').classList.remove('hidden')
     window.location.href = LANDING_URL
 }
 
@@ -1359,6 +1559,8 @@ async function logout() {
 
 function enterDash() {
     $('#authWrap').classList.add('off')
+    // Esconde WhatsApp no dashboard
+    document.getElementById('whatsappContainer').classList.add('hidden')
     $('#dash').classList.add('on')
     S.view = 'inicio'
     renderSB()
@@ -1436,6 +1638,7 @@ function renderSB() {
         items.push({ sep: 'SISTEMA' })
         items.push({ id: 'admin', ic: 'fa-shield-halved', lb: 'Modo Deus' })
         items.push({ id: 'subir', ic: 'fa-upload', lb: 'Subir Conteúdo' })
+        items.push({ id: 'gerenciar_provas', ic: 'fa-edit', lb: 'Gerenciar Provas' })
     }
     items.push({ sep: 'CONTA' })
     items.push({ id: 'config', ic: 'fa-gear', lb: 'Configurações' })
@@ -1473,7 +1676,8 @@ function renderV() {
         config: vConfig,
         pendentes: vPendentes,
         provas: vProvas,
-        subir: vSubirConteudo
+        subir: vSubirConteudo,
+        gerenciar_provas: vGerenciarProvas
     }
     if (fn[S.view]) {
         $('#mc').innerHTML = fn[S.view]()
@@ -1488,9 +1692,10 @@ function bindPostRender() {
     if (S.view === 'boletim' && role() !== 'aluno') setTimeout(drawChartNotas, 100)
     if (S.view === 'admin') setTimeout(drawChartAdmin, 100)
     if (S.view === 'pendentes') setTimeout(carregarPendentes, 100)
-    if (S.view === 'provas') setTimeout(carregarProvas, 100)
+    if (S.view === 'provas') setTimeout(carregarMinhasProvas, 100)
     if (S.view === 'subir') setTimeout(carregarConteudosAdmin, 200)
-    if (S.view === 'nrs') setTimeout(carregarLinksNRS, 300)
+    if (S.view === 'nrs') setTimeout(() => { carregarLinksNRS() }, 300)
+    if (S.view === 'gerenciar_provas') setTimeout(() => { carregarProvasAdmin() }, 300)
 }
 
 // ============================================================
@@ -1525,6 +1730,7 @@ function vInicio() {
         h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
         h += cCard('fa-upload', 'Subir Conteúdo', 'Adicionar vídeo ou material', 'subir')
         h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin')
+        h += cCard('fa-edit', 'Gerenciar Provas', 'Criar e editar provas', 'gerenciar_provas')
     }
     h += `</div>`
     setTimeout(async () => {
@@ -1704,7 +1910,7 @@ function vSalas() {
     if (canManage()) {
         h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
             <input class="search" id="salaTop" placeholder="Tópico da aula" style="flex:2;min-width:200px;margin:0">
-            <input class="search" id="salaMeet" placeholder="ID da reunião" style="flex:1;min-width:160px;margin:0">
+            <input class="search" id="salaMeet" placeholder="ID da reunião (opcional)" style="flex:1;min-width:160px;margin:0">
             <button class="btn btn-p" onclick="criarSalaSupabase()"><i class="fas fa-plus"></i> Criar Sala</button>
         </div>`
     }
@@ -1759,7 +1965,7 @@ async function encerrarSalaSupabase(id) {
 }
 
 // ============================================================
-// VIEW: NRs - COM CAIXA BRANCA PARA LINKS
+// VIEW: NRs (COM LINKS)
 // ============================================================
 function vNRs() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -1783,8 +1989,6 @@ function vNRs() {
                 </div>
                 <span style="margin-left:auto;font-size:11px;color:var(--tx3);"><i class="fas fa-chevron-right"></i></span>
             </div>
-            
-            <!-- CAIXA BRANCA COM LINKS -->
             <div class="link-box" id="link-box-${nr.id}">
                 <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
                 <span id="loading-links-${nr.id}" style="font-size:12px;color:var(--tx3);">
@@ -1796,71 +2000,6 @@ function vNRs() {
     h += `</div>`
     setTimeout(() => carregarLinksNRS(), 500)
     return h
-}
-
-// FUNÇÃO PARA CARREGAR LINKS DE CADA NR
-async function carregarLinksNRS() {
-    try {
-        const { data: videoaulas } = await sbGetVideoaulas()
-        const { data: materiais } = await sbGetMateriais()
-        const { data: provas } = await sb.from('provas')
-            .select('*')
-            .eq('status', 'corrigido')
-            .order('criado_em', { ascending: false })
-
-        NRS.forEach(nr => {
-            const linkBox = document.getElementById(`link-box-${nr.id}`)
-            if (!linkBox) return
-
-            const loading = document.getElementById(`loading-links-${nr.id}`)
-            if (loading) loading.remove()
-
-            const videosNR = (videoaulas || []).filter(v => String(v.nr_id) === String(nr.id))
-            const materiaisNR = (materiais || []).filter(m => String(m.nr_id) === String(nr.id))
-            const provasNR = (provas || []).filter(p => String(p.nr_id) === String(nr.id))
-
-            let linksHtml = ''
-
-            videosNR.forEach(v => {
-                const url = v.url_video || ''
-                let embedUrl = url
-                if (url.includes('watch?v=')) {
-                    embedUrl = url.replace('watch?v=', 'embed/')
-                }
-                linksHtml += `<a href="${embedUrl}" target="_blank" class="btn-link youtube" title="${v.descricao || v.titulo}">
-                    <i class="fab fa-youtube"></i> ${v.titulo.length > 20 ? v.titulo.substring(0, 20) + '...' : v.titulo}
-                </a>`
-            })
-
-            materiaisNR.forEach(m => {
-                linksHtml += `<a href="${m.url}" target="_blank" class="btn-link material">
-                    <i class="fas fa-file-pdf"></i> ${m.titulo.length > 20 ? m.titulo.substring(0, 20) + '...' : m.titulo}
-                </a>`
-            })
-
-            provasNR.forEach(p => {
-                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn-link prova">
-                    <i class="fas fa-file-pdf"></i> Prova: ${p.titulo.length > 15 ? p.titulo.substring(0, 15) + '...' : p.titulo}
-                </a>`
-            })
-
-            if (!linksHtml) {
-                linksHtml = `<span class="sem-conteudo"><i class="fas fa-clock"></i> Nenhum conteúdo disponível</span>`
-                if (isAdmin() || isProf()) {
-                    linksHtml += ` <a href="#" onclick="nav('subir');event.preventDefault();" style="font-size:11px;color:var(--p);margin-left:8px;font-weight:600;">
-                        <i class="fas fa-plus-circle"></i> Adicionar
-                    </a>`
-                }
-            }
-
-            linkBox.innerHTML = `
-                <span class="link-label"><i class="fas fa-link"></i> Conteúdo:</span>
-                ${linksHtml}
-            `
-        })
-    } catch (error) {
-        console.error('Erro ao carregar links:', error)
-    }
 }
 
 function filterNR(c) { 
@@ -1880,82 +2019,24 @@ function verNR(id) {
     const nr = NRS.find(n => n.id === id)
     if (!nr) return
     
-    buscarConteudoNR(id).then(conteudo => {
-        let linksHtml = ''
-        let temConteudo = false
-        
-        if (conteudo.videos && conteudo.videos.length > 0) {
-            temConteudo = true
-            linksHtml += `<div style="margin:8px 0;"><strong>🎬 Videoaulas:</strong><br>`
-            conteudo.videos.forEach(v => {
-                let url = v.url_video || ''
-                if (url.includes('watch?v=')) {
-                    url = url.replace('watch?v=', 'embed/')
-                }
-                linksHtml += `<a href="${url}" target="_blank" class="btn btn-sm btn-p" style="margin:4px 4px 4px 0;background:#FF0000;color:#fff;"><i class="fab fa-youtube"></i> ${v.titulo}</a>`
-            })
-            linksHtml += `</div>`
-        }
-        
-        if (conteudo.materiais && conteudo.materiais.length > 0) {
-            temConteudo = true
-            linksHtml += `<div style="margin:8px 0;"><strong>📄 Materiais:</strong><br>`
-            conteudo.materiais.forEach(m => {
-                linksHtml += `<a href="${m.url}" target="_blank" class="btn btn-sm btn-s" style="margin:4px 4px 4px 0;background:#1565C0;color:#fff;"><i class="fas fa-file-pdf"></i> ${m.titulo}</a>`
-            })
-            linksHtml += `</div>`
-        }
-        
-        if (conteudo.provas && conteudo.provas.length > 0) {
-            temConteudo = true
-            linksHtml += `<div style="margin:8px 0;"><strong>📝 Provas:</strong><br>`
-            conteudo.provas.forEach(p => {
-                linksHtml += `<a href="${p.arquivo_url}" target="_blank" class="btn btn-sm" style="margin:4px 4px 4px 0;background:#E65100;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;"><i class="fas fa-file-pdf"></i> ${p.titulo}</a>`
-            })
-            linksHtml += `</div>`
-        }
-        
-        openMdl(`
-            <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
-            <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-                <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">
-                    <i class="fas ${nr.ic}"></i>
-                </div>
-                <div>
-                    <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div>
-                    <h2 style="font-size:18px;font-weight:700">${nr.nm}</h2>
-                </div>
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+            <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">
+                <i class="fas ${nr.ic}"></i>
             </div>
-            <p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">
-                Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.
-            </p>
-            ${temConteudo ? `<div style="background:var(--bd2);border-radius:8px;padding:12px;margin:12px 0;">${linksHtml}</div>` : `<p style="color:var(--tx3);text-align:center;padding:12px;">📌 Nenhum conteúdo disponível para esta NR.</p>`}
-            <button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()">
-                <i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}
-            </button>
-            ${(isAdmin() || isProf()) ? `<button class="btn btn-s btn-block" onclick="nav('subir');closeMdl()" style="margin-top:8px;">
-                <i class="fas fa-upload"></i> Subir Conteúdo para esta NR
-            </button>` : ''}
-        `)
-    })
-}
-
-async function buscarConteudoNR(nrId) {
-    try {
-        const [videosRes, materiaisRes, provasRes] = await Promise.all([
-            sb.from('videoaulas').select('id, nr_id, titulo, url_video, descricao, criado_em').eq('nr_id', nrId).order('criado_em', { ascending: false }),
-            sb.from('materiais').select('id, nr_id, titulo, url, tipo, criado_em').eq('nr_id', nrId).order('criado_em', { ascending: false }),
-            sb.from('provas').select('id, nr_id, titulo, arquivo_url, status, criado_em').eq('nr_id', nrId).eq('status', 'corrigido').order('criado_em', { ascending: false })
-        ])
-        return {
-            videos: videosRes.data || [],
-            materiais: materiaisRes.data || [],
-            provas: provasRes.data || []
-        }
-    } catch (error) {
-        console.error('Erro ao buscar conteúdo:', error)
-        return { videos: [], materiais: [], provas: [] }
-    }
+            <div>
+                <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px">NR ${nr.id}</div>
+                <h2 style="font-size:18px;font-weight:700">${nr.nm}</h2>
+            </div>
+        </div>
+        <p style="font-size:14px;line-height:1.7;color:var(--tx2);margin-bottom:16px">
+            Esta Norma Regulamentadora estabelece os requisitos mínimos para ${nr.nm.toLowerCase()}.
+        </p>
+        <button class="btn btn-p btn-block" onclick="nav('ia');closeMdl()">
+            <i class="fas fa-robot"></i> Perguntar a IA sobre NR ${nr.id}
+        </button>
+    `)
 }
 
 // ============================================================
@@ -2110,29 +2191,15 @@ async function delNota(notaId, aid) {
 }
 
 // ============================================================
-// VIEW: PROVAS
+// VIEW: PROVAS (ALUNO)
 // ============================================================
 function vProvas() {
     const r = role()
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">${r === 'aluno' ? 'Minhas Provas' : 'Corrigir Provas'}</h2>`
     if (r === 'aluno') {
-        h += `<p class="wcs">Envie sua prova em PDF para correção.</p>`
-        h += `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-upload"></i> Enviar Prova</div></div>
-            <form id="frmEnviarProva" onsubmit="enviarProva(event)">
-                <div class="fld"><label>NR</label>
-                    <select id="pNR" required>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select>
-                </div>
-                <div class="fld"><label>Título da Prova</label>
-                    <input type="text" id="pTitulo" placeholder="Ex: Prova NR 10" required>
-                </div>
-                <div class="fld"><label>Arquivo PDF</label>
-                    <input type="file" id="pArquivo" accept=".pdf" required>
-                </div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-upload"></i> Enviar Prova</button>
-            </form>
-        </div>`
-        h += `<div id="minhasProvas"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
+        h += `<p class="wcs">Suas provas e avaliações.</p>`
+        h += `<div id="minhasProvas"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando provas...</p></div></div>`
         setTimeout(carregarMinhasProvas, 200)
     } else {
         h += `<p class="wcs">Corrija as provas enviadas pelos alunos.</p>`
@@ -2145,50 +2212,98 @@ function vProvas() {
 async function sbGetProvasAluno(userId) {
     try {
         const { data, error } = await sb.from('provas')
-            .select('*').eq('usuario_id', userId)
+            .select('*')
+            .eq('usuario_id', userId)
             .order('criado_em', { ascending: false })
         if (error) throw error
         return { data, error: null }
     } catch (error) { return { data: null, error } }
 }
 
-async function enviarProva(e) {
-    e.preventDefault()
-    const nrId = $('#pNR').value
-    const titulo = sanitizar($('#pTitulo').value.trim())
-    const arquivo = $('#pArquivo').files[0]
-    if (!arquivo) { toast('Selecione um arquivo PDF', 'err'); return }
-    if (arquivo.type !== 'application/pdf') { toast('Formato inválido. Envie um PDF.', 'err'); return }
-    if (arquivo.size > 5 * 1024 * 1024) { toast('Arquivo muito grande. Máximo 5MB.', 'err'); return }
-    try {
-        const path = `provas/${uid()}/${Date.now()}_${arquivo.name}`
-        const { data: uploadData, error: uploadError } = await sb.storage.from(STORAGE_BUCKET).upload(path, arquivo)
-        if (uploadError) throw uploadError
-        const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path)
-        const { data, error } = await sbEnviarProva(uid(), nrId, titulo, urlData.publicUrl)
-        if (error) throw error
-        toast('Prova enviada com sucesso! Aguarde correção.', 'success')
-        $('#pTitulo').value = ''
-        $('#pArquivo').value = ''
-        carregarMinhasProvas()
-    } catch (error) { handleError(error) }
-}
-
 async function carregarMinhasProvas() {
     const container = document.getElementById('minhasProvas')
     if (!container) return
-    const { data: provas } = await sbGetProvasAluno(uid())
-    if (!provas || provas.length === 0) {
-        container.innerHTML = `<div class="empty"><i class="fas fa-file-pdf"></i><p>Nenhuma prova enviada.</p></div>`
+    
+    const user = await supabase.auth.getUser()
+    if (!user?.data?.user) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i><p>Faça login para ver suas provas.</p></div>`
         return
     }
-    let h = `<div class="tw"><table><thead><tr><th>NR</th><th>Título</th><th>Status</th><th>Nota</th><th>Data</th></tr></thead><tbody>`
-    provas.forEach(p => {
-        const statusCor = p.status === 'corrigido' ? 'bg-ok' : p.status === 'reprovado' ? 'bg-err' : 'bg-pendente'
-        h += `<tr><td>NR ${p.nr_id}</td><td>${p.titulo}</td><td><span class="badge ${statusCor}">${p.status}</span></td><td>${p.nota ?? '—'}</td><td>${fmtD(p.criado_em)}</td></tr>`
-    })
-    h += `</tbody></table></div>`
-    container.innerHTML = h
+    
+    try {
+        // Busca provas com respostas do aluno
+        const { data: provas, error } = await supabase
+            .from('provas')
+            .select(`
+                *,
+                respostas_aluno!inner(
+                    id,
+                    status,
+                    nota,
+                    finalizado,
+                    data_inicio,
+                    data_finalizacao,
+                    questoes_respondidas,
+                    questoes_corretas
+                )
+            `)
+            .eq('respostas_aluno.aluno_id', user.data.user.id)
+            .order('data_abertura', { ascending: false })
+        
+        if (error) throw error
+        
+        if (!provas || provas.length === 0) {
+            container.innerHTML = `<div class="empty"><i class="fas fa-file-pdf"></i><p>Nenhuma prova encontrada.</p></div>`
+            return
+        }
+        
+        let h = `<div class="tw"><table><thead><tr><th>Prova</th><th>NR</th><th>Status</th><th>Nota</th><th>Data</th></tr></thead><tbody>`
+        
+        provas.forEach(p => {
+            const resp = p.respostas_aluno[0]
+            const agora = new Date()
+            const abertura = new Date(p.data_abertura)
+            const encerramento = new Date(p.data_encerramento)
+            
+            let status = 'Pendente'
+            let statusClass = 'bg-pendente'
+            let nota = '-'
+            
+            if (agora < abertura) {
+                status = '🔒 Em breve'
+                statusClass = 'bg-info'
+            } else if (agora > encerramento) {
+                status = '🔒 Encerrada'
+                statusClass = 'bg-err'
+            } else if (resp?.finalizado) {
+                status = '✅ Finalizada'
+                statusClass = 'bg-ok'
+                nota = resp.nota || '-'
+            } else if (resp?.data_inicio) {
+                status = '⏳ Em andamento'
+                statusClass = 'bg-warn'
+                nota = `${resp.questoes_respondidas || 0}/${p.total_questoes || 0}`
+            } else {
+                status = '📝 Disponível'
+                statusClass = 'bg-info'
+            }
+            
+            h += `<tr>
+                <td><strong>${p.titulo}</strong></td>
+                <td>${p.nr_id || '-'}</td>
+                <td><span class="badge ${statusClass}">${status}</span></td>
+                <td>${nota}</td>
+                <td>${fmtFullDate(p.data_encerramento)}</td>
+            </tr>`
+        })
+        
+        h += `</tbody></table></div>`
+        container.innerHTML = h
+        
+    } catch (error) {
+        console.error('Erro ao carregar provas:', error)
+        container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i><p>Erro ao carregar provas.</p></div>`
+    }
 }
 
 async function carregarProvasPendentes() {
@@ -2457,7 +2572,7 @@ function vSubirConteudo() {
                 </div>
                 <div class="fld"><label>Link do YouTube</label>
                     <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=VIDEO_ID" required>
-                    <p style="font-size:11px;color:var(--tx3);margin-top:4px">Use o link normal do YouTube (ex: https://www.youtube.com/watch?v=xxxx)</p>
+                    <p style="font-size:11px;color:var(--tx3);margin-top:4px">Use o link normal do YouTube</p>
                 </div>
                 <button type="submit" class="btn btn-p btn-block"><i class="fas fa-plus"></i> Adicionar Videoaula</button>
             </form>
@@ -2669,6 +2784,348 @@ async function execApagar() {
 }
 
 // ============================================================
+// VIEW: GERENCIAR PROVAS (ADMIN)
+// ============================================================
+function vGerenciarProvas() {
+    if (!isAdmin() && !isProf()) return vInicio()
+    
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    h += `<div class="god-hd"><h2><i class="fas fa-edit"></i> Gerenciar Provas</h2>
+        <p>Crie e gerencie provas para as NRs.</p></div>`
+    
+    h += `<div style="margin-bottom:20px;">
+        <button class="btn btn-p" onclick="abrirCriarProva()"><i class="fas fa-plus"></i> Nova Prova</button>
+    </div>`
+    
+    h += `<div id="listaProvasAdmin"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando provas...</p></div></div>`
+    setTimeout(() => carregarProvasAdmin(), 300)
+    return h
+}
+
+async function carregarProvasAdmin() {
+    const container = document.getElementById('listaProvasAdmin')
+    if (!container) return
+    
+    try {
+        const { data: provas, error } = await sb
+            .from('provas')
+            .select('*')
+            .order('data_abertura', { ascending: false })
+        
+        if (error) throw error
+        
+        if (!provas || provas.length === 0) {
+            container.innerHTML = `<div class="empty"><i class="fas fa-file-pdf"></i><p>Nenhuma prova criada.</p></div>`
+            return
+        }
+        
+        let h = `<div class="tw"><table><thead><tr><th>Prova</th><th>NR</th><th>Período</th><th>Status</th><th>Ações</th></tr></thead><tbody>`
+        
+        provas.forEach(p => {
+            const agora = new Date()
+            const abertura = new Date(p.data_abertura)
+            const encerramento = new Date(p.data_encerramento)
+            
+            let status = '📝 Disponível'
+            let statusClass = 'bg-info'
+            
+            if (agora < abertura) {
+                status = '🔒 Em breve'
+                statusClass = 'bg-warn'
+            } else if (agora > encerramento) {
+                status = '🔒 Encerrada'
+                statusClass = 'bg-err'
+            }
+            
+            h += `<tr>
+                <td><strong>${p.titulo}</strong></td>
+                <td>${p.nr_id || '-'}</td>
+                <td>${fmtFullDate(p.data_abertura)} a ${fmtFullDate(p.data_encerramento)}</td>
+                <td><span class="badge ${statusClass}">${status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-s" onclick="editarProva('${p.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-d" onclick="excluirProva('${p.id}')"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`
+        })
+        
+        h += `</tbody></table></div>`
+        container.innerHTML = h
+        
+    } catch (error) {
+        console.error('Erro ao carregar provas:', error)
+        container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i><p>Erro ao carregar provas.</p></div>`
+    }
+}
+
+function abrirCriarProva() {
+    const nrOptions = NRS.map(n => `<option value="${n.id}">${n.numero} - ${n.nm}</option>`).join('')
+    
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">
+            <i class="fas fa-plus"></i> Nova Prova
+        </h2>
+        <form onsubmit="salvarProva(event)">
+            <div class="fld">
+                <label>Título da Prova</label>
+                <input type="text" id="novaProvaTitulo" placeholder="Ex: Prova NR 10" required>
+            </div>
+            <div class="fld">
+                <label>NR</label>
+                <select id="novaProvaNR" required>${nrOptions}</select>
+            </div>
+            <div class="fld">
+                <label>Data de Abertura</label>
+                <input type="datetime-local" id="novaProvaAbertura" required>
+            </div>
+            <div class="fld">
+                <label>Data de Encerramento</label>
+                <input type="datetime-local" id="novaProvaEncerramento" required>
+            </div>
+            <div class="fld">
+                <label>Tempo Máximo (minutos, 0 = sem limite)</label>
+                <input type="number" id="novaProvaTempo" value="0" min="0">
+            </div>
+            <div class="fld">
+                <label>Total de Questões</label>
+                <input type="number" id="novaProvaQuestoes" value="10" min="1" max="50">
+            </div>
+            <button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Criar Prova</button>
+        </form>
+    `, true)
+}
+
+async function salvarProva(e) {
+    e.preventDefault()
+    
+    const titulo = sanitizar(document.getElementById('novaProvaTitulo').value.trim())
+    const nrId = document.getElementById('novaProvaNR').value
+    const abertura = document.getElementById('novaProvaAbertura').value
+    const encerramento = document.getElementById('novaProvaEncerramento').value
+    const tempo = parseInt(document.getElementById('novaProvaTempo').value) || 0
+    const questoes = parseInt(document.getElementById('novaProvaQuestoes').value) || 10
+    
+    if (!titulo || !nrId || !abertura || !encerramento) {
+        toast('Preencha todos os campos', 'err')
+        return
+    }
+    
+    try {
+        const { data, error } = await sb
+            .from('provas')
+            .insert([{
+                titulo: titulo,
+                nr_id: parseInt(nrId),
+                data_abertura: abertura,
+                data_encerramento: encerramento,
+                tempo_maximo: tempo,
+                total_questoes: questoes,
+                status: 'ativo',
+                created_at: new Date().toISOString()
+            }])
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        toast('✅ Prova criada com sucesso!', 'success')
+        closeMdl()
+        carregarProvasAdmin()
+        
+        // Pergunta se quer adicionar questões
+        if (confirm('Deseja adicionar questões agora?')) {
+            abrirAddQuestoes(data.id)
+        }
+        
+    } catch (error) {
+        console.error('Erro ao criar prova:', error)
+        toast('Erro ao criar prova', 'err')
+    }
+}
+
+function abrirAddQuestoes(provaId) {
+    openMdl(`
+        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
+        <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">
+            <i class="fas fa-plus"></i> Adicionar Questões
+        </h2>
+        <p style="color:var(--tx2);margin-bottom:16px;">Adicione as questões uma por uma. Cada questão terá 4 alternativas.</p>
+        <div id="questoesContainer">
+            <div class="questao-form" data-index="0">
+                <div class="fld">
+                    <label>Enunciado da Questão</label>
+                    <textarea id="qEnunciado_0" rows="3" placeholder="Digite o enunciado..." required></textarea>
+                </div>
+                <div class="fld">
+                    <label>Alternativa A</label>
+                    <input type="text" id="qAltA_0" placeholder="Alternativa A" required>
+                </div>
+                <div class="fld">
+                    <label>Alternativa B</label>
+                    <input type="text" id="qAltB_0" placeholder="Alternativa B" required>
+                </div>
+                <div class="fld">
+                    <label>Alternativa C</label>
+                    <input type="text" id="qAltC_0" placeholder="Alternativa C" required>
+                </div>
+                <div class="fld">
+                    <label>Alternativa D</label>
+                    <input type="text" id="qAltD_0" placeholder="Alternativa D" required>
+                </div>
+                <div class="fld">
+                    <label>Alternativa Correta</label>
+                    <select id="qGabarito_0">
+                        <option value="0">A</option>
+                        <option value="1">B</option>
+                        <option value="2">C</option>
+                        <option value="3">D</option>
+                    </select>
+                </div>
+                <hr style="margin:16px 0;border-color:var(--bd);">
+            </div>
+        </div>
+        <button class="btn btn-s btn-block" onclick="adicionarCampoQuestao()" style="margin-bottom:12px;">
+            <i class="fas fa-plus"></i> Adicionar Mais uma Questão
+        </button>
+        <button class="btn btn-p btn-block" onclick="salvarQuestoes('${provaId}')">
+            <i class="fas fa-save"></i> Salvar Todas as Questões
+        </button>
+    `, true)
+}
+
+let questaoCounter = 1
+
+function adicionarCampoQuestao() {
+    const container = document.getElementById('questoesContainer')
+    const index = questaoCounter++
+    
+    const div = document.createElement('div')
+    div.className = 'questao-form'
+    div.dataset.index = index
+    div.innerHTML = `
+        <div class="fld">
+            <label>Enunciado da Questão ${index + 1}</label>
+            <textarea id="qEnunciado_${index}" rows="3" placeholder="Digite o enunciado..." required></textarea>
+        </div>
+        <div class="fld">
+            <label>Alternativa A</label>
+            <input type="text" id="qAltA_${index}" placeholder="Alternativa A" required>
+        </div>
+        <div class="fld">
+            <label>Alternativa B</label>
+            <input type="text" id="qAltB_${index}" placeholder="Alternativa B" required>
+        </div>
+        <div class="fld">
+            <label>Alternativa C</label>
+            <input type="text" id="qAltC_${index}" placeholder="Alternativa C" required>
+        </div>
+        <div class="fld">
+            <label>Alternativa D</label>
+            <input type="text" id="qAltD_${index}" placeholder="Alternativa D" required>
+        </div>
+        <div class="fld">
+            <label>Alternativa Correta</label>
+            <select id="qGabarito_${index}">
+                <option value="0">A</option>
+                <option value="1">B</option>
+                <option value="2">C</option>
+                <option value="3">D</option>
+            </select>
+        </div>
+        <hr style="margin:16px 0;border-color:var(--bd);">
+    `
+    container.appendChild(div)
+}
+
+async function salvarQuestoes(provaId) {
+    const forms = document.querySelectorAll('.questao-form')
+    const questoes = []
+    
+    forms.forEach((form, index) => {
+        const enunciado = document.getElementById(`qEnunciado_${index}`)?.value.trim()
+        const altA = document.getElementById(`qAltA_${index}`)?.value.trim()
+        const altB = document.getElementById(`qAltB_${index}`)?.value.trim()
+        const altC = document.getElementById(`qAltC_${index}`)?.value.trim()
+        const altD = document.getElementById(`qAltD_${index}`)?.value.trim()
+        const gabarito = parseInt(document.getElementById(`qGabarito_${index}`)?.value || 0)
+        
+        if (enunciado && altA && altB && altC && altD) {
+            questoes.push({
+                prova_id: parseInt(provaId),
+                ordem: index + 1,
+                enunciado: enunciado,
+                tipo: 'multipla_escolha',
+                alternativas: [
+                    { id: 0, texto: altA },
+                    { id: 1, texto: altB },
+                    { id: 2, texto: altC },
+                    { id: 3, texto: altD }
+                ],
+                gabarito: gabarito,
+                peso: 1.0,
+                anulada: false,
+                created_at: new Date().toISOString()
+            })
+        }
+    })
+    
+    if (questoes.length === 0) {
+        toast('Adicione pelo menos uma questão', 'err')
+        return
+    }
+    
+    try {
+        const { data, error } = await sb
+            .from('questoes')
+            .insert(questoes)
+            .select()
+        
+        if (error) throw error
+        
+        toast(`✅ ${questoes.length} questões adicionadas com sucesso!`, 'success')
+        closeMdl()
+        carregarProvasAdmin()
+        
+    } catch (error) {
+        console.error('Erro ao salvar questões:', error)
+        toast('Erro ao salvar questões', 'err')
+    }
+}
+
+function editarProva(provaId) {
+    toast('Funcionalidade em desenvolvimento', 'info')
+}
+
+async function excluirProva(provaId) {
+    if (!confirm('Deseja realmente excluir esta prova?')) return
+    
+    try {
+        // Exclui questões primeiro (cascade)
+        const { error: errQuestoes } = await sb
+            .from('questoes')
+            .delete()
+            .eq('prova_id', provaId)
+        
+        if (errQuestoes) throw errQuestoes
+        
+        const { error: errProva } = await sb
+            .from('provas')
+            .delete()
+            .eq('id', provaId)
+        
+        if (errProva) throw errProva
+        
+        toast('✅ Prova excluída com sucesso!', 'success')
+        carregarProvasAdmin()
+        
+    } catch (error) {
+        console.error('Erro ao excluir prova:', error)
+        toast('Erro ao excluir prova', 'err')
+    }
+}
+
+// ============================================================
 // VIEW: CONFIGURAÇÕES
 // ============================================================
 function vConfig() {
@@ -2752,11 +3209,12 @@ async function drawChartAdmin() {
     }
 }
 
-console.log('🚀 SulSafe - Versão Completa Corrigida!')
+console.log('🚀 SulSafe - Versão Completa!')
 console.log('✅ Erro 400 corrigido (ID BIGINT)')
-console.log('✅ Caixa branca com links nos cards')
-console.log('✅ WhatsApp integrado')
-console.log('✅ Sistema completo de NRs')
+console.log('✅ Caixa de links nos cards')
+console.log('✅ WhatsApp só na tela de login')
+console.log('✅ Sistema de provas')
+console.log('✅ Gerenciar provas (admin)')
 </script>
 </body>
 </html>
