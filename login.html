@@ -994,6 +994,7 @@ function handleError(error, fallbackMsg = 'Ocorreu um erro. Tente novamente.') {
     }
 }
 
+// FUNÇÃO WHATSAPP - CORRIGIDA E FUNCIONAL
 function redirecionarWhatsApp(mensagemPersonalizada = null) {
     const mensagem = mensagemPersonalizada || 'Olá! Acabei de me inscrever no SulSafe. Gostaria de saber mais sobre os treinamentos e valores.'
     const linkWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`
@@ -1435,7 +1436,6 @@ function abrirVideoInterno(url, titulo = 'Videoaula') {
     
     let embedUrl = url;
     
-    // Converte URL do YouTube para embed
     if (url.includes('watch?v=')) {
         embedUrl = url.replace('watch?v=', 'embed/');
     }
@@ -1451,7 +1451,6 @@ function abrirVideoInterno(url, titulo = 'Videoaula') {
         embedUrl = url;
     }
     
-    // Adiciona parâmetros para melhor experiência
     if (!embedUrl.includes('?')) {
         embedUrl += '?autoplay=1&rel=0&modestbranding=1&controls=1&showinfo=0';
     } else {
@@ -1628,8 +1627,16 @@ $('#frmCad').addEventListener('submit', async function(e) {
             toast('Conta admin criada!', 'success')
         } else {
             toast('✅ Cadastro realizado! Aguarde aprovação.', 'info')
+            // REDIRECIONA PARA WHATSAPP APÓS 2 SEGUNDOS
             setTimeout(() => {
-                const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.\n\n📧 Email: ${email}\n📱 Telefone: (informar no WhatsApp)\n🏢 Empresa: (informar no WhatsApp)\n\nGostaria de saber mais sobre os treinamentos, valores e liberação de acesso.\n\nAguardo seu contato!`
+                const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.
+📧 Email: ${email}
+📱 Telefone: (informar no WhatsApp)
+🏢 Empresa: (informar no WhatsApp)
+
+Gostaria de saber mais sobre os treinamentos, valores e liberação de acesso.
+
+Aguardo seu contato!`
                 redirecionarWhatsApp(mensagemWhats)
             }, 2000)
             showT('tLogin')
@@ -2364,7 +2371,6 @@ async function carregarMinhasProvas() {
     }
     
     try {
-        // Busca provas com respostas do aluno
         const { data: provas, error } = await supabase
             .from('provas')
             .select(`
@@ -2743,7 +2749,7 @@ function switchSubirTab(tab, btn) {
 }
 
 // ============================================================
-// SUBIR VIDEOAULA - CORRIGIDO
+// SUBIR VIDEOAULA - CORRIGIDO (VERSÃO ÚNICA E CORRETA)
 // ============================================================
 async function subirVideo(e) {
     e.preventDefault()
@@ -2769,7 +2775,7 @@ async function subirVideo(e) {
         const { data, error } = await sb
             .from('videoaulas')
             .insert({
-                id: idNumerico,        // 👈 ESSA LINHA É A CORREÇÃO!
+                id: idNumerico,
                 nr_id: parseInt(nrId),
                 titulo: titulo,
                 descricao: descricao,
@@ -2794,42 +2800,6 @@ async function subirVideo(e) {
         console.error('Erro ao adicionar videoaula:', error)
         toast('Erro ao adicionar videoaula: ' + error.message, 'err')
     }
-}
-    
-    // GERA ID NUMÉRICO (BIGINT)
-    const idNumerico = gerarIdNumerico();
-    
-    const { data, error } = await sbCriarVideoaula({
-        id: idNumerico,        // 👈 ESSA LINHA É A CORREÇÃO
-        nr_id: parseInt(nrId),
-        titulo: titulo,
-        descricao: descricao,
-        url_video: url,
-        duracao: 0,
-        ordem: 0,
-        criado_por: uid()
-    })
-    
-    if (error) { 
-        console.error('Erro detalhado:', error);
-        toast('Erro ao adicionar videoaula: ' + error.message, 'err'); 
-        return; 
-    }
-    
-    toast('✅ Videoaula adicionada com sucesso!', 'success')
-    $('#videoTitulo').value = ''
-    $('#videoDesc').value = ''
-    $('#videoUrl').value = ''
-    carregarConteudosAdmin()
-    carregarLinksNRS()
-}
-    if (error) { handleError(error); return }
-    toast('✅ Videoaula adicionada com sucesso!', 'success')
-    $('#videoTitulo').value = ''
-    $('#videoDesc').value = ''
-    $('#videoUrl').value = ''
-    carregarConteudosAdmin()
-    carregarLinksNRS()
 }
 
 async function subirMaterial(e) {
@@ -3127,7 +3097,6 @@ async function salvarProva(e) {
         closeMdl()
         carregarProvasAdmin()
         
-        // Pergunta se quer adicionar questões
         if (confirm('Deseja adicionar questões agora?')) {
             abrirAddQuestoes(data.id)
         }
@@ -3295,7 +3264,6 @@ async function excluirProva(provaId) {
     if (!confirm('Deseja realmente excluir esta prova?')) return
     
     try {
-        // Exclui questões primeiro (cascade)
         const { error: errQuestoes } = await sb
             .from('questoes')
             .delete()
