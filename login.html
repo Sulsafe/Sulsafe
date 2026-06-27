@@ -994,7 +994,6 @@ function handleError(error, fallbackMsg = 'Ocorreu um erro. Tente novamente.') {
     }
 }
 
-// FUNÇÃO WHATSAPP - CORRIGIDA E FUNCIONAL
 function redirecionarWhatsApp(mensagemPersonalizada = null) {
     const mensagem = mensagemPersonalizada || 'Olá! Acabei de me inscrever no SulSafe. Gostaria de saber mais sobre os treinamentos e valores.'
     const linkWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`
@@ -1627,7 +1626,6 @@ $('#frmCad').addEventListener('submit', async function(e) {
             toast('Conta admin criada!', 'success')
         } else {
             toast('✅ Cadastro realizado! Aguarde aprovação.', 'info')
-            // REDIRECIONA PARA WHATSAPP APÓS 2 SEGUNDOS
             setTimeout(() => {
                 const mensagemWhats = `Olá! Meu nome é ${nome} e acabei de me inscrever no SulSafe.
 📧 Email: ${email}
@@ -1662,7 +1660,6 @@ async function logout() {
     localStorage.removeItem('ss_session')
     localStorage.removeItem('ss_user')
     destroyCharts()
-    // Mostra WhatsApp novamente
     document.getElementById('whatsappContainer').classList.remove('hidden')
     window.location.href = LANDING_URL
 }
@@ -1699,7 +1696,6 @@ async function logout() {
 
 function enterDash() {
     $('#authWrap').classList.add('off')
-    // Esconde WhatsApp no dashboard
     document.getElementById('whatsappContainer').classList.add('hidden')
     $('#dash').classList.add('on')
     S.view = 'inicio'
@@ -2684,8 +2680,9 @@ async function dlCert(id) {
         toast('PDF gerado!', 'success')
     } catch (e) { toast('Erro ao gerar PDF: ' + e.message, 'err') }
 }
+
 // ============================================================
-// VIEW: SUBIR CONTEÚDO
+// VIEW: SUBIR CONTEÚDO (VERSÃO ÚNICA)
 // ============================================================
 function vSubirConteudo() {
     if (!isAdmin()) return vInicio()
@@ -2754,6 +2751,227 @@ function vSubirConteudo() {
     
     setTimeout(carregarConteudosAdmin, 200)
     return h
+}
+
+// ============================================================
+// SUBIR VIDEOAULA
+// ============================================================
+async function subirVideo(e) {
+    e.preventDefault()
+    const nrId = $('#videoNR').value
+    const titulo = sanitizar($('#videoTitulo').value.trim())
+    const descricao = sanitizar($('#videoDesc').value.trim())
+    const url = $('#videoUrl').value.trim()
+    
+    if (!nrId || !titulo || !url) { 
+        toast('Preencha todos os campos', 'err'); 
+        return; 
+    }
+    
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+        toast('Insira um link válido do YouTube', 'err');
+        return;
+    }
+    
+    const idNumerico = gerarIdNumerico();
+    
+    try {
+        const { data, error } = await sb
+            .from('videoaulas')
+            .insert({
+                id: idNumerico,
+                nr_id: parseInt(nrId),
+                titulo: titulo,
+                descricao: descricao,
+                url_video: url,
+                duracao: 0,
+                ordem: 0,
+                criado_por: uid()
+            })
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        toast('✅ Videoaula adicionada com sucesso!', 'success')
+        $('#videoTitulo').value = ''
+        $('#videoDesc').value = ''
+        $('#videoUrl').value = ''
+        carregarConteudosAdmin()
+        carregarLinksNRS()
+        
+    } catch (error) {
+        console.error('Erro ao adicionar videoaula:', error)
+        toast('Erro ao adicionar videoaula: ' + error.message, 'err')
+    }
+}
+
+// ============================================================
+// SUBIR ARQUIVO (UPLOAD DE ARQUIVOS DO COMPUTADOR)
+// ============================================================
+async function subirArquivo(e) {
+    e.preventDefault()
+    
+    const nrId = $('#arquivoNR').value
+    const titulo = sanitizar($('#arquivoTitulo').value.trim())
+    const descricao = sanitizar($('#arquivoDesc').value.trim())
+    const arquivoInput = document.getElementById('arquivoFile')
+    const arquivo = arquivoInput?.files?.[0]
+    
+    if (!nrId || !titulo || !arquivo) {
+        toast('Preencha todos os campos e selecione um arquivo', 'err')
+        return
+    }
+    
+    if (arquivo.size > 10 * 1024 * 1024) {
+        toast('Arquivo muito grande. Máximo 10MB.', 'err')
+        return
+    }
+    
+    try {
+        const btn = document.querySelector('#frmSubirArquivo button[type="submit"]')
+        const originalText = btn.innerHTML
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'
+        btn.disabled = true
+        
+        const timestamp = Date.now()
+        const ext = arquivo.name.split('.').pop()
+        const nomeUnico = `${timestamp}_${arquivo.name}`
+        const path = `materiais/${nrId}/${nomeUnico}`
+        
+        const { data: uploadData, error: uploadError } = await sb.storage
+            .from(STORAGE_BUCKET)
+            .upload(path, arquivo)
+        
+        if (uploadError) throw uploadError
+        
+        const { data: urlData } = sb.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(path)
+        
+        const { data, error } = await sb
+            .from('materiais')
+            .insert({
+                nr_id: parseInt(nrId),
+                titulo: titulo,
+                descricao: descricao,
+                url: urlData.publicUrl,
+                tipo: 'material',
+                nome_original: arquivo.name,
+                tamanho: arquivo.size,
+                tipo_arquivo: arquivo.type,
+                criado_por: uid(),
+                criado_em: new Date().toISOString()
+            })
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        toast('✅ Arquivo enviado com sucesso!', 'success')
+        
+        $('#arquivoTitulo').value = ''
+        $('#arquivoDesc').value = ''
+        arquivoInput.value = ''
+        document.getElementById('arquivoInfo').style.display = 'none'
+        
+        carregarConteudosAdmin()
+        carregarLinksNRS()
+        
+        btn.innerHTML = originalText
+        btn.disabled = false
+        
+    } catch (error) {
+        console.error('Erro ao enviar arquivo:', error)
+        toast('Erro ao enviar arquivo: ' + error.message, 'err')
+        
+        const btn = document.querySelector('#frmSubirArquivo button[type="submit"]')
+        btn.innerHTML = '<i class="fas fa-upload"></i> Enviar Arquivo'
+        btn.disabled = false
+    }
+}
+
+// ============================================================
+// FUNÇÃO PARA FORMATAR TAMANHO DO ARQUIVO
+// ============================================================
+function formatarTamanhoArquivo(bytes) {
+    if (bytes < 1024) return bytes + ' B'
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+}
+
+// ============================================================
+// EVENTO PARA MOSTRAR INFORMAÇÕES DO ARQUIVO
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const arquivoInput = document.getElementById('arquivoFile')
+    if (arquivoInput) {
+        arquivoInput.addEventListener('change', function() {
+            const infoDiv = document.getElementById('arquivoInfo')
+            const nomeSpan = document.getElementById('arquivoNome')
+            const tamanhoSpan = document.getElementById('arquivoTamanho')
+            
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0]
+                const tamanhoFormatado = formatarTamanhoArquivo(file.size)
+                nomeSpan.textContent = file.name
+                tamanhoSpan.textContent = tamanhoFormatado
+                infoDiv.style.display = 'block'
+            } else {
+                infoDiv.style.display = 'none'
+            }
+        })
+    }
+})
+
+// ============================================================
+// SWITCH SUBIR TAB
+// ============================================================
+function switchSubirTab(tab, btn) {
+    $$('.tab-b').forEach(b => b.classList.remove('on'))
+    btn.classList.add('on')
+    $$('.tab-c').forEach(c => c.classList.remove('on'))
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('on')
+}
+
+// ============================================================
+// CARREGAR CONTEÚDOS ADMIN
+// ============================================================
+async function carregarConteudosAdmin() {
+    const container = document.getElementById('conteudoLista')
+    if (!container) return
+    const { data: videos } = await sbGetVideoaulas()
+    const { data: materiais } = await sbGetMateriais()
+    if ((!videos || videos.length === 0) && (!materiais || materiais.length === 0)) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-upload"></i><p>Nenhum conteúdo cadastrado ainda.</p></div>`
+        return
+    }
+    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Conteúdos Cadastrados</div></div>`
+    h += `<div class="tw"><table><thead><tr><th>Tipo</th><th>NR</th><th>Título</th><th>Link</th><th>Criado por</th></tr></thead><tbody>`
+    if (videos) {
+        videos.forEach(v => {
+            h += `<tr>
+                <td><span class="badge bg-info">Vídeo</span></td>
+                <td>NR ${v.nr_id}</td>
+                <td>${v.titulo}</td>
+                <td><a href="${v.url_video}" target="_blank" style="color:var(--p)"><i class="fas fa-external-link-alt"></i> Ver</a></td>
+                <td>${v.profiles?.nome_completo || '—'}</td>
+            </tr>`
+        })
+    }
+    if (materiais) {
+        materiais.forEach(m => {
+            h += `<tr>
+                <td><span class="badge bg-warn">Material</span></td>
+                <td>NR ${m.nr_id}</td>
+                <td>${m.titulo}</td>
+                <td><a href="${m.url}" target="_blank" style="color:var(--p)"><i class="fas fa-external-link-alt"></i> Ver</a></td>
+                <td>${m.profiles?.nome_completo || '—'}</td>
+            </tr>`
+        })
+    }
+    h += `</tbody></table></div></div>`
+    container.innerHTML = h
 }
 
 // ============================================================
@@ -3292,13 +3510,15 @@ async function drawChartAdmin() {
     }
 }
 
-console.log('🚀 SulSafe - Versão Completa!')
+console.log('🚀 SulSafe - Versão Completa e Corrigida!')
 console.log('✅ Erro 400 corrigido (ID BIGINT)')
 console.log('✅ Caixa de links nos cards')
-console.log('✅ WhatsApp só na tela de login')
+console.log('✅ WhatsApp só na tela de login e funcional')
 console.log('✅ Sistema de provas')
 console.log('✅ Gerenciar provas (admin)')
 console.log('✅ Vídeos abrem no modal interno')
+console.log('✅ Subir conteúdo com upload de arquivos')
+console.log('✅ Botão Apagar Tudo funcionando')
 </script>
 </body>
 </html>
