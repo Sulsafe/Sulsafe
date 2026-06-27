@@ -2761,12 +2761,40 @@ function vSubirConteudo() {
 // ============================================================
 function vAdmin() {
     if (!isAdmin()) return vInicio()
+    
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
-    h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`
+    h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2>
+        <p>Controle total — ${S.user.email}</p></div>`
+    
     h += `<div id="adminStats"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando dados...</p></div></div>`
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuição de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`
+    
+    h += `<div class="ch-g">
+        <div class="ch-b">
+            <h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3>
+            <canvas id="chartAdmProg" height="200"></canvas>
+        </div>
+        <div class="ch-b">
+            <h3><i class="fas fa-chart-pie"></i> Distribuição de Roles</h3>
+            <canvas id="chartAdmRoles" height="200"></canvas>
+        </div>
+    </div>`
+    
     h += `<div id="adminUsers"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando usuários...</p></div></div>`
-    h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`
+    
+    h += `<div class="pnl" style="border:2px solid #D32F2F">
+        <div class="pnl-h">
+            <div class="pnl-t" style="color:#D32F2F">
+                <i class="fas fa-skull-crossbones"></i> Zona de Perigo
+            </div>
+        </div>
+        <p style="font-size:13px;color:var(--tx2);margin-bottom:14px">
+            Apaga <strong>TODOS</strong> os dados da plataforma.
+        </p>
+        <button class="btn btn-d" onclick="modalApagarTudo()">
+            <i class="fas fa-bomb"></i> APAGAR TUDO
+        </button>
+    </div>`
+    
     setTimeout(carregarAdminData, 200)
     return h
 }
