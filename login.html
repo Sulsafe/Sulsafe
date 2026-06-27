@@ -2742,6 +2742,9 @@ function switchSubirTab(tab, btn) {
     document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('on')
 }
 
+// ============================================================
+// SUBIR VIDEOAULA - CORRIGIDO
+// ============================================================
 async function subirVideo(e) {
     e.preventDefault()
     const nrId = $('#videoNR').value
@@ -2758,6 +2761,40 @@ async function subirVideo(e) {
         toast('Insira um link válido do YouTube', 'err');
         return;
     }
+    
+    // GERA ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
+    const idNumerico = gerarIdNumerico();
+    
+    try {
+        const { data, error } = await sb
+            .from('videoaulas')
+            .insert({
+                id: idNumerico,        // 👈 ESSA LINHA É A CORREÇÃO!
+                nr_id: parseInt(nrId),
+                titulo: titulo,
+                descricao: descricao,
+                url_video: url,
+                duracao: 0,
+                ordem: 0,
+                criado_por: uid()
+            })
+            .select()
+            .single()
+        
+        if (error) throw error
+        
+        toast('✅ Videoaula adicionada com sucesso!', 'success')
+        $('#videoTitulo').value = ''
+        $('#videoDesc').value = ''
+        $('#videoUrl').value = ''
+        carregarConteudosAdmin()
+        carregarLinksNRS()
+        
+    } catch (error) {
+        console.error('Erro ao adicionar videoaula:', error)
+        toast('Erro ao adicionar videoaula: ' + error.message, 'err')
+    }
+}
     
     // GERA ID NUMÉRICO (BIGINT)
     const idNumerico = gerarIdNumerico();
