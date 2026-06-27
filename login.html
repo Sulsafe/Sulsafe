@@ -2748,12 +2748,22 @@ async function subirVideo(e) {
     const titulo = sanitizar($('#videoTitulo').value.trim())
     const descricao = sanitizar($('#videoDesc').value.trim())
     const url = $('#videoUrl').value.trim()
-    if (!nrId || !titulo || !url) { toast('Preencha todos os campos', 'err'); return }
-    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
-        toast('Insira um link válido do YouTube', 'err')
-        return
+    
+    if (!nrId || !titulo || !url) { 
+        toast('Preencha todos os campos', 'err'); 
+        return; 
     }
+    
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+        toast('Insira um link válido do YouTube', 'err');
+        return;
+    }
+    
+    // GERA ID NUMÉRICO (BIGINT)
+    const idNumerico = gerarIdNumerico();
+    
     const { data, error } = await sbCriarVideoaula({
+        id: idNumerico,        // 👈 ESSA LINHA É A CORREÇÃO
         nr_id: parseInt(nrId),
         titulo: titulo,
         descricao: descricao,
@@ -2762,6 +2772,20 @@ async function subirVideo(e) {
         ordem: 0,
         criado_por: uid()
     })
+    
+    if (error) { 
+        console.error('Erro detalhado:', error);
+        toast('Erro ao adicionar videoaula: ' + error.message, 'err'); 
+        return; 
+    }
+    
+    toast('✅ Videoaula adicionada com sucesso!', 'success')
+    $('#videoTitulo').value = ''
+    $('#videoDesc').value = ''
+    $('#videoUrl').value = ''
+    carregarConteudosAdmin()
+    carregarLinksNRS()
+}
     if (error) { handleError(error); return }
     toast('✅ Videoaula adicionada com sucesso!', 'success')
     $('#videoTitulo').value = ''
