@@ -107,6 +107,76 @@ body.t-escuro {
     .whatsapp-float span { display: none; }
 }
 
+/* MODAL DE VÍDEO (PLAYER INTERNO) */
+.video-modal .mdl {
+    max-width: 850px;
+    padding: 0;
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.video-modal .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+.video-modal .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.video-modal .video-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #1a1a1a;
+    color: #fff;
+    border-bottom: 1px solid #333;
+}
+.video-modal .video-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.video-modal .video-header .btn-close-video {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: .2s;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+.video-modal .video-header .btn-close-video:hover {
+    opacity: 1;
+    background: rgba(255,255,255,.1);
+    transform: rotate(90deg);
+}
+.video-modal .video-footer {
+    padding: 10px 20px;
+    background: #1a1a1a;
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid #333;
+}
+@media (max-width: 768px) {
+    .video-modal .mdl {
+        max-width: 95vw;
+    }
+}
+
 /* AUTH */
 #authWrap { 
     display: flex; 
@@ -1292,18 +1362,27 @@ async function carregarLinksNRS() {
             
             let linksHtml = ''
             
+            // ============================================
+            // VÍDEO - ABRE NO MODAL INTERNO
+            // ============================================
             if (nr.link_video) {
-                linksHtml += `<a href="${nr.link_video}" target="_blank" class="btn-link youtube">
+                linksHtml += `<a href="#" onclick="abrirVideoInterno('${nr.link_video}', 'NR ${nr.numero}'); return false;" class="btn-link youtube">
                     <i class="fab fa-youtube"></i> Assistir Aula
                 </a>`
             }
             
+            // ============================================
+            // MATERIAL - ABRE EM NOVA ABA
+            // ============================================
             if (nr.link_material) {
                 linksHtml += `<a href="${nr.link_material}" target="_blank" class="btn-link material">
                     <i class="fas fa-file-pdf"></i> Material
                 </a>`
             }
             
+            // ============================================
+            // PROVA - ABRE MODAL
+            // ============================================
             if (nr.link_prova) {
                 linksHtml += `<a href="#" onclick="abrirProva('${nr.id}'); return false;" class="btn-link prova">
                     <i class="fas fa-file-pdf"></i> Prova
@@ -1343,6 +1422,60 @@ async function carregarLinksNRS() {
     } catch (error) {
         console.error('Erro ao carregar links:', error)
     }
+}
+
+// ============================================================
+// FUNÇÃO PARA ABRIR VÍDEO NO MODAL (INTERNO)
+// ============================================================
+function abrirVideoInterno(url, titulo = 'Videoaula') {
+    if (!url) {
+        toast('Link do vídeo não disponível', 'err');
+        return;
+    }
+    
+    let embedUrl = url;
+    
+    // Converte URL do YouTube para embed
+    if (url.includes('watch?v=')) {
+        embedUrl = url.replace('watch?v=', 'embed/');
+    }
+    
+    if (url.includes('youtu.be/')) {
+        const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+        if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+    }
+    
+    if (url.includes('/embed/')) {
+        embedUrl = url;
+    }
+    
+    // Adiciona parâmetros para melhor experiência
+    if (!embedUrl.includes('?')) {
+        embedUrl += '?autoplay=1&rel=0&modestbranding=1&controls=1&showinfo=0';
+    } else {
+        embedUrl += '&autoplay=1&rel=0&modestbranding=1&controls=1&showinfo=0';
+    }
+    
+    openMdl(`
+        <div class="video-modal">
+            <div class="video-header">
+                <h3><i class="fab fa-youtube" style="color:#FF0000;"></i> ${sanitizar(titulo)}</h3>
+                <button class="btn-close-video" onclick="closeMdl()">✕</button>
+            </div>
+            <div class="video-container">
+                <iframe src="${embedUrl}" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+            </div>
+            <div class="video-footer">
+                <i class="fas fa-info-circle"></i> Assista o vídeo diretamente na plataforma
+            </div>
+        </div>
+    `, true)
 }
 
 // ============================================================
@@ -3215,6 +3348,7 @@ console.log('✅ Caixa de links nos cards')
 console.log('✅ WhatsApp só na tela de login')
 console.log('✅ Sistema de provas')
 console.log('✅ Gerenciar provas (admin)')
+console.log('✅ Vídeos abrem no modal interno')
 </script>
 </body>
 </html>
