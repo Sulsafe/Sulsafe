@@ -3,339 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-<meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-<meta property="og:title" content="SulSafe - Segurança do Trabalho">
-<meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
-<meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
-<meta name="robots" content="index, follow">
-<title>SulSafe | Plataforma de Segurança do Trabalho</title>
+<meta name="description" content="SulSafe — Plataforma de ensino de Seguranca do Trabalho com 38 NRs.">
+<title>SulSafe | Plataforma de Seguranca do Trabalho</title>
 <link rel="icon" type="image/png" href="logo1.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* ============================================================
-   CSS - SULSAFE (CORES, MODAIS E AUTH PRESERVADOS)
-   ============================================================ */
-:root {
-    --p: #2E7D32; --p2: #43A047; --p3: #1B5E20; --gold: #C9B037;
-    --bg: #f4f7f6; --tx: #1a1a1a; --tx2: #4a4a4a; --tx3: #888;
-    --bd: #dce3e0; --bd2: #e8eeec; --ip: #f8fafa; --r: 12px;
-    --sb: #0f1a12; --sb2: #1a2b1e; --sb-tx: #c8e0c8;
-    --card-bg: #fff; --shadow: 0 2px 12px rgba(0,0,0,.06);
-    --shadow-hover: 0 8px 32px rgba(0,0,0,.12);
-    --whatsapp: #25D366; --header-h: 56px; --sidebar-w: 250px;
-}
+:root{--p:#2E7D32;--p2:#43A047;--p3:#1B5E20;--gold:#C9B037;--bg:#f4f7f6;--tx:#1a1a1a;--tx2:#4a4a4a;--tx3:#888;--bd:#dce3e0;--bd2:#e8eeec;--ip:#f8fafa;--r:12px;--sb:#0f1a12;--sb2:#1a2b1e;--sb-tx:#c8e0c8;--card-bg:#fff;--shadow:0 2px 12px rgba(0,0,0,.06);--shadow-hover:0 8px 32px rgba(0,0,0,.12);--whatsapp:#25D366;--header-h:56px;--sidebar-w:250px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;transition:background .3s,color .3s}
 input,select,textarea{font-family:inherit;outline:none}
 a{color:var(--p);text-decoration:none}
-a:hover{text-decoration:underline}
-
 body.t-azul{--p:#1565C0;--p2:#1E88E5;--p3:#0D47A1;--sb:#0a1628;--sb2:#142a4a}
 body.t-roxo{--p:#7B1FA2;--p2:#9C27B0;--p3:#4A148C;--sb:#1a0a2a;--sb2:#2a1a3a}
 body.t-vermelho{--p:#C62828;--p2:#E53935;--p3:#B71C1C;--sb:#2a0a0a;--sb2:#3a1a1a}
 body.t-laranja{--p:#E65100;--p2:#F57C00;--p3:#BF360C;--sb:#2a1200;--sb2:#3a1a0a}
 body.t-escuro{--p:#66BB6A;--p2:#81C784;--p3:#388E3C;--bg:#121212;--tx:#eee;--tx2:#bbb;--tx3:#777;--bd:#333;--bd2:#2a2a2a;--ip:#1e1e1e;--card-bg:#1e1e1e;--shadow:0 2px 12px rgba(0,0,0,.3);--sb:#0a0a0a;--sb2:#1a1a1a;--sb-tx:#a0c8a0}
-
-/* WHATSAPP */
 #whatsappContainer{position:fixed;bottom:30px;right:30px;z-index:999}
 #whatsappContainer.hidden{display:none!important}
-.whatsapp-float{background:var(--whatsapp);color:#fff;padding:14px 20px;border-radius:50px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(37,211,102,.4);border:none;cursor:pointer;transition:.3s;animation:pulse-w 2s infinite}
+.whatsapp-float{background:var(--whatsapp);color:#fff;padding:14px 20px;border-radius:50px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(37,211,102,.4);border:none;cursor:pointer;transition:.3s;animation:pw 2s infinite}
 .whatsapp-float:hover{transform:scale(1.08)}
 .whatsapp-float i{font-size:24px}
-@keyframes pulse-w{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes pw{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @media(max-width:768px){#whatsappContainer{bottom:16px;right:16px}.whatsapp-float{padding:10px 14px;font-size:12px}.whatsapp-float span{display:none}}
-
-/* MODAL DE VIDEO (preservado) */
-.video-modal .mdl{max-width:850px;padding:0;background:#1a1a1a;border-radius:12px;overflow:hidden}
-.video-modal .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
-.video-modal .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
-.video-modal .video-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1a1a1a;color:#fff;border-bottom:1px solid #333}
-.video-modal .video-header h3{font-size:16px;font-weight:600;margin:0;color:#fff;display:flex;align-items:center;gap:10px}
-.video-modal .video-header .btn-close-video{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;opacity:.7;transition:.2s;padding:4px 8px;border-radius:4px}
-.video-modal .video-header .btn-close-video:hover{opacity:1;background:rgba(255,255,255,.1);transform:rotate(90deg)}
-
-/* AUTH (preservado) */
 #authWrap{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;background:var(--bg);transition:opacity .5s,transform .5s}
 #authWrap.off{opacity:0;transform:scale(.95);pointer-events:none;position:fixed;width:100%}
-.auth-card{background:var(--card-bg);border-radius:24px;padding:40px 36px;max-width:440px;width:100%;box-shadow:var(--shadow);position:relative;animation:fv .5s ease}
-.auth-card .t{display:none}
-.auth-card .t.on{display:block;animation:fv .3s ease}
-.back-to-site{display:inline-block;font-size:13px;color:var(--tx3);margin-bottom:20px}
-.back-to-site i{margin-right:6px}
+.auth-card{background:var(--card-bg);border-radius:24px;padding:40px 36px;max-width:440px;width:100%;box-shadow:var(--shadow);animation:fv .5s ease}
+.auth-card .t{display:none}.auth-card .t.on{display:block;animation:fv .3s ease}
+.back-to-site{display:inline-block;font-size:13px;color:var(--tx3);margin-bottom:20px;cursor:pointer}.back-to-site i{margin-right:6px}
 .logo-r{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .lic{width:48px;height:48px;background:var(--p);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
 .lt{font-size:22px;font-weight:800;color:var(--p)}
 .sub{font-size:14px;color:var(--tx2);margin-bottom:24px}
-.fld{margin-bottom:16px}
-.fld label{display:block;font-weight:600;font-size:13px;margin-bottom:4px;color:var(--tx2)}
+.fld{margin-bottom:16px}.fld label{display:block;font-weight:600;font-size:13px;margin-bottom:4px;color:var(--tx2)}
 .fld input,.fld select,.fld textarea{width:100%;padding:12px 14px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);font-size:14px;color:var(--tx);transition:.2s}
 .fld input:focus,.fld select:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(46,125,50,.15)}
-.fld .error{border-color:#D32F2F!important}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:none;border-radius:var(--r);font-weight:700;font-size:14px;cursor:pointer;transition:.2s;justify-content:center}
-.btn-p{background:var(--p);color:#fff}
-.btn-p:hover{background:var(--p3);transform:translateY(-1px);box-shadow:var(--shadow-hover)}
-.btn-s{background:var(--bd);color:var(--tx)}
-.btn-s:hover{background:var(--bd2)}
-.btn-d{background:#D32F2F;color:#fff}
-.btn-d:hover{background:#B71C1C;transform:translateY(-1px)}
-.btn-g{background:var(--gold);color:#1a1a1a}
-.btn-g:hover{background:#b89f2a}
-.btn-block{width:100%}
-.btn-sm{padding:8px 16px;font-size:12px}
-.btn-xs{padding:5px 10px;font-size:11px;border-radius:6px}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--p3);transform:translateY(-1px);box-shadow:var(--shadow-hover)}
+.btn-s{background:var(--bd);color:var(--tx)}.btn-s:hover{background:var(--bd2)}
+.btn-d{background:#D32F2F;color:#fff}.btn-d:hover{background:#B71C1C}
+.btn-g{background:var(--gold);color:#1a1a1a}.btn-g:hover{background:#b89f2a}
+.btn-block{width:100%}.btn-sm{padding:8px 16px;font-size:12px}.btn-xs{padding:5px 10px;font-size:11px;border-radius:6px}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
 .divider{text-align:center;padding:16px 0;color:var(--tx3);font-size:13px}
 .divider::before,.divider::after{content:'';display:inline-block;width:30px;height:1px;background:var(--bd);vertical-align:middle;margin:0 10px}
-
-/* ============================================================
-   INTERNO - ESTILO UNICESUMAR STUDEO
-   ============================================================ */
-
-/* HEADER SUPERIOR FIXO */
-.top-header{
-    position:fixed;top:0;right:0;left:var(--sidebar-w);height:var(--header-h);
-    background:var(--card-bg);border-bottom:1px solid var(--bd);
-    display:flex;align-items:center;padding:0 24px;z-index:90;gap:16px;
-}
-.th-search{
-    flex:1;max-width:420px;position:relative;
-}
-.th-search input{
-    width:100%;padding:9px 14px 9px 38px;background:var(--ip);border:1px solid var(--bd);
-    border-radius:40px;font-size:13px;color:var(--tx);transition:.2s;
-}
+.top-header{position:fixed;top:0;right:0;left:var(--sidebar-w);height:var(--header-h);background:var(--card-bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 24px;z-index:90;gap:16px}
+.th-search{flex:1;max-width:420px;position:relative}
+.th-search input{width:100%;padding:9px 14px 9px 38px;background:var(--ip);border:1px solid var(--bd);border-radius:40px;font-size:13px;color:var(--tx);transition:.2s}
 .th-search input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(46,125,50,.1)}
-.th-search i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:14px}
+.th-search>i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:14px}
 .th-right{display:flex;align-items:center;gap:8px;margin-left:auto}
-.th-btn{
-    width:38px;height:38px;border-radius:50%;border:none;background:transparent;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    color:var(--tx2);font-size:16px;position:relative;transition:.2s;
-}
+.th-btn{width:38px;height:38px;border-radius:50%;border:none;background:0 0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);font-size:16px;transition:.2s}
 .th-btn:hover{background:var(--bd);color:var(--p)}
-.th-btn .badge-dot{
-    position:absolute;top:6px;right:6px;width:8px;height:8px;
-    background:#D32F2F;border-radius:50%;border:2px solid var(--card-bg);
-}
-.th-user{
-    display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;
-    border-radius:40px;cursor:pointer;transition:.2s;border:none;background:transparent;
-}
+.th-user{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:40px;cursor:pointer;transition:.2s;border:none;background:0 0}
 .th-user:hover{background:var(--bd)}
-.th-avatar{
-    width:34px;height:34px;border-radius:50%;background:var(--p);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
-}
+.th-avatar{width:34px;height:34px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
 .th-uname{font-size:13px;font-weight:600;color:var(--tx);text-align:left;line-height:1.2}
 .th-urole{font-size:10px;color:var(--tx3);text-transform:capitalize}
-
-/* SIDEBAR MELHORADA */
-.sidebar{
-    width:var(--sidebar-w);background:var(--sb);color:var(--sb-tx);
-    display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;
-    overflow-y:auto;z-index:100;scrollbar-width:thin;transition:width .3s;
-}
-.sidebar::-webkit-scrollbar{width:4px}
-.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
-.sb-hd{
-    display:flex;align-items:center;gap:12px;padding:16px 18px;
-    border-bottom:1px solid rgba(255,255,255,.06);height:var(--header-h);flex-shrink:0;
-}
+.sidebar{width:var(--sidebar-w);background:var(--sb);color:var(--sb-tx);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;scrollbar-width:thin}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.sb-hd{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);height:var(--header-h);flex-shrink:0}
 .sb-hd .lic{width:36px;height:36px;font-size:16px;border-radius:10px}
 .sb-hd .lt{color:#fff;font-size:17px;font-weight:800}
-.sb-role{
-    margin:12px 14px 4px;padding:7px 12px;border-radius:8px;font-size:11px;
-    font-weight:600;text-transform:uppercase;letter-spacing:.5px;
-    display:flex;align-items:center;gap:8px;
-}
+.sb-role{margin:12px 14px 4px;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
 .sb-role.admin{background:rgba(201,176,55,.2);color:#f0d050}
 .sb-role.professor{background:rgba(46,125,50,.2);color:#8bc34a}
 .sb-role.aluno{background:rgba(33,150,243,.15);color:#64b5f6}
 .sb-nav{flex:1;padding:8px 10px}
-.sb-lbl{
-    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-    color:rgba(255,255,255,.25);padding:14px 12px 6px;
-}
-.ni{
-    display:flex;align-items:center;gap:11px;padding:9px 13px;border-radius:8px;
-    cursor:pointer;transition:.15s;font-size:13px;color:rgba(255,255,255,.55);margin-bottom:1px;
-}
+.sb-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.25);padding:14px 12px 6px}
+.ni{display:flex;align-items:center;gap:11px;padding:9px 13px;border-radius:8px;cursor:pointer;transition:.15s;font-size:13px;color:rgba(255,255,255,.55);margin-bottom:1px}
 .ni:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.9)}
 .ni.on{background:rgba(46,125,50,.2);color:#8bc34a;font-weight:600}
 .ni i{width:18px;text-align:center;font-size:14px}
-.ni .ni-count{
-    margin-left:auto;background:rgba(255,255,255,.1);padding:2px 8px;
-    border-radius:10px;font-size:10px;font-weight:700;
-}
-.ni.on .ni-count{background:rgba(46,125,50,.3)}
-.sb-ft{
-    border-top:1px solid rgba(255,255,255,.06);padding:12px 14px;
-    display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
-}
+.ni .ni-count{margin-left:auto;background:rgba(255,255,255,.1);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.sb-ft{border-top:1px solid rgba(255,255,255,.06);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .sb-name{font-size:12px;font-weight:500;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
-.sb-out{
-    width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;
-    color:rgba(255,255,255,.4);font-size:14px;
-}
+.sb-out{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;color:rgba(255,255,255,.4);font-size:14px}
 .sb-out:hover{background:rgba(211,47,47,.25);color:#ef5350}
-
-/* MAIN CONTENT */
-.main{
-    margin-left:var(--sidebar-w);margin-top:var(--header-h);
-    padding:28px 32px;min-height:calc(100vh - var(--header-h));background:var(--bg);
-}
-
-/* BREADCRUMBS */
+.main{margin-left:var(--sidebar-w);margin-top:var(--header-h);padding:28px 32px;min-height:calc(100vh - var(--header-h));background:var(--bg)}
 .breadcrumbs{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx3);margin-bottom:20px;flex-wrap:wrap}
-.breadcrumbs a{color:var(--tx3);transition:.2s}
-.breadcrumbs a:hover{color:var(--p)}
-.breadcrumbs .bc-sep{font-size:10px}
-.breadcrumbs .bc-current{color:var(--tx);font-weight:600}
-
-/* PAGE HEADER (estilo Unicesumar) */
+.breadcrumbs a{color:var(--tx3)}.breadcrumbs a:hover{color:var(--p)}
+.breadcrumbs .bc-sep{font-size:10px}.breadcrumbs .bc-current{color:var(--tx);font-weight:600}
 .page-hd{margin-bottom:24px}
 .page-hd h1{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
 .page-hd p{color:var(--tx2);font-size:14px;margin-top:4px}
 .page-hd-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-
-/* WELCOME BANNER */
-.welcome-banner{
-    background:linear-gradient(135deg,var(--p),var(--p3));
-    border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:28px;
-    position:relative;overflow:hidden;
-}
-.welcome-banner::after{
-    content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;
-    background:rgba(255,255,255,.06);border-radius:50%;
-}
-.welcome-banner::before{
-    content:'';position:absolute;right:60px;bottom:-60px;width:160px;height:160px;
-    background:rgba(255,255,255,.04);border-radius:50%;
-}
+.welcome-banner{background:linear-gradient(135deg,var(--p),var(--p3));border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.welcome-banner::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,.06);border-radius:50%}
 .welcome-banner h2{font-size:20px;font-weight:700;margin-bottom:4px;position:relative;z-index:1}
 .welcome-banner p{font-size:14px;opacity:.85;position:relative;z-index:1}
-.welcome-banner .wb-stats{
-    display:flex;gap:32px;margin-top:18px;position:relative;z-index:1;
-}
-.welcome-banner .wb-stat{text-align:center}
-.welcome-banner .wb-stat-v{font-size:24px;font-weight:800}
-.welcome-banner .wb-stat-l{font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.5px}
-
-/* STATS GRID */
+.wb-stats{display:flex;gap:32px;margin-top:18px;position:relative;z-index:1}
+.wb-stat-v{font-size:24px;font-weight:800}.wb-stat-l{font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.5px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
-.st{
-    background:var(--card-bg);padding:18px 20px;border-radius:var(--r);
-    box-shadow:var(--shadow);transition:.25s;border:1px solid var(--bd2);
-}
+.st{background:var(--card-bg);padding:18px 20px;border-radius:var(--r);box-shadow:var(--shadow);transition:.25s;border:1px solid var(--bd2)}
 .st:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .st-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
 .st-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .st-icon.green{background:rgba(46,125,50,.1);color:var(--p)}
 .st-icon.blue{background:rgba(33,150,243,.1);color:#1565C0}
 .st-icon.orange{background:rgba(255,152,0,.1);color:#E65100}
-.st-icon.red{background:rgba(211,47,47,.1);color:#D32F2F}
 .st-icon.gold{background:rgba(201,176,55,.1);color:var(--gold)}
-.st-v{font-size:26px;font-weight:800;color:var(--tx);line-height:1}
-.st-l{font-size:12px;color:var(--tx3);margin-top:6px}
-
-/* SECTION PANEL (estilo Unicesumar) */
+.st-v{font-size:26px;font-weight:800;line-height:1}.st-l{font-size:12px;color:var(--tx3);margin-top:6px}
 .pnl{background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:20px;border:1px solid var(--bd2);overflow:hidden}
-.pnl-hd{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:16px 20px;border-bottom:1px solid var(--bd2);
-}
+.pnl-hd{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--bd2)}
 .pnl-t{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
 .pnl-bd{padding:20px}
-
-/* CURSO CARDS (estilo grid Unicesumar) */
-.cursos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.curso-card{
-    background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);
-    border:1px solid var(--bd2);overflow:hidden;cursor:pointer;transition:.25s;
-}
-.curso-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--p)}
-.curso-card-top{
-    padding:20px 20px 14px;display:flex;align-items:flex-start;gap:14px;
-}
-.curso-card-ic{
-    width:48px;height:48px;border-radius:12px;background:rgba(46,125,50,.1);
-    display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--p);flex-shrink:0;
-}
-.curso-card-info{flex:1;min-width:0}
-.curso-card-nr{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px}
-.curso-card-nm{font-size:15px;font-weight:700;margin-top:2px;line-height:1.3}
-.curso-card-cat{font-size:11px;color:var(--tx3);margin-top:2px}
-.curso-card-bot{padding:12px 20px 16px}
-.prog-bar{height:6px;background:var(--bd);border-radius:40px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:40px;transition:width .6s}
-.prog-text{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:6px}
-
-/* NR DETAIL - LAYOUT SPLIT (estilo Unicesumar módulo/aula) */
-.nr-split{display:grid;grid-template-columns:320px 1fr;gap:0;background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--bd2);overflow:hidden;min-height:500px}
-.nr-split-list{
-    border-right:1px solid var(--bd2);overflow-y:auto;max-height:70vh;
-    scrollbar-width:thin;background:var(--ip);
-}
-.nr-split-list::-webkit-scrollbar{width:4px}
-.nr-split-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
-.nr-lesson{
-    display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;
-    transition:.15s;border-bottom:1px solid var(--bd2);font-size:13px;
-}
-.nr-lesson:hover{background:var(--card-bg)}
-.nr-lesson.active{background:var(--card-bg);border-left:3px solid var(--p)}
-.nr-lesson.done .nl-ic{background:var(--p);color:#fff}
-.nl-ic{
-    width:32px;height:32px;border-radius:50%;background:var(--bd);
-    display:flex;align-items:center;justify-content:center;font-size:12px;
-    flex-shrink:0;transition:.2s;
-}
-.nl-info{flex:1;min-width:0}
-.nl-titulo{font-weight:600;line-height:1.3}
-.nl-tipo{font-size:11px;color:var(--tx3);margin-top:2px}
-.nr-split-content{padding:28px 32px;overflow-y:auto;max-height:70vh}
-.nr-split-content h3{font-size:18px;font-weight:700;margin-bottom:16px}
-
-/* LINK BOX (preservado mas ajustado) */
-.link-box{
-    background:var(--ip);border:1px solid var(--bd);border-radius:10px;
-    padding:12px 16px;margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
-}
-.link-box .btn-link{
-    font-size:11px;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;
-    display:inline-flex;align-items:center;gap:6px;transition:.2s;text-decoration:none;font-weight:600;
-}
-.link-box .btn-link.youtube{background:#FF0000;color:#fff}
-.link-box .btn-link.youtube:hover{background:#cc0000}
-.link-box .btn-link.material{background:#1565C0;color:#fff}
-.link-box .btn-link.material:hover{background:#0d47a1}
-.link-box .btn-link.prova{background:#E65100;color:#fff}
-.link-box .btn-link.prova:hover{background:#bf360c}
+/* NR CARDS COM LINK BOX (estilo original melhorado) */
+.nr-card-full{background:var(--card-bg);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:12px;border:2px solid transparent;transition:.2s}
+.nr-card-full:hover{border-color:var(--p);box-shadow:var(--shadow-hover)}
+.nr-card-top{display:flex;align-items:center;gap:14px}
+.nr-ic{width:44px;height:44px;background:rgba(46,125,50,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--p);flex-shrink:0}
+.nr-info{flex:1;min-width:0}
+.nr-num{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.nr-nm{font-size:15px;font-weight:700;margin-top:1px}
+.nr-cat{font-size:11px;color:var(--tx3);margin-top:2px}
+.link-box{background:var(--ip);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.link-box .link-label{font-size:11px;font-weight:700;color:var(--tx2);display:flex;align-items:center;gap:5px;margin-right:4px}
+.link-box .link-label i{color:var(--p)}
+.btn-link{font-size:11px!important;padding:6px 14px!important;border-radius:6px!important;border:none!important;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.2s;text-decoration:none!important;font-weight:600!important}
+.btn-link.youtube{background:#FF0000;color:#fff}.btn-link.youtube:hover{background:#cc0000}
+.btn-link.material{background:#1565C0;color:#fff}.btn-link.material:hover{background:#0d47a1}
+.btn-link.prova{background:#E65100;color:#fff}.btn-link.prova:hover{background:#bf360c}
+.btn-link.quiz{background:#7B1FA2;color:#fff}.btn-link.quiz:hover{background:#4A148C}
 .link-box .sem-conteudo{font-size:12px;color:var(--tx3);font-style:italic}
-
-/* TABLES (melhoradas) */
+.admin-links{display:flex;gap:4px;margin-left:auto}
+.admin-links button{font-size:10px;padding:3px 8px;border-radius:4px;border:none;cursor:pointer;background:var(--bd);color:var(--tx2);transition:.2s}
+.admin-links button:hover{background:var(--p);color:#fff}
+.admin-links button.del-btn:hover{background:#D32F2F;color:#fff}
+.prog-bar{height:6px;background:var(--bd);border-radius:40px;overflow:hidden;margin-top:10px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:40px;transition:width .6s}
+.prog-text{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:4px}
+.badge{display:inline-block;padding:3px 12px;border-radius:40px;font-size:11px;font-weight:700}
+.bg-ok{background:rgba(46,125,50,.12);color:#2E7D32}.bg-warn{background:rgba(255,152,0,.12);color:#E65100}
+.bg-err{background:rgba(211,47,47,.12);color:#C62828}.bg-info{background:rgba(33,150,243,.12);color:#1565C0}
+.bg-gray{background:var(--bd);color:var(--tx3)}
 .tw{overflow-x:auto;background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--bd2)}
 .tw table{width:100%;border-collapse:collapse;font-size:13px}
 .tw th{text-align:left;padding:12px 16px;background:var(--ip);font-weight:600;color:var(--tx2);font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--bd)}
 .tw td{padding:12px 16px;border-bottom:1px solid var(--bd2);vertical-align:middle}
-.tw tr:last-child td{border-bottom:0}
-.tw tr:hover td{background:rgba(46,125,50,.02)}
+.tw tr:last-child td{border-bottom:0}.tw tr:hover td{background:rgba(46,125,50,.02)}
 .tw-actions{display:flex;gap:6px}
-
-/* BADGES */
-.badge{display:inline-block;padding:3px 12px;border-radius:40px;font-size:11px;font-weight:700}
-.bg-ok{background:rgba(46,125,50,.12);color:#2E7D32}
-.bg-warn{background:rgba(255,152,0,.12);color:#E65100}
-.bg-err{background:rgba(211,47,47,.12);color:#C62828}
-.bg-info{background:rgba(33,150,243,.12);color:#1565C0}
-.bg-gray{background:var(--bd);color:var(--tx3)}
-
-/* CHAT */
 .chat-box{background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--bd2)}
 .chat-msgs{height:360px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px}
 .chat-m{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6}
@@ -343,136 +152,96 @@ body.t-escuro{--p:#66BB6A;--p2:#81C784;--p3:#388E3C;--bg:#121212;--tx:#eee;--tx2
 .chat-m.b{align-self:flex-start;background:var(--bd);color:var(--tx);border-bottom-left-radius:4px}
 .chat-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--bd)}
 .chat-row input{flex:1;padding:10px 14px;border:1px solid var(--bd);border-radius:var(--r);background:var(--ip);color:var(--tx)}
-
-/* TABS */
 .tabs{display:flex;gap:4px;background:var(--bd);border-radius:var(--r);padding:4px;margin-bottom:20px}
-.tab-b{flex:1;padding:10px;border:none;background:transparent;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:.2s;color:var(--tx2)}
+.tab-b{flex:1;padding:10px;border:none;background:0 0;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:.2s;color:var(--tx2)}
 .tab-b.on{background:var(--card-bg);box-shadow:var(--shadow);color:var(--p)}
-.tab-c{display:none;animation:fv .3s ease}
-.tab-c.on{display:block}
-
-/* MODAL (preservado) */
+.tab-c{display:none;animation:fv .3s ease}.tab-c.on{display:block}
 .mdl-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:999;align-items:center;justify-content:center;padding:20px}
 .mdl-bg.on{display:flex}
 .mdl{background:var(--card-bg);border-radius:20px;padding:28px 24px;max-width:90vw;max-height:90vh;width:100%;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .mdl-x{position:absolute;top:12px;right:16px;background:var(--bd);border:none;border-radius:50%;width:34px;height:34px;font-size:14px;cursor:pointer;color:var(--tx);display:flex;align-items:center;justify-content:center;transition:.2s}
 .mdl-x:hover{background:var(--tx3);color:#fff;transform:rotate(90deg)}
 .mdl-lg{max-width:850px}
-
-/* TOAST */
+.video-modal .mdl{max-width:850px;padding:0;background:#1a1a1a;border-radius:12px;overflow:hidden}
+.video-modal .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
+.video-modal .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.video-modal .video-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1a1a1a;color:#fff;border-bottom:1px solid #333}
+.video-modal .video-header h3{font-size:16px;font-weight:600;margin:0;color:#fff;display:flex;align-items:center;gap:10px}
+.video-modal .video-header .btn-close-video{background:0 0;border:none;color:#fff;font-size:24px;cursor:pointer;opacity:.7;transition:.2s;padding:4px 8px;border-radius:4px}
+.video-modal .video-header .btn-close-video:hover{opacity:1;background:rgba(255,255,255,.1);transform:rotate(90deg)}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
-.toast{background:var(--tx);color:#fff;padding:12px 24px;border-radius:var(--r);font-weight:500;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:toastIn .3s ease;pointer-events:auto;max-width:500px;text-align:center}
-.toast.err{background:#C62828}
-.toast.warn{background:#E65100}
-.toast.info{background:#1565C0}
-.toast.success{background:#2E7D32}
-
-/* NOTIF POPUP (preservado) */
+.toast{background:var(--tx);color:#fff;padding:12px 24px;border-radius:var(--r);font-weight:500;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:ti .3s ease;pointer-events:auto;max-width:500px;text-align:center}
+.toast.err{background:#C62828}.toast.warn{background:#E65100}.toast.info{background:#1565C0}.toast.success{background:#2E7D32}
 .notif-popup{position:fixed;bottom:30px;right:30px;max-width:380px;width:100%;background:var(--card-bg);border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,.15);z-index:1000;transform:translateY(120px);opacity:0;transition:.4s;border-left:4px solid var(--p)}
 .notif-popup.show{transform:translateY(0);opacity:1}
 .notif-popup-hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--p);color:#fff;border-radius:16px 16px 0 0}
 .notif-popup-hd h4{font-size:14px}
 .notif-popup-bd{padding:16px 18px;font-size:14px;color:var(--tx)}
 .notif-popup-ft{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px 18px;border-top:1px solid var(--bd)}
-
-/* CONFIG */
+.empty{text-align:center;padding:48px 20px;color:var(--tx3)}.empty i{font-size:48px;margin-bottom:12px;opacity:.2;display:block}
+.empty h4{font-size:16px;color:var(--tx2);margin-top:4px}.empty p{font-size:13px;margin-top:6px}
+.search{width:100%;padding:10px 14px 10px 38px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--tx);margin:12px 0;transition:.2s}
+.search:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(46,125,50,.1)}
 .cfg-w{display:flex;gap:0;background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--bd2);overflow:hidden}
 .cfg-sb{width:200px;padding:16px;border-right:1px solid var(--bd);flex-shrink:0}
 .cfg-tb{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;transition:.2s;font-size:13px;color:var(--tx2);margin-bottom:2px}
-.cfg-tb:hover{background:var(--bd)}
-.cfg-tb.on{background:var(--p);color:#fff}
-.cfg-bd{flex:1;padding:24px 28px}
-.cfg-sc{display:none}
-.cfg-sc.on{display:block;animation:fv .3s ease}
-.cfg-grp{margin-bottom:18px}
-.cfg-grp label{display:block;font-weight:600;font-size:13px;margin-bottom:4px;color:var(--tx2)}
+.cfg-tb:hover{background:var(--bd)}.cfg-tb.on{background:var(--p);color:#fff}
+.cfg-bd{flex:1;padding:24px 28px}.cfg-sc{display:none}.cfg-sc.on{display:block;animation:fv .3s ease}
+.cfg-grp{margin-bottom:18px}.cfg-grp label{display:block;font-weight:600;font-size:13px;margin-bottom:4px;color:var(--tx2)}
 .cfg-grp input,.cfg-grp select{width:100%;padding:10px 14px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);font-size:14px;color:var(--tx)}
 .tema-g{display:flex;flex-wrap:wrap;gap:12px}
 .tema-o{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:40px;border:2px solid var(--bd);cursor:pointer;transition:.2s;font-size:13px}
-.tema-o:hover{transform:scale(1.05)}
-.tema-o.on{border-color:var(--p);background:rgba(46,125,50,.08)}
+.tema-o:hover{transform:scale(1.05)}.tema-o.on{border-color:var(--p);background:rgba(46,125,50,.08)}
 .tema-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0}
-
-/* SEARCH */
-.search{width:100%;padding:10px 14px 10px 38px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--tx);margin:12px 0;transition:.2s;position:relative}
-.search:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(46,125,50,.1)}
-
-/* EMPTY STATE */
-.empty{text-align:center;padding:48px 20px;color:var(--tx3)}
-.empty i{font-size:48px;margin-bottom:12px;opacity:.2;display:block}
-.empty h4{font-size:16px;color:var(--tx2);margin-top:4px}
-.empty p{font-size:13px;margin-top:6px}
-
-/* CHARTS */
-.ch-g{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
-.ch-b{background:var(--card-bg);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--bd2)}
-.ch-b h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-
-/* PROVAS */
-.prova-container{background:var(--card-bg);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--bd2)}
-.prova-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
-.prova-status{padding:4px 14px;border-radius:40px;font-size:11px;font-weight:700}
-.prova-status.aberto{background:rgba(46,125,50,.15);color:#2E7D32}
-.prova-status.finalizado{background:var(--bd);color:var(--tx3)}
-.prova-status.pendente{background:rgba(255,152,0,.15);color:#E65100}
-
-/* SALA DE AULA */
 .mt-c{background:var(--card-bg);border-radius:var(--r);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);margin-bottom:12px;border:1px solid var(--bd2);transition:.2s}
-.mt-c:hover{box-shadow:var(--shadow-hover)}
-.mt-topic{font-weight:700;font-size:15px}
-.mt-id{font-size:12px;color:var(--tx3)}
-
-/* MISC */
-.btn-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--tx3);cursor:pointer;margin-bottom:16px;transition:.2s}
-.btn-back:hover{color:var(--p);transform:translateX(-4px)}
-
-/* CONFIRM DIALOG */
+.mt-c:hover{box-shadow:var(--shadow-hover)}.mt-topic{font-weight:700;font-size:15px}.mt-id{font-size:12px;color:var(--tx3)}
 .confirm-dialog{text-align:center;padding:20px 0}
 .confirm-dialog i{font-size:48px;color:#D32F2F;margin-bottom:16px}
 .confirm-dialog h3{font-size:18px;font-weight:700;margin-bottom:8px}
 .confirm-dialog p{font-size:14px;color:var(--tx2);margin-bottom:24px}
-.confirm-dialog .cd-actions{display:flex;gap:10px;justify-content:center}
-
-/* RESPONSIVE */
-@media(max-width:1024px){
-    .nr-split{grid-template-columns:1fr}
-    .nr-split-list{max-height:250px;border-right:0;border-bottom:1px solid var(--bd2)}
-    .nr-split-content{max-height:none}
-    .ch-g{grid-template-columns:1fr}
-}
+.cd-actions{display:flex;gap:10px;justify-content:center}
+/* PROVA/QUIZ estilo Unicesumar */
+.quiz-container{background:var(--card-bg);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--bd2);overflow:hidden}
+.quiz-header{background:var(--p);color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:center}
+.quiz-header h3{font-size:18px;font-weight:700}
+.quiz-timer{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.quiz-progress{padding:12px 24px;background:var(--ip);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
+.quiz-progress-bar{flex:1;height:6px;background:var(--bd);border-radius:40px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--p);border-radius:40px;transition:width .3s}
+.quiz-question{padding:24px;border-bottom:1px solid var(--bd2)}
+.quiz-q-text{font-size:16px;font-weight:700;margin-bottom:16px}
+.quiz-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--bd);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s}
+.quiz-option:hover{border-color:var(--p);background:rgba(46,125,50,.03)}
+.quiz-option.selected{border-color:var(--p);background:rgba(46,125,50,.08)}
+.quiz-option.correct{border-color:#2E7D32;background:rgba(46,125,50,.1)}
+.quiz-option.wrong{border-color:#D32F2F;background:rgba(211,47,47,.08)}
+.quiz-option input{display:none}
+.quiz-opt-letter{width:32px;height:32px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;transition:.2s}
+.quiz-option.selected .quiz-opt-letter{background:var(--p);color:#fff}
+.quiz-option.correct .quiz-opt-letter{background:#2E7D32;color:#fff}
+.quiz-option.wrong .quiz-opt-letter{background:#D32F2F;color:#fff}
+.quiz-footer{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bd)}
+.quiz-result{text-align:center;padding:40px 24px}
+.quiz-result .score{font-size:64px;font-weight:900;color:var(--p)}
+.quiz-result .score.fail{color:#D32F2F}
+.quiz-result-msg{font-size:18px;font-weight:600;margin:8px 0 24px}
 @media(max-width:768px){
-    .sidebar{width:60px}
-    .sb-hd .lt,.sb-role span,.sb-lbl,.ni span,.sb-name{display:none}
-    .ni{justify-content:center;padding:12px}
-    .sb-role{justify-content:center;padding:6px}
-    .sb-ft{justify-content:center}
-    .top-header{left:60px}
-    .main{margin-left:60px;padding:20px 16px}
-    .cfg-w{flex-direction:column}
-    .cfg-sb{width:100%;border-right:0;border-bottom:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:4px}
-    .auth-card{padding:24px 18px}
-    .notif-popup{right:10px;left:10px;max-width:none;bottom:10px}
-    .mt-c{flex-direction:column;align-items:stretch;gap:10px}
-    .stats{grid-template-columns:1fr 1fr}
-    .cursos-grid{grid-template-columns:1fr}
-    .welcome-banner{padding:20px}
-    .welcome-banner .wb-stats{gap:16px}
-    .welcome-banner .wb-stat-v{font-size:18px}
-    .th-search{display:none}
-    .th-uname{display:none}
-    .link-box{flex-direction:column;align-items:stretch}
-    .mdl{padding:20px 16px;max-width:95vw}
-    .page-hd h1{font-size:18px}
+.sidebar{width:60px}.sb-hd .lt,.sb-role span,.sb-lbl,.ni span,.sb-name{display:none}
+.ni{justify-content:center;padding:12px}.sb-role{justify-content:center;padding:6px}.sb-ft{justify-content:center}
+.top-header{left:60px}.main{margin-left:60px;padding:20px 16px}
+.cfg-w{flex-direction:column}.cfg-sb{width:100%;border-right:0;border-bottom:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:4px}
+.auth-card{padding:24px 18px}.notif-popup{right:10px;left:10px;max-width:none;bottom:10px}
+.mt-c{flex-direction:column;align-items:stretch;gap:10px}.stats{grid-template-columns:1fr 1fr}
+.th-search{display:none}.th-uname{display:none}.link-box{flex-direction:column;align-items:stretch}
+.mdl{padding:20px 16px;max-width:95vw}.page-hd h1{font-size:18px}.wb-stats{gap:16px;flex-wrap:wrap}
+.welcome-banner{padding:20px}.wb-stat-v{font-size:18px}.admin-links{margin-left:0;margin-top:4px}
 }
-
-/* KEYFRAMES */
 @keyframes fv{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes toastIn{from{opacity:0;transform:translateY(-10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ti{from{opacity:0;transform:translateY(-10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 </style>
 </head>
 <body>
 
-<!-- ==================== AUTH (preservado) ==================== -->
 <div id="authWrap">
 <div class="auth-card">
 <div class="t on" id="tLogin">
@@ -486,9 +255,7 @@ body.t-escuro{--p:#66BB6A;--p2:#81C784;--p3:#388E3C;--bg:#121212;--tx:#eee;--tx2
 </form>
 <div class="divider">ou</div>
 <button class="btn btn-s btn-block" onclick="showT('tCad')">Cadastrar nova conta</button>
-<div style="margin-top:12px;text-align:center">
-<a href="#" onclick="recuperarSenha()" style="font-size:13px;color:var(--tx3)"><i class="fas fa-key"></i> Esqueceu a senha?</a>
-</div>
+<div style="margin-top:12px;text-align:center"><a href="#" onclick="recuperarSenha()" style="font-size:13px;color:var(--tx3)"><i class="fas fa-key"></i> Esqueceu a senha?</a></div>
 </div>
 <div class="t" id="tCad">
 <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
@@ -497,7 +264,7 @@ body.t-escuro{--p:#66BB6A;--p2:#81C784;--p3:#388E3C;--bg:#121212;--tx:#eee;--tx2
 <form id="frmCad">
 <div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div>
 <div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div>
-<div class="fld"><label>Senha (mínimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
+<div class="fld"><label>Senha (minimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
 <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
 <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
 <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
@@ -509,1464 +276,256 @@ body.t-escuro{--p:#66BB6A;--p2:#81C784;--p3:#388E3C;--bg:#121212;--tx:#eee;--tx2
 </div>
 </div>
 
-<!-- WHATSAPP -->
 <div id="whatsappContainer">
 <button class="whatsapp-float" onclick="redirecionarWhatsApp()">
 <i class="fab fa-whatsapp"></i><span>Fale conosco</span>
 </button>
 </div>
 
-<!-- ==================== DASHBOARD INTERNO ==================== -->
 <div id="dash" style="display:none">
 <aside class="sidebar" id="sidebar"></aside>
 <header class="top-header" id="topHeader"></header>
 <main class="main" id="mc"></main>
 </div>
 
-<!-- MODAL -->
 <div class="mdl-bg" id="mdlBg" onclick="if(event.target===this)closeMdl()"><div class="mdl" id="mdlBox"></div></div>
 
-<!-- NOTIFICAÇÃO POPUP -->
 <div class="notif-popup" id="notifPopup">
 <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteudo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="closeNotif()"><i class="fas fa-times"></i></button></div>
 <div class="notif-popup-bd" id="notifBody"></div>
 <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- TERMOS -->
 <div style="display:none" id="termosHtml">
 <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
 <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitacao</strong><br>Ao utilizar a plataforma SulSafe, voce concorda com estes termos.</p>
-<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteudo</strong><br>Todo o material disponivel e protegido por direitos autorais.</p>
-<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados sao emitidos mediante conclusao com nota minima 7.0.</p>
-<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados sao protegidos conforme a LGPD.</p>
+<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteudo</strong><br>Todo material e protegido por direitos autorais.</p>
+<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Emitidos com nota minima 7.0.</p>
+<p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Dados protegidos pela LGPD.</p>
 <button class="btn btn-p btn-block" style="margin-top:20px" onclick="closeMdl()">Entendi</button>
 </div>
 
 <script>
-// ============================================================
-// CONFIGURAÇÕES (preservadas)
-// ============================================================
-const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
-const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com'
-const WHATSAPP_NUMBER = '5553997060864'
+/* === CONFIG === */
+const SUPABASE_URL='https://dhhvhiyoxadcwsfqlndw.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
+const ADMIN_EMAIL='sulsafetreinamentos@gmail.com';
+const WHATSAPP_NUMBER='5553997060864';
+var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+/* === ESTADO === */
+const S={user:null,view:'inicio',prevView:null,cfg:JSON.parse(localStorage.getItem('ss_cfg')||'{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true}'),nrsDbCache:[],videoaulasCache:[],materiaisCache:[],progressoCache:[],notasCache:[],certificadosCache:[],salasCache:[],questoesCache:[],searchQuery:'',quizState:null,quizTimer:null};
 
-// ============================================================
-// ESTADO GLOBAL
-// ============================================================
-const S = {
-    user: null,
-    view: 'inicio',
-    prevView: null,
-    nrSelecionada: null,
-    aulaSelecionada: null,
-    cfg: JSON.parse(localStorage.getItem('ss_cfg') || '{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true}'),
-    videoaulasCache: [],
-    materiaisCache: [],
-    progressoCache: [],
-    notasCache: [],
-    certificadosCache: [],
-    provasCache: [],
-    salasCache: [],
-    nrsDbCache: [],
-    searchQuery: ''
-}
+/* === NRS === */
+const NRS=[
+{id:'1',nm:'Disposicoes Gerais',cat:'geral',ic:'fa-clipboard-list'},{id:'2',nm:'Inspecao Previa',cat:'geral',ic:'fa-magnifying-glass'},
+{id:'3',nm:'Embargo ou Interdicao',cat:'geral',ic:'fa-ban'},{id:'4',nm:'SESMT',cat:'geral',ic:'fa-users-gear'},
+{id:'5',nm:'CIPA',cat:'geral',ic:'fa-people-group'},{id:'6',nm:'EPI',cat:'geral',ic:'fa-hard-hat'},
+{id:'7',nm:'PCMSO',cat:'saude',ic:'fa-stethoscope'},{id:'8',nm:'Edificacoes',cat:'especifico',ic:'fa-building'},
+{id:'9',nm:'PPRA',cat:'especifico',ic:'fa-shield-halved'},{id:'10',nm:'Eletricidade',cat:'especifico',ic:'fa-bolt'},
+{id:'11',nm:'Movimentacao de Materiais',cat:'especifico',ic:'fa-truck'},{id:'12',nm:'Maquinas e Equipamentos',cat:'especifico',ic:'fa-gears'},
+{id:'13',nm:'Caldeiras e Vasos',cat:'especifico',ic:'fa-fire'},{id:'14',nm:'Fornos',cat:'especifico',ic:'fa-temperature-high'},
+{id:'15',nm:'Atividades Insalubres',cat:'saude',ic:'fa-biohazard'},{id:'16',nm:'Atividades Perigosas',cat:'saude',ic:'fa-skull-crossbones'},
+{id:'17',nm:'Ergonomia',cat:'saude',ic:'fa-person'},{id:'18',nm:'Trabalho em Calor',cat:'saude',ic:'fa-sun'},
+{id:'19',nm:'Explosivos',cat:'especifico',ic:'fa-explosion'},{id:'20',nm:'Inflamaveis e Combustiveis',cat:'especifico',ic:'fa-fire-flame-curved'},
+{id:'21',nm:'Trabalho a Ceu Aberto',cat:'especifico',ic:'fa-cloud-sun'},{id:'22',nm:'Trabalhos Subterraneos',cat:'especifico',ic:'fa-mountain'},
+{id:'23',nm:'Protecao contra Incendios',cat:'especifico',ic:'fa-fire-extinguisher'},{id:'24',nm:'Condicoes Sanitarias',cat:'saude',ic:'fa-hand-sparkles'},
+{id:'25',nm:'Residuos Industriais',cat:'especifico',ic:'fa-recycle'},{id:'26',nm:'Sinalizacao de Seguranca',cat:'geral',ic:'fa-triangle-exclamation'},
+{id:'27',nm:'Registro Profissional',cat:'geral',ic:'fa-id-card'},{id:'28',nm:'Fiscalizacao e Penalidades',cat:'geral',ic:'fa-gavel'},
+{id:'29',nm:'Trabalho Portuario',cat:'setorial',ic:'fa-ship'},{id:'30',nm:'Trabalho Aquaviario',cat:'setorial',ic:'fa-anchor'},
+{id:'31',nm:'Trabalho em Altura',cat:'especifico',ic:'fa-arrow-up-long'},{id:'32',nm:'Espaco Confinado',cat:'especifico',ic:'fa-dungeon'},
+{id:'33',nm:'Seguranca em Mineracao',cat:'setorial',ic:'fa-helmet-safety'},{id:'34',nm:'Construcao Civil',cat:'setorial',ic:'fa-helmet-safety'},
+{id:'35',nm:'Altura e Confinado - Mineracao',cat:'setorial',ic:'fa-mountain-sun'},{id:'36',nm:'Capacitacao e Treinamento',cat:'geral',ic:'fa-graduation-cap'},
+{id:'37',nm:'Seguranca em Maquinas',cat:'especifico',ic:'fa-gear'},{id:'38',nm:'PGR - Gerenciamento de Riscos',cat:'geral',ic:'fa-chart-line'}
+];
+const CAT_L={geral:'Geral',especifico:'Especifico',saude:'Saude',setorial:'Setorial'};
 
-// ============================================================
-// NRS LOCAIS
-// ============================================================
-const NRS = [
-    {id:'1',nm:'Disposicoes Gerais',cat:'geral',ic:'fa-clipboard-list'},
-    {id:'2',nm:'Inspecao Previa',cat:'geral',ic:'fa-magnifying-glass'},
-    {id:'3',nm:'Embargo ou Interdicao',cat:'geral',ic:'fa-ban'},
-    {id:'4',nm:'SESMT',cat:'geral',ic:'fa-users-gear'},
-    {id:'5',nm:'CIPA',cat:'geral',ic:'fa-people-group'},
-    {id:'6',nm:'EPI',cat:'geral',ic:'fa-hard-hat'},
-    {id:'7',nm:'PCMSO',cat:'saude',ic:'fa-stethoscope'},
-    {id:'8',nm:'Edificacoes',cat:'especifico',ic:'fa-building'},
-    {id:'9',nm:'PPRA',cat:'especifico',ic:'fa-shield-halved'},
-    {id:'10',nm:'Eletricidade',cat:'especifico',ic:'fa-bolt'},
-    {id:'11',nm:'Movimentacao de Materiais',cat:'especifico',ic:'fa-truck'},
-    {id:'12',nm:'Maquinas e Equipamentos',cat:'especifico',ic:'fa-gears'},
-    {id:'13',nm:'Caldeiras e Vasos',cat:'especifico',ic:'fa-fire'},
-    {id:'14',nm:'Fornos',cat:'especifico',ic:'fa-temperature-high'},
-    {id:'15',nm:'Atividades Insalubres',cat:'saude',ic:'fa-biohazard'},
-    {id:'16',nm:'Atividades Perigosas',cat:'saude',ic:'fa-skull-crossbones'},
-    {id:'17',nm:'Ergonomia',cat:'saude',ic:'fa-person'},
-    {id:'18',nm:'Trabalho em Calor',cat:'saude',ic:'fa-sun'},
-    {id:'19',nm:'Explosivos',cat:'especifico',ic:'fa-explosion'},
-    {id:'20',nm:'Inflamaveis e Combustiveis',cat:'especifico',ic:'fa-fire-flame-curved'},
-    {id:'21',nm:'Trabalho a Ceu Aberto',cat:'especifico',ic:'fa-cloud-sun'},
-    {id:'22',nm:'Trabalhos Subterraneos',cat:'especifico',ic:'fa-mountain'},
-    {id:'23',nm:'Protecao contra Incendios',cat:'especifico',ic:'fa-fire-extinguisher'},
-    {id:'24',nm:'Condicoes Sanitarias',cat:'saude',ic:'fa-hand-sparkles'},
-    {id:'25',nm:'Residuos Industriais',cat:'especifico',ic:'fa-recycle'},
-    {id:'26',nm:'Sinalizacao de Seguranca',cat:'geral',ic:'fa-triangle-exclamation'},
-    {id:'27',nm:'Registro Profissional',cat:'geral',ic:'fa-id-card'},
-    {id:'28',nm:'Fiscalizacao e Penalidades',cat:'geral',ic:'fa-gavel'},
-    {id:'29',nm:'Trabalho Portuario',cat:'setorial',ic:'fa-ship'},
-    {id:'30',nm:'Trabalho Aquaviario',cat:'setorial',ic:'fa-anchor'},
-    {id:'31',nm:'Trabalho em Altura',cat:'especifico',ic:'fa-arrow-up-long'},
-    {id:'32',nm:'Espaco Confinado',cat:'especifico',ic:'fa-dungeon'},
-    {id:'33',nm:'Seguranca em Mineração',cat:'setorial',ic:'fa-helmet-safety'},
-    {id:'34',nm:'Construcao Civil',cat:'setorial',ic:'fa-helmet-safety'},
-    {id:'35',nm:'Altura e Confinado - Mineração',cat:'setorial',ic:'fa-mountain-sun'},
-    {id:'36',nm:'Capacitacao e Treinamento',cat:'geral',ic:'fa-graduation-cap'},
-    {id:'37',nm:'Seguranca em Maquinas',cat:'especifico',ic:'fa-gear'},
-    {id:'38',nm:'PGR - Gerenciamento de Riscos',cat:'geral',ic:'fa-chart-line'}
-]
-
-const CAT_LABELS = {geral:'Geral',especifico:'Especifico',saude:'Saude',setorial:'Setorial'}
-const CAT_ICONS = {geral:'fa-clipboard-list',especifico:'fa-cogs',saude:'fa-heart-pulse',setorial:'fa-industry'}
-
-// ============================================================
-// HELPERS
-// ============================================================
-const $=s=>document.querySelector(s)
-const $$=s=>document.querySelectorAll(s)
-const role=()=>S.user?.role||'aluno'
-const isAdmin=()=>role()==='admin'||S.user?.email===ADMIN_EMAIL
-const isProf=()=>role()==='professor'
-const canManage=()=>isAdmin()||isProf()
-const uid=()=>S.user?.id
-const fmtD=d=>d?new Date(d).toLocaleDateString('pt-BR'):'—'
-const fmtFull=d=>d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'
-
-function gerarIdNumerico(){
-    return parseInt(Date.now()+''+Math.floor(Math.random()*10000))
-}
+/* === HELPERS === */
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const role=()=>S.user?.role||'aluno',isAdmin=()=>role()==='admin'||S.user?.email===ADMIN_EMAIL,isProf=()=>role()==='professor',canManage=()=>isAdmin()||isProf(),uid=()=>S.user?.id;
+const fmtD=d=>d?new Date(d).toLocaleDateString('pt-BR'):'—';
+const fmtFull=d=>d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+function genId(){return parseInt(Date.now()+''+Math.floor(Math.random()*10000))}
 function sanitizar(t){return t?t.replace(/[<>]/g,'').trim():''}
-function getInitials(name){return name?name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase():'??'}
-function getYtEmbed(url){
-    if(!url)return''
-    const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/)
-    return m?`https://www.youtube.com/embed/${m[1]}`:''
-}
-function getNrLocal(nrId){return NRS.find(n=>n.id===nrId)}
+function getInitials(n){return n?n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase():'??'}
+function getYtEmbed(u){if(!u)return'';const m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/);return m?'https://www.youtube.com/embed/'+m[1]:''}
+function getNr(id){return NRS.find(n=>n.id===id)}
+function handleError(e,f='Ocorreu um erro.'){console.error(e);if(e.code==='23505')toast('Email ja cadastrado','err');else if(e.code==='42501')toast('Sem permissao','err');else if(e.message?.includes('network'))toast('Erro de conexao','err');else toast(e.message||f,'err')}
+function redirecionarWhatsApp(msg){const m=msg||'Ola! Gostaria de saber mais sobre os treinamentos SulSafe.';window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(m),'_blank')}
 
-function handleError(err,fallback='Ocorreu um erro. Tente novamente.'){
-    console.error(err)
-    if(err.code==='23505')toast('Este email ja esta cadastrado','err')
-    else if(err.code==='42501')toast('Sem permissao','err')
-    else if(err.message?.includes('network'))toast('Erro de conexao','err')
-    else toast(err.message||fallback,'err')
-}
-
-function redirecionarWhatsApp(msg=null){
-    const m=msg||'Ola! Gostaria de saber mais sobre os treinamentos SulSafe.'
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`,'_blank')
-}
-
-// ============================================================
-// DOM HELPERS
-// ============================================================
-function toast(m,t='success'){
-    const e=document.createElement('div');e.className='toast '+t;e.textContent=m
-    $('#toast').appendChild(e)
-    setTimeout(()=>{e.style.opacity='0';e.style.transform='translateY(10px)';e.style.transition='.3s';setTimeout(()=>e.remove(),300)},3500)
-}
+/* === DOM === */
+function toast(m,t){const e=document.createElement('div');e.className='toast '+(t||'success');e.textContent=m;$('#toast').appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateY(10px)';e.style.transition='.3s';setTimeout(()=>e.remove(),300)},3500)}
 function showT(id){$$('.t').forEach(t=>t.classList.remove('on'));$('#'+id).classList.add('on')}
-function openMdl(h,lg=false){$('#mdlBox').innerHTML=h;$('#mdlBox').className='mdl'+(lg?' mdl-lg':'');$('#mdlBg').classList.add('on')}
-function closeMdl(){$('#mdlBg').classList.remove('on')}
+function openMdl(h,lg){$('#mdlBox').innerHTML=h;$('#mdlBox').className='mdl'+(lg?' mdl-lg':'');$('#mdlBg').classList.add('on')}
+function closeMdl(){$('#mdlBg').classList.remove('on');if(S.quizTimer){clearInterval(S.quizTimer);S.quizTimer=null}}
 function closeNotif(){$('#notifPopup').classList.remove('show')}
 function mostrarTermos(){openMdl($('#termosHtml').innerHTML)}
+function confirmDialog(titulo,msg,fn){openMdl('<div class="confirm-dialog"><i class="fas fa-exclamation-triangle"></i><h3>'+titulo+'</h3><p>'+msg+'</p><div class="cd-actions"><button class="btn btn-s" onclick="closeMdl()">Cancelar</button><button class="btn btn-d" id="cfmBtn">Apagar</button></div></div>');$('#cfmBtn').onclick=()=>{closeMdl();fn()}}
+function bc(items){return '<div class="breadcrumbs">'+items.map((it,i)=>i===items.length-1?'<span class="bc-current">'+it.label+'</span>':'<a href="#" onclick="event.preventDefault();'+(it.action||"navigate('inicio')")+'">'+it.label+'</a><i class="fas fa-chevron-right bc-sep"></i>').join('')+'</div>'}
 
-// Diálogo de confirmação (substitui confirm() nativo)
-function confirmDialog(titulo,mensagem,onConfirm){
-    openMdl(`
-        <div class="confirm-dialog">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>${titulo}</h3>
-            <p>${mensagem}</p>
-            <div class="cd-actions">
-                <button class="btn btn-s" onclick="closeMdl()">Cancelar</button>
-                <button class="btn btn-d" id="confirmBtn">Apagar</button>
-            </div>
-        </div>
-    `)
-    $('#confirmBtn').onclick=()=>{closeMdl();onConfirm()}
-}
+/* === SUPABASE CRUD === */
+async function sbGetUser(id){try{let{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').eq('id',id).single();if(error&&error.code==='PGRST116'){const{data:{user:au}}=await sb.auth.getUser();if(!au)throw new Error('Nao encontrado');const r=au.email===ADMIN_EMAIL?'admin':'aluno';const nm=au.user_metadata?.nome_completo||au.email.split('@')[0];const{data:np,error:ce}=await sb.from('profiles').insert({id:au.id,email:au.email,nome_completo:nm,role:r,status:r==='admin'?'ativo':'pendente'}).select().single();if(ce)throw ce;return{data:np,error:null}}if(error)throw error;return{data,error:null}}catch(e){return{data:null,error:e}}}
+async function sbUpdateUser(id,d){const{data,error}=await sb.from('profiles').update(d).eq('id',id).select().single();return{data,error}}
+async function sbGetAlunos(){const{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').eq('role','aluno').order('nome_completo');return{data,error}}
+async function sbGetPendentes(){const{data,error}=await sb.from('profiles').select('id,nome_completo,email,created_at').eq('status','pendente').eq('role','aluno').order('created_at',{ascending:true});return{data,error}}
+async function sbLiberarUsuario(id){const{data,error}=await sb.from('profiles').update({status:'ativo'}).eq('id',id).select().single();return{data,error}}
+async function sbApagarUsuario(id){const{error}=await sb.from('profiles').delete().eq('id',id);return{error}}
+async function sbGetAllUsers(){const{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').order('nome_completo');return{data,error}}
+async function sbGetNrs(){const{data,error}=await sb.from('nrs').select('*').order('numero');return{data,error}}
+async function sbUpsertNr(nr){const{data,error}=await sb.from('nrs').upsert(nr,{onConflict:'id'}).select().single();return{data,error}}
+async function sbApagarNrLinks(id){const{error}=await sb.from('nrs').update({link_video:null,link_material:null,link_prova:null}).eq('id',id);return{error}}
+async function sbGetVideoaulas(nrId){let q=sb.from('videoaulas').select('*,profiles(nome_completo)');if(nrId)q=q.eq('nr_id',nrId);const{data,error}=await q.order('ordem',{ascending:true});return{data,error}}
+async function sbCriarVideoaula(v){const{data,error}=await sb.from('videoaulas').insert({id:genId(),...v}).select().single();return{data,error}}
+async function sbApagarVideoaula(id){const{error}=await sb.from('videoaulas').delete().eq('id',id);return{error}}
+async function sbUpdateVideoaula(id,d){const{data,error}=await sb.from('videoaulas').update(d).eq('id',id).select().single();return{data,error}}
+async function sbGetMateriais(nrId){let q=sb.from('materiais').select('*');if(nrId)q=q.eq('nr_id',nrId);const{data,error}=await q.order('criado_em',{ascending:false});return{data,error}}
+async function sbCriarMaterial(m){const{data,error}=await sb.from('materiais').insert(m).select().single();return{data,error}}
+async function sbApagarMaterial(id){const{error}=await sb.from('materiais').delete().eq('id',id);return{error}}
+async function sbGetProgresso(userId){const{data,error}=await sb.from('progresso_aulas').select('*,videoaulas(*)').eq('user_id',userId);return{data,error}}
+async function sbSalvarProgresso(userId,aulaId,seg,concluido){const{data,error}=await sb.from('progresso_aulas').upsert({user_id:userId,aula_id:aulaId,assistiu_segundos:seg,concluido:concluido,ultima_atualizacao:new Date().toISOString()}).select().single();return{data,error}}
+async function sbGetNotasAluno(userId){const{data,error}=await sb.from('notas').select('*').eq('usuario_id',userId);return{data,error}}
+async function sbLancarNota(userId,nrId,nota,obs){const{data,error}=await sb.from('notas').insert({usuario_id:userId,nr_id:nrId,nota,obs:sanitizar(obs||''),professor_id:uid()}).select().single();return{data,error}}
+async function sbEmitirCertificado(userId,nrId,nota,carga){const cod='SS-'+Math.random().toString(36).substr(2,8).toUpperCase();const{data,error}=await sb.from('certificados').insert({usuario_id:userId,nr_id:nrId,codigo:cod,nota,carga_horaria:carga||40,emitido_por:uid()}).select().single();return{data,error}}
+async function sbGetCertificadosAluno(userId){const{data,error}=await sb.from('certificados').select('*').eq('usuario_id',userId).order('criado_em',{ascending:false});return{data,error}}
+async function sbGetSalasAtivas(){const{data,error}=await sb.from('salas').select('*,profiles(nome_completo)').eq('ativa',true).order('created_at',{ascending:false});return{data,error}}
+async function sbCriarSala(topico,meetId){const{data,error}=await sb.from('salas').insert({id:genId(),topico:sanitizar(topico),meet_id:sanitizar(meetId)||'sala-'+genId(),criado_por:uid(),ativa:true}).select().single();return{data,error}}
+async function sbApagarSala(id){const{error}=await sb.from('salas').delete().eq('id',id);return{error}}
+/* QUESTOES (provas) */
+async function sbGetQuestoes(nrId){const{data,error}=await sb.from('questoes').select('*').eq('nr_id',nrId).order('ordem',{ascending:true});return{data,error}}
+async function sbCriarQuestao(q){const{data,error}=await sb.from('questoes').insert({id:genId(),...q}).select().single();return{data,error}}
+async function sbApagarQuestao(id){const{error}=await sb.from('questoes').delete().eq('id',id);return{error}}
+async function sbSalvarResposta(userId,nrId,questaoId,resposta,correta){const{data,error}=await sb.from('respostas_provas').upsert({usuario_id:userId,nr_id:nrId,questao_id:questaoId,resposta,correta,criado_em:new Date().toISOString()},{onConflict:'usuario_id,questao_id'}).select().single();return{data,error}}
+async function sbGetRespostasProva(userId,nrId){const{data,error}=await sb.from('respostas_provas').select('*').eq('usuario_id',userId).eq('nr_id',nrId);return{data,error}}
 
-// ============================================================
-// SUPABASE CRUD - COMPLETO COM DELETE
-// ============================================================
-
-// PERFIS
-async function sbGetUser(id){
-    try{
-        let{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').eq('id',id).single()
-        if(error&&error.code==='PGRST116'){
-            const{data:{user:au}}=await sb.auth.getUser()
-            if(!au)throw new Error('Usuario nao encontrado')
-            const r=au.email===ADMIN_EMAIL?'admin':'aluno'
-            const nm=au.user_metadata?.nome_completo||au.email.split('@')[0]
-            const{data:np,error:ce}=await sb.from('profiles').insert({id:au.id,email:au.email,nome_completo:nm,role:r,status:r==='admin'?'ativo':'pendente'}).select().single()
-            if(ce)throw ce;return{data:np,error:null}
-        }
-        if(error)throw error;return{data,error:null}
-    }catch(e){return{data:null,error:e}}
-}
-async function sbUpdateUser(id,dados){
-    const{data,error}=await sb.from('profiles').update(dados).eq('id',id).select().single()
-    return{data,error}
-}
-async function sbGetAlunos(){
-    const{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').eq('role','aluno').order('nome_completo')
-    return{data,error}
-}
-async function sbGetPendentes(){
-    const{data,error}=await sb.from('profiles').select('id,nome_completo,email,created_at').eq('status','pendente').eq('role','aluno').order('created_at',{ascending:true})
-    return{data,error}
-}
-async function sbLiberarUsuario(id){
-    const{data,error}=await sb.from('profiles').update({status:'ativo'}).eq('id',id).select().single()
-    return{data,error}
-}
-
-// *** FUNÇÕES DE APAGAR QUE ESTAVAM FALTANDO ***
-async function sbApagarUsuario(id){
-    const{error}=await sb.from('profiles').delete().eq('id',id)
-    return{error}
-}
-async function sbApagarVideoaula(id){
-    const{error}=await sb.from('videoaulas').delete().eq('id',id)
-    return{error}
-}
-async function sbApagarMaterial(id){
-    const{error}=await sb.from('materiais').delete().eq('id',id)
-    return{error}
-}
-async function sbApagarSala(id){
-    const{error}=await sb.from('salas').delete().eq('id',id)
-    return{error}
-}
-async function sbApagarProva(id){
-    const{error}=await sb.from('provas').delete().eq('id',id)
-    return{error}
-}
-
-// VIDEOAULAS
-async function sbGetVideoaulas(nrId=null){
-    let q=sb.from('videoaulas').select('*,profiles(nome_completo)')
-    if(nrId)q=q.eq('nr_id',nrId)
-    const{data,error}=await q.order('ordem',{ascending:true})
-    return{data,error}
-}
-async function sbCriarVideoaula(v){
-    const id=gerarIdNumerico()
-    const{data,error}=await sb.from('videoaulas').insert({id,...v}).select().single()
-    return{data,error}
-}
-
-// MATERIAIS
-async function sbGetMateriais(nrId=null){
-    let q=sb.from('materiais').select('*,profiles(nome_completo)')
-    if(nrId)q=q.eq('nr_id',nrId)
-    const{data,error}=await q.order('criado_em',{ascending:false})
-    return{data,error}
-}
-async function sbCriarMaterial(m){
-    const{data,error}=await sb.from('materiais').insert(m).select().single()
-    return{data,error}
-}
-
-// PROGRESSO
-async function sbSalvarProgresso(userId,aulaId,segundos,concluido=false){
-    const{data,error}=await sb.from('progresso_aulas').upsert({
-        user_id:userId,aula_id:aulaId,assistiu_segundos:segundos,
-        concluido:concluido,ultima_atualizacao:new Date().toISOString()
-    }).select().single()
-    return{data,error}
-}
-async function sbGetProgressoUsuario(userId){
-    const{data,error}=await sb.from('progresso_aulas').select('*,videoaulas(*)').eq('user_id',userId)
-    return{data,error}
-}
-
-// NOTAS
-async function sbGetNotasAluno(userId){
-    const{data,error}=await sb.from('notas').select('*').eq('usuario_id',userId).order('criado_em',{ascending:false})
-    return{data,error}
-}
-async function sbLancarNota(userId,nrId,nota,obs='',profId=null){
-    const{data,error}=await sb.from('notas').insert({usuario_id:userId,nr_id:nrId,nota,obs:sanitizar(obs),professor_id:profId}).select().single()
-    return{data,error}
-}
-
-// CERTIFICADOS
-async function sbEmitirCertificado(userId,nrId,nota,carga=40){
-    const cod='SS-'+Math.random().toString(36).substr(2,8).toUpperCase()
-    const{data,error}=await sb.from('certificados').insert({usuario_id:userId,nr_id:nrId,codigo:cod,nota,carga_horaria:carga,emitido_por:uid()}).select().single()
-    return{data,error}
-}
-async function sbGetCertificadosAluno(userId){
-    const{data,error}=await sb.from('certificados').select('*').eq('usuario_id',userId).order('criado_em',{ascending:false})
-    return{data,error}
-}
-
-// PROVAS
-async function sbEnviarProva(userId,nrId,titulo,arquivoUrl){
-    const{data,error}=await sb.from('provas').insert({usuario_id:userId,nr_id:nrId,titulo:sanitizar(titulo),arquivo_url:arquivoUrl,status:'pendente'}).select().single()
-    return{data,error}
-}
-async function sbGetProvasPendentes(){
-    const{data,error}=await sb.from('provas').select('*,profiles(nome_completo,email)').eq('status','pendente').order('criado_em',{ascending:true})
-    return{data,error}
-}
-async function sbCorrigirProva(provaId,nota,status='corrigido'){
-    const{data,error}=await sb.from('provas').update({nota,status,corrigido_em:new Date().toISOString()}).eq('id',provaId).select().single()
-    return{data,error}
-}
-
-// SALAS
-async function sbCriarSala(topico,meetId,criadoPor){
-    const id=gerarIdNumerico()
-    const{data,error}=await sb.from('salas').insert({id,topico:sanitizar(topico),meet_id:sanitizar(meetId)||`sala-${id}`,criado_por:criadoPor,ativa:true}).select().single()
-    return{data,error}
-}
-async function sbGetSalasAtivas(){
-    const{data,error}=await sb.from('salas').select('*,profiles(nome_completo)').eq('ativa',true).order('created_at',{ascending:false})
-    return{data,error}
-}
-
-// NRS DO BANCO
-async function sbGetNrs(){
-    const{data,error}=await sb.from('nrs').select('id,numero,link_video,link_material,link_prova').order('numero')
-    return{data,error}
-}
-
-// NOTIFICAÇÕES
-async function sbCriarNotificacao(userId,titulo,mensagem,link=null){
-    const{data,error}=await sb.from('notificacoes').insert({usuario_id:userId,titulo:sanitizar(titulo),mensagem:sanitizar(mensagem),link,lida:false}).select().single()
-    return{data,error}
-}
-
-// TODOS OS USUÁRIOS (admin)
-async function sbGetAllUsers(){
-    const{data,error}=await sb.from('profiles').select('id,nome_completo,email,role,status,created_at').order('nome_completo')
-    return{data,error}
-}
-
-// ============================================================
-// AUTH
-// ============================================================
+/* === AUTH === */
  $('#frmLogin').addEventListener('submit',async e=>{
-    e.preventDefault()
-    const btn=e.target.querySelector('button[type=submit]')
-    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Entrando...'
-    try{
-        const{data:{user},error}=await sb.auth.signInWithPassword({email:$('#lEmail').value,password:$('#lPass').value})
-        if(error)throw error
-        const{data:profile}=await sbGetUser(user.id)
-        if(!profile)throw new Error('Erro ao carregar perfil')
-        if(profile.status==='pendente'&&profile.role==='aluno'){
-            toast('Sua conta ainda nao foi liberada pelo administrador','warn')
-            btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Entrar';return
-        }
-        S.user=profile;initDashboard()
-    }catch(err){handleError(err,'Email ou senha incorretos')}
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Entrar'
-})
+e.preventDefault();const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Entrando...';
+try{const{data:{user},error}=await sb.auth.signInWithPassword({email:$('#lEmail').value,password:$('#lPass').value});if(error)throw error;const{data:profile}=await sbGetUser(user.id);if(!profile)throw new Error('Erro ao carregar perfil');if(profile.status==='pending'&&profile.role==='aluno'){toast('Conta ainda nao liberada pelo administrador','warn');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Entrar';return}S.user=profile;initDashboard()}catch(err){handleError(err,'Email ou senha incorretos')}btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Entrar'});
 
  $('#frmCad').addEventListener('submit',async e=>{
-    e.preventDefault()
-    if($('#cPass').value!==$('#cPass2').value){toast('As senhas nao conferem','err');return}
-    const btn=e.target.querySelector('button[type=submit]')
-    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Criando...'
-    try{
-        const{data:{user},error}=await sb.auth.signUp({
-            email:$('#cEmail').value,password:$('#cPass').value,
-            options:{data:{nome_completo:$('#cNome').value}}
-        })
-        if(error)throw error
-        toast('Conta criada! Aguarde a liberacao do admin.','success')
-        showT('tLogin')
-    }catch(err){handleError(err)}
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i> Criar conta'
-})
-
-async function recuperarSenha(){
-    const email=prompt('Digite seu email para recuperar a senha:')
-    if(!email)return
-    try{
-        const{error}=await sb.auth.resetPasswordForEmail(email)
-        if(error)throw error
-        toast('Email de recuperacao enviado!','success')
-    }catch(err){handleError(err)}
-}
-
-async function checkSession(){
-    try{
-        const{data:{session}}=await sb.auth.getSession()
-        if(!session)return
-        const{data:profile}=await sbGetUser(session.user.id)
-        if(!profile||profile.status==='pendente')return
-        S.user=profile;initDashboard()
-    }catch(e){console.log('Sem sessao',e)}
-}
-
-async function logout(){
-    await sb.auth.signOut()
-    S.user=null;S.view='inicio'
-    $('#dash').style.display='none'
-    $('#authWrap').classList.remove('off')
-    $('#whatsappContainer').classList.remove('hidden')
-    showT('tLogin')
-}
-
-// ============================================================
-// DASHBOARD INIT
-// ============================================================
-async function initDashboard(){
-    $('#authWrap').classList.add('off')
-    $('#whatsappContainer').classList.add('hidden')
-    $('#dash').style.display='flex'
-    applyTema()
-    renderSidebar()
-    renderTopHeader()
-    navigate('inicio')
-    carregarDados()
-}
-
-async function carregarDados(){
-    const p1=sbGetNrs().then(r=>{S.nrsDbCache=r.data||[]})
-    const p2=sbGetVideoaulas().then(r=>{S.videoaulasCache=r.data||[]})
-    const p3=sbGetMateriais().then(r=>{S.materiaisCache=r.data||[]})
-    const p4=sbGetProgressoUsuario(uid()).then(r=>{S.progressoCache=r.data||[]})
-    const p5=sbGetNotasAluno(uid()).then(r=>{S.notasCache=r.data||[]})
-    const p6=sbGetCertificadosAluno(uid()).then(r=>{S.certificadosCache=r.data||[]})
-    const p7=sbGetSalasAtivas().then(r=>{S.salasCache=r.data||[]})
-    await Promise.allSettled([p1,p2,p3,p4,p5,p6,p7])
-    if(S.view==='inicio')renderInicio()
-}
-
-// ============================================================
-// TEMA
-// ============================================================
-function applyTema(){
-    document.body.className=S.cfg.tema==='verde'?'':'t-'+S.cfg.tema
-}
-
-// ============================================================
-// SIDEBAR (estilo Unicesumar)
-// ============================================================
-function renderSidebar(){
-    const r=role()
-    const nome=S.user?.nome_completo||'Usuario'
-    const initials=getInitials(nome)
-    let html=`
-        <div class="sb-hd">
-            <div class="lic">SS</div>
-            <div class="lt">SulSafe</div>
-        </div>
-        <div class="sb-role ${r}"><i class="fas fa-${r==='admin'?'crown':r==='professor'?'chalkboard-teacher':'user-graduate'}"></i><span>${r}</span></div>
-        <nav class="sb-nav">
-            <div class="sb-lbl">Principal</div>
-            <div class="ni${S.view==='inicio'?' on':''}" onclick="navigate('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div>
-            <div class="ni${S.view==='cursos'?' on':''}" onclick="navigate('cursos')"><i class="fas fa-book-open"></i><span>NRs e Cursos</span></div>
-            <div class="ni${S.view==='meuprogresso'?' on':''}" onclick="navigate('meuprogresso')"><i class="fas fa-chart-bar"></i><span>Meu Progresso</span></div>
-            <div class="ni${S.view==='certificados'?' on':''}" onclick="navigate('certificados')"><i class="fas fa-certificate"></i><span>Certificados</span></div>
-            <div class="sb-lbl">Comunicacao</div>
-            <div class="ni${S.view==='salas'?' on':''}" onclick="navigate('salas')"><i class="fas fa-video"></i><span>Salas ao Vivo</span>${S.salasCache.length?'<span class="ni-count">'+S.salasCache.length+'</span>':''}</div>
-            <div class="ni${S.view==='chat'?' on':''}" onclick="navigate('chat')"><i class="fas fa-comments"></i><span>Chat</span></div>`
-
-    if(canManage()){
-        html+=`
-            <div class="sb-lbl">Administracao</div>
-            <div class="ni${S.view==='admin'?' on':''}" onclick="navigate('admin')"><i class="fas fa-cog"></i><span>Painel Admin</span></div>
-            <div class="ni${S.view==='pendentes'?' on':''}" onclick="navigate('pendentes')"><i class="fas fa-user-clock"></i><span>Pendentes</span></div>
-            <div class="ni${S.view==='provasadmin'?' on':''}" onclick="navigate('provasadmin')"><i class="fas fa-file-alt"></i><span>Provas</span></div>`
-    }
-
-    html+=`
-            <div class="sb-lbl">Sistema</div>
-            <div class="ni${S.view==='config'?' on':''}" onclick="navigate('config')"><i class="fas fa-sliders-h"></i><span>Configuracoes</span></div>
-        </nav>
-        <div class="sb-ft">
-            <div class="sb-name">${nome}</div>
-            <div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-sign-out-alt"></i></div>
-        </div>`
-    $('#sidebar').innerHTML=html
-}
-
-// ============================================================
-// TOP HEADER (estilo Unicesumar)
-// ============================================================
-function renderTopHeader(){
-    const nome=S.user?.nome_completo||'Usuario'
-    const r=role()
-    $('#topHeader').innerHTML=`
-        <div class="th-search">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Buscar NRs, aulas, materiais..." id="globalSearch" onkeyup="handleGlobalSearch(event)">
-        </div>
-        <div class="th-right">
-            <button class="th-btn" title="Notificacoes" onclick="toast('Nenhuma notificacao nova','info')">
-                <i class="fas fa-bell"></i>
-            </button>
-            <button class="th-btn" title="Ajuda" onclick="redirecionarWhatsApp('Ola, preciso de ajuda na plataforma SulSafe.')">
-                <i class="fas fa-question-circle"></i>
-            </button>
-            <button class="th-user" onclick="navigate('config')">
-                <div class="th-avatar">${getInitials(nome)}</div>
-                <div>
-                    <div class="th-uname">${nome.split(' ').slice(0,2).join(' ')}</div>
-                    <div class="th-urole">${r}</div>
-                </div>
-            </button>
-        </div>`
-}
-
-function handleGlobalSearch(e){
-    S.searchQuery=e.target.value.toLowerCase()
-    if(S.view==='cursos')renderCursos()
-    else if(S.view==='inicio'&&S.searchQuery.length>1){navigate('cursos')}
-}
-
-// ============================================================
-// NAVEGAÇÃO
-// ============================================================
-function navigate(view,extra=null){
-    S.prevView=S.view;S.view=view
-    if(extra)Object.assign(S,extra)
-    renderSidebar()
-    window.scrollTo(0,0)
-    const renderers={
-        inicio:renderInicio,cursos:renderCursos,nrDetail:renderNrDetail,
-        meuprogresso:renderMeuProgresso,certificados:renderCertificados,
-        salas:renderSalas,chat:renderChat,admin:renderAdmin,
-        pendentes:renderPendentes,provasadmin:renderProvasAdmin,config:renderConfig
-    }
-    if(renderers[view])renderers[view]()
-}
-
-// ============================================================
-// BREADCRUMBS HELPER
-// ============================================================
-function bc(items){
-    return '<div class="breadcrumbs">'+items.map((it,i)=>{
-        if(i===items.length-1)return '<span class="bc-current">'+it.label+'</span>'
-        return '<a href="#" onclick="event.preventDefault();'+(it.action||"navigate('inicio')")+'">'+it.label+'</a><i class="fas fa-chevron-right bc-sep"></i>'
-    }).join('')+'</div>'
-}
-
-// ============================================================
-// RENDER: INICIO (Dashboard estilo Unicesumar)
-// ============================================================
-function renderInicio(){
-    const nome=S.user?.nome_completo?.split(' ')[0]||'Aluno'
-    const totalAulas=S.videoaulasCache.length
-    const aulasConcluidas=S.progressoCache.filter(p=>p.concluido).length
-    const totalCerts=S.certificadosCache.length
-    const totalNrs=new Set(S.videoaulasCache.map(v=>v.nr_id)).size
-    const pctAulas=totalAulas?Math.round(aulasConcluidas/totalAulas*100):0
-
-    // Últimas aulas assistidas
-    const recentes=S.progressoCache.slice(0,5).map(p=>{
-        const aula=p.videoaulas
-        if(!aula)return null
-        const nr=getNrLocal(aula.nr_id)
-        return{titulo:aula.titulo,nr:nr?`NR ${nr.id} - ${nr.nm}`:'NR '+aula.nr_id,dt:p.ultima_atualizacao,concluido:p.concluido}
-    }).filter(Boolean)
-
-    // Próximas NRs sem progresso
-    const nrsComAula=new Set(S.videoaulasCache.map(v=>v.nr_id))
-    const nrsEstudadas=new Set(S.progressoCache.map(p=>p.videoaulas?.nr_id).filter(Boolean))
-    const nrsPendentes=NRS.filter(n=>nrsComAula.has(n.id)&&!nrsEstudadas.has(n.id)).slice(0,4)
-
-    let html=`
-        ${bc([{label:'Inicio'}])}
-        <div class="welcome-banner">
-            <h2>Ola, ${nome}!</h2>
-            <p>Continue seus estudos em Seguranca do Trabalho. Veja seu progresso abaixo.</p>
-            <div class="wb-stats">
-                <div class="wb-stat"><div class="wb-stat-v">${totalNrs}</div><div class="wb-stat-l">NRs Disponiveis</div></div>
-                <div class="wb-stat"><div class="wb-stat-v">${pctAulas}%</div><div class="wb-stat-l">Progresso</div></div>
-                <div class="wb-stat"><div class="wb-stat-v">${totalCerts}</div><div class="wb-stat-l">Certificados</div></div>
-                <div class="wb-stat"><div class="wb-stat-v">${aulasConcluidas}</div><div class="wb-stat-l">Aulas Concluidas</div></div>
-            </div>
-        </div>
-
-        <div class="stats">
-            <div class="st"><div class="st-top"><div class="st-icon green"><i class="fas fa-book-open"></i></div></div><div class="st-v">${totalNrs}</div><div class="st-l">NRs com conteudo</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon blue"><i class="fas fa-play-circle"></i></div></div><div class="st-v">${totalAulas}</div><div class="st-l">Videoaulas</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon orange"><i class="fas fa-tasks"></i></div></div><div class="st-v">${pctAulas}%</div><div class="st-l">Progresso geral</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon gold"><i class="fas fa-certificate"></i></div></div><div class="st-v">${totalCerts}</div><div class="st-l">Certificados obtidos</div></div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">`
-
-    // Coluna esquerda: Continuar estudando
-    html+=`<div>
-        <div class="pnl">
-            <div class="pnl-hd"><div class="pnl-t"><i class="fas fa-clock"></i> Atividade recente</div></div>
-            <div class="pnl-bd">`
-    if(recentes.length){
-        recentes.forEach(r=>{
-            html+=`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd2)">
-                <div style="width:36px;height:36px;border-radius:50%;background:${r.concluido?'rgba(46,125,50,.12)':'rgba(255,152,0,.12)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                    <i class="fas fa-${r.concluido?'check':'play'}" style="font-size:12px;color:${r.concluido?'var(--p)':'#E65100'}"></i>
-                </div>
-                <div style="flex:1;min-width:0">
-                    <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.titulo}</div>
-                    <div style="font-size:11px;color:var(--tx3)">${r.nr}</div>
-                </div>
-                <div style="font-size:11px;color:var(--tx3);white-space:nowrap">${fmtD(r.dt)}</div>
-            </div>`
-        })
-    }else{
-        html+=`<div class="empty" style="padding:24px"><i class="fas fa-history"></i><p>Nenhuma atividade ainda</p></div>`
-    }
-    html+=`</div></div></div>`
-
-    // Coluna direita: NRs pendentes
-    html+=`<div>
-        <div class="pnl">
-            <div class="pnl-hd"><div class="pnl-t"><i class="fas fa-flag"></i> Comece por aqui</div></div>
-            <div class="pnl-bd">`
-    if(nrsPendentes.length){
-        nrsPendentes.forEach(n=>{
-            const qtd=S.videoaulasCache.filter(v=>v.nr_id===n.id).length
-            html+=`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd2);cursor:pointer" onclick="navigate('nrDetail',{nrSelecionada:'${n.id}',aulaSelecionada:null})">
-                <div style="width:36px;height:36px;border-radius:10px;background:rgba(46,125,50,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                    <i class="fas ${n.ic}" style="font-size:14px;color:var(--p)"></i>
-                </div>
-                <div style="flex:1">
-                    <div style="font-size:13px;font-weight:600">NR ${n.id} - ${n.nm}</div>
-                    <div style="font-size:11px;color:var(--tx3)">${qtd} aula${qtd!==1?'s':''} disponive${qtd!==1?'is':'el'}</div>
-                </div>
-                <i class="fas fa-chevron-right" style="color:var(--tx3);font-size:12px"></i>
-            </div>`
-        })
-    }else{
-        html+=`<div class="empty" style="padding:24px"><i class="fas fa-check-circle"></i><p>Todas as NRs iniciadas!</p></div>`
-    }
-    html+=`</div></div></div>`
-    html+=`</div>`
-
-    $('#mc').innerHTML=html
-}
-
-// ============================================================
-// RENDER: CURSOS (Grid de NRs estilo Unicesumar)
-// ============================================================
-function renderCursos(){
-    const q=S.searchQuery
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'NRs e Cursos'}])}
-        <div class="page-hd">
-            <h1><i class="fas fa-book-open"></i> Normas Regulamentadoras</h1>
-            <p>Selecione uma NR para acessar as videoaulas, materiais e provas.</p>
-        </div>`
-
-    // Filtro por categoria
-    html+=`<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="catFilter">
-        <button class="btn btn-xs btn-p" onclick="filterCat('todos',this)">Todos (38)</button>
-        <button class="btn btn-xs btn-s" onclick="filterCat('geral',this)">Geral</button>
-        <button class="btn btn-xs btn-s" onclick="filterCat('especifico',this)">Especifico</button>
-        <button class="btn btn-xs btn-s" onclick="filterCat('saude',this)">Saude</button>
-        <button class="btn btn-xs btn-s" onclick="filterCat('setorial',this)">Setorial</button>
-    </div>`
-
-    html+=`<div class="cursos-grid" id="cursosGrid">`
-    let filtered=NRS
-    if(q)filtered=filtered.filter(n=>(n.nm+' NR '+n.id).toLowerCase().includes(q))
-
-    filtered.forEach(n=>{
-        const aulas=S.videoaulasCache.filter(v=>v.nr_id===n.id)
-        const progresso=S.progressoCache.filter(p=>p.videoaulas&&p.videoaulas.nr_id===n.id)
-        const concluidas=progresso.filter(p=>p.concluido).length
-        const pct=aulas.length?Math.round(concluidas/aulas.length*100):0
-        const nrDb=S.nrsDbCache.find(db=>db.numero==n.id)
-
-        html+=`<div class="curso-card" data-cat="${n.cat}" onclick="navigate('nrDetail',{nrSelecionada:'${n.id}',aulaSelecionada:null})">
-            <div class="curso-card-top">
-                <div class="curso-card-ic"><i class="fas ${n.ic}"></i></div>
-                <div class="curso-card-info">
-                    <div class="curso-card-nr">NR ${n.id}</div>
-                    <div class="curso-card-nm">${n.nm}</div>
-                    <div class="curso-card-cat"><i class="fas fa-tag"></i> ${CAT_LABELS[n.cat]||n.cat} · ${aulas.length} aula${aulas.length!==1?'s':''}</div>
-                </div>
-            </div>
-            <div class="curso-card-bot">
-                <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
-                <div class="prog-text"><span>${pct}% concluido</span><span>${concluidas}/${aulas.length}</span></div>
-            </div>
-        </div>`
-    })
-
-    if(!filtered.length)html+=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-search"></i><h4>Nenhuma NR encontrada</h4></div>`
-    html+=`</div>`
-    $('#mc').innerHTML=html
-}
-
-function filterCat(cat,btn){
-    $$('#catFilter .btn').forEach(b=>{b.className='btn btn-xs btn-s'})
-    btn.className='btn btn-xs btn-p'
-    $$('#cursosGrid .curso-card').forEach(c=>{
-        c.style.display=(cat==='todos'||c.dataset.cat===cat)?'':'none'
-    })
-}
-
-// ============================================================
-// RENDER: NR DETAIL (Layout split estilo Unicesumar)
-// ============================================================
-function renderNrDetail(){
-    const nr=getNrLocal(S.nrSelecionada)
-    if(!nr){navigate('cursos');return}
-    const aulas=S.videoaulasCache.filter(v=>v.nr_id===nr.id)
-    const materiais=S.materiaisCache.filter(m=>m.nr_id===nr.id)
-    const nrDb=S.nrsDbCache.find(db=>db.numero==nr.id)
-
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'NRs e Cursos',action:"navigate('cursos')"},{label:`NR ${nr.id} - ${nr.nm}`}])}
-        <div class="page-hd">
-            <h1><i class="fas ${nr.ic}"></i> NR ${nr.id} - ${nr.nm}</h1>
-            <p>Norma Regulamentadora ${nr.id} · ${CAT_LABELS[nr.cat]} · ${aulas.length} videoaula${aulas.length!==1?'s':''} · ${materiais.length} material${materiais.length!==1?'is':''}</p>
-            ${canManage()?`<div class="page-hd-actions">
-                <button class="btn btn-sm btn-p" onclick="modalCriarVideoaula('${nr.id}')"><i class="fas fa-plus"></i> Videoaula</button>
-                <button class="btn btn-sm btn-s" onclick="modalCriarMaterial('${nr.id}')"><i class="fas fa-plus"></i> Material</button>
-            </div>`:''}
-        </div>`
-
-    if(aulas.length||materiais.length||nrDb){
-        html+=`<div class="nr-split">
-            <div class="nr-split-list">`
-
-        // Listar aulas
-        aulas.forEach((a,i)=>{
-            const prog=S.progressoCache.find(p=>p.aula_id===a.id)
-            const done=prog?.concluido
-            const isActive=S.aulaSelecionada===`aula-${a.id}`
-            html+=`<div class="nr-lesson${done?' done':''}${isActive?' active':''}" onclick="selecionarAula('aula-${a.id}','${nr.id}')">
-                <div class="nl-ic"><i class="fas fa-${done?'check':'play'}"></i></div>
-                <div class="nl-info">
-                    <div class="nl-titulo">${a.titulo||'Aula '+(i+1)}</div>
-                    <div class="nl-tipo"><i class="fas fa-video"></i> Videoaula ${done?'· Concluida':''}</div>
-                </div>
-            </div>`
-        })
-
-        // Listar materiais
-        materiais.forEach(m=>{
-            const isActive=S.aulaSelecionada===`mat-${m.id}`
-            html+=`<div class="nr-lesson${isActive?' active':''}" onclick="selecionarAula('mat-${m.id}','${nr.id}')">
-                <div class="nl-ic"><i class="fas fa-file-pdf"></i></div>
-                <div class="nl-info">
-                    <div class="nl-titulo">${m.titulo||'Material'}</div>
-                    <div class="nl-tipo"><i class="fas fa-file"></i> Material de apoio</div>
-                </div>
-            </div>`
-        })
-
-        // Links do banco (NR)
-        if(nrDb){
-            if(nrDb.link_video){
-                html+=`<div class="nr-lesson${S.aulaSelecionada==='link-video'?' active':''}" onclick="selecionarAula('link-video','${nr.id}')">
-                    <div class="nl-ic" style="background:rgba(255,0,0,.1);color:#FF0000"><i class="fab fa-youtube"></i></div>
-                    <div class="nl-info"><div class="nl-titulo">Video Externo</div><div class="nl-tipo">Link do YouTube</div></div>
-                </div>`
-            }
-            if(nrDb.link_material){
-                html+=`<div class="nr-lesson${S.aulaSelecionada==='link-material'?' active':''}" onclick="selecionarAula('link-material','${nr.id}')">
-                    <div class="nl-ic" style="background:rgba(21,101,192,.1);color:#1565C0"><i class="fas fa-download"></i></div>
-                    <div class="nl-info"><div class="nl-titulo">Material Complementar</div><div class="nl-tipo">Download</div></div>
-                </div>`
-            }
-            if(nrDb.link_prova){
-                html+=`<div class="nr-lesson${S.aulaSelecionada==='link-prova'?' active':''}" onclick="selecionarAula('link-prova','${nr.id}')">
-                    <div class="nl-ic" style="background:rgba(230,81,0,.1);color:#E65100"><i class="fas fa-file-alt"></i></div>
-                    <div class="nl-info"><div class="nl-titulo">Prova</div><div class="nl-tipo">Avaliacao</div></div>
-                </div>`
-            }
-        }
-
-        html+=`</div><div class="nr-split-content" id="nrContent">`
-
-        // Conteúdo da direita
-        if(!S.aulaSelecionada&&aulas.length){
-            // Auto-selecionar primeira aula
-            S.aulaSelecionada=`aula-${aulas[0].id}`
-        }
-
-        if(S.aulaSelecionada){
-            if(S.aulaSelecionada.startsWith('aula-')){
-                const aulaId=parseInt(S.aulaSelecionada.replace('aula-',''))
-                const aula=aulas.find(a=>a.id===aulaId)
-                if(aula){
-                    const embed=getYtEmbed(aula.url)
-                    const prog=S.progressoCache.find(p=>p.aula_id===aula.id)
-                    html+=`<h3>${aula.titulo||'Videoaula'}</h3>`
-                    if(embed){
-                        html+=`<div style="position:relative;padding-bottom:56.25%;height:0;margin-bottom:16px;border-radius:8px;overflow:hidden">
-                            <iframe src="${embed}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
-                        </div>`
-                    }else if(aula.url){
-                        html+=`<a href="${aula.url}" target="_blank" class="btn btn-p" style="margin-bottom:16px"><i class="fas fa-external-link-alt"></i> Abrir video</a>`
-                    }else{
-                        html+=`<div class="empty" style="padding:24px"><i class="fas fa-video-slash"></i><p>Nenhum video cadastrado</p></div>`
-                    }
-                    html+=`<div style="display:flex;gap:8px;flex-wrap:wrap">
-                        <button class="btn btn-sm btn-p" onclick="marcarConcluida(${aula.id},'${nr.id}')">
-                            <i class="fas fa-${prog?.concluido?'check-circle':'circle'}"></i> ${prog?.concluido?'Concluida':'Marcar como concluida'}
-                        </button>
-                        ${canManage()?`<button class="btn btn-sm btn-s" onclick="modalEditarVideoaula(${aula.id},'${nr.id}')"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn btn-sm btn-d" onclick="apagarVideoaula(${aula.id},'${nr.id}')"><i class="fas fa-trash"></i> Apagar</button>`:''}
-                    </div>`
-                }
-            }else if(S.aulaSelecionada.startsWith('mat-')){
-                const matId=S.aulaSelecionada.replace('mat-','')
-                const mat=materiais.find(m=>String(m.id)===String(matId))
-                if(mat){
-                    html+=`<h3>${mat.titulo||'Material'}</h3>`
-                    if(mat.url){
-                        html+=`<a href="${mat.url}" target="_blank" class="btn btn-p" style="margin-bottom:16px"><i class="fas fa-download"></i> Baixar material</a>`
-                    }
-                    html+=`<p style="color:var(--tx2);font-size:14px">${mat.descricao||'Material de apoio para NR ${nr.id}.'}</p>
-                    ${canManage()?`<div style="margin-top:16px;display:flex;gap:8px">
-                        <button class="btn btn-sm btn-d" onclick="apagarMaterial('${mat.id}','${nr.id}')"><i class="fas fa-trash"></i> Apagar material</button>
-                    </div>`:''}`
-                }
-            }else if(S.aulaSelecionada==='link-video'&&nrDb?.link_video){
-                const embed=getYtEmbed(nrDb.link_video)
-                html+=`<h3>Video Externo - NR ${nr.id}</h3>`
-                if(embed){
-                    html+=`<div style="position:relative;padding-bottom:56.25%;height:0;border-radius:8px;overflow:hidden">
-                        <iframe src="${embed}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
-                    </div>`
-                }else{
-                    html+=`<a href="${nrDb.link_video}" target="_blank" class="btn btn-p"><i class="fas fa-external-link-alt"></i> Abrir video</a>`
-                }
-            }else if(S.aulaSelecionada==='link-material'&&nrDb?.link_material){
-                html+=`<h3>Material Complementar - NR ${nr.id}</h3>
-                <a href="${nrDb.link_material}" target="_blank" class="btn btn-p"><i class="fas fa-download"></i> Baixar material</a>`
-            }else if(S.aulaSelecionada==='link-prova'&&nrDb?.link_prova){
-                html+=`<h3>Prova - NR ${nr.id}</h3>
-                <a href="${nrDb.link_prova}" target="_blank" class="btn btn-p" style="background:#E65100"><i class="fas fa-file-alt"></i> Acessar prova</a>`
-            }
-        }else{
-            html+=`<div class="empty"><i class="fas fa-book-reader"></i><h4>Selecione um conteudo</h4><p>Escolha uma aula ou material na lista ao lado.</p></div>`
-        }
-
-        html+=`</div></div>`
-    }else{
-        html+=`<div class="pnl"><div class="pnl-bd">
-            <div class="empty"><i class="fas fa-folder-open"></i><h4>Nenhum conteudo cadastrado</h4>
-            <p>Esta NR ainda nao possui videoaulas ou materiais.</p>
-            ${canManage()?`<button class="btn btn-p" style="margin-top:16px" onclick="modalCriarVideoaula('${nr.id}')"><i class="fas fa-plus"></i> Adicionar videoaula</button>`:''}
-            </div>
-        </div></div>`
-    }
-
-    $('#mc').innerHTML=html
-}
-
-function selecionarAula(aulaId,nrId){
-    S.aulaSelecionada=aulaId
-    renderNrDetail()
-}
-
-async function marcarConcluida(aulaId,nrId){
-    const{error}=await sbSalvarProgresso(uid(),aulaId,0,true)
-    if(error){handleError(error);return}
-    S.progressoCache=S.progressoCache.map(p=>p.aula_id===aulaId?{...p,concluido:true}:p)
-    if(!S.progressoCache.find(p=>p.aula_id===aulaId)){
-        S.progressoCache.push({aula_id:aulaId,user_id:uid(),concluido:true,ultima_atualizacao:new Date().toISOString()})
-    }
-    toast('Aula marcada como concluida!','success')
-    renderNrDetail()
-}
-
-// ============================================================
-// RENDER: MEU PROGRESSO
-// ============================================================
-function renderMeuProgresso(){
-    const nrsComAula=new Set(S.videoaulasCache.map(v=>v.nr_id))
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Meu Progresso'}])}
-        <div class="page-hd"><h1><i class="fas fa-chart-bar"></i> Meu Progresso</h1><p>Acompanhe seu desempenho em cada NR.</p></div>`
-
-    html+=`<div class="pnl"><div class="pnl-hd"><div class="pnl-t">Progresso por NR</div></div><div class="pnl-bd">`
-    let totalGeral=0,totalConcluido=0
-    NRS.forEach(n=>{
-        if(!nrsComAula.has(n.id))return
-        const aulas=S.videoaulasCache.filter(v=>v.nr_id===n.id)
-        const prog=S.progressoCache.filter(p=>p.videoaulas&&p.videoaulas.nr_id===n.id)
-        const concl=prog.filter(p=>p.concluido).length
-        const pct=aulas.length?Math.round(concl/aulas.length*100):0
-        totalGeral+=aulas.length;totalConcluido+=concl
-        html+=`<div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--bd2);cursor:pointer" onclick="navigate('nrDetail',{nrSelecionada:'${n.id}',aulaSelecionada:null})">
-            <div style="width:32px;height:32px;border-radius:8px;background:rgba(46,125,50,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas ${n.ic}" style="font-size:13px;color:var(--p)"></i></div>
-            <div style="width:50px;font-size:12px;font-weight:700;color:var(--gold)">NR ${n.id}</div>
-            <div style="flex:1"><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>
-            <div style="width:40px;text-align:right;font-size:13px;font-weight:700">${pct}%</div>
-            <div style="width:60px;text-align:right;font-size:11px;color:var(--tx3)">${concl}/${aulas.length}</div>
-        </div>`
-    })
-    if(!totalGeral)html+=`<div class="empty"><i class="fas fa-chart-pie"></i><p>Nenhuma NR com conteudo ainda</p></div>`
-    html+=`</div></div>`
-
-    if(totalGeral){
-        const pctGeral=Math.round(totalConcluido/totalGeral*100)
-        html+=`<div class="stats">
-            <div class="st"><div class="st-top"><div class="st-icon green"><i class="fas fa-check-double"></i></div></div><div class="st-v">${totalConcluido}/${totalGeral}</div><div class="st-l">Aulas concluidas</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon blue"><i class="fas fa-percentage"></i></div></div><div class="st-v">${pctGeral}%</div><div class="st-l">Progresso geral</div></div>
-        </div>`
-    }
-    $('#mc').innerHTML=html
-}
-
-// ============================================================
-// RENDER: CERTIFICADOS
-// ============================================================
-function renderCertificados(){
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Certificados'}])}
-        <div class="page-hd"><h1><i class="fas fa-certificate"></i> Meus Certificados</h1><p>Certificados emitidos ao concluir os cursos com nota minima 7.0.</p></div>`
-    if(S.certificadosCache.length){
-        html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">`
-        S.certificadosCache.forEach(c=>{
-            const nr=getNrLocal(c.nr_id)
-            html+=`<div class="pnl" style="margin:0">
-                <div class="pnl-bd" style="text-align:center;padding:28px 20px">
-                    <div style="width:64px;height:64px;border-radius:50%;background:rgba(201,176,55,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><i class="fas fa-award" style="font-size:28px;color:var(--gold)"></i></div>
-                    <h3 style="font-size:15px;margin-bottom:4px">${nr?'NR '+nr.id+' - '+nr.nm:'NR '+c.nr_id}</h3>
-                    <p style="font-size:12px;color:var(--tx3);margin-bottom:8px">Codigo: ${c.codigo}</p>
-                    <div style="display:flex;justify-content:center;gap:16px;font-size:13px;margin-bottom:12px">
-                        <span><strong>Nota:</strong> ${c.nota}</span>
-                        <span><strong>Carga:</strong> ${c.carga_horaria}h</span>
-                    </div>
-                    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">Emitido em ${fmtD(c.criado_em||c.emitido_em)}</p>
-                    <button class="btn btn-sm btn-g" onclick="gerarPDFCertificado(${JSON.stringify(c).replace(/"/g,'&quot;')})"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
-                </div>
-            </div>`
-        })
-        html+=`</div>`
-    }else{
-        html+=`<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-award"></i><h4>Nenhum certificado ainda</h4><p>Complete um curso com nota minima 7.0 para receber seu certificado.</p></div></div></div>`
-    }
-    $('#mc').innerHTML=html
-}
-
-function gerarPDFCertificado(c){
-    try{
-        const{jsPDF}=window.jspdf
-        const doc=new jsPDF('landscape','mm','a4')
-        doc.setFillColor(250,248,240);doc.rect(0,0,297,210,'F')
-        doc.setDrawColor(46,125,50);doc.setLineWidth(2);doc.rect(10,10,277,190,'S')
-        doc.setDrawColor(201,176,55);doc.setLineWidth(0.5);doc.rect(14,14,269,182,'S')
-        doc.setFont('helvetica','bold');doc.setFontSize(32);doc.setTextColor(46,125,50)
-        doc.text('CERTIFICADO',148.5,55,{align:'center'})
-        doc.setFontSize(12);doc.setTextColor(100,100,100)
-        doc.text('Certificamos que',148.5,75,{align:'center'})
-        doc.setFontSize(22);doc.setTextColor(26,26,26)
-        doc.text(S.user.nome_completo,148.5,90,{align:'center'})
-        doc.setFontSize(12);doc.setTextColor(100,100,100)
-        doc.text('concluiu com exito o curso',148.5,105,{align:'center'})
-        const nr=getNrLocal(c.nr_id)
-        doc.setFontSize(18);doc.setTextColor(46,125,50)
-        doc.text('NR '+c.nr_id+(nr?' - '+nr.nm:''),148.5,120,{align:'center'})
-        doc.setFontSize(12);doc.setTextColor(100,100,100)
-        doc.text(`Nota: ${c.nota} | Carga Horaria: ${c.carga_horaria}h | Codigo: ${c.codigo}`,148.5,140,{align:'center'})
-        doc.text('Emitido em '+fmtD(c.criado_em||c.emitido_em),148.5,155,{align:'center'})
-        doc.setFontSize(10);doc.text('Plataforma SulSafe - Seguranca do Trabalho',148.5,175,{align:'center'})
-        doc.save(`certificado-NR${c.nr_id}-${S.user.nome_completo.split(' ')[0]}.pdf`)
-        toast('PDF gerado com sucesso!','success')
-    }catch(e){console.error(e);toast('Erro ao gerar PDF','err')}
-}
-
-// ============================================================
-// RENDER: SALAS AO VIVO
-// ============================================================
-function renderSalas(){
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Salas ao Vivo'}])}
-        <div class="page-hd">
-            <h1><i class="fas fa-video"></i> Salas ao Vivo</h1>
-            <p>Acesse as aulas ao vivo e gravadas.</p>
-            ${canManage()?`<div class="page-hd-actions"><button class="btn btn-sm btn-p" onclick="modalCriarSala()"><i class="fas fa-plus"></i> Criar sala</button></div>`:''}
-        </div>`
-    if(S.salasCache.length){
-        S.salasCache.forEach(s=>{
-            html+=`<div class="mt-c">
-                <div>
-                    <div class="mt-topic"><i class="fas fa-video" style="color:var(--p);margin-right:8px"></i>${s.topico}</div>
-                    <div class="mt-id">Criada por ${s.profiles?.nome_completo||'Professor'} · ${fmtFull(s.created_at)}</div>
-                </div>
-                <div style="display:flex;gap:8px;align-items:center">
-                    <a href="https://meet.google.com/${s.meet_id||''}" target="_blank" class="btn btn-sm btn-p"><i class="fas fa-external-link-alt"></i> Entrar</a>
-                    ${canManage()?`<button class="btn btn-xs btn-d" onclick="apagarSala(${s.id})"><i class="fas fa-trash"></i></button>`:''}
-                </div>
-            </div>`
-        })
-    }else{
-        html+=`<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-video-slash"></i><h4>Nenhuma sala ativa</h4><p>As salas ao vivo aparecerao aqui quando criadas.</p></div></div></div>`
-    }
-    $('#mc').innerHTML=html
-}
-
-// ============================================================
-// RENDER: CHAT
-// ============================================================
-function renderChat(){
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Chat'}])}
-        <div class="page-hd"><h1><i class="fas fa-comments"></i> Chat</h1><p>Comunique-se com professores e colegas.</p></div>
-        <div class="chat-box">
-            <div class="chat-msgs" id="chatMsgs">
-                <div class="chat-m b"><strong>Equipe SulSafe:</strong> Bem-vindo ao chat! Duvidas sobre as NRs? Pergunte aqui.</div>
-            </div>
-            <div class="chat-row">
-                <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeydown="if(event.key==='Enter')enviarChat()">
-                <button class="btn btn-p btn-sm" onclick="enviarChat()"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>`
-    $('#mc').innerHTML=html
-}
-
-function enviarChat(){
-    const input=$('#chatInput')
-    const msg=input.value.trim()
-    if(!msg)return
-    const msgs=$('#chatMsgs')
-    msgs.innerHTML+=`<div class="chat-m u">${msg.replace(/</g,'&lt;')}</div>`
-    input.value='';msgs.scrollTop=msgs.scrollHeight
-    // Resposta simulada
-    setTimeout(()=>{
-        msgs.innerHTML+=`<div class="chat-m b"><strong>Suporte:</strong> Obrigado pelo contato! Sua mensagem foi registrada. Em breve retornaremos.</div>`
-        msgs.scrollTop=msgs.scrollHeight
-    },1500)
-}
-
-// ============================================================
-// RENDER: ADMIN (COM APAGAR FUNCIONANDO)
-// ============================================================
-function renderAdmin(){
-    if(!canManage()){navigate('inicio');return}
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Painel Admin'}])}
-        <div class="page-hd"><h1><i class="fas fa-cog"></i> Painel Administrativo</h1><p>Gerencie usuarios, conteudo e plataforma.</p></div>
-        <div class="stats">
-            <div class="st"><div class="st-top"><div class="st-icon green"><i class="fas fa-users"></i></div></div><div class="st-v" id="statAlunos">—</div><div class="st-l">Alunos ativos</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon blue"><i class="fas fa-play-circle"></i></div></div><div class="st-v">${S.videoaulasCache.length}</div><div class="st-l">Videoaulas</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon orange"><i class="fas fa-file"></i></div></div><div class="st-v">${S.materiaisCache.length}</div><div class="st-l">Materiais</div></div>
-            <div class="st"><div class="st-top"><div class="st-icon gold"><i class="fas fa-certificate"></i></div></div><div class="st-v" id="statCerts">—</div><div class="st-l">Certificados</div></div>
-        </div>`
-
-    // Tabs admin
-    html+=`<div class="tabs">
-        <button class="tab-b on" onclick="adminTab('tabUsers',this)">Usuarios</button>
-        <button class="tab-b" onclick="adminTab('tabVideoaulas',this)">Videoaulas</button>
-        <button class="tab-b" onclick="adminTab('tabMateriais',this)">Materiais</button>
-        <button class="tab-b" onclick="adminTab('tabNrsLinks',this)">Links NRs</button>
-    </div>`
-
-    // TAB: Usuários
-    html+=`<div class="tab-c on" id="tabUsers">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <input type="text" class="search" style="margin:0;max-width:300px" placeholder="Buscar usuario..." id="searchUsers" oninput="filtrarUsuarios()">
-        </div>
-        <div class="tw"><table>
-            <thead><tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Status</th><th>Cadastro</th><th>Acoes</th></tr></thead>
-            <tbody id="usersTbody"></tbody>
-        </table></div>
-    </div>`
-
-    // TAB: Videoaulas
-    html+=`<div class="tab-c" id="tabVideoaulas">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <input type="text" class="search" style="margin:0;max-width:300px" placeholder="Buscar aula..." id="searchAulas" oninput="filtrarAulas()">
-            <button class="btn btn-sm btn-p" onclick="modalCriarVideoaula()"><i class="fas fa-plus"></i> Nova videoaula</button>
-        </div>
-        <div class="tw"><table>
-            <thead><tr><th>Titulo</th><th>NR</th><th>Ordem</th><th>Acoes</th></tr></thead>
-            <tbody id="aulasTbody"></tbody>
-        </table></div>
-    </div>`
-
-    // TAB: Materiais
-    html+=`<div class="tab-c" id="tabMateriais">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <input type="text" class="search" style="margin:0;max-width:300px" placeholder="Buscar material..." id="searchMats" oninput="filtrarMats()">
-            <button class="btn btn-sm btn-p" onclick="modalCriarMaterial()"><i class="fas fa-plus"></i> Novo material</button>
-        </div>
-        <div class="tw"><table>
-            <thead><tr><th>Titulo</th><th>NR</th><th>Tipo</th><th>Acoes</th></tr></thead>
-            <tbody id="matsTbody"></tbody>
-        </table></div>
-    </div>`
-
-    // TAB: Links NRs
-    html+=`<div class="tab-c" id="tabNrsLinks">
-        <p style="font-size:13px;color:var(--tx2);margin-bottom:16px">Gerencie os links de video, material e prova de cada NR diretamente no banco de dados.</p>
-        <div class="tw"><table>
-            <thead><tr><th>NR</th><th>Video</th><th>Material</th><th>Prova</th></tr></thead>
-            <tbody id="nrsLinksTbody"></tbody>
-        </table></div>
-    </div>`
-
-    $('#mc').innerHTML=html
-    loadAdminData()
-}
-
-async function loadAdminData(){
-    // Carregar usuários
-    const{data:users}=await sbGetAllUsers()
-    const alunosAtivos=users?.filter(u=>u.role==='aluno'&&u.status==='ativo').length||0
-    const el=$('#statAlunos');if(el)el.textContent=alunosAtivos
-    window._adminUsers=users||[]
-    renderUsersTable(window._adminUsers)
-    renderAulasTable(S.videoaulasCache)
-    renderMatsTable(S.materiaisCache)
-    renderNrsLinksTable()
-}
-
-function adminTab(tabId,btn){
-    $$('.tab-b').forEach(b=>b.classList.remove('on'))
-    $$('.tab-c').forEach(c=>c.classList.remove('on'))
-    btn.classList.add('on')
-    $('#'+tabId).classList.add('on')
-}
-
-// ===== TABELA DE USUÁRIOS =====
-function renderUsersTable(users){
-    const tbody=$('#usersTbody');if(!tbody)return
-    if(!users.length){tbody.innerHTML='<tr><td colspan="6" class="empty"><i class="fas fa-users"></i><p>Nenhum usuario encontrado</p></td></tr>';return}
-    tbody.innerHTML=users.map(u=>`<tr>
-        <td><strong>${u.nome_completo||'—'}</strong></td>
-        <td style="font-size:12px">${u.email||'—'}</td>
-        <td><span class="badge bg-info">${u.role||'aluno'}</span></td>
-        <td><span class="badge ${u.status==='ativo'?'bg-ok':'bg-warn'}">${u.status||'pendente'}</span></td>
-        <td style="font-size:12px;color:var(--tx3)">${fmtD(u.created_at)}</td>
-        <td><div class="tw-actions">
-            ${u.status==='pendente'?`<button class="btn btn-xs btn-p" onclick="liberarUser('${u.id}')"><i class="fas fa-check"></i></button>`:''}
-            ${u.role!=='admin'?`<button class="btn btn-xs btn-d" onclick="apagarUsuario('${u.id}')"><i class="fas fa-trash"></i></button>`:''}
-        </div></td>
-    </tr>`).join('')
-}
-
-function filtrarUsuarios(){
-    const q=($('#searchUsers')?.value||'').toLowerCase()
-    renderUsersTable(window._adminUsers.filter(u=>(u.nome_completo+' '+u.email).toLowerCase().includes(q)))
-}
-
-// ===== TABELA DE VIDEOAULAS =====
-function renderAulasTable(aulas){
-    const tbody=$('#aulasTbody');if(!tbody)return
-    if(!aulas.length){tbody.innerHTML='<tr><td colspan="4" class="empty"><i class="fas fa-video"></i><p>Nenhuma videoaula cadastrada</p></td></tr>';return}
-    tbody.innerHTML=aulas.map(a=>{const nr=getNrLocal(a.nr_id);return`<tr>
-        <td><strong>${a.titulo||'Sem titulo'}</strong></td>
-        <td><span class="badge bg-info">NR ${a.nr_id}${nr?' - '+nr.nm:''}</span></td>
-        <td>${a.ordem||'—'}</td>
-        <td><div class="tw-actions">
-            <button class="btn btn-xs btn-s" onclick="navigate('nrDetail',{nrSelecionada:'${a.nr_id}',aulaSelecionada:'aula-${a.id}'})"><i class="fas fa-eye"></i></button>
-            <button class="btn btn-xs btn-s" onclick="modalEditarVideoaula(${a.id},'${a.nr_id}')"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-xs btn-d" onclick="apagarVideoaula(${a.id})"><i class="fas fa-trash"></i></button>
-        </div></td>
-    </tr>`}).join('')
-}
-
-function filtrarAulas(){
-    const q=($('#searchAulas')?.value||'').toLowerCase()
-    renderAulasTable(S.videoaulasCache.filter(a=>(a.titulo+' NR '+a.nr_id).toLowerCase().includes(q)))
-}
-
-// ===== TABELA DE MATERIAIS =====
-function renderMatsTable(mats){
-    const tbody=$('#matsTbody');if(!tbody)return
-    if(!mats.length){tbody.innerHTML='<tr><td colspan="4" class="empty"><i class="fas fa-file"></i><p>Nenhum material cadastrado</p></td></tr>';return}
-    tbody.innerHTML=mats.map(m=>{const nr=getNrLocal(m.nr_id);return`<tr>
-        <td><strong>${m.titulo||'Sem titulo'}</strong></td>
-        <td><span class="badge bg-info">NR ${m.nr_id}${nr?' - '+nr.nm:''}</span></td>
-        <td>${m.tipo||'—'}</td>
-        <td><div class="tw-actions">
-            <button class="btn btn-xs btn-d" onclick="apagarMaterial('${m.id}')"><i class="fas fa-trash"></i></button>
-        </div></td>
-    </tr>`}).join('')
-}
-
-function filtrarMats(){
-    const q=($('#searchMats')?.value||'').toLowerCase()
-    renderMatsTable(S.materiaisCache.filter(m=>(m.titulo+' NR '+m.nr_id).toLowerCase().includes(q)))
-}
-
-// ===== TABELA DE LINKS NRS =====
-function renderNrsLinksTable(){
-    const tbody=$('#nrsLinksTbody');if(!tbody)return
-    tbody.innerHTML=NRS.map(n=>{
-        const db=S.nrsDbCache.find(d=>d.numero==n.id)
-        return`<tr>
-            <td><strong>NR ${n.id}</strong> - ${n.nm}</td>
-            <td>${db?.link_video?'<i class="fas fa-check-circle" style="color:var(--p)"></i>':'<i class="fas fa-times-circle" style="color:var(--tx3)"></i>'}</td>
-            <td>${db?.link_material?'<i class="fas fa-check-circle" style="color:var(--p)"></i>':'<i class="fas fa-times-circle" style="color:var(--tx3)"></i>'}</td>
-            <td>${db?.link_prova?'<i class="fas fa-check-circle" style="color:var(--p)"></i>':'<i class="fas fa-times-circle" style="color:var(--tx3)"></i>'}</td>
-        </tr>`
-    }).join('')
-}
-
-// ============================================================
-// *** FUNÇÕES DE APAGAR - CORRIGIDAS E FUNCIONANDO ***
-// ============================================================
-
-async function apagarVideoaula(id, nrId){
-    confirmDialog('Apagar videoaula','Tem certeza que deseja apagar esta videoaula? Esta acao nao pode ser desfeita.',async()=>{
-        const{error}=await sbApagarVideoaula(id)
-        if(error){handleError(error);return}
-        S.videoaulasCache=S.videoaulasCache.filter(v=>v.id!==id)
-        S.progressoCache=S.progressoCache.filter(p=>p.aula_id!==id)
-        toast('Videoaula apagada com sucesso!','success')
-        // Re-renderizar a view correta
-        if(S.view==='admin'){renderAulasTable(S.videoaulasCache);const q=$('#searchAulas')?.value||'';if(q)filtrarAulas()}
-        else if(S.view==='nrDetail'){S.aulaSelecionada=null;renderNrDetail()}
-    })
-}
-
-async function apagarMaterial(id, nrId){
-    confirmDialog('Apagar material','Tem certeza que deseja apagar este material? Esta acao nao pode ser desfeita.',async()=>{
-        const{error}=await sbApagarMaterial(id)
-        if(error){handleError(error);return}
-        S.materiaisCache=S.materiaisCache.filter(m=>String(m.id)!==String(id))
-        toast('Material apagado com sucesso!','success')
-        if(S.view==='admin'){renderMatsTable(S.materiaisCache);const q=$('#searchMats')?.value||'';if(q)filtrarMats()}
-        else if(S.view==='nrDetail'){S.aulaSelecionada=null;renderNrDetail()}
-    })
-}
-
-async function apagarSala(id){
-    confirmDialog('Apagar sala','Tem certeza que deseja apagar esta sala ao vivo?',async()=>{
-        const{error}=await sbApagarSala(id)
-        if(error){handleError(error);return}
-        S.salasCache=S.salasCache.filter(s=>s.id!==id)
-        toast('Sala apagada com sucesso!','success')
-        renderSalas()
-    })
-}
-
-async function apagarUsuario(id){
-    if(id===uid()){toast('Voce nao pode apagar seu proprio usuario','warn');return}
-    confirmDialog('Apagar usuario','Tem certeza que deseja apagar este usuario? Todos os dados associados serao perdidos.',async()=>{
-        const{error}=await sbApagarUsuario(id)
-        if(error){handleError(error);return}
-        window._adminUsers=window._adminUsers.filter(u=>u.id!==id)
-        const el=$('#statAlunos');if(el)el.textContent=window._adminUsers.filter(u=>u.role==='aluno'&&u.status==='ativo').length
-        renderUsersTable(window._adminUsers)
-        toast('Usuario apagado com sucesso!','success')
-    })
-}
-
-async function apagarProva(id){
-    confirmDialog('Apagar prova','Tem certeza que deseja apagar esta prova?',async()=>{
-        const{error}=await sbApagarProva(id)
-        if(error){handleError(error);return}
-        toast('Prova apagada com sucesso!','success')
-        renderProvasAdmin()
-    })
-}
-
-async function liberarUser(id){
-    const{error}=await sbLiberarUsuario(id)
-    if(error){handleError(error);return}
-    const u=window._adminUsers.find(u=>u.id===id)
-    if(u)u.status='ativo'
-    const el=$('#statAlunos');if(el)el.textContent=window._adminUsers.filter(u=>u.role==='aluno'&&u.status==='ativo').length
-    renderUsersTable(window._adminUsers)
-    toast('Usuario liberado com sucesso!','success')
-}
-
-// ============================================================
-// RENDER: PENDENTES
-// ============================================================
-async function renderPendentes(){
-    if(!canManage()){navigate('inicio');return}
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Painel Admin',action:"navigate('admin')"},{label:'Aprovacoes Pendentes'}])}
-        <div class="page-hd"><h1><i class="fas fa-user-clock"></i> Aprovacoes Pendentes</h1><p>Alunos aguardando liberacao de acesso.</p></div>`
-    const{data:pendentes}=await sbGetPendentes()
-    if(pendentes?.length){
-        html+=`<div class="tw"><table>
-            <thead><tr><th>Nome</th><th>Email</th><th>Cadastro</th><th>Acoes</th></tr></thead>
-            <tbody>${pendentes.map(p=>`<tr>
-                <td><strong>${p.nome_completo}</strong></td>
-                <td style="font-size:12px">${p.email}</td>
-                <td style="font-size:12px;color:var(--tx3)">${fmtD(p.created_at)}</td>
-                <td><div class="tw-actions">
-                    <button class="btn btn-xs btn-p" onclick="liberarUser('${p.id}');renderPendentes()"><i class="fas fa-check"></i> Liberar</button>
-                    <button class="btn btn-xs btn-d" onclick="apagarUsuario('${p.id}');renderPendentes()"><i class="fas fa-trash"></i></button>
-                </div></td>
-            </tr>`).join('')}</tbody>
-        </table></div>`
-    }else{
-        html+=`<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum pendente</h4><p>Todos os alunos foram liberados.</p></div></div></div>`
-    }
-    $('#mc').innerHTML=html
-}
-
-// ============================================================
-// RENDER: PROVAS ADMIN
-// ============================================================
-async function renderProvasAdmin(){
-    if(!canManage()){navigate('inicio');return}
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Painel Admin',action:"navigate('admin')"},{label:'Provas'}])}
-        <div class="page-hd"><h1><i class="fas fa-file-alt"></i> Correcao de Provas</h1><p>Provas enviadas aguardando correcao.</p></div>`
-    const{data:provas}=await sbGetProvasPendentes()
-    if(provas?.length){
-        provas.forEach(p=>{
-            html+=`<div class="prova-container">
-                <div class="prova-header">
-                    <div><strong>${p.titulo||'Prova'}</strong><br><span style="font-size:12px;color:var(--tx3)">NR ${p.nr_id} · ${p.profiles?.nome_completo} · ${fmtFull(p.criado_em)}</span></div>
-                    <span class="prova-status pendente">Pendente</span>
-                </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-                    ${p.arquivo_url?`<a href="${p.arquivo_url}" target="_blank" class="btn btn-sm btn-s"><i class="fas fa-download"></i> Baixar prova</a>`:''}
-                    <button class="btn btn-xs btn-d" onclick="apagarProva(${p.id})"><i class="fas fa-trash"></i> Apagar</button>
-                </div>
-            </div>`
-        })
-    }else{
-        html+=`<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhuma prova pendente</h4></div></div></div>`
-    }
-    $('#mc').innerHTML=html
-}
-
-// ============================================================
-// RENDER: CONFIG
-// ============================================================
-function renderConfig(){
-    let html=`
-        ${bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Configuracoes'}])}
-        <div class="page-hd"><h1><i class="fas fa-sliders-h"></i> Configuracoes</h1><p>Personalize sua experiencia na plataforma.</p></div>
-        <div class="cfg-w">
-            <div class="cfg-sb">
-                <div class="cfg-tb on" onclick="cfgTab('cfgPerfil',this)"><i class="fas fa-user"></i> Perfil</div>
-                <div class="cfg-tb" onclick="cfgTab('cfgTema',this)"><i class="fas fa-palette"></i> Tema</div>
-                <div class="cfg-tb" onclick="cfgTab('cfgVideo',this)"><i class="fas fa-play"></i> Video</div>
-            </div>
-            <div class="cfg-bd">
-                <div class="cfg-sc on" id="cfgPerfil">
-                    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Meu Perfil</h3>
-                    <div class="cfg-grp"><label>Nome</label><input type="text" id="cfgNome" value="${S.user?.nome_completo||''}"></div>
-                    <div class="cfg-grp"><label>Email</label><input type="email" value="${S.user?.email||''}" disabled style="opacity:.6"></div>
-                    <button class="btn btn-p" onclick="salvarPerfil()"><i class="fas fa-save"></i> Salvar</button>
-                </div>
-                <div class="cfg-sc" id="cfgTema">
-                    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Tema da plataforma</h3>
-                    <div class="tema-g">
-                        ${[{id:'verde',c:'#2E7D32',l:'Verde'},{id:'azul',c:'#1565C0',l:'Azul'},{id:'roxo',c:'#7B1FA2',l:'Roxo'},{id:'vermelho',c:'#C62828',l:'Vermelho'},{id:'laranja',c:'#E65100',l:'Laranja'},{id:'escuro',c:'#333',l:'Escuro'}].map(t=>
-                            `<div class="tema-o${S.cfg.tema===t.id?' on':''}" onclick="setTema('${t.id}')"><div class="tema-dot" style="background:${t.c}"></div>${t.l}</div>`
-                        ).join('')}
-                    </div>
-                </div>
-                <div class="cfg-sc" id="cfgVideo">
-                    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Configuracoes de video</h3>
-                    <div class="cfg-grp"><label>Qualidade</label><select id="cfgQual" onchange="S.cfg.qual=this.value;saveCfg()">
-                        <option value="hd"${S.cfg.qual==='hd'?' selected':''}>HD (720p)</option>
-                        <option value="fhd"${S.cfg.qual==='fhd'?' selected':''}>Full HD (1080p)</option>
-                        <option value="sd"${S.cfg.qual==='sd'?' selected':''}>SD (480p)</option>
-                    </select></div>
-                    <div class="cfg-grp"><label>Velocidade</label><select id="cfgSpeed" onchange="S.cfg.speed=this.value;saveCfg()">
-                        ${['0.5','0.75','1','1.25','1.5','2'].map(s=>`<option value="${s}"${S.cfg.speed===s?' selected':''}>${s}x</option>`).join('')}
-                    </select></div>
-                    <div class="cfg-grp" style="display:flex;align-items:center;gap:10px">
-                        <input type="checkbox" id="cfgAutoPlay" ${S.cfg.autoPlay?'checked':''} onchange="S.cfg.autoPlay=this.checked;saveCfg()" style="width:auto;accent-color:var(--p)">
-                        <label for="cfgAutoPlay" style="margin:0">Reproducao automatica</label>
-                    </div>
-                </div>
-            </div>
-        </div>`
-    $('#mc').innerHTML=html
-}
-
-function cfgTab(tabId,btn){
-    $$('.cfg-tb').forEach(b=>b.classList.remove('on'))
-    $$('.cfg-sc').forEach(c=>c.classList.remove('on'))
-    btn.classList.add('on')
-    $('#'+tabId).classList.add('on')
-}
-
-async function salvarPerfil(){
-    const nome=$('#cfgNome').value.trim()
-    if(!nome){toast('Nome nao pode ficar vazio','warn');return}
-    const{error}=await sbUpdateUser(uid(),{nome_completo:nome})
-    if(error){handleError(error);return}
-    S.user.nome_completo=nome
-    renderSidebar();renderTopHeader()
-    toast('Perfil atualizado!','success')
-}
-
-function setTema(t){
-    S.cfg.tema=t;saveCfg();applyTema();renderConfig()
-}
-
-function saveCfg(){localStorage.setItem('ss_cfg',JSON.stringify(S.cfg))}
-
-// ============================================================
-// MODAIS DE CRIAÇÃO/EDIÇÃO
-// ============================================================
-function modalCriarVideoaula(nrIdPre){
-    const nrOptions=NRS.map(n=>`<option value="${n.id}"${n.id===nrIdPre?' selected':''}>NR ${n.id} - ${n.nm}</option>`).join('')
-    openMdl(`
-        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-plus-circle" style="color:var(--p)"></i> Nova Videoaula</h3>
-        <form onsubmit="criarVideoaula(event)">
-            <div class="fld"><label>NR</label><select id="mvNr" required>${nrOptions}</select></div>
-            <div class="fld"><label>Titulo da aula</label><input type="text" id="mvTitulo" placeholder="Ex: Introducao a NR 5" required></div>
-            <div class="fld"><label>URL do video (YouTube)</label><input type="url" id="mvUrl" placeholder="https://youtube.com/watch?v=..." required></div>
-            <div class="fld"><label>Ordem</label><input type="number" id="mvOrdem" value="1" min="1"></div>
-            <button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar videoaula</button>
-        </form>
-    `)
-}
-
-async function criarVideoaula(e){
-    e.preventDefault()
-    const btn=e.target.querySelector('button[type=submit]')
-    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Salvando...'
-    const{error}=await sbCriarVideoaula({
-        nr_id:$('#mvNr').value,
-        titulo:$('#mvTitulo').value,
-        url:$('#mvUrl').value,
-        ordem:parseInt($('#mvOrdem').value)||1,
-        criado_por:uid()
-    })
-    if(error){handleError(error);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Salvar videoaula';return}
-    closeMdl();toast('Videoaula criada!','success')
-    // Recarregar cache
-    const{data}=await sbGetVideoaulas();S.videoaulasCache=data||[]
-    if(S.view==='admin')renderAulasTable(S.videoaulasCache)
-    else if(S.view==='nrDetail')renderNrDetail()
-}
-
-function modalEditarVideoaula(id,nrId){
-    const aula=S.videoaulasCache.find(a=>a.id===id)
-    if(!aula)return
-    const nrOptions=NRS.map(n=>`<option value="${n.id}"${n.id===aula.nr_id?' selected':''}>NR ${n.id} - ${n.nm}</option>`).join('')
-    openMdl(`
-        <button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button>
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-edit" style="color:var(--p)"></i> Editar Videoaula</h3>
-        <form onsubmit="editarVideoaula(event,${id})">
-            <div class="fld"><label>NR</label><select id="meNr" required>${nrOptions}</select></div>
-            <div class="fld"><label>Titulo</label><input type="text" id="meTitulo" value="${aula.titulo||''}" required></div>
-            <div class="fld"><label>URL do video</label><input type="url" id="meUrl" value="${aula.url||''}" required></div>
-            <div class="fld"><label>Ordem</label><input type="number" id="meOrdem" value="${aula.ordem||1}" min="1"></div>
-            <button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar alteracoes</button>
-        </form>
-    `)
-}
-
-async function editarVideoaula(e,id){
-    e.preventDefault()
-    const{error}=await sb.from('videoaulas').update({
-        nr_id:$('#meNr').value,titulo:$('#meTitulo').value,
-        url:$('#meUrl').value,ordem:parseInt($('#meOrdem').value)||1
-    }).eq('id',id).select().single()
-    if(error){handleError(error);return}
-    closeMdl();toast('Videoaula atualizada!','success')
-    const{data}=await sbGetVideoaulas();S.videoaulasCache=data||[]
-    if(S.view==='admin')renderA
+e.preventDefault();if($('#cPass').value!==$('#cPass2').value){toast('Senhas nao conferem','err');return}const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Criando...';
+try{const{data:{user},error}=await sb.auth.signUp({email:$('#cEmail').value,password:$('#cPass').value,options:{data:{nome_completo:$('#cNome').value}}});if(error)throw error;toast('Conta criada! Aguarde liberacao.','success');showT('tLogin')}catch(err){handleError(err)}btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i> Criar conta'});
+
+async function recuperarSenha(){const email=prompt('Digite seu email:');if(!email)return;try{const{error}=await sb.auth.resetPasswordForEmail(email);if(error)throw error;toast('Email de recuperacao enviado!','success')}catch(e){handleError(e)}}
+async function checkSession(){try{const{data:{session}}=await sb.auth.getSession();if(!session)return;const{data:profile}=await sbGetUser(session.user.id);if(!profile||profile.status==='pending')return;S.user=profile;initDashboard()}catch(e){}}
+async function logout(){await sb.auth.signOut();S.user=null;S.view='inicio';$('#dash').style.display='none';$('#authWrap').classList.remove('off');$('#whatsappContainer').classList.remove('hidden');showT('tLogin')}
+
+/* === DASHBOARD INIT === */
+async function initDashboard(){$('#authWrap').classList.add('off');$('#whatsappContainer').classList.add('hidden');$('#dash').style.display='flex';applyTema();renderSidebar();renderTopHeader();navigate('inicio');carregarDados()}
+async function carregarDados(){const ps=[sbGetNrs().then(r=>{S.nrsDbCache=r.data||[]}),sbGetVideoaulas().then(r=>{S.videoaulasCache=r.data||[]}),sbGetMateriais().then(r=>{S.materiaisCache=r.data||[]}),sbGetProgresso(uid()).then(r=>{S.progressoCache=r.data||[]}),sbGetNotasAluno(uid()).then(r=>{S.notasCache=r.data||[]}),sbGetCertificadosAluno(uid()).then(r=>{S.certificadosCache=r.data||[]}),sbGetSalasAtivas().then(r=>{S.salasCache=r.data||[]})];await Promise.allSettled(ps);if(S.view==='inicio')renderInicio()}
+function applyTema(){document.body.className=S.cfg.tema==='verde'?'':'t-'+S.cfg.tema}
+
+/* === SIDEBAR === */
+function renderSidebar(){const r=role(),nome=S.user?.nome_completo||'Usuario';let h='<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div><div class="sb-role '+r+'"><i class="fas fa-'+(r==='admin'?'crown':r==='professor'?'chalkboard-teacher':'user-graduate')+'"></i><span>'+r+'</span></div><nav class="sb-nav"><div class="sb-lbl">Principal</div><div class="ni'+(S.view==='inicio'?' on':'')+'" onclick="navigate(\'inicio\')"><i class="fas fa-home"></i><span>Inicio</span></div><div class="ni'+(S.view==='cursos'?' on':'')+'" onclick="navigate(\'cursos\')"><i class="fas fa-book-open"></i><span>NRs e Cursos</span></div><div class="ni'+(S.view==='meuprogresso'?' on':'')+'" onclick="navigate(\'meuprogresso\')"><i class="fas fa-chart-bar"></i><span>Meu Progresso</span></div><div class="ni'+(S.view==='certificados'?' on':'')+'" onclick="navigate(\'certificados\')"><i class="fas fa-certificate"></i><span>Certificados</span></div><div class="sb-lbl">Comunicacao</div><div class="ni'+(S.view==='salas'?' on':'')+'" onclick="navigate(\'salas\')"><i class="fas fa-video"></i><span>Salas ao Vivo</span>'+(S.salasCache.length?'<span class="ni-count">'+S.salasCache.length+'</span>':'')+'</div><div class="ni'+(S.view==='chat'?' on':'')+'" onclick="navigate(\'chat\')"><i class="fas fa-comments"></i><span>Chat</span></div>';if(canManage())h+='<div class="sb-lbl">Administracao</div><div class="ni'+(S.view==='admin'?' on':'')+'" onclick="navigate(\'admin\')"><i class="fas fa-cog"></i><span>Painel Admin</span></div><div class="ni'+(S.view==='pendentes'?' on':'')+'" onclick="navigate(\'pendentes\')"><i class="fas fa-user-clock"></i><span>Pendentes</span></div>';h+='<div class="sb-lbl">Sistema</div><div class="ni'+(S.view==='config'?' on':'')+'" onclick="navigate(\'config\')"><i class="fas fa-sliders-h"></i><span>Configuracoes</span></div></nav><div class="sb-ft"><div class="sb-name">'+nome+'</div><div class="sb-out" onclick="logout()" title="Sair"><i class="fas fa-sign-out-alt"></i></div></div>';$('#sidebar').innerHTML=h}
+
+/* === TOP HEADER === */
+function renderTopHeader(){const nome=S.user?.nome_completo||'Usuario',r=role();$('#topHeader').innerHTML='<div class="th-search"><i class="fas fa-search"></i><input type="text" placeholder="Buscar NRs, aulas, materiais..." id="globalSearch" onkeyup="handleSearch(event)"></div><div class="th-right"><button class="th-btn" title="Notificacoes" onclick="toast(\'Sem notificacoes novas\',\'info\')"><i class="fas fa-bell"></i></button><button class="th-btn" title="Ajuda" onclick="redirecionarWhatsApp(\'Ola, preciso de ajuda na plataforma SulSafe.\')"><i class="fas fa-question-circle"></i></button><button class="th-user" onclick="navigate(\'config\')"><div class="th-avatar">'+getInitials(nome)+'</div><div><div class="th-uname">'+nome.split(' ').slice(0,2).join(' ')+'</div><div class="th-urole">'+r+'</div></div></button></div>'}
+function handleSearch(e){S.searchQuery=e.target.value.toLowerCase();if(S.view==='cursos')renderCursos();else if(S.view==='inicio'&&S.searchQuery.length>1)navigate('cursos')}
+
+/* === NAVEGACAO === */
+function navigate(v){S.prevView=S.view;S.view=v;renderSidebar();window.scrollTo(0,0);({inicio:renderInicio,cursos:renderCursos,meuprogresso:renderMeuProgresso,certificados:renderCertificados,salas:renderSalas,chat:renderChat,admin:renderAdmin,pendentes:renderPendentes,config:renderConfig}[v]||function(){})()}
+
+/* === RENDER: INICIO === */
+function renderInicio(){const nome=S.user?.nome_completo?.split(' ')[0]||'Aluno',ta=S.videoaulasCache.length,ac=S.progressoCache.filter(p=>p.concluido).length,tc=S.certificadosCache.length,tn=new Set(S.videoaulasCache.map(v=>v.nr_id)).size,pct=ta?Math.round(ac/ta*100):0;const rec=S.progressoCache.slice(0,5).map(p=>{const a=p.videoaulas;if(!a)return null;const nr=getNr(a.nr_id);return{titulo:a.titulo,nr:nr?'NR '+nr.id:'NR '+a.nr_id,dt:p.ultima_atualizacao,done:p.concluido}}).filter(Boolean);const nrsEst=new Set(S.progressoCache.map(p=>p.videoaulas?.nr_id).filter(Boolean)),pend=NRS.filter(n=>S.videoaulasCache.some(v=>v.nr_id===n.id)&&!nrsEst.has(n.id)).slice(0,4);let h=bc([{label:'Inicio'}])+'<div class="welcome-banner"><h2>Ola, '+nome+'!</h2><p>Continue seus estudos em Seguranca do Trabalho.</p><div class="wb-stats"><div><div class="wb-stat-v">'+tn+'</div><div class="wb-stat-l">NRs Disponiveis</div></div><div><div class="wb-stat-v">'+pct+'%</div><div class="wb-stat-l">Progresso</div></div><div><div class="wb-stat-v">'+tc+'</div><div class="wb-stat-l">Certificados</div></div><div><div class="wb-stat-v">'+ac+'</div><div class="wb-stat-l">Aulas Concluidas</div></div></div></div><div class="stats"><div class="st"><div class="st-top"><div class="st-icon green"><i class="fas fa-book-open"></i></div></div><div class="st-v">'+tn+'</div><div class="st-l">NRs com conteudo</div></div><div class="st"><div class="st-top"><div class="st-icon blue"><i class="fas fa-play-circle"></i></div></div><div class="st-v">'+ta+'</div><div class="st-l">Videoaulas</div></div><div class="st"><div class="st-top"><div class="st-icon orange"><i class="fas fa-tasks"></i></div></div><div class="st-v">'+pct+'%</div><div class="st-l">Progresso geral</div></div><div class="st"><div class="st-top"><div class="st-icon gold"><i class="fas fa-certificate"></i></div></div><div class="st-v">'+tc+'</div><div class="st-l">Certificados</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"><div><div class="pnl"><div class="pnl-hd"><div class="pnl-t"><i class="fas fa-clock"></i> Atividade recente</div></div><div class="pnl-bd">';if(rec.length){rec.forEach(r=>{h+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd2)"><div style="width:32px;height:32px;border-radius:50%;background:'+(r.done?'rgba(46,125,50,.12)':'rgba(255,152,0,.12)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-'+(r.done?'check':'play')+'" style="font-size:11px;color:'+(r.done?'var(--p)':'#E65100')+'"></i></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.titulo+'</div><div style="font-size:11px;color:var(--tx3)">'+r.nr+'</div></div><div style="font-size:11px;color:var(--tx3)">'+fmtD(r.dt)+'</div></div>'})}else h+='<div class="empty" style="padding:24px"><i class="fas fa-history"></i><p>Nenhuma atividade</p></div>';h+='</div></div></div><div><div class="pnl"><div class="pnl-hd"><div class="pnl-t"><i class="fas fa-flag"></i> Comece por aqui</div></div><div class="pnl-bd">';if(pend.length){pend.forEach(n=>{const q=S.videoaulasCache.filter(v=>v.nr_id===n.id).length;h+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd2);cursor:pointer" onclick="navigate(\'cursos\')"><div style="width:32px;height:32px;border-radius:10px;background:rgba(46,125,50,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas '+n.ic+'" style="font-size:13px;color:var(--p)"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600">NR '+n.id+' - '+n.nm+'</div><div style="font-size:11px;color:var(--tx3)">'+q+' aula'+(q!==1?'s':'')+'</div></div><i class="fas fa-chevron-right" style="color:var(--tx3);font-size:12px"></i></div>'})}else h+='<div class="empty" style="padding:24px"><i class="fas fa-check-circle"></i><p>Todas as NRs iniciadas!</p></div>';h+='</div></div></div></div>';$('#mc').innerHTML=h}
+
+/* === RENDER: CURSOS (NR CARDS COM LINK BOX - ESTILO ORIGINAL) === */
+function renderCursos(){const q=S.searchQuery;let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'NRs e Cursos'}])+'<div class="page-hd"><h1><i class="fas fa-book-open"></i> Normas Regulamentadoras</h1><p>Selecione uma NR para acessar videoaulas, materiais e provas.</p></div><div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="catFilter"><button class="btn btn-xs btn-p" onclick="filterCat(\'todos\',this)">Todos (38)</button><button class="btn btn-xs btn-s" onclick="filterCat(\'geral\',this)">Geral</button><button class="btn btn-xs btn-s" onclick="filterCat(\'especifico\',this)">Especifico</button><button class="btn btn-xs btn-s" onclick="filterCat(\'saude\',this)">Saude</button><button class="btn btn-xs btn-s" onclick="filterCat(\'setorial\',this)">Setorial</button></div><div id="nrList">';let filtered=NRS;if(q)filtered=filtered.filter(n=>(n.nm+' NR '+n.id).toLowerCase().includes(q));filtered.forEach(n=>{const db=S.nrsDbCache.find(d=>String(d.numero)===n.id);const aulas=S.videoaulasCache.filter(v=>v.nr_id===n.id);const mats=S.materiaisCache.filter(m=>m.nr_id===n.id);const questoes=S.questoesCache.filter(q=>q.nr_id===n.id);const prog=S.progressoCache.filter(p=>p.videoaulas&&p.videoaulas.nr_id===n.id);const concl=prog.filter(p=>p.concluido).length;const pct=aulas.length?Math.round(concl/aulas.length*100):0;h+='<div class="nr-card-full" data-cat="'+n.cat+'"><div class="nr-card-top"><div class="nr-ic"><i class="fas '+n.ic+'"></i></div><div class="nr-info"><div class="nr-num">NR '+n.id+'</div><div class="nr-nm">'+n.nm+'</div><div class="nr-cat"><i class="fas fa-tag"></i> '+CAT_L[n.cat]+' · '+aulas.length+' aula'+(aulas.length!==1?'s':'')+' · '+mats.length+' material'+(mats.length!==1?'is':'')+(questoes.length?' · '+questoes.length+' questoe'+(questoes.length!==1?'s':''):'')+'</div></div></div>';h+='<div class="link-box"><span class="link-label"><i class="fas fa-link"></i> Conteudo:</span>';if(db?.link_video)h+='<a href="'+db.link_video+'" target="_blank" class="btn btn-link youtube"><i class="fab fa-youtube"></i> Video</a>';else h+='<span class="sem-conteudo">Sem video</span>';if(db?.link_material)h+='<a href="'+db.link_material+'" target="_blank" class="btn btn-link material"><i class="fas fa-download"></i> Material</a>';else h+='<span class="sem-conteudo">Sem material</span>';if(questoes.length)h+='<button class="btn btn-link quiz" onclick="iniciarQuiz(\''+n.id+'\')"><i class="fas fa-question-circle"></i> Prova ('+questoes.length+' quest.)</button>';else if(db?.link_prova)h+='<a href="'+db.link_prova+'" target="_blank" class="btn btn-link prova"><i class="fas fa-file-alt"></i> Prova</a>';else h+='<span class="sem-conteudo">Sem prova</span>';if(canManage()){h+='<div class="admin-links"><button onclick="modalGerenciarLinks(\''+n.id+'\')" title="Gerenciar links"><i class="fas fa-edit"></i> Links</button>';if(questoes.length)h+='<button onclick="modalGerenciarQuestoes(\''+n.id+'\')" title="Questoes"><i class="fas fa-question"></i> Quest.</button>';h+='<button onclick="modalAddQuestao(\''+n.id+'\')" title="Add questao"><i class="fas fa-plus"></i> Quest.</button></div>'}h+='</div>';if(aulas.length){h+='<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div><div class="prog-text"><span>'+pct+'% concluido</span><span>'+concl+'/'+aulas.length+' aulas</span></div>'}h+='</div>'});if(!filtered.length)h+='<div class="empty"><i class="fas fa-search"></i><h4>Nenhuma NR encontrada</h4></div>';h+='</div>';$('#mc').innerHTML=h}
+
+function filterCat(cat,btn){$$('#catFilter .btn').forEach(b=>{b.className='btn btn-xs btn-s'});btn.className='btn btn-xs btn-p';$$('#nrList .nr-card-full').forEach(c=>{c.style.display=(cat==='todos'||c.dataset.cat===cat)?'':'none'})}
+
+/* === GERENCIAR LINKS POR NR (modal admin) === */
+function modalGerenciarLinks(nrId){const nr=getNr(nrId);const db=S.nrsDbCache.find(d=>String(d.numero)===nrId);openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-link" style="color:var(--p)"></i> Links - NR '+nrId+'</h3><form onsubmit="salvarLinks(event,\''+nrId+'\')"><div class="fld"><label><i class="fab fa-youtube" style="color:#FF0000"></i> Link do Video (YouTube)</label><input type="url" id="lnkVideo" value="'+(db?.link_video||'')+'" placeholder="https://youtube.com/watch?v=..."></div><div class="fld"><label><i class="fas fa-download" style="color:#1565C0"></i> Link do Material (PDF/Drive)</label><input type="url" id="lnkMaterial" value="'+(db?.link_material||'')+'" placeholder="https://drive.google.com/..."></div><div class="fld"><label><i class="fas fa-file-alt" style="color:#E65100"></i> Link da Prova (Form/Drive)</label><input type="url" id="lnkProva" value="'+(db?.link_prova||'')+'" placeholder="https://forms.gle/..."></div><div style="display:flex;gap:8px"><button type="submit" class="btn btn-p" style="flex:1"><i class="fas fa-save"></i> Salvar Links</button>'+(db?'<button type="button" class="btn btn-d" onclick="limparLinks(\''+nrId+'\')"><i class="fas fa-trash"></i> Limpar</button>':'')+'</div></form>')}
+
+async function salvarLinks(e,nrId){e.preventDefault();const links={id:nrId,numero:parseInt(nrId),link_video:$('#lnkVideo').value.trim()||null,link_material:$('#lnkMaterial').value.trim()||null,link_prova:$('#lnkProva').value.trim()||null};const{error}=await sbUpsertNr(links);if(error){handleError(error);return}const idx=S.nrsDbCache.findIndex(d=>String(d.numero)===nrId);if(idx>=0)S.nrsDbCache[idx]=links;else S.nrsDbCache.push(links);closeMdl();toast('Links salvos!','success');renderCursos()}
+
+async function limparLinks(nrId){confirmDialog('Limpar links','Remover todos os links desta NR?',async()=>{const{error}=await sbApagarNrLinks(nrId);if(error){handleError(error);return}S.nrsDbCache=S.nrsDbCache.filter(d=>String(d.numero)!==nrId);toast('Links removidos!','success');closeMdl();renderCursos()})}
+
+/* === VIDEO MODAL === */
+function abrirVideo(url,nrId){const embed=getYtEmbed(url);if(!embed){window.open(url,'_blank');return}const nr=getNr(nrId);openMdl('<div class="video-header"><h3><i class="fab fa-youtube"></i> NR '+nrId+(nr?' - '+nr.nm:'')+'</h3><button class="btn-close-video" onclick="closeMdl()"><i class="fas fa-times"></i></button></div><div class="video-container"><iframe src="'+embed+'" allowfullscreen></iframe></div>',true);$('#mdlBox').closest('.mdl-bg').classList.add('video-modal')}
+
+/* === QUIZ/PROVA (estilo Unicesumar) === */
+async function iniciarQuiz(nrId){const{data:questoes,error}=await sbGetQuestoes(nrId);if(error||!questoes||!questoes.length){toast('Nenhuma questao cadastrada para esta NR','warn');return}const{data:respAnt}=await sbGetRespostasProva(uid(),nrId);const respostasAnt=respAnt||[];S.quizState={nrId,questoes,respostas:{},respostasAnt,atual:0,tempo:questoes.length*120,iniciado:Date.now()};renderQuiz()}
+
+function renderQuiz(){const qz=S.quizState;if(!qz)return;const q=qz.questoes[qz.atual];const total=qz.questoes.length;const pct=Math.round((qz.atual+1)/total*100);const letra=r=>['A','B','C','D'][r]||'?';let h='<div class="quiz-container"><div class="quiz-header"><div><h3>NR '+qz.nrId+' - Prova</h3><div style="font-size:13px;opacity:.8">Questao '+(qz.atual+1)+' de '+total+'</div></div><div class="quiz-timer" id="quizTimer">'+formatTime(qz.tempo)+'</div></div><div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div><span style="font-size:12px;font-weight:600">'+pct+'%</span></div><div class="quiz-question"><div class="quiz-q-text">'+(qz.atual+1)+'. '+q.pergunta+'</div>';const opts=[{l:'A',v:q.opcao_a},{l:'B',v:q.opcao_b},{l:'C',v:q.opcao_c},{l:'D',v:q.opcao_d}].filter(o=>o.v);opts.forEach(o=>{const sel=qz.respostas[q.id]===o.l.toLowerCase();h+='<label class="quiz-option'+(sel?' selected':'')+'" onclick="selecionarOpcao('+q.id+',\''+o.l.toLowerCase()+'\')"><input type="radio" name="q'+q.id+'" '+(sel?'checked':'')+'><span class="quiz-opt-letter">'+o.l+'</span><span>'+o.v+'</span></label>'});h+='</div><div class="quiz-footer"><button class="btn btn-s" onclick="closeMdl();S.quizState=null" ><i class="fas fa-times"></i> Sair</button><div style="display:flex;gap:8px">'+(qz.atual>0?'<button class="btn btn-s" onclick="quizNav(-1)"><i class="fas fa-arrow-left"></i> Anterior</button>':'')+'<button class="btn btn-p" onclick="'+(qz.atual<total-1?'quizNav(1)':'enviarQuiz()')+'">'+(qz.atual<total-1?'Proxima <i class="fas fa-arrow-right"></i>':'<i class="fas fa-paper-plane"></i> Enviar')+'</button></div></div></div>';openMdl(h,true);if(!S.quizTimer)S.quizTimer=setInterval(()=>{if(!S.quizState){clearInterval(S.quizTimer);S.quizTimer=null;return}S.quizState.tempo--;const el=$('#quizTimer');if(el)el.textContent=formatTime(S.quizState.tempo);if(S.quizState.tempo<=0){clearInterval(S.quizTimer);S.quizTimer=null;enviarQuiz()}},1000)}
+
+function selecionarOpcao(qid,letra){if(!S.quizState)return;S.quizState.respostas[qid]=letra;renderQuiz()}
+function quizNav(dir){if(!S.quizState)return;S.quizState.atual=Math.max(0,Math.min(S.quizState.questoes.length-1,S.quizState.atual+dir));renderQuiz()}
+function formatTime(s){const m=Math.floor(s/60);return String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+
+async function enviarQuiz(){if(!S.quizState)return;const qz=S.quizState;clearInterval(S.quizTimer);S.quizTimer=null;const total=qz.questoes.length;const respondidas=Object.keys(qz.respostas).length;if(respondidas<total){if(!confirm('Voce respondeu '+respondidas+'/'+total+' questoes. Deseja enviar assim mesmo?'))return}let acertos=0;for(const q of qz.questoes){const resp=qz.respostas[q.id]||null;const correta=resp===q.correta;if(correta)acertos++;await sbSalvarResposta(uid(),qz.nrId,q.id,resp,correta)}const nota=Math.round(acertos/total*10*10)/10;const passou=nota>=7;const nr=getNr(qz.nrId);let h='<div class="quiz-container"><div class="quiz-result"><div style="font-size:48px;margin-bottom:8px"><i class="fas fa-'+(passou?'trophy':'times-circle')+'" style="color:'+(passou?'var(--gold)':'#D32F2F')+'"></i></div><div class="score'+(passou?'':' fail')+'">'+nota.toFixed(1)+'</div><div class="quiz-result-msg">'+(passou?'Parabens! Voce passou!':'Nao atingiu a nota minima (7.0)')+'</div><div style="font-size:14px;color:var(--tx2);margin-bottom:8px">'+acertos+' acerto'+(acertos!==1?'s':'')+' de '+total+' · NR '+qz.nrId+(nr?' - '+nr.nm:'')+'</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-s" onclick="closeMdl();S.quizState=null"><i class="fas fa-arrow-left"></i> Voltar</button>'+(passou?'<button class="btn btn-g" onclick="emitirCertAposProva(\''+qz.nrId+'\','+nota+')"><i class="fas fa-certificate"></i> Emitir Certificado</button>':'<button class="btn btn-p" onclick="closeMdl();iniciarQuiz(\''+qz.nrId+'\')"><i class="fas fa-redo"></i> Refazer</button>')+'</div></div></div>';openMdl(h,true);await sbLancarNota(uid(),qz.nrId,nota,'Prova automatica - '+acertos+'/'+total);S.notasCache.push({nr_id:qz.nrId,nota:nota});S.quizState=null;toast('Prova enviada! Nota: '+nota.toFixed(1),passou?'success':'warn')}
+
+async function emitirCertAposProva(nrId,nota){const{error}=await sbEmitirCertificado(uid(),nrId,nota);if(error){handleError(error);return}const{data}=await sbGetCertificadosAluno(uid());S.certificadosCache=data||[];closeMdl();toast('Certificado emitido!','success');navigate('certificados')}
+
+/* === GERENCIAR QUESTOES === */
+function modalAddQuestao(nrId){openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-plus-circle" style="color:var(--p)"></i> Nova Questao - NR '+nrId+'</h3><form onsubmit="criarQuestao(event,\''+nrId+'\')"><div class="fld"><label>Pergunta</label><textarea id="qPergunta" rows="3" placeholder="Digite a pergunta..." required style="resize:vertical"></textarea></div><div class="fld"><label>Opcao A</label><input type="text" id="qA" required placeholder="Alternativa A"></div><div class="fld"><label>Opcao B</label><input type="text" id="qB" required placeholder="Alternativa B"></div><div class="fld"><label>Opcao C</label><input type="text" id="qC" required placeholder="Alternativa C"></div><div class="fld"><label>Opcao D</label><input type="text" id="qD" required placeholder="Alternativa D"></div><div class="fld"><label>Resposta correta</label><select id="qCorreta" required><option value="a">A</option><option value="b">B</option><option value="c">C</option><option value="d">D</option></select></div><div class="fld"><label>Ordem</label><input type="number" id="qOrdem" value="1" min="1"></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar Questao</button></form>')}
+
+async function criarQuestao(e,nrId){e.preventDefault();const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Salvando...';const{error}=await sbCriarQuestao({nr_id:nrId,pergunta:$('#qPergunta').value,opcao_a:$('#qA').value,opcao_b:$('#qB').value,opcao_c:$('#qC').value,opcao_d:$('#qD').value,correta:$('#qCorreta').value,ordem:parseInt($('#qOrdem').value)||1,criado_por:uid()});if(error){handleError(error);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Salvar Questao';return}closeMdl();toast('Questao criada!','success');const{data}=await sbGetQuestoes(nrId);S.questoesCache=(S.questoesCache.filter(q=>q.nr_id!==nrId)).concat(data||[]);renderCursos()}
+
+async function modalGerenciarQuestoes(nrId){const{data:questoes}=await sbGetQuestoes(nrId);const nr=getNr(nrId);let h='<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-question-circle" style="color:var(--p)"></i> Questoes - NR '+nrId+(nr?' - '+nr.nm:'')+'</h3>';if(questoes&&questoes.length){questoes.forEach((q,i)=>{h+='<div style="background:var(--ip);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:10px"><div style="font-size:14px;font-weight:700;margin-bottom:8px">'+(i+1)+'. '+q.pergunta+'</div><div style="font-size:12px;color:var(--tx2);margin-bottom:4px">A) '+q.opcao_a+' · B) '+q.opcao_b+'</div><div style="font-size:12px;color:var(--tx2);margin-bottom:8px">C) '+q.opcao_c+' · D) '+q.opcao_d+'</div><div style="display:flex;justify-content:space-between;align-items:center"><span class="badge bg-ok">Correta: '+q.correta.toUpperCase()+'</span><button class="btn btn-xs btn-d" onclick="apagarQuestaoConfirm('+q.id+',\''+nrId+'\')"><i class="fas fa-trash"></i> Apagar</button></div></div>'})}else h+='<div class="empty"><i class="fas fa-question-circle"></i><p>Nenhuma questao cadastrada</p></div>';h+='<button class="btn btn-p btn-block" style="margin-top:16px" onclick="closeMdl();modalAddQuestao(\''+nrId+'\')"><i class="fas fa-plus"></i> Adicionar Questao</button>';openMdl(h)}
+
+async function apagarQuestaoConfirm(id,nrId){confirmDialog('Apagar questao','Tem certeza?',async()=>{const{error}=await sbApagarQuestao(id);if(error){handleError(error);return}S.questoesCache=S.questoesCache.filter(q=>q.id!==id);toast('Questao apagada!','success');closeMdl();renderCursos()})}
+
+/* === RENDER: MEU PROGRESSO === */
+function renderMeuProgresso(){const nrsComAula=new Set(S.videoaulasCache.map(v=>v.nr_id));let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Meu Progresso'}])+'<div class="page-hd"><h1><i class="fas fa-chart-bar"></i> Meu Progresso</h1></div><div class="pnl"><div class="pnl-hd"><div class="pnl-t">Progresso por NR</div></div><div class="pnl-bd">';let tg=0,tc=0;NRS.forEach(n=>{if(!nrsComAula.has(n.id))return;const aulas=S.videoaulasCache.filter(v=>v.nr_id===n.id);const prog=S.progressoCache.filter(p=>p.videoaulas&&p.videoaulas.nr_id===n.id);const c=prog.filter(p=>p.concluido).length;const pct=aulas.length?Math.round(c/aulas.length*100):0;tg+=aulas.length;tc+=c;h+='<div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--bd2)"><div style="width:32px;height:32px;border-radius:8px;background:rgba(46,125,50,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas '+n.ic+'" style="font-size:13px;color:var(--p)"></i></div><div style="width:50px;font-size:12px;font-weight:700;color:var(--gold)">NR '+n.id+'</div><div style="flex:1"><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div><div style="width:40px;text-align:right;font-size:13px;font-weight:700">'+pct+'%</div><div style="width:60px;text-align:right;font-size:11px;color:var(--tx3)">'+c+'/'+aulas.length+'</div></div>'});if(!tg)h+='<div class="empty"><i class="fas fa-chart-pie"></i><p>Nenhuma NR com conteudo</p></div>';h+='</div></div>';$('#mc').innerHTML=h}
+
+/* === RENDER: CERTIFICADOS === */
+function renderCertificados(){let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Certificados'}])+'<div class="page-hd"><h1><i class="fas fa-certificate"></i> Meus Certificados</h1></div>';if(S.certificadosCache.length){h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">';S.certificadosCache.forEach(c=>{const nr=getNr(c.nr_id);h+='<div class="pnl" style="margin:0"><div class="pnl-bd" style="text-align:center;padding:28px 20px"><div style="width:64px;height:64px;border-radius:50%;background:rgba(201,176,55,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><i class="fas fa-award" style="font-size:28px;color:var(--gold)"></i></div><h3 style="font-size:15px;margin-bottom:4px">'+(nr?'NR '+nr.id+' - '+nr.nm:'NR '+c.nr_id)+'</h3><p style="font-size:12px;color:var(--tx3);margin-bottom:8px">Codigo: '+c.codigo+'</p><div style="display:flex;justify-content:center;gap:16px;font-size:13px;margin-bottom:12px"><span><strong>Nota:</strong> '+c.nota+'</span><span><strong>Carga:</strong> '+c.carga_horaria+'h</span></div><p style="font-size:11px;color:var(--tx3);margin-bottom:12px">Emitido em '+fmtD(c.criado_em||c.emitido_em)+'</p><button class="btn btn-sm btn-g" onclick="gerarPDF('+c.id+')"><i class="fas fa-file-pdf"></i> Baixar PDF</button></div></div>'});h+='</div>'}else h+='<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-award"></i><h4>Nenhum certificado</h4><p>Complete uma prova com nota minima 7.0.</p></div></div></div>';$('#mc').innerHTML=h}
+
+async function gerarPDF(certId){const cert=S.certificadosCache.find(c=>c.id===certId);if(!cert)return;try{const{jsPDF}=window.jspdf;const doc=new jsPDF('landscape','mm','a4');doc.setFillColor(250,248,240);doc.rect(0,0,297,210,'F');doc.setDrawColor(46,125,50);doc.setLineWidth(2);doc.rect(10,10,277,190,'S');doc.setDrawColor(201,176,55);doc.setLineWidth(0.5);doc.rect(14,14,269,182,'S');doc.setFont('helvetica','bold');doc.setFontSize(32);doc.setTextColor(46,125,50);doc.text('CERTIFICADO',148.5,55,{align:'center'});doc.setFontSize(12);doc.setTextColor(100,100,100);doc.text('Certificamos que',148.5,75,{align:'center'});doc.setFontSize(22);doc.setTextColor(26,26,26);doc.text(S.user.nome_completo,148.5,90,{align:'center'});doc.setFontSize(12);doc.setTextColor(100,100,100);doc.text('concluiu com exito o curso',148.5,105,{align:'center'});const nr=getNr(cert.nr_id);doc.setFontSize(18);doc.setTextColor(46,125,50);doc.text('NR '+cert.nr_id+(nr?' - '+nr.nm:''),148.5,120,{align:'center'});doc.setFontSize(12);doc.setTextColor(100,100,100);doc.text('Nota: '+cert.nota+' | Carga Horaria: '+cert.carga_horaria+'h | Codigo: '+cert.codigo,148.5,140,{align:'center'});doc.text('Emitido em '+fmtD(cert.criado_em||cert.emitido_em),148.5,155,{align:'center'});doc.setFontSize(10);doc.text('Plataforma SulSafe - Seguranca do Trabalho',148.5,175,{align:'center'});doc.save('certificado-NR'+cert.nr_id+'.pdf');toast('PDF gerado!','success')}catch(e){console.error(e);toast('Erro ao gerar PDF','err')}}
+
+/* === RENDER: SALAS === */
+function renderSalas(){let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Salas ao Vivo'}])+'<div class="page-hd"><h1><i class="fas fa-video"></i> Salas ao Vivo</h1><p>Acesse aulas ao vivo.</p>'+(canManage()?'<div class="page-hd-actions"><button class="btn btn-sm btn-p" onclick="modalCriarSala()"><i class="fas fa-plus"></i> Criar sala</button></div>':'')+'</div>';if(S.salasCache.length){S.salasCache.forEach(s=>{h+='<div class="mt-c"><div><div class="mt-topic"><i class="fas fa-video" style="color:var(--p);margin-right:8px"></i>'+s.topico+'</div><div class="mt-id">Por '+(s.profiles?.nome_completo||'Prof')+' · '+fmtFull(s.created_at)+'</div></div><div style="display:flex;gap:8px"><a href="https://meet.google.com/'+(s.meet_id||'')+'" target="_blank" class="btn btn-sm btn-p"><i class="fas fa-external-link-alt"></i> Entrar</a>'+(canManage()?'<button class="btn btn-xs btn-d" onclick="apagarSala('+s.id+')"><i class="fas fa-trash"></i></button>':'')+'</div></div>'})}else h+='<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-video-slash"></i><h4>Nenhuma sala ativa</h4></div></div></div>';$('#mc').innerHTML=h}
+
+function modalCriarSala(){openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-plus-circle" style="color:var(--p)"></i> Nova Sala</h3><form onsubmit="criarSala(event)"><div class="fld"><label>Topico da aula</label><input type="text" id="salaTopico" required placeholder="Ex: NR 5 - CIPA ao vivo"></div><div class="fld"><label>Google Meet ID (opcional)</label><input type="text" id="salaMeet" placeholder="xxx-xxxx-xxx"></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Criar Sala</button></form>')}
+
+async function criarSala(e){e.preventDefault();const{error}=await sbCriarSala($('#salaTopico').value,$('#salaMeet').value);if(error){handleError(error);return}closeMdl();toast('Sala criada!','success');const{data}=await sbGetSalasAtivas();S.salasCache=data||[];renderSalas()}
+
+async function apagarSala(id){confirmDialog('Apagar sala','Tem certeza?',async()=>{const{error}=await sbApagarSala(id);if(error){handleError(error);return}S.salasCache=S.salasCache.filter(s=>s.id!==id);toast('Sala apagada!','success');renderSalas()})}
+
+/* === RENDER: CHAT === */
+function renderChat(){const h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Chat'}])+'<div class="page-hd"><h1><i class="fas fa-comments"></i> Chat</h1></div><div class="chat-box"><div class="chat-msgs" id="chatMsgs"><div class="chat-m b"><strong>Equipe SulSafe:</strong> Bem-vindo ao chat!</div></div><div class="chat-row"><input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeydown="if(event.key===\'Enter\')enviarChat()"><button class="btn btn-p btn-sm" onclick="enviarChat()"><i class="fas fa-paper-plane"></i></button></div></div>';$('#mc').innerHTML=h}
+function enviarChat(){const inp=$('#chatInput');const msg=inp.value.trim();if(!msg)return;const msgs=$('#chatMsgs');msgs.innerHTML+='<div class="chat-m u">'+msg.replace(/</g,'&lt;')+'</div>';inp.value='';msgs.scrollTop=msgs.scrollHeight;setTimeout(()=>{msgs.innerHTML+='<div class="chat-m b"><strong>Suporte:</strong> Obrigado! Em breve retornaremos.</div>';msgs.scrollTop=msgs.scrollHeight},1500)}
+
+/* === RENDER: ADMIN === */
+function renderAdmin(){if(!canManage()){navigate('inicio');return}let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Painel Admin'}])+'<div class="page-hd"><h1><i class="fas fa-cog"></i> Painel Administrativo</h1></div><div class="stats"><div class="st"><div class="st-top"><div class="st-icon green"><i class="fas fa-users"></i></div></div><div class="st-v" id="statAlunos">—</div><div class="st-l">Alunos</div></div><div class="st"><div class="st-top"><div class="st-icon blue"><i class="fas fa-play-circle"></i></div></div><div class="st-v">'+S.videoaulasCache.length+'</div><div class="st-l">Videoaulas</div></div><div class="st"><div class="st-top"><div class="st-icon orange"><i class="fas fa-question-circle"></i></div></div><div class="st-v">'+S.questoesCache.length+'</div><div class="st-l">Questoes</div></div><div class="st"><div class="st-top"><div class="st-icon gold"><i class="fas fa-certificate"></i></div></div><div class="st-v">'+S.certificadosCache.length+'</div><div class="st-l">Certificados</div></div></div>';h+='<div class="tabs"><button class="tab-b on" onclick="adminTab(\'tabUsers\',this)">Usuarios</button><button class="tab-b" onclick="adminTab(\'tabAulas\',this)">Videoaulas</button><button class="tab-b" onclick="adminTab(\'tabMats\',this)">Materiais</button></div>';h+='<div class="tab-c on" id="tabUsers"><input type="text" class="search" style="margin:0 0 16px;max-width:300px" placeholder="Buscar usuario..." id="searchUsers" oninput="filtrarUsers()"><div class="tw"><table><thead><tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="usersTb"></tbody></table></div></div>';h+='<div class="tab-c" id="tabAulas"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><input type="text" class="search" style="margin:0;max-width:300px" placeholder="Buscar aula..." id="searchAulas" oninput="filtrarAulas()"><button class="btn btn-sm btn-p" onclick="modalAddVideoaula()"><i class="fas fa-plus"></i> Nova</button></div><div class="tw"><table><thead><tr><th>Titulo</th><th>NR</th><th>Acoes</th></tr></thead><tbody id="aulasTb"></tbody></table></div></div>';h+='<div class="tab-c" id="tabMats"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><input type="text" class="search" style="margin:0;max-width:300px" placeholder="Buscar material..." id="searchMats" oninput="filtrarMats()"><button class="btn btn-sm btn-p" onclick="modalAddMaterial()"><i class="fas fa-plus"></i> Novo</button></div><div class="tw"><table><thead><tr><th>Titulo</th><th>NR</th><th>Acoes</th></tr></thead><tbody id="matsTb"></tbody></table></div></div>';$('#mc').innerHTML=h;loadAdminData()}
+
+function adminTab(id,btn){$$('.tab-b').forEach(b=>b.classList.remove('on'));$$('.tab-c').forEach(c=>c.classList.remove('on'));btn.classList.add('on');$('#'+id).classList.add('on')}
+
+async function loadAdminData(){const{data:users}=await sbGetAllUsers();window._users=users||[];$('#statAlunos').textContent=window._users.filter(u=>u.role==='aluno'&&u.status==='ativo').length;renderUsersTb(window._users);renderAulasTb(S.videoaulasCache);renderMatsTb(S.materiaisCache);const{data:q}=await sb.from('questoes').select('*');S.questoesCache=q||[]}
+
+function renderUsersTb(users){const tb=$('#usersTb');if(!tb)return;if(!users.length){tb.innerHTML='<tr><td colspan="5" class="empty"><p>Nenhum usuario</p></td></tr>';return}tb.innerHTML=users.map(u=>'<tr><td><strong>'+(u.nome_completo||'—')+'</strong></td><td style="font-size:12px">'+(u.email||'')+'</td><td><span class="badge bg-info">'+u.role+'</span></td><td><span class="badge '+(u.status==='ativo'?'bg-ok':'bg-warn')+'">'+(u.status||'pendente')+'</span></td><td><div class="tw-actions">'+(u.status==='pendente'?'<button class="btn btn-xs btn-p" onclick="liberarUser(\''+u.id+'\')"><i class="fas fa-check"></i></button>':'')+(u.role!=='admin'?'<button class="btn btn-xs btn-d" onclick="apagarUser(\''+u.id+'\')"><i class="fas fa-trash"></i></button>':'')+'</div></td></tr>').join('')}
+function filtrarUsers(){const q=($('#searchUsers')?.value||'').toLowerCase();renderUsersTb(window._users.filter(u=>(u.nome_completo+' '+u.email).toLowerCase().includes(q)))}
+function renderAulasTb(aulas){const tb=$('#aulasTb');if(!tb)return;if(!aulas.length){tb.innerHTML='<tr><td colspan="3" class="empty"><p>Nenhuma videoaula</p></td></tr>';return}tb.innerHTML=aulas.map(a=>{const nr=getNr(a.nr_id);return'<tr><td><strong>'+(a.titulo||'Sem titulo')+'</strong></td><td><span class="badge bg-info">NR '+a.nr_id+(nr?' - '+nr.nm:'')+'</span></td><td><div class="tw-actions"><button class="btn btn-xs btn-d" onclick="apagarVideoaulaAdmin('+a.id+')"><i class="fas fa-trash"></i></button></div></td></tr>'}).join('')}
+function filtrarAulas(){const q=($('#searchAulas')?.value||'').toLowerCase();renderAulasTb(S.videoaulasCache.filter(a=>(a.titulo+' NR '+a.nr_id).toLowerCase().includes(q)))}
+function renderMatsTb(mats){const tb=$('#matsTb');if(!tb)return;if(!mats.length){tb.innerHTML='<tr><td colspan="3" class="empty"><p>Nenhum material</p></td></tr>';return}tb.innerHTML=mats.map(m=>{const nr=getNr(m.nr_id);return'<tr><td><strong>'+(m.titulo||'Sem titulo')+'</strong></td><td><span class="badge bg-info">NR '+m.nr_id+(nr?' - '+nr.nm:'')+'</span></td><td><div class="tw-actions"><button class="btn btn-xs btn-d" onclick="apagarMaterialAdmin(\''+m.id+'\')"><i class="fas fa-trash"></i></button></div></td></tr>'}).join('')}
+function filtrarMats(){const q=($('#searchMats')?.value||'').toLowerCase();renderMatsTb(S.materiaisCache.filter(m=>(m.titulo+' NR '+m.nr_id).toLowerCase().includes(q)))}
+
+/* === ADMIN: APAGAR (todas funcionando) === */
+async function apagarVideoaulaAdmin(id){confirmDialog('Apagar videoaula','Tem certeza?',async()=>{const{error}=await sbApagarVideoaula(id);if(error){handleError(error);return}S.videoaulasCache=S.videoaulasCache.filter(v=>v.id!==id);toast('Videoaula apagada!','success');renderAulasTb(S.videoaulasCache)})}
+async function apagarMaterialAdmin(id){confirmDialog('Apagar material','Tem certeza?',async()=>{const{error}=await sbApagarMaterial(id);if(error){handleError(error);return}S.materiaisCache=S.materiaisCache.filter(m=>String(m.id)!==String(id));toast('Material apagado!','success');renderMatsTb(S.materiaisCache)})}
+async function apagarUser(id){if(id===uid()){toast('Nao pode apagar seu proprio usuario','warn');return}confirmDialog('Apagar usuario','Tem certeza? Dados serao perdidos.',async()=>{const{error}=await sbApagarUsuario(id);if(error){handleError(error);return}window._users=window._users.filter(u=>u.id!==id);$('#statAlunos').textContent=window._users.filter(u=>u.role==='aluno'&&u.status==='ativo').length;renderUsersTb(window._users);toast('Usuario apagado!','success')})}
+async function liberarUser(id){const{error}=await sbLiberarUsuario(id);if(error){handleError(error);return}const u=window._users.find(u=>u.id===id);if(u)u.status='ativo';$('#statAlunos').textContent=window._users.filter(u=>u.role==='aluno'&&u.status==='ativo').length;renderUsersTb(window._users);toast('Usuario liberado!','success')}
+
+/* === MODAIS ADMIN: ADD VIDEOAULA/MATERIAL === */
+function modalAddVideoaula(){const opts=NRS.map(n=>'<option value="'+n.id+'">NR '+n.id+' - '+n.nm+'</option>').join('');openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-plus-circle" style="color:var(--p)"></i> Nova Videoaula</h3><form onsubmit="addVideoaula(event)"><div class="fld"><label>NR</label><select id="avNr" required>'+opts+'</select></div><div class="fld"><label>Titulo</label><input type="text" id="avTitulo" required placeholder="Ex: Introducao"></div><div class="fld"><label>URL do Video (YouTube)</label><input type="url" id="avUrl" required placeholder="https://youtube.com/..."></div><div class="fld"><label>Ordem</label><input type="number" id="avOrdem" value="1" min="1"></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar</button></form>')}
+async function addVideoaula(e){e.preventDefault();const{error}=await sbCriarVideoaula({nr_id:$('#avNr').value,titulo:$('#avTitulo').value,url:$('#avUrl').value,ordem:parseInt($('#avOrdem').value)||1,criado_por:uid()});if(error){handleError(error);return}closeMdl();toast('Videoaula criada!','success');const{data}=await sbGetVideoaulas();S.videoaulasCache=data||[];renderAulasTb(S.videoaulasCache)}
+
+function modalAddMaterial(){const opts=NRS.map(n=>'<option value="'+n.id+'">NR '+n.id+' - '+n.nm+'</option>').join('');openMdl('<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><h3 style="font-size:18px;font-weight:700;margin-bottom:20px"><i class="fas fa-plus-circle" style="color:var(--p)"></i> Novo Material</h3><form onsubmit="addMaterial(event)"><div class="fld"><label>NR</label><select id="amNr" required>'+opts+'</select></div><div class="fld"><label>Titulo</label><input type="text" id="amTitulo" required placeholder="Ex: Apostila NR 5"></div><div class="fld"><label>URL do Material (Drive/PDF)</label><input type="url" id="amUrl" required placeholder="https://drive.google.com/..."></div><div class="fld"><label>Tipo</label><select id="amTipo"><option value="pdf">PDF</option><option value="apostila">Apostila</option><option value="slides">Slides</option><option value="outro">Outro</option></select></div><button type="submit" class="btn btn-p btn-block"><i class="fas fa-save"></i> Salvar</button></form>')}
+async function addMaterial(e){e.preventDefault();const{error}=await sbCriarMaterial({nr_id:$('#amNr').value,titulo:$('#amTitulo').value,url:$('#amUrl').value,tipo:$('#amTipo').value,criado_por:uid()});if(error){handleError(error);return}closeMdl();toast('Material criado!','success');const{data}=await sbGetMateriais();S.materiaisCache=data||[];renderMatsTb(S.materiaisCache)}
+
+/* === RENDER: PENDENTES === */
+async function renderPendentes(){if(!canManage()){navigate('inicio');return}const{data:pend}=await sbGetPendentes();let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Pendentes'}])+'<div class="page-hd"><h1><i class="fas fa-user-clock"></i> Aprovacoes Pendentes</h1></div>';if(pend?.length){h+='<div class="tw"><table><thead><tr><th>Nome</th><th>Email</th><th>Acoes</th></tr></thead><tbody>'+pend.map(p=>'<tr><td><strong>'+p.nome_completo+'</strong></td><td style="font-size:12px">'+p.email+'</td><td><div class="tw-actions"><button class="btn btn-xs btn-p" onclick="liberarUser(\''+p.id+'\');renderPendentes()"><i class="fas fa-check"></i> Liberar</button><button class="btn btn-xs btn-d" onclick="apagarUser(\''+p.id+'\');renderPendentes()"><i class="fas fa-trash"></i></button></div></td></tr>').join('')+'</tbody></table></div>'}else h+='<div class="pnl"><div class="pnl-bd"><div class="empty"><i class="fas fa-check-circle"></i><h4>Nenhum pendente</h4></div></div></div>';$('#mc').innerHTML=h}
+
+/* === RENDER: CONFIG === */
+function renderConfig(){let h=bc([{label:'Inicio',action:"navigate('inicio')"},{label:'Configuracoes'}])+'<div class="page-hd"><h1><i class="fas fa-sliders-h"></i> Configuracoes</h1></div><div class="cfg-w"><div class="cfg-sb"><div class="cfg-tb on" onclick="cfgTab(\'cfgPerfil\',this)"><i class="fas fa-user"></i> Perfil</div><div class="cfg-tb" onclick="cfgTab(\'cfgTema\',this)"><i class="fas fa-palette"></i> Tema</div></div><div class="cfg-bd"><div class="cfg-sc on" id="cfgPerfil"><h3 style="margin-bottom:16px">Meu Perfil</h3><div class="cfg-grp"><label>Nome</label><input type="text" id="cfgNome" value="'+(S.user?.nome_completo||'')+'"></div><div class="cfg-grp"><label>Email</label><input type="email" value="'+(S.user?.email||'')+'" disabled style="opacity:.6"></div><button class="btn btn-p" onclick="salvarPerfil()"><i class="fas fa-save"></i> Salvar</button></div><div class="cfg-sc" id="cfgTema"><h3 style="margin-bottom:16px">Tema</h3><div class="tema-g">'+[{id:'verde',c:'#2E7D32',l:'Verde'},{id:'azul',c:'#1565C0',l:'Azul'},{id:'roxo',c:'#7B1FA2',l:'Roxo'},{id:'vermelho',c:'#C62828',l:'Vermelho'},{id:'laranja',c:'#E65100',l:'Laranja'},{id:'escuro',c:'#333',l:'Escuro'}].map(t=>'<div class="tema-o'+(S.cfg.tema===t.id?' on':'')+'" onclick="setTema(\''+t.id+'\')"><div class="tema-dot" style="background:'+t.c+'"></div>'+t.l+'</div>').join('')+'</div></div></div></div>';$('#mc').innerHTML=h}
+function cfgTab(id,btn){$$('.cfg-tb').forEach(b=>b.classList.remove('on'));$$('.cfg-sc').forEach(c=>c.classList.remove('on'));btn.classList.add('on');$('#'+id).classList.add('on')}
+async function salvarPerfil(){const nome=$('#cfgNome').value.trim();if(!nome){toast('Nome vazio','warn');return}const{error}=await sbUpdateUser(uid(),{nome_completo:nome});if(error){handleError(error);return}S.user.nome_completo=nome;renderSidebar();renderTopHeader();toast('Perfil atualizado!','success')}
+function setTema(t){S.cfg.tema=t;localStorage.setItem('ss_cfg',JSON.stringify(S.cfg));applyTema();renderConfig()}
+
+/* === INIT === */
+checkSession();
+</script>
+</body>
+</html>
