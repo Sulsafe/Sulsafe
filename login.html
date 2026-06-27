@@ -2684,19 +2684,22 @@ async function dlCert(id) {
         toast('PDF gerado!', 'success')
     } catch (e) { toast('Erro ao gerar PDF: ' + e.message, 'err') }
 }
-
 // ============================================================
 // VIEW: SUBIR CONTEÚDO
 // ============================================================
 function vSubirConteudo() {
     if (!isAdmin()) return vInicio()
+    
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<div class="god-hd"><h2><i class="fas fa-upload"></i> Subir Conteúdo</h2>
-        <p>Adicione videoaulas ou materiais de apoio. O conteúdo aparecerá automaticamente no card da NR.</p></div>`
+        <p>Adicione videoaulas ou arquivos (PDF, DOC, imagens, etc). O conteúdo aparecerá automaticamente no card da NR.</p></div>`
+    
     h += `<div class="tabs" style="margin-bottom:20px">
         <button class="tab-b on" onclick="switchSubirTab('video',this)"><i class="fas fa-video"></i> Videoaula</button>
-        <button class="tab-b" onclick="switchSubirTab('material',this)"><i class="fas fa-file-alt"></i> Material</button>
+        <button class="tab-b" onclick="switchSubirTab('arquivo',this)"><i class="fas fa-file-upload"></i> Arquivo</button>
     </div>`
+    
+    // TAB VIDEOAULA
     h += `<div class="tab-c on" id="tabVideo">
         <div class="pnl">
             <form id="frmSubirVideo" onsubmit="subirVideo(event)">
@@ -2717,150 +2720,40 @@ function vSubirConteudo() {
             </form>
         </div>
     </div>`
-    h += `<div class="tab-c" id="tabMaterial">
+    
+    // TAB ARQUIVO (UPLOAD DE ARQUIVOS)
+    h += `<div class="tab-c" id="tabArquivo">
         <div class="pnl">
-            <form id="frmSubirMaterial" onsubmit="subirMaterial(event)">
+            <form id="frmSubirArquivo" onsubmit="subirArquivo(event)">
                 <div class="fld"><label>NR</label>
-                    <select id="materialNR" required>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select>
+                    <select id="arquivoNR" required>${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}</select>
                 </div>
                 <div class="fld"><label>Título do Material</label>
-                    <input type="text" id="materialTitulo" placeholder="Ex: Apostila NR 10" required>
+                    <input type="text" id="arquivoTitulo" placeholder="Ex: Apostila NR 10" required>
                 </div>
                 <div class="fld"><label>Descrição</label>
-                    <textarea id="materialDesc" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical" placeholder="Descrição do material..."></textarea>
+                    <textarea id="arquivoDesc" rows="3" style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:10px;color:var(--tx);font-size:13px;resize:vertical" placeholder="Descrição do material..."></textarea>
                 </div>
-                <div class="fld"><label>Link do Material (Google Drive, PDF, etc)</label>
-                    <input type="url" id="materialUrl" placeholder="https://drive.google.com/..." required>
+                <div class="fld"><label>Selecione o Arquivo</label>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input type="file" id="arquivoFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.zip,.rar" style="flex:1;padding:10px;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);color:var(--tx);font-size:14px;">
+                        <span style="font-size:12px;color:var(--tx3);">
+                            <i class="fas fa-info-circle"></i> PDF, DOC, XLS, PPT, imagens, ZIP
+                        </span>
+                    </div>
+                    <div id="arquivoInfo" style="margin-top:8px;font-size:12px;color:var(--tx3);display:none;">
+                        <i class="fas fa-file"></i> <span id="arquivoNome"></span> - <span id="arquivoTamanho"></span>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-plus"></i> Adicionar Material</button>
+                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-upload"></i> Enviar Arquivo</button>
             </form>
         </div>
     </div>`
+    
     h += `<div id="conteudoLista"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando conteúdos...</p></div></div>`
+    
     setTimeout(carregarConteudosAdmin, 200)
     return h
-}
-
-function switchSubirTab(tab, btn) {
-    $$('.tab-b').forEach(b => b.classList.remove('on'))
-    btn.classList.add('on')
-    $$('.tab-c').forEach(c => c.classList.remove('on'))
-    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('on')
-}
-
-// ============================================================
-// SUBIR VIDEOAULA - CORRIGIDO (VERSÃO ÚNICA E CORRETA)
-// ============================================================
-async function subirVideo(e) {
-    e.preventDefault()
-    const nrId = $('#videoNR').value
-    const titulo = sanitizar($('#videoTitulo').value.trim())
-    const descricao = sanitizar($('#videoDesc').value.trim())
-    const url = $('#videoUrl').value.trim()
-    
-    if (!nrId || !titulo || !url) { 
-        toast('Preencha todos os campos', 'err'); 
-        return; 
-    }
-    
-    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
-        toast('Insira um link válido do YouTube', 'err');
-        return;
-    }
-    
-    // GERA ID NUMÉRICO (BIGINT) - CORRIGE O ERRO 400
-    const idNumerico = gerarIdNumerico();
-    
-    try {
-        const { data, error } = await sb
-            .from('videoaulas')
-            .insert({
-                id: idNumerico,
-                nr_id: parseInt(nrId),
-                titulo: titulo,
-                descricao: descricao,
-                url_video: url,
-                duracao: 0,
-                ordem: 0,
-                criado_por: uid()
-            })
-            .select()
-            .single()
-        
-        if (error) throw error
-        
-        toast('✅ Videoaula adicionada com sucesso!', 'success')
-        $('#videoTitulo').value = ''
-        $('#videoDesc').value = ''
-        $('#videoUrl').value = ''
-        carregarConteudosAdmin()
-        carregarLinksNRS()
-        
-    } catch (error) {
-        console.error('Erro ao adicionar videoaula:', error)
-        toast('Erro ao adicionar videoaula: ' + error.message, 'err')
-    }
-}
-
-async function subirMaterial(e) {
-    e.preventDefault()
-    const nrId = $('#materialNR').value
-    const titulo = sanitizar($('#materialTitulo').value.trim())
-    const descricao = sanitizar($('#materialDesc').value.trim())
-    const url = $('#materialUrl').value.trim()
-    if (!nrId || !titulo || !url) { toast('Preencha todos os campos', 'err'); return }
-    const { data, error } = await sbCriarMaterial({
-        nr_id: parseInt(nrId),
-        titulo: titulo,
-        descricao: descricao,
-        url: url,
-        tipo: 'material',
-        criado_por: uid()
-    })
-    if (error) { handleError(error); return }
-    toast('✅ Material adicionado com sucesso!', 'success')
-    $('#materialTitulo').value = ''
-    $('#materialDesc').value = ''
-    $('#materialUrl').value = ''
-    carregarConteudosAdmin()
-    carregarLinksNRS()
-}
-
-async function carregarConteudosAdmin() {
-    const container = document.getElementById('conteudoLista')
-    if (!container) return
-    const { data: videos } = await sbGetVideoaulas()
-    const { data: materiais } = await sbGetMateriais()
-    if ((!videos || videos.length === 0) && (!materiais || materiais.length === 0)) {
-        container.innerHTML = `<div class="empty"><i class="fas fa-upload"></i><p>Nenhum conteúdo cadastrado ainda.</p></div>`
-        return
-    }
-    let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-list"></i> Conteúdos Cadastrados</div></div>`
-    h += `<div class="tw"><table><thead><tr><th>Tipo</th><th>NR</th><th>Título</th><th>Link</th><th>Criado por</th></tr></thead><tbody>`
-    if (videos) {
-        videos.forEach(v => {
-            h += `<tr>
-                <td><span class="badge bg-info">Vídeo</span></td>
-                <td>NR ${v.nr_id}</td>
-                <td>${v.titulo}</td>
-                <td><a href="${v.url_video}" target="_blank" style="color:var(--p)"><i class="fas fa-external-link-alt"></i> Ver</a></td>
-                <td>${v.profiles?.nome_completo || '—'}</td>
-            </tr>`
-        })
-    }
-    if (materiais) {
-        materiais.forEach(m => {
-            h += `<tr>
-                <td><span class="badge bg-warn">Material</span></td>
-                <td>NR ${m.nr_id}</td>
-                <td>${m.titulo}</td>
-                <td><a href="${m.url}" target="_blank" style="color:var(--p)"><i class="fas fa-external-link-alt"></i> Ver</a></td>
-                <td>${m.profiles?.nome_completo || '—'}</td>
-            </tr>`
-        })
-    }
-    h += `</tbody></table></div></div>`
-    container.innerHTML = h
 }
 
 // ============================================================
