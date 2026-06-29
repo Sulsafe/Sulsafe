@@ -3,7 +3,6 @@
 // ============================================================
 import { S, role, isAdmin, isProf, uid, nav, toast, handleError, sanitizar, NRS, $, $$ } from '../utils.js'
 import { sbGetVideoaulas, sbCriarVideoaula, sbGetProgressoUsuario, sbSalvarProgresso } from '../supabase-client.js'
-
 // ============================================================
 // VARIÁVEIS PARA CONTROLE DO MODAL DE VÍDEO
 // ============================================================
