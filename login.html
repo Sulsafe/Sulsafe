@@ -2,19 +2,27 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SulSafe | Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
+    <meta property="og:title" content="SulSafe - Segurança do Trabalho">
+    <meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
+    <meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
+    <meta name="robots" content="index, follow">
+    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
     <link rel="icon" type="image/png" href="logo1.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<!-- AUTH -->
+<!-- ==================== AUTH ==================== -->
 <div id="authWrap">
     <div class="auth-card">
-        <!-- Login -->
+        <!-- LOGIN -->
         <div class="t on" id="tLogin">
             <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -25,12 +33,12 @@
                 <button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             </form>
             <div class="divider">ou</div>
-            <button class="btn btn-s btn-block" onclick="showT('tCad')">Cadastrar nova conta</button>
+            <button class="btn btn-s btn-block" onclick="window.showT('tCad')">Cadastrar nova conta</button>
             <div style="margin-top: 12px; text-align: center;">
-                <a href="#" onclick="recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
+                <a href="#" onclick="window.recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
             </div>
         </div>
-        <!-- Cadastro -->
+        <!-- CADASTRO -->
         <div class="t" id="tCad">
             <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
             <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
@@ -42,7 +50,7 @@
                 <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
                 <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
                     <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="mostrarTermos()">termos de uso</a></label>
+                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="window.mostrarTermos()">termos de uso</a></label>
                 </div>
                 <button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
             </form>
@@ -50,7 +58,7 @@
     </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- ==================== DASHBOARD ==================== -->
 <div id="dash">
     <aside class="sidebar" id="sidebar"></aside>
     <main class="main" id="mc"></main>
@@ -61,9 +69,9 @@
 
 <!-- NOTIFICAÇÃO POPUP -->
 <div class="notif-popup" id="notifPopup">
-    <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteúdo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="closeNotif()"><i class="fas fa-times"></i></button></div>
+    <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteúdo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="window.closeNotif()"><i class="fas fa-times"></i></button></div>
     <div class="notif-popup-bd" id="notifBody"></div>
-    <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
+    <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="window.closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
 </div>
 
 <!-- TOAST -->
@@ -76,11 +84,10 @@
     <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteúdo</strong><br>Todo o material disponível é protegido por direitos autorais. É proibida a redistribuição sem autorização.</p>
     <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados são emitidos mediante conclusão do curso com nota mínima 7.0.</p>
     <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados são protegidos conforme a LGPD. Não compartilhamos com terceiros.</p>
-    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="closeMdl()">Entendi</button>
+    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="window.closeMdl()">Entendi</button>
 </div>
 
-<!-- CARREGA O MÓDULO PRINCIPAL -->
+<!-- SCRIPT MODULAR -->
 <script type="module" src="js/main.js"></script>
-
 </body>
 </html>
