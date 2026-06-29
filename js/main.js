@@ -3,6 +3,7 @@
 // ============================================================
 import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
+import { handleLogin, handleCadastro } from './auth.js'   // ← importe as funções
 import { vInicio } from './inicio.js'
 import { vVideoaulas } from './videoaulas.js'
 import { vMateriais } from './materiais.js'
@@ -31,12 +32,31 @@ registerView('admin', vAdmin)
 registerView('config', vConfig)
 registerView('pendentes', vPendentes)
 
-// (A view 'subir' foi removida intencionalmente)
-
-// Configurar referência para renderSidebar
 setRenderSidebar(renderSB)
 
-// Inicialização
+// ============================================================
+// CONFIGURAR EVENT LISTENERS DOS FORMULÁRIOS DE LOGIN/CADASTRO
+// ============================================================
+document.getElementById('frmLogin').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const email = document.getElementById('lEmail').value.trim().toLowerCase()
+    const password = document.getElementById('lPass').value
+    await handleLogin(email, password)
+})
+
+document.getElementById('frmCad').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const nome = document.getElementById('cNome').value.trim()
+    const email = document.getElementById('cEmail').value.trim().toLowerCase()
+    const password = document.getElementById('cPass').value
+    const confirm = document.getElementById('cPass2').value
+    const termos = document.getElementById('cTermos').checked
+    await handleCadastro(nome, email, password, confirm, termos)
+})
+
+// ============================================================
+// INICIALIZAÇÃO (auto-login)
+// ============================================================
 ;(async function() {
     try {
         const { data: { session } } = await sb.auth.getSession()
@@ -50,7 +70,7 @@ setRenderSidebar(renderSB)
                 return
             }
         }
-        // Fallback para sessão antiga
+        // Fallback
         const sessionData = localStorage.getItem('ss_session')
         if (sessionData) {
             const { id } = JSON.parse(sessionData)
