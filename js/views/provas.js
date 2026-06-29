@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: PROVAS (Aluno / Professor)
 // ============================================================
-import { S, role, uid, nav, fmtD } from '../state.js'
-import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET } from '../supabase-client.js'
-import { toast, handleError, sanitizar, openMdl, closeMdl, $, $$, NRS } from '../utils.js'
+import { S, role, uid, nav, fmtD } from './state.js'
+import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET } from './supabase-client.js'
+import { toast, handleError, sanitizar, openMdl, closeMdl, $, $$, NRS } from './utils.js'
 
 export function vProvas() {
     const r = role()
