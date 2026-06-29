@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: CONFIGURAÇÕES
 // ============================================================
-import { S, saveCfg, loadCfg } from '../state.js'
-import { sbUpdateUser } from '../supabase-client.js'
-import { toast, sanitizar, $, $$ } from '../utils.js'
+import { S, saveCfg, loadCfg } from './state.js'
+import { sbUpdateUser } from './supabase-client.js'
+import { toast, sanitizar, $, $$ } from './utils.js'
 
 export function vConfig() {
     const c = S.cfg
