@@ -3,24 +3,24 @@
 // ============================================================
 import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
-import { vInicio } from './views/inicio.js'
-import { vVideoaulas } from './views/videoaulas.js'   // ← CORRIGIDO
-import { vMateriais } from './views/materiais.js'     // ← CORRIGIDO
-import { vSalas } from './views/salas.js'
-import { vNRs } from './views/nrs.js'
-import { vIA } from './views/ia.js'
-import { vBoletim } from './views/boletim.js'
-import { vProvas } from './views/provas.js'
-import { vCerts } from './views/certificados.js'
-import { vAdmin } from './views/admin.js'
-import { vConfig } from './views/config.js'
-import { vPendentes } from './views/pendentes.js'
+import { vInicio } from './inicio.js'
+import { vVideoaulas } from './videoaulas.js'
+import { vMateriais } from './materiais.js'
+import { vSalas } from './salas.js'
+import { vNRs } from './nrs.js'
+import { vIA } from './ia.js'
+import { vBoletim } from './boletim.js'
+import { vProvas } from './provas.js'
+import { vCerts } from './certificados.js'
+import { vAdmin } from './admin.js'
+import { vConfig } from './config.js'
+import { vPendentes } from './pendentes.js'
 import { renderSB, renderV, enterDash, checkNotifs } from './app.js'
 
 // Registrar todas as views
 registerView('inicio', vInicio)
-registerView('videoaulas', vVideoaulas)   // ← CORRIGIDO
-registerView('materiais', vMateriais)     // ← CORRIGIDO
+registerView('videoaulas', vVideoaulas)
+registerView('materiais', vMateriais)
 registerView('salas', vSalas)
 registerView('nrs', vNRs)
 registerView('ia', vIA)
