@@ -3,19 +3,24 @@
 // ============================================================
 import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
-import { handleLogin, handleCadastro } from './auth.js'   // ← importe as funções
-import { vInicio } from './inicio.js'
+import { handleLogin, handleCadastro } from './auth.js'
+
+// Views que estão em js/views/
+import { vInicio } from './views/inicio.js'
+import { vSalas } from './views/salas.js'
+import { vNRs } from './views/nrs.js'
+import { vIA } from './views/ia.js'
+import { vBoletim } from './views/boletim.js'
+import { vProvas } from './views/provas.js'
+import { vCerts } from './views/certificados.js'
+import { vAdmin } from './views/admin.js'
+import { vConfig } from './views/config.js'
+import { vPendentes } from './views/pendentes.js'
+
+// Views que estão na raiz de js/ (por enquanto)
 import { vVideoaulas } from './videoaulas.js'
 import { vMateriais } from './materiais.js'
-import { vSalas } from './salas.js'
-import { vNRs } from './nrs.js'
-import { vIA } from './ia.js'
-import { vBoletim } from './boletim.js'
-import { vProvas } from './provas.js'
-import { vCerts } from './certificados.js'
-import { vAdmin } from './admin.js'
-import { vConfig } from './config.js'
-import { vPendentes } from './pendentes.js'
+
 import { renderSB, renderV, enterDash, checkNotifs } from './app.js'
 
 // Registrar todas as views
@@ -70,7 +75,7 @@ document.getElementById('frmCad').addEventListener('submit', async (e) => {
                 return
             }
         }
-        // Fallback
+        // Fallback para sessão antiga
         const sessionData = localStorage.getItem('ss_session')
         if (sessionData) {
             const { id } = JSON.parse(sessionData)
