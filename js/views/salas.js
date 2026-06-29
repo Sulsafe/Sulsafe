@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: SALAS AO VIVO
 // ============================================================
-import { role, canManage, uid, nav, fmtD } from '../state.js'
-import { sbGetSalasAtivas, sbCriarSala } from '../supabase-client.js'
-import { toast, handleError, sanitizar, $, $$ } from '../utils.js'
+import { role, canManage, uid, nav, fmtD } from './state.js'
+import { sbGetSalasAtivas, sbCriarSala } from './supabase-client.js'
+import { toast, handleError, sanitizar, $, $$ } from './utils.js'
 
 export function vSalas() {
     const r = role()
