@@ -1,11 +1,12 @@
 // ============================================================
 // VIEW: MATERIAIS (com upload e organização por NR)
 // ============================================================
-import { S, isAdmin, isProf, uid, nav, toast, handleError, sanitizar, NRS, $, $$ } from '../utils.js'
-import { sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET } from '../supabase-client.js'
+import { S, isAdmin, isProf, uid, nav } from '../state.js' // <- Estado/Auth vem daqui
+import { toast, handleError, sanitizar, NRS, $, $$ } from '../utils.js' // <- Funções puras
+import { sb, sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET, sbGetAlunos, sbCriarNotificacao } from '../supabase-client.js' // <- API + add sb, sbGetAlunos, sbCriarNotificacao
 
 export function vMateriais() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>` // <- tirei window.
     h += `<h2 class="wc">Materiais de Apoio</h2><p class="wcs">Arquivos, apostilas e recursos complementares por NR.</p>`
 
     // Admin/Professor: formulário para upload de arquivo ou link
@@ -53,7 +54,7 @@ export function vMateriais() {
     h += `<div id="materiaisGrid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando materiais...</p></div></div>`
 
     setTimeout(() => {
-        const form = document.getElementById('frmAddMaterial')
+        const form = $('#frmAddMaterial') // <- usei $
         if (form) {
             form.addEventListener('submit', async function(e) {
                 e.preventDefault()
@@ -67,16 +68,16 @@ export function vMateriais() {
 }
 
 async function adicionarMaterial() {
-    const nrId = document.getElementById('addMatNR').value
-    const titulo = sanitizar(document.getElementById('addMatTitulo').value.trim())
-    const descricao = sanitizar(document.getElementById('addMatDesc').value.trim())
-    const tipo = document.getElementById('addMatTipo').value
-    const arquivo = document.getElementById('addMatArquivo').files[0]
-    const url = document.getElementById('addMatUrl').value.trim()
+    const nrId = $('#addMatNR').value // <- $
+    const titulo = sanitizar($('#addMatTitulo').value.trim())
+    const descricao = sanitizar($('#addMatDesc').value.trim())
+    const tipo = $('#addMatTipo').value
+    const arquivo = $('#addMatArquivo').files[0]
+    const url = $('#addMatUrl').value.trim()
 
     if (!titulo) { toast('Título é obrigatório', 'err'); return }
-    if (tipo === 'arquivo' && !arquivo) { toast('Selecione um arquivo', 'err'); return }
-    if (tipo === 'link' && !url) { toast('Insira um link', 'err'); return }
+    if (tipo === 'arquivo' &&!arquivo) { toast('Selecione um arquivo', 'err'); return }
+    if (tipo === 'link' &&!url) { toast('Insira um link', 'err'); return }
 
     let urlFinal = url
     if (arquivo) {
@@ -102,21 +103,21 @@ async function adicionarMaterial() {
     if (error) { handleError(error); return }
 
     toast('Material adicionado com sucesso!', 'success')
-    // Notificar todos os alunos (simples)
-    enviarNotificacaoTodosAlunos(`Novo material disponível: "${titulo}" na NR ${nrId}`, 'materiais')
+    // Notificar todos os alunos
+    await enviarNotificacaoTodosAlunos(`Novo material disponível: "${titulo}" na NR ${nrId}`, 'materiais') // <- add await
 
-    document.getElementById('addMatTitulo').value = ''
-    document.getElementById('addMatDesc').value = ''
-    document.getElementById('addMatArquivo').value = ''
-    document.getElementById('addMatUrl').value = ''
+    $('#addMatTitulo').value = ''
+    $('#addMatDesc').value = ''
+    $('#addMatArquivo').value = ''
+    $('#addMatUrl').value = ''
     carregarMateriais()
 }
 
 async function enviarNotificacaoTodosAlunos(mensagem, link) {
-    const { data: alunos } = await sbGetAlunos()
+    const { data: alunos } = await sbGetAlunos() // <- agora existe no import
     if (!alunos || alunos.length === 0) return
     for (const aluno of alunos) {
-        await sbCriarNotificacao(aluno.id, 'Novo Material', mensagem, link)
+        await sbCriarNotificacao(aluno.id, 'Novo Material', mensagem, link) // <- agora existe
     }
     if (S.user && (isAdmin() || isProf())) {
         await sbCriarNotificacao(S.user.id, 'Material adicionado', `Você adicionou: ${mensagem}`, link)
@@ -124,8 +125,7 @@ async function enviarNotificacaoTodosAlunos(mensagem, link) {
 }
 
 export async function carregarMateriais() {
-    const container = document.getElementById('materiaisGrid')
-    if (!container) return
+    const container = $('#materiaisGrid') // <- $
 
     const { data: materiais } = await sbGetMateriais()
     // Organizar por NR
@@ -146,10 +146,10 @@ export async function carregarMateriais() {
                 <div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>
                 <span class="badge bg-info" style="margin-left:auto;">${items.length} materiais</span>
             </div>
-            ${items.length === 0 ? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
+            ${items.length === 0? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
             ${items.map(m => `
                 <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--ip);border-radius:8px;border:1px solid var(--bd);margin-top:4px;">
-                    <i class="fas ${m.tipo === 'arquivo' ? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
+                    <i class="fas ${m.tipo === 'arquivo'? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
                     <span style="flex:1;font-size:13px;font-weight:500;">${m.titulo}</span>
                     <button class="btn btn-sm btn-p" onclick="estudarMaterial('${m.url}')">
                         <i class="fas fa-book-open"></i> Estudar
