@@ -4,8 +4,8 @@
 import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
 import { vInicio } from './views/inicio.js'
-import { vVideoaulas } from './views/videoaulas.js'
-import { vMateriais } from './views/materiais.js'
+import { vVideoaulas } from './views/videoaulas.js'   // ← CORRIGIDO
+import { vMateriais } from './views/materiais.js'     // ← CORRIGIDO
 import { vSalas } from './views/salas.js'
 import { vNRs } from './views/nrs.js'
 import { vIA } from './views/ia.js'
@@ -19,8 +19,8 @@ import { renderSB, renderV, enterDash, checkNotifs } from './app.js'
 
 // Registrar todas as views
 registerView('inicio', vInicio)
-registerView('videoaulas', vVideoaulas)
-registerView('materiais', vMateriais)
+registerView('videoaulas', vVideoaulas)   // ← CORRIGIDO
+registerView('materiais', vMateriais)     // ← CORRIGIDO
 registerView('salas', vSalas)
 registerView('nrs', vNRs)
 registerView('ia', vIA)
