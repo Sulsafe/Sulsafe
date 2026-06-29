@@ -1,7 +1,7 @@
 // ============================================================
 // APP - FUNÇÕES PRINCIPAIS (SIDEBAR, RENDER, ENTER DASH, NOTIFS)
 // ============================================================
-import { S, role, isAdmin, isProf, uid, fmtD, nav, registerView, loadCfg } from './state.js'
+import { S, role, isAdmin, isProf, uid, fmtD, nav, loadCfg } from './state.js'
 import { sb } from './supabase-client.js'
 import { sbCriarNotificacao } from './supabase-client.js'
 import { toast, $, $$, NRS } from './utils.js'
@@ -18,7 +18,11 @@ import { vAdmin } from './views/admin.js'
 import { vConfig } from './views/config.js'
 import { vPendentes } from './views/pendentes.js'
 
-// Registrar todas as views
+// Registrar todas as views (se já não estiverem registradas em main.js)
+// Mas vamos garantir que estão disponíveis globalmente para o nav()
+const viewRegistry = {}
+function registerView(name, fn) { viewRegistry[name] = fn }
+
 registerView('inicio', vInicio)
 registerView('videoaulas', vVideoaulas)
 registerView('materiais', vMateriais)
@@ -89,15 +93,22 @@ export function renderSB() {
 }
 
 // ============================================================
-// RENDER VIEW
+// RENDER VIEW (chama a view atual via nav)
 // ============================================================
 export function renderV() {
-    const mc = document.getElementById('mc')
-    if (!mc) return
-    // A navegação já é feita pelo state.js, apenas garantimos que a view seja renderizada.
-    // O state.js chama a função registrada, que atualiza o mc.
-    // Esta função é chamada após a navegação para triggers adicionais.
-    bindPostRender()
+    // A navegação já é feita pelo state.js, mas garantimos que a view atual seja renderizada
+    const viewName = S.view || 'inicio'
+    const fn = viewRegistry[viewName]
+    if (fn) {
+        document.getElementById('mc').innerHTML = fn()
+        bindPostRender()
+    } else {
+        document.getElementById('mc').innerHTML = `
+            <div class="empty">
+                <i class="fas fa-exclamation-circle"></i>
+                <h4>View "${viewName}" não encontrada</h4>
+            </div>`
+    }
 }
 
 // ============================================================
@@ -108,8 +119,12 @@ export function enterDash() {
     document.getElementById('dash').classList.add('on')
     S.view = 'inicio'
     renderSB()
-    // A primeira view é renderizada pelo state.js via nav('inicio')
-    window.nav('inicio')
+    // Renderiza a view inicial
+    const fn = viewRegistry['inicio']
+    if (fn) {
+        document.getElementById('mc').innerHTML = fn()
+        bindPostRender()
+    }
     checkNotifs()
 }
 
@@ -136,35 +151,93 @@ export async function checkNotifs() {
 
 export function showNotifPopup(n) {
     document.getElementById('notifBody').innerHTML = `<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(Date.now())}</p>`
-    document.getElementById('notifAction').onclick = () => { closeNotif(); if (n.view) window.nav(n.view) }
+    document.getElementById('notifAction').onclick = () => { window.closeNotif(); if (n.view) window.nav(n.view) }
     document.getElementById('notifPopup').classList.add('show')
-    setTimeout(closeNotif, 8000)
+    setTimeout(window.closeNotif, 8000)
 }
 
-function closeNotif() {
+window.closeNotif = function() {
     document.getElementById('notifPopup').classList.remove('show')
 }
-window.closeNotif = closeNotif
 
 // ============================================================
 // BIND POST RENDER (gráficos, etc)
 // ============================================================
 export function bindPostRender() {
-    if (S.view === 'boletim' && role() !== 'aluno') setTimeout(drawChartNotas, 100)
-    if (S.view === 'admin') setTimeout(drawChartAdmin, 100)
-    if (S.view === 'pendentes') setTimeout(carregarPendentes, 100)
-    if (S.view === 'provas') setTimeout(carregarProvas, 100)
+    // Chama funções específicas após renderizar cada view
+    if (S.view === 'boletim' && role() !== 'aluno') {
+        setTimeout(() => {
+            // A função drawChartNotas está em boletim.js, mas precisamos garantir que foi carregada
+            if (window.drawChartNotas) window.drawChartNotas()
+        }, 100)
+    }
+    if (S.view === 'admin') {
+        setTimeout(() => {
+            if (window.drawChartAdmin) window.drawChartAdmin()
+        }, 100)
+    }
+    if (S.view === 'pendentes') {
+        setTimeout(() => {
+            if (window.carregarPendentes) window.carregarPendentes()
+        }, 100)
+    }
+    if (S.view === 'provas') {
+        setTimeout(() => {
+            if (window.carregarProvasPendentes) window.carregarProvasPendentes()
+        }, 100)
+    }
 }
 
-// Funções auxiliares (serão substituídas quando importarmos de views)
-let drawChartNotas, drawChartAdmin, carregarPendentes, carregarProvas
-export function setBindFunctions(fns) {
-    drawChartNotas = fns.drawChartNotas
-    drawChartAdmin = fns.drawChartAdmin
-    carregarPendentes = fns.carregarPendentes
-    carregarProvas = fns.carregarProvas
+// ============================================================
+// EXPORTA FUNÇÕES GLOBAIS PARA ONCLICK
+// ============================================================
+// Essas funções são usadas em onclick no HTML
+window.nav = function(viewName) {
+    S.prevView = S.view
+    S.view = viewName
+    renderSB()
+    renderV()
 }
 
-// Expor funções globais para onclick
-window.nav = nav
-window.logout = logout
+window.logout = async function() {
+    try {
+        await sb.auth.signOut()
+    } catch (e) {}
+    S.user = null
+    localStorage.removeItem('ss_session')
+    localStorage.removeItem('ss_user')
+    // Destruir gráficos se existir
+    if (window.charts) {
+        Object.values(window.charts).forEach(c => { try { c.destroy() } catch(e) {} })
+        window.charts = {}
+    }
+    window.location.href = 'index.html'
+}
+
+window.showT = function(id) {
+    import('./utils.js').then(utils => {
+        utils.showT(id)
+    })
+}
+
+window.recuperarSenha = function() {
+    import('./auth.js').then(auth => {
+        auth.recuperarSenha()
+    })
+}
+
+window.mostrarTermos = function() {
+    const termosHtml = document.getElementById('termosHtml').innerHTML
+    const modalBox = document.getElementById('mdlBox')
+    modalBox.innerHTML = termosHtml
+    document.getElementById('mdlBg').classList.add('on')
+}
+
+window.closeMdl = function() {
+    document.getElementById('mdlBg').classList.remove('on')
+}
+
+// Adiciona evento de clique no backdrop do modal para fechar
+document.getElementById('mdlBg')?.addEventListener('click', function(e) {
+    if (e.target === this) window.closeMdl()
+})
