@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: PENDENTES (Admin)
 // ============================================================
-import { S, isAdmin, nav, fmtD } from '../state.js'
-import { sbGetPendentes, sbLiberarUsuario } from '../supabase-client.js'
-import { toast, handleError, $, $$ } from '../utils.js'
+import { S, isAdmin, nav, fmtD } from './state.js'
+import { sbGetPendentes, sbLiberarUsuario } from './supabase-client.js'
+import { toast, handleError, $, $$ } from './utils.js'
 
 export function vPendentes() {
     if (!isAdmin()) return window.nav('inicio')
