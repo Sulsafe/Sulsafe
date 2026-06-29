@@ -1,13 +1,13 @@
 // ============================================================
 // VIEW: PENDENTES (Admin)
 // ============================================================
-import { S, isAdmin, nav, fmtD } from './state.js'
-import { sbGetPendentes, sbLiberarUsuario } from './supabase-client.js'
-import { toast, handleError, $, $$ } from './utils.js'
+import { S, isAdmin, nav, fmtD } from '../state.js' // <- ../ pra sair de views/
+import { sbGetPendentes, sbLiberarUsuario } from '../supabase-client.js' // <- ../ 
+import { toast, handleError, $, $$ } from '../utils.js' // <- ../ 
 
 export function vPendentes() {
-    if (!isAdmin()) return window.nav('inicio')
-    let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    if (!isAdmin()) return nav('inicio') // <- tirei o window. pq já importou
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>` // <- tirei o window.
     h += `<div class="god-hd"><h2><i class="fas fa-user-clock"></i> Pendentes de Aprovação</h2>
         <p>Usuários aguardando liberação de acesso</p></div>`
     h += `<div id="listaPendentes"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando...</p></div></div>`
@@ -16,7 +16,7 @@ export function vPendentes() {
 }
 
 async function carregarPendentes() {
-    const container = document.getElementById('listaPendentes')
+    const container = $('#listaPendentes') // <- usei teu $ ao invés de getElementById
     if (!container) return
     
     if (!S.user || !isAdmin()) {
@@ -62,15 +62,15 @@ async function liberarUsuario(id) {
     const { data, error } = await sbLiberarUsuario(id)
     if (error) { handleError(error); return }
     toast('Usuário liberado com sucesso!', 'success')
-    const row = document.getElementById(`pendente-${id}`)
+    const row = $(`#pendente-${id}`) // <- usei teu $
     if (row) row.remove()
-    const totalEl = document.querySelector('.badge.bg-pendente')
+    const totalEl = $('.badge.bg-pendente')
     if (totalEl) {
         const current = parseInt(totalEl.textContent) - 1
-        totalEl.textContent = current > 0 ? current + ' pendentes' : '0 pendentes'
+        totalEl.textContent = current > 0 ? `${current} pendentes` : '0 pendentes' // <- template string
     }
-    const remaining = document.querySelectorAll('#listaPendentes tbody tr').length
+    const remaining = $$('#listaPendentes tbody tr').length // <- usei teu $$
     if (remaining === 0) carregarPendentes()
 }
 
-window.liberarUsuario = liberarUsuario
+window.liberarUsuario = liberarUsuario // <- isso precisa ficar por causa do onclick inline
