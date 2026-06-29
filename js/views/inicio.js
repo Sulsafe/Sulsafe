@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: INÍCIO
 // ============================================================
-import { S, role, isAdmin, isProf, uid, nav, NRS } from '../state.js'
-import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from '../supabase-client.js'
-import { toast, $, $$ } from '../utils.js'
+import { S, role, isAdmin, isProf, uid, nav, NRS } from './state.js'
+import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from './supabase-client.js'
+import { toast, $, $$ } from './utils.js'
 
 export function vInicio() {
     const r = role()
@@ -35,7 +35,6 @@ export function vInicio() {
         h += cCard('fa-file-pen', 'Notas', 'Gerenciar notas', 'boletim')
         h += cCard('fa-file-pdf', 'Corrigir Provas', 'Provas para corrigir', 'provas')
         h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
-        // card 'Subir Conteúdo' removido
         h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin')
     }
     h += `</div>`
