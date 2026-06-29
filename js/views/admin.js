@@ -1,13 +1,13 @@
 // ============================================================
 // VIEW: ADMIN (MODO DEUS)
 // ============================================================
-import { S, role, isAdmin, uid, nav, fmtD } from './state.js'
-import { sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from './supabase-client.js'
-import { toast, handleError, openMdl, closeMdl, $, $$ } from './utils.js'
+import { S, role, isAdmin, uid, nav, fmtD } from '../state.js' // <- ../ 
+import { sb, sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from '../supabase-client.js' // <- ../ + add sb
+import { toast, handleError, openMdl, closeMdl, $, $$ } from '../utils.js' // <- ../ 
 
 export function vAdmin() {
-    if (!isAdmin()) return window.nav('inicio')
-    let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
+    if (!isAdmin()) return nav('inicio') // <- tirei window.
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>` // <- tirei window.
     h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`
     h += `<div id="adminStats"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando dados...</p></div></div>`
     h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuição de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`
@@ -22,7 +22,7 @@ async function carregarAdminData() {
     const { data: metrics } = await sbGetDashboardMetrics()
     const { data: users } = await sbGetAllUsers()
     const { data: ranking } = await sbGetRankingAlunos()
-    const statsDiv = document.getElementById('adminStats')
+    const statsDiv = $('#adminStats') // <- usei $
     if (statsDiv && metrics) {
         statsDiv.innerHTML = `
             <div class="stats">
@@ -36,7 +36,7 @@ async function carregarAdminData() {
         `
     }
     
-    const usersDiv = document.getElementById('adminUsers')
+    const usersDiv = $('#adminUsers') // <- usei $
     if (usersDiv && users) {
         let h = `<div class="pnl"><div class="pnl-h"><div class="pnl-t"><i class="fas fa-users-gear"></i> Gerenciar Usuários (${users.length})</div></div><input class="search" placeholder="Buscar usuário..." oninput="filterU(this.value)"><div class="tw" style="margin-top:14px"><table><thead><tr><th>Nome</th><th>Email</th><th>Role</th><th>Status</th><th>Ações</th></tr></thead><tbody id="uTB">`
         users.forEach(u => {
@@ -52,7 +52,7 @@ async function carregarAdminData() {
                         <option value="aluno" ${u.role === 'aluno' ? 'selected' : ''}>Aluno</option>
                         <option value="professor" ${u.role === 'professor' ? 'selected' : ''}>Professor</option>
                     </select>
-                    ${u.status === 'pendente' ? `<button class="btn btn-sm btn-p" onclick="window.liberarUsuario('${u.id}')"><i class="fas fa-check"></i></button>` : ''}
+                    ${u.status === 'pendente' ? `<button class="btn btn-sm btn-p" onclick="liberarUsuario('${u.id}')"><i class="fas fa-check"></i></button>` : ''} // <- tirei window.
                 ` : '<span style="font-size:11px;color:var(--tx3)">Protegido</span>'}</td>
             </tr>`
         })
@@ -72,7 +72,7 @@ async function changeRole(id, role) {
 }
 
 function modalApagarTudo() {
-    openMdl(`<button class="mdl-x" onclick="window.closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagará: salas, notas, provas, certificados, aulas e materiais.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`)
+    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagará: salas, notas, provas, certificados, aulas e materiais.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`) // <- tirei window.
 }
 
 async function execApagar() {
@@ -84,13 +84,13 @@ async function execApagar() {
     await sb.from('progresso_aulas').delete().neq('id', '')
     await sb.from('videoaulas').delete().neq('id', '')
     await sb.from('materiais').delete().neq('id', '')
-    window.closeMdl()
+    closeMdl() // <- tirei window.
     toast('TODOS os dados foram apagados!', 'warn')
     carregarAdminData()
 }
 
 async function drawChartAdmin() {
-    const cv1 = document.getElementById('chartAdmProg'), cv2 = document.getElementById('chartAdmRoles')
+    const cv1 = $('#chartAdmProg'), cv2 = $('#chartAdmRoles') // <- usei $
     const { data: ranking } = await sbGetRankingAlunos()
     const { data: users } = await sbGetAllUsers()
     
@@ -105,14 +105,14 @@ async function drawChartAdmin() {
         })
         if (window.charts && window.charts.admProg) try { window.charts.admProg.destroy() } catch (e) {}
         window.charts = window.charts || {}
-        window.charts.admProg = new Chart(cv1, { type: 'bar', data: { labels: ['0%', '1-50%', '51-80%', '81-100%'], datasets: [{ label: 'Alunos', data: [p0, p1, p2, p3], backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } } } })
+        window.charts.admProg = new Chart(cv1, { type: 'bar', data: { labels: ['0%', '1-50%', '51-80%', '81-100%'], datasets: [{ label: 'Alunos', data: [p0, p1, p2, p3], backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } })
     }
     if (cv2 && users) {
         const rc = { admin: 0, professor: 0, aluno: 0 }
         users.forEach(u => { rc[u.role] = (rc[u.role] || 0) + 1 })
         if (window.charts && window.charts.admRoles) try { window.charts.admRoles.destroy() } catch (e) {}
         window.charts = window.charts || {}
-        window.charts.admRoles = new Chart(cv2, { type: 'doughnut', data: { labels: ['Admin', 'Professor', 'Aluno'], datasets: [{ data: [rc.admin, rc.professor, rc.aluno], backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } })
+        window.charts.admRoles = new Chart(cv2, { type: 'doughnut', data: { labels: ['Admin', 'Professor', 'Aluno'], datasets: [{ data: [rc.admin, rc.professor, rc.aluno], backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } })
     }
 }
 
