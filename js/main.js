@@ -1,8 +1,8 @@
 // ============================================================
 // MAIN - PONTO DE ENTRADA DA APLICAÇÃO
 // ============================================================
-import { S, registerView, setRenderSidebar, nav, loadCfg, refreshView } from './state.js'
-import { sb } from './supabase-client.js'
+import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
+import { sb, sbGetUser } from './supabase-client.js'
 import { vInicio } from './views/inicio.js'
 import { vVideoaulas } from './views/videoaulas.js'
 import { vMateriais } from './views/materiais.js'
@@ -15,7 +15,7 @@ import { vCerts } from './views/certificados.js'
 import { vAdmin } from './views/admin.js'
 import { vConfig } from './views/config.js'
 import { vPendentes } from './views/pendentes.js'
-import { renderSB, renderV, enterDash, checkNotifs } from './app.js' // funções principais
+import { renderSB, renderV, enterDash, checkNotifs } from './app.js'
 
 // Registrar todas as views
 registerView('inicio', vInicio)
@@ -50,7 +50,7 @@ setRenderSidebar(renderSB)
                 return
             }
         }
-        // Fallback
+        // Fallback para sessão antiga
         const sessionData = localStorage.getItem('ss_session')
         if (sessionData) {
             const { id } = JSON.parse(sessionData)
