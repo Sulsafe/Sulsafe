@@ -2,8 +2,8 @@
 // SUPABASE CLIENT + CRUD
 // ============================================================
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
-import { ADMIN_EMAIL, uid, sanitizar, toast, handleError } from './utils.js'
-import { S } from './state.js'
+import { sanitizar, toast, handleError } from './utils.js'
+import { S, uid } from './state.js'
 
 // Configurações
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
