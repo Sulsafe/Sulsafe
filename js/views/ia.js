@@ -1,7 +1,7 @@
 // ============================================================
 // VIEW: ASSISTENTE IA
 // ============================================================
-import { $ } from '../utils.js'
+import { $ } from './utils.js'
 
 export function vIA() {
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
