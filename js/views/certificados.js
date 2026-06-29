@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: CERTIFICADOS (Aluno / Admin)
 // ============================================================
-import { S, role, uid, nav, fmtD } from '../state.js'
-import { sbGetCertificadosAluno, sbEmitirCertificado, sbGetAlunos, sbGetNotasAluno } from '../supabase-client.js'
-import { toast, handleError, $, $$, NRS } from '../utils.js'
+import { S, role, uid, nav, fmtD } from './state.js'
+import { sbGetCertificadosAluno, sbEmitirCertificado, sbGetAlunos, sbGetNotasAluno } from './supabase-client.js'
+import { toast, handleError, $, $$, NRS } from './utils.js'
 
 export function vCerts() {
     const r = role()
