@@ -2,12 +2,11 @@ import { S } from './state.js'
 import { sb } from './supabase-client.js'
 // import { toast } from './app.js' //
 export async function vVideoaulas() {
- const mc = document.getElementById('mc')
+const mc = document.getElementById('mc')
 const { data: { user } } = await sb.auth.getUser()
-const { data: perfil } = await sb.from('usuarios').select('tipo_usuario').eq('id', user.id).single()
-const isAdmin = perfil?.tipo_usuario === 'admin'
-const isAdmin = perfil?.tipo_usuario === 'admin'
-console.log('DEBUG ADMIN:', isAdmin, perfil, user.email) 
+const { data: perfil } = await sb.from('usuarios').select('role').eq('id', user.id).single()
+const isAdmin = perfil?.role === 'admin'
+console.log('DEBUG ADMIN:', isAdmin, perfil, user.email)
   
   const { data: videoaulas } = await sb
     .from('videoaulas')
