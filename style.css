@@ -684,20 +684,21 @@ body.t-escuro {
 /* KEYFRAMES */
 @keyframes fv { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes toastIn { from { opacity: 0; transform: translateY(-10px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
 /* ============================================================
-   CARDS DE NR - VIDEOaulas por card
+   CARDS DE NR - VERSÃO COMPACTA (PADRÃO)
    ============================================================ */
 .grid-nrs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
   padding: 20px 0;
 }
 .card-nr {
   background: var(--card-bg);
   border: 1px solid var(--bd);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 10px;
+  padding: 12px;
   transition: .2s;
 }
 .card-nr:hover {
@@ -706,77 +707,76 @@ body.t-escuro {
   box-shadow: var(--shadow-hover);
 }
 .card-nr-hd {
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--bd);
 }
 .nr-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: var(--p);
   color: #000;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .card-nr h4 {
   margin: 0;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--tx1);
+  color: var(--tx);
+  line-height: 1.2;
 }
 .admin-area {
-  margin: 12px 0;
+  margin: 8px 0;
 }
 .admin-area label {
   display: block;
-  font-size: 12px;
+  font-size: 10px;
   color: var(--tx2);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .admin-area input {
   width: 100%;
-  margin-bottom: 8px;
-  padding: 10px;
+  margin-bottom: 6px;
+  padding: 6px 8px;
   background: var(--ip);
   border: 1px solid var(--bd);
-  border-radius: 6px;
+  border-radius: 5px;
   color: var(--tx);
-  font-size: 13px;
+  font-size: 11px;
 }
-.admin-area input:focus {
-  outline: none;
-  border-color: var(--p);
-  box-shadow: 0 0 0 3px rgba(46,125,50,.1);
+.admin-area .btn-sm {
+  padding: 6px 10px;
+  font-size: 11px;
 }
-.aluno-area {
-  margin-top: 12px;
+.aluno-area .btn-block {
+  padding: 8px;
+  font-size: 12px;
 }
 .sem-video {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 16px;
+  gap: 6px;
+  padding: 10px;
   background: var(--ip);
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 6px;
+  font-size: 11px;
   color: var(--tx3);
 }
-.sem-video i {
-  font-size: 16px;
-}
-/* RESPONSIVE */
+
+/* RESPONSIVE GERAL (unificado com as correções) */
 @media (max-width: 768px) {
     .sidebar { width: 64px; }
     .sb-hd .lt, .sb-role span, .sb-lbl, .ni span, .sb-name { display: none; }
     .ni { justify-content: center; padding: 12px; }
     .sb-role { justify-content: center; padding: 6px; }
     .sb-ft { justify-content: center; }
-    .main { margin-left: 64px; padding: 80px 16px 20px 16px; } /* ← alterado */
+    .main { margin-left: 64px; padding: 80px 16px 20px 16px; }
     .ch-g { grid-template-columns: 1fr; }
     .cfg-w { flex-direction: column; }
     .cfg-sb { width: 100%; border-right: 0; border-bottom: 1px solid var(--bd); display: flex; flex-wrap: wrap; gap: 4px; }
@@ -787,10 +787,9 @@ body.t-escuro {
     .card { padding: 16px 12px; }
     .card-ic { font-size: 24px; }
     .card-t { font-size: 13px; }
-    /* NOVAS REGRAS ADICIONADAS */
     .grid-nrs { 
         grid-template-columns: 1fr; 
-        gap: 12px;
+        gap: 10px;
         padding: 10px 0;
     }
     .card-nr .admin-area input {
