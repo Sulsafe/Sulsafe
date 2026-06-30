@@ -1,9 +1,10 @@
 // ============================================================
 // VIEW: MATERIAIS (com upload e organização por NR)
 // ============================================================
-import { S, isAdmin, isProf, uid, nav } from '../state.js' // <- Estado/Auth vem daqui
-import { toast, handleError, sanitizar, NRS, $, $$ } from '../utils.js' // <- Funções puras
-import { sb, sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET, sbGetAlunos, sbCriarNotificacao } from '../supabase-client.js' // <- API
+// CORREÇÃO: imports da mesma pasta
+import { S, isAdmin, isProf, uid, nav } from './state.js'
+import { toast, handleError, sanitizar, NRS, $, $$ } from './utils.js'
+import { sb, sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET, sbGetAlunos, sbCriarNotificacao } from './supabase-client.js'
 
 export function vMateriais() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -75,8 +76,8 @@ async function adicionarMaterial() {
     const url = $('#addMatUrl').value.trim()
 
     if (!titulo) { toast('Título é obrigatório', 'err'); return }
-    if (tipo === 'arquivo' &&!arquivo) { toast('Selecione um arquivo', 'err'); return }
-    if (tipo === 'link' &&!url) { toast('Insira um link', 'err'); return }
+    if (tipo === 'arquivo' && !arquivo) { toast('Selecione um arquivo', 'err'); return }
+    if (tipo === 'link' && !url) { toast('Insira um link', 'err'); return }
 
     let urlFinal = url
     if (arquivo) {
@@ -131,7 +132,7 @@ export async function carregarMateriais() {
     NRS.forEach(nr => { materiaisPorNR[nr.id] = [] })
     if (materiais) {
         materiais.forEach(m => {
-            if (materiaisPorNR[m.nr_id]) materiaisPorNR[m.nr.id].push(m)
+            if (materiaisPorNR[m.nr_id]) materiaisPorNR[m.nr_id].push(m)
         })
     }
 
@@ -144,10 +145,10 @@ export async function carregarMateriais() {
                 <div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>
                 <span class="badge bg-info" style="margin-left:auto;">${items.length} materiais</span>
             </div>
-            ${items.length === 0? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
+            ${items.length === 0 ? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
             ${items.map(m => `
                 <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--ip);border-radius:8px;border:1px solid var(--bd);margin-top:4px;">
-                    <i class="fas ${m.tipo === 'arquivo'? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
+                    <i class="fas ${m.tipo === 'arquivo' ? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
                     <span style="flex:1;font-size:13px;font-weight:500;">${m.titulo}</span>
                     <button class="btn btn-sm btn-p" onclick="estudarMaterial('${m.url}')">
                         <i class="fas fa-book-open"></i> Estudar
