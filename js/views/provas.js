@@ -4,8 +4,7 @@
 // CORREÇÃO: imports com '../'
 import { S, role, uid, nav, fmtD } from '../state.js'
 import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET } from '../supabase-client.js'
-import { toast, handleError, sanitizar, openMdl, closeMdl, $, $$, NRS } from '../utils.js'
-
+import { openMdl, close, $, $$, toast } from '../utils.js'
 export function vProvas() {
     const r = role()
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
