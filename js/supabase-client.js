@@ -145,3 +145,21 @@ export const STORAGE_BUCKET = 'seu-bucket' // substitua pelo nome do seu bucket
 export async function sbUploadArquivo(bucket, path, file) {
     return await sb.storage.from(bucket).upload(path, file)
 }
+// Certificados
+export async function sbGetCertificados(userId) {
+    return await sb.from('certificados')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('revogado', false)
+        .order('emitido_em', { ascending: false })
+}
+
+export async function sbGerarCertificado(userId, nrId, titulo) {
+    return await sb.from('certificados').insert({
+        user_id: userId,
+        nr_id: nrId,
+        titulo: titulo,
+        emitido_em: new Date().toISOString(),
+        revogado: false
+    })
+}
