@@ -35,8 +35,7 @@ function cfgTab(id, el) { $$('.cfg-tb').forEach(t => t.classList.remove('on')); 
 
 function setTema(id) { document.body.className = id === 'verde' ? '' : 't-' + id; S.cfg.tema = id; saveCfg(); $$('.tema-o').forEach(o => o.classList.remove('on')); event.currentTarget.classList.add('on'); toast('Tema alterado!', 'success') }
 
-// A função saveCfg é importada de state.js, não deve ser redeclarada aqui.
-// Remova qualquer declaração local de saveCfg.
+// NÃO DECLARE saveCfg AQUI! Ela já é importada de state.js.
 
 window.setTema = setTema
 window.cfgTab = cfgTab
