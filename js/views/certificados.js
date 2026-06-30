@@ -4,7 +4,7 @@
 // CORREÇÃO: imports com '../'
 import { S, role, isAdmin, isProf, uid, nav } from '../state.js'
 import { toast, handleError, $, $$ } from '../utils.js'
-import { sb, sbGetCertificados, sbGerarCertificado } from '../supabase-client.js'
+import { sb, sbGetCertificados } from '../supabase-client.js'
 
 export function vCerts() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
