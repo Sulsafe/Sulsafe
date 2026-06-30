@@ -1,8 +1,10 @@
 // ============================================================
 // VIEW: VIDEOAULAS (com modal interno e temporizador)
 // ============================================================
-import { S, isAdmin, isProf, uid, nav, toast, handleError, sanitizar, NRS, $, $$ } from '../utils.js'
-import { sbGetVideoaulas, sbCriarVideoaula, sbGetProgressoUsuario, sbSalvarProgresso } from '../supabase-client.js'
+// CORREÇÃO: imports corretos (mesma pasta)
+import { S, isAdmin, isProf, uid, nav } from './state.js'
+import { toast, handleError, sanitizar, NRS, $, $$ } from './utils.js'
+import { sbGetVideoaulas, sbCriarVideoaula, sbGetProgressoUsuario, sbSalvarProgresso } from './supabase-client.js'
 
 // ============================================================
 // VARIÁVEIS PARA CONTROLE DO MODAL DE VÍDEO
@@ -95,7 +97,6 @@ export function vVideoaulas() {
                     if (!host.endsWith('youtube.com') && !host.endsWith('youtu.be')) {
                         throw new Error('Domínio não permitido')
                     }
-                    // Se for youtu.be, pode ser convertido para embed? Mas aceitamos.
                 } catch (_) {
                     toast('Insira um link válido do YouTube (ex: https://www.youtube.com/embed/... ou https://youtu.be/...)', 'err')
                     return
@@ -144,7 +145,7 @@ export async function carregarListaVideoaulas() {
         const videoaulas = videoaulasRes.data || []
         const progressos = progressosRes.data || []
 
-        // Mapa de vídeos concluídos (baseado no campo 'concluido' sem acento)
+        // Mapa de vídeos concluídos (campo 'concluido' sem acento)
         const concluidosMap = new Map()
         progressos.forEach(p => {
             if (p.concluido === true) {
@@ -159,8 +160,6 @@ export async function carregarListaVideoaulas() {
         NRS.forEach(nr => {
             const vids = videoaulas.filter(v => v.nr_id === nr.id)
             if (vids.length === 0) {
-                // NR sem vídeos: pode mostrar vazio ou não renderizar
-                // Vamos mostrar um card indicando que não há vídeos ainda
                 html += `<div class="nr-c" data-s="${nr.nm.toLowerCase()} ${nr.id}" style="flex-direction:column;align-items:stretch;gap:0">
                     <div style="display:flex;align-items:center;gap:12px;padding:14px">
                         <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
@@ -173,7 +172,6 @@ export async function carregarListaVideoaulas() {
                 return
             }
 
-            // Conta vídeos
             const vidsConcluidos = vids.filter(v => concluidosMap.has(v.id))
             const allConcluidos = vids.length === vidsConcluidos.length
 
@@ -213,8 +211,8 @@ export async function carregarListaVideoaulas() {
         const pct = totalVideos ? Math.round((concluidosCount / totalVideos) * 100) : 0
         const progDiv = document.getElementById('progressoVideoaulas')
         if (progDiv) {
-            progDiv.querySelector('.prog-fill').style.width = pct + '%'
-            progDiv.querySelector('.prog-fill + span')?.remove() // se houver um span antigo
+            const fill = progDiv.querySelector('.prog-fill')
+            if (fill) fill.style.width = pct + '%'
             const label = progDiv.querySelector('span:last-child') // pega o span de percentual
             if (label) label.textContent = pct + '%'
             const detalhe = document.getElementById('progressoDetalhe')
@@ -240,7 +238,6 @@ export function filterVA(q) {
 // MODAL DE VÍDEO (com temporizador)
 // ============================================================
 export function abrirVideoModal(video) {
-    // Verifica se o modal existe, senão cria
     let modal = document.getElementById('videoModal')
     if (!modal) {
         modal = document.createElement('div')
@@ -264,34 +261,22 @@ export function abrirVideoModal(video) {
             </div>
         `
         document.body.appendChild(modal)
-        // Fechar ao clicar no backdrop
         modal.addEventListener('click', function(e) {
             if (e.target === this) fecharVideoModal()
         })
     }
 
-    // Guarda o vídeo atual e reseta estado
     videoAtual = video
     tempoAssistido = 0
     videoConcluido = false
 
-    // Atualiza título
     document.getElementById('videoModalTitle').textContent = video.titulo || 'Videoaula'
-
-    // Configura iframe
     const iframe = document.getElementById('videoIframe')
     iframe.src = video.url_video + '?autoplay=1&rel=0'
-
-    // Atualiza texto de progresso
     document.getElementById('videoProgressText').textContent = `⏱️ 0s / ${video.duracao || '?'}s`
-
-    // Esconde botão concluir
     document.getElementById('videoConcluirBtn').style.display = 'none'
-
-    // Abre modal
     modal.classList.add('on')
 
-    // Inicia temporizador
     if (videoTimer) clearInterval(videoTimer)
     videoTimer = setInterval(() => {
         tempoAssistido++
@@ -305,7 +290,6 @@ export function abrirVideoModal(video) {
             toast('🎉 Você assistiu todo o vídeo! Clique em "Marcar como concluído".', 'success')
         }
 
-        // Salva progresso a cada 5 segundos (não concluído)
         if (tempoAssistido % 5 === 0) {
             sbSalvarProgresso(S.user.id, video.id, tempoAssistido, false).catch(err => {
                 console.warn('Erro ao salvar progresso:', err)
@@ -320,11 +304,10 @@ export function fecharVideoModal() {
         videoTimer = null
     }
     const iframe = document.getElementById('videoIframe')
-    if (iframe) iframe.src = '' // para parar o vídeo
+    if (iframe) iframe.src = ''
     const modal = document.getElementById('videoModal')
     if (modal) modal.classList.remove('on')
 
-    // Salva o progresso atual se não foi concluído
     if (videoAtual && !videoConcluido) {
         sbSalvarProgresso(S.user.id, videoAtual.id, tempoAssistido, false).catch(err => {
             console.warn('Erro ao salvar progresso:', err)
@@ -339,7 +322,6 @@ export async function marcarVideoConcluido() {
         await sbSalvarProgresso(S.user.id, videoAtual.id, videoAtual.duracao || tempoAssistido, true)
         toast('✅ Vídeo concluído!', 'success')
         document.getElementById('videoConcluirBtn').style.display = 'none'
-        // Recarrega a lista para atualizar o ícone de check
         await carregarListaVideoaulas()
         setTimeout(fecharVideoModal, 1000)
     } catch (err) {
