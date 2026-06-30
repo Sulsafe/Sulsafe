@@ -1,17 +1,16 @@
 // ============================================================
 // SUPABASE CLIENT - CONFIGURAÇÃO E EXPORTAÇÕES
 // ============================================================
-// Importa o createClient da CDN (versão ESM)
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// Configure com suas credenciais REAIS
-const SUPABASE_URL = 'https://seu-projeto.supabase.co' // ← SUBSTITUA AQUI
-const SUPABASE_ANON_KEY = 'sua-chave-anon-aqui'        // ← SUBSTITUA AQUI
+// 👇 TROCA AQUI PELAS TUAS CREDENCIAIS REAIS DO PAINEL SUPABASE
+const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 
 export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ============================================================
-// FUNÇÕES DE ACESSO AO BANCO (mantidas iguais)
+// FUNÇÕES DE ACESSO AO BANCO
 // ============================================================
 
 // Usuários
@@ -54,7 +53,6 @@ export async function sbLiberarUsuario(id) {
 
 // Dashboard
 export async function sbGetDashboardMetrics() {
-    // Implementar conforme necessidade
     return { data: { total_usuarios: 0, total_alunos: 0, total_professores: 0, pendentes: 0, provas_pendentes: 0, total_concluidas: 0 } }
 }
 
@@ -136,15 +134,15 @@ export async function sbLancarNota(aluno_id, nr_id, nota, obs, professor_id) {
 }
 
 export async function sbGetMediasNRs() {
-    // Exemplo: retorna média por NR
     return { data: [] }
 }
 
 // Upload de arquivos (Storage)
-export const STORAGE_BUCKET = 'seu-bucket' // substitua pelo nome do seu bucket
+export const STORAGE_BUCKET = 'sulsafe-arquivos' // ← Troca pro nome do teu bucket
 export async function sbUploadArquivo(bucket, path, file) {
     return await sb.storage.from(bucket).upload(path, file)
 }
+
 // Certificados
 export async function sbGetCertificados(userId) {
     return await sb.from('certificados')
