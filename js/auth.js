@@ -2,8 +2,9 @@
 // AUTH - LOGIN, CADASTRO, LOGOUT, RECUPERAÇÃO
 // ============================================================
 import { sb } from './supabase-client.js'
-import { S, loadCfg, toast, handleError, sanitizar, showT } from './utils.js'
-import { enterDash } from './app.js' // <-- importa do app.js
+import { S, loadCfg, ADMIN_EMAIL } from './state.js'  // <-- MUDOU AQUI
+import { toast, handleError, sanitizar, showT } from './utils.js' // <-- E AQUI
+import { enterDash } from './app.js'
 
 // Funções auxiliares locais (ou você pode exportá-las do supabase-client.js)
 async function sbGetUser(id) {
