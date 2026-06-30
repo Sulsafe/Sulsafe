@@ -1,5 +1,5 @@
 // ============================================================
-// VIEW: ADMIN (MODO DEUS)
+// VIEW: ADMIN (MODO DEUS) - VERSÃO SIMPLIFICADA PARA TESTE
 // ============================================================
 import { S, isAdmin, uid, nav, fmtD } from '../state.js'
 import { sb, sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from '../supabase-client.js'
@@ -10,7 +10,6 @@ export function vAdmin() {
     let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<div class="god-hd"><h2><i class="fas fa-shield-halved"></i> Modo Deus</h2><p>Controle total — ${S.user.email}</p></div>`
     h += `<div id="adminStats"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando dados...</p></div></div>`
-    h += `<div class="ch-g"><div class="ch-b"><h3><i class="fas fa-chart-bar"></i> Alunos por Progresso</h3><canvas id="chartAdmProg" height="200"></canvas></div><div class="ch-b"><h3><i class="fas fa-chart-pie"></i> Distribuição de Roles</h3><canvas id="chartAdmRoles" height="200"></canvas></div></div>`
     h += `<div id="adminUsers"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando usuários...</p></div></div>`
     h += `<div class="pnl" style="border:2px solid #D32F2F"><div class="pnl-h"><div class="pnl-t" style="color:#D32F2F"><i class="fas fa-skull-crossbones"></i> Zona de Perigo</div></div><p style="font-size:13px;color:var(--tx2);margin-bottom:14px">Apaga <strong>TODOS</strong> os dados da plataforma.</p><button class="btn btn-d" onclick="modalApagarTudo()"><i class="fas fa-bomb"></i> APAGAR TUDO</button></div>`
     
@@ -59,8 +58,6 @@ async function carregarAdminData() {
         h += `</tbody></table></div></div>`
         usersDiv.innerHTML = h
     }
-    
-    setTimeout(drawChartAdmin, 100)
 }
 
 function filterU(q) { q = q.toLowerCase(); $$('#uTB tr').forEach(r => { r.style.display = r.dataset.un.includes(q) ? '' : 'none' }) }
@@ -87,62 +84,6 @@ async function execApagar() {
     closeMdl()
     toast('TODOS os dados foram apagados!', 'warn')
     carregarAdminData()
-}
-
-async function drawChartAdmin() {
-    const cv1 = $('#chartAdmProg')
-    const cv2 = $('#chartAdmRoles')
-    const { data: ranking } = await sbGetRankingAlunos()
-    const { data: users } = await sbGetAllUsers()
-    
-    if (cv1 && ranking) {
-        let p0 = 0, p1 = 0, p2 = 0, p3 = 0
-        ranking.forEach(a => {
-            const pct = a.progresso || 0
-            if (pct === 0) p0++
-            else if (pct <= 50) p1++
-            else if (pct <= 80) p2++
-            else p3++
-        })
-        if (window.charts && window.charts.admProg) try { window.charts.admProg.destroy() } catch (e) {}
-        window.charts = window.charts || {}
-        window.charts.admProg = new Chart(cv1, {
-            type: 'bar',
-            data: {
-                labels: ['0%', '1-50%', '51-80%', '81-100%'],
-                datasets: [{
-                    label: 'Alunos',
-                    data: [p0, p1, p2, p3],
-                    backgroundColor: ['rgba(211,47,47,.7)', 'rgba(255,152,0,.7)', 'rgba(21,101,192,.7)', 'rgba(46,125,50,.7)'],
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } }
-            }
-        })
-    }
-    if (cv2 && users) {
-        const rc = { admin: 0, professor: 0, aluno: 0 }
-        users.forEach(u => { rc[u.role] = (rc[u.role] || 0) + 1 })
-        if (window.charts && window.charts.admRoles) try { window.charts.admRoles.destroy() } catch (e) {}
-        window.charts = window.charts || {}
-        window.charts.admRoles = new Chart(cv2, {
-            type: 'doughnut',
-            data: {
-                labels: ['Admin', 'Professor', 'Aluno'],
-                datasets: [{
-                    data: [rc.admin, rc.professor, rc.aluno],
-                    backgroundColor: ['rgba(201,176,55,.8)', 'rgba(46,125,50,.8)', 'rgba(21,101,192,.8)']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        })
-    }
 }
 
 function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>` }
