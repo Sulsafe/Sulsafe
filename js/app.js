@@ -1,167 +1,232 @@
 // ============================================================
-// VIEW: MATERIAIS (com upload e organização por NR)
+// APP - FUNÇÕES PRINCIPAIS (SIDEBAR, RENDER, ENTER DASH, NOTIFS)
 // ============================================================
-// CORREÇÃO: imports da mesma pasta
-import { S, isAdmin, isProf, uid, nav } from './state.js'
-import { toast, handleError, sanitizar, NRS, $, $$ } from './utils.js'
-import { sb, sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET, sbGetAlunos, sbCriarNotificacao } from './supabase-client.js'
+import { S, role, isAdmin, isProf, uid, fmtD, nav, loadCfg } from './state.js'
+import { sb } from './supabase-client.js'
+import { sbCriarNotificacao } from './supabase-client.js'
+import { toast, $, $$, NRS } from './utils.js'
+import { vInicio } from './views/inicio.js'
+import { vVideoaulas } from './videoaulas.js'
+import { vMateriais } from './materiais.js'
+import { vSalas } from './views/salas.js'
+import { vNRs } from './views/nrs.js'
+import { vIA } from './views/ia.js'
+import { vBoletim } from './views/boletim.js'
+import { vProvas } from './views/provas.js'
+import { vCerts } from './views/certificados.js'
+import { vAdmin } from './views/admin.js'
+import { vConfig } from './views/config.js'
+import { vPendentes } from './views/pendentes.js'
 
-export function vMateriais() {
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
-    h += `<h2 class="wc">Materiais de Apoio</h2><p class="wcs">Arquivos, apostilas e recursos complementares por NR.</p>`
+// Registrar todas as views
+const viewRegistry = {}
+function registerView(name, fn) { viewRegistry[name] = fn }
 
-    if (isAdmin() || isProf()) {
-        h += `<div class="pnl" style="margin-bottom:24px; border:2px dashed var(--p);">
-            <div class="pnl-h"><div class="pnl-t"><i class="fas fa-upload"></i> Subir novo material</div></div>
-            <form id="frmAddMaterial" enctype="multipart/form-data" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div class="fld" style="grid-column: span 2;">
-                    <label>NR</label>
-                    <select id="addMatNR" required>
-                        ${NRS.map(n => `<option value="${n.id}">NR ${n.id} — ${n.nm}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="fld">
-                    <label>Título do material</label>
-                    <input type="text" id="addMatTitulo" placeholder="Ex: Apostila NR 10" required>
-                </div>
-                <div class="fld">
-                    <label>Tipo</label>
-                    <select id="addMatTipo">
-                        <option value="arquivo">Arquivo (PDF, DOC, etc.)</option>
-                        <option value="link">Link externo</option>
-                    </select>
-                </div>
-                <div class="fld" style="grid-column: span 2;">
-                    <label>Arquivo (PDF, DOC, Imagem, etc.)</label>
-                    <input type="file" id="addMatArquivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.ppt,.pptx,.xls,.xlsx,.txt">
-                    <p style="font-size:11px;color:var(--tx3);margin-top:4px;">Máximo 20MB</p>
-                </div>
-                <div class="fld" style="grid-column: span 2;">
-                    <label>Link externo (opcional se já enviou arquivo)</label>
-                    <input type="url" id="addMatUrl" placeholder="https://drive.google.com/...">
-                </div>
-                <div class="fld" style="grid-column: span 2;">
-                    <label>Descrição (opcional)</label>
-                    <textarea id="addMatDesc" rows="2" placeholder="Descreva o material..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-p" style="grid-column: span 2;">
-                    <i class="fas fa-cloud-upload-alt"></i> Adicionar Material
-                </button>
-            </form>
-        </div>`
+registerView('inicio', vInicio)
+registerView('videoaulas', vVideoaulas)
+registerView('materiais', vMateriais)
+registerView('salas', vSalas)
+registerView('nrs', vNRs)
+registerView('ia', vIA)
+registerView('boletim', vBoletim)
+registerView('provas', vProvas)
+registerView('certificados', vCerts)
+registerView('admin', vAdmin)
+registerView('config', vConfig)
+registerView('pendentes', vPendentes)
+
+// ============================================================
+// RENDER SIDEBAR
+// ============================================================
+export function renderSB() {
+    const r = role()
+    const items = [
+        { id: 'inicio', ic: 'fa-house', lb: 'Início' },
+        { id: 'videoaulas', ic: 'fa-play-circle', lb: 'Videoaulas' },
+        { id: 'materiais', ic: 'fa-file-alt', lb: 'Materiais' },
+        { id: 'salas', ic: 'fa-tower-broadcast', lb: 'Salas ao Vivo' },
+        { id: 'nrs', ic: 'fa-book', lb: 'NRs' },
+        { id: 'ia', ic: 'fa-robot', lb: 'Assistente IA' }
+    ]
+    if (r === 'aluno') {
+        items.push({ sep: 'ACADÊMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-lines', lb: 'Meu Boletim' })
+        items.push({ id: 'provas', ic: 'fa-file-pdf', lb: 'Minhas Provas' })
+        items.push({ sep: 'DOCUMENTOS' })
+        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' })
     }
-
-    h += `<div id="materiaisGrid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando materiais...</p></div></div>`
-
-    setTimeout(() => {
-        const form = $('#frmAddMaterial')
-        if (form) {
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault()
-                await adicionarMaterial()
-            })
-        }
-        carregarMateriais()
-    }, 100)
-
-    return h
-}
-
-async function adicionarMaterial() {
-    const nrId = $('#addMatNR').value
-    const titulo = sanitizar($('#addMatTitulo').value.trim())
-    const descricao = sanitizar($('#addMatDesc').value.trim())
-    const tipo = $('#addMatTipo').value
-    const arquivo = $('#addMatArquivo').files[0]
-    const url = $('#addMatUrl').value.trim()
-
-    if (!titulo) { toast('Título é obrigatório', 'err'); return }
-    if (tipo === 'arquivo' && !arquivo) { toast('Selecione um arquivo', 'err'); return }
-    if (tipo === 'link' && !url) { toast('Insira um link', 'err'); return }
-
-    let urlFinal = url
-    if (arquivo) {
-        if (arquivo.size > 20 * 1024 * 1024) {
-            toast('Arquivo muito grande (máx 20MB)', 'err')
-            return
-        }
-        const path = `materiais/${uid()}/${Date.now()}_${arquivo.name}`
-        const { data: uploadData, error: uploadError } = await sbUploadArquivo(STORAGE_BUCKET, path, arquivo)
-        if (uploadError) { handleError(uploadError); return }
-        urlFinal = uploadData.publicUrl
+    if (r === 'professor') {
+        items.push({ sep: 'ACADÊMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Lançar Notas' })
+        items.push({ sep: 'GESTÃO' })
+        items.push({ id: 'provas', ic: 'fa-file-pdf', lb: 'Corrigir Provas' })
+        items.push({ sep: 'DOCUMENTOS' })
+        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' })
     }
+    if (r === 'admin') {
+        items.push({ sep: 'GESTÃO' })
+        items.push({ id: 'pendentes', ic: 'fa-user-clock', lb: 'Pendentes' })
+        items.push({ sep: 'ACADÊMICO' })
+        items.push({ id: 'boletim', ic: 'fa-file-pen', lb: 'Notas' })
+        items.push({ id: 'provas', ic: 'fa-file-pdf', lb: 'Corrigir Provas' })
+        items.push({ sep: 'DOCUMENTOS' })
+        items.push({ id: 'certificados', ic: 'fa-certificate', lb: 'Certificados' })
+        items.push({ sep: 'SISTEMA' })
+        items.push({ id: 'admin', ic: 'fa-shield-halved', lb: 'Modo Deus' })
+    }
+    items.push({ sep: 'CONTA' })
+    items.push({ id: 'config', ic: 'fa-gear', lb: 'Configurações' })
 
-    const { data, error } = await sbCriarMaterial({
-        nr_id: nrId,
-        titulo,
-        descricao,
-        url: urlFinal,
-        tipo: tipo,
-        criado_por: uid()
+    let h = `<div class="sb-hd"><div class="lic">SS</div><div class="lt">SulSafe</div></div>`
+    h += `<div class="sb-role ${r}"><i class="fas fa-${r === 'admin' ? 'crown' : r === 'professor' ? 'chalkboard-user' : 'user-graduate'}"></i> <span>${r}</span></div>`
+    h += `<nav class="sb-nav">`
+    items.forEach(i => {
+        if (i.sep) h += `<div class="sb-lbl">${i.sep}</div>`
+        else h += `<div class="ni${S.view === i.id ? ' on' : ''}" onclick="window.nav('${i.id}')"><i class="fas ${i.ic}"></i><span>${i.lb}</span></div>`
     })
-
-    if (error) { handleError(error); return }
-
-    toast('Material adicionado com sucesso!', 'success')
-    await enviarNotificacaoTodosAlunos(`Novo material disponível: "${titulo}" na NR ${nrId}`, 'materiais')
-
-    $('#addMatTitulo').value = ''
-    $('#addMatDesc').value = ''
-    $('#addMatArquivo').value = ''
-    $('#addMatUrl').value = ''
-    carregarMateriais()
+    h += `</nav><div class="sb-ft"><span class="sb-name">${S.user?.nome_completo || ''}</span><div class="sb-out" onclick="window.logout()" title="Sair"><i class="fas fa-right-from-bracket"></i></div></div>`
+    document.getElementById('sidebar').innerHTML = h
 }
 
-async function enviarNotificacaoTodosAlunos(mensagem, link) {
-    const { data: alunos } = await sbGetAlunos()
-    if (!alunos || alunos.length === 0) return
-    for (const aluno of alunos) {
-        await sbCriarNotificacao(aluno.id, 'Novo Material', mensagem, link)
-    }
-    if (S.user && (isAdmin() || isProf())) {
-        await sbCriarNotificacao(S.user.id, 'Material adicionado', `Você adicionou: ${mensagem}`, link)
+// ============================================================
+// RENDER VIEW
+// ============================================================
+export function renderV() {
+    const viewName = S.view || 'inicio'
+    const fn = viewRegistry[viewName]
+    if (fn) {
+        document.getElementById('mc').innerHTML = fn()
+        bindPostRender()
+    } else {
+        document.getElementById('mc').innerHTML = `
+            <div class="empty">
+                <i class="fas fa-exclamation-circle"></i>
+                <h4>View "${viewName}" não encontrada</h4>
+            </div>`
     }
 }
 
-export async function carregarMateriais() {
-    const container = $('#materiaisGrid')
-    if (!container) return
-
-    const { data: materiais } = await sbGetMateriais()
-    const materiaisPorNR = {}
-    NRS.forEach(nr => { materiaisPorNR[nr.id] = [] })
-    if (materiais) {
-        materiais.forEach(m => {
-            if (materiaisPorNR[m.nr_id]) materiaisPorNR[m.nr_id].push(m)
-        })
+// ============================================================
+// ENTER DASHBOARD
+// ============================================================
+export function enterDash() {
+    document.getElementById('authWrap').classList.add('off')
+    document.getElementById('dash').classList.add('on')
+    S.view = 'inicio'
+    renderSB()
+    const fn = viewRegistry['inicio']
+    if (fn) {
+        document.getElementById('mc').innerHTML = fn()
+        bindPostRender()
     }
+    checkNotifs()
+}
 
-    let html = ''
-    NRS.forEach(nr => {
-        const items = materiaisPorNR[nr.id] || []
-        html += `<div class="nr-c" style="flex-direction:column;align-items:stretch;gap:4px;cursor:default;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;gap:12px;padding:4px 0;">
-                <div class="nr-ic"><i class="fas ${nr.ic}"></i></div>
-                <div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>
-                <span class="badge bg-info" style="margin-left:auto;">${items.length} materiais</span>
-            </div>
-            ${items.length === 0 ? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
-            ${items.map(m => `
-                <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--ip);border-radius:8px;border:1px solid var(--bd);margin-top:4px;">
-                    <i class="fas ${m.tipo === 'arquivo' ? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
-                    <span style="flex:1;font-size:13px;font-weight:500;">${m.titulo}</span>
-                    <button class="btn btn-sm btn-p" onclick="estudarMaterial('${m.url}')">
-                        <i class="fas fa-book-open"></i> Estudar
-                    </button>
-                </div>
-            `).join('')}
-        </div>`
+// ============================================================
+// NOTIFICAÇÕES
+// ============================================================
+export async function checkNotifs() {
+    if (!S.user) return
+    try {
+        const { data } = await sb.from('notificacoes')
+            .select('*')
+            .eq('usuario_id', S.user.id)
+            .eq('lida', false)
+            .order('criado_em', { ascending: false })
+            .limit(1)
+        if (data && data.length > 0) {
+            const last = data[0]
+            if (Date.now() - new Date(last.criado_em).getTime() < 60000) {
+                showNotifPopup({ msg: last.mensagem, view: last.link })
+            }
+        }
+    } catch (e) {}
+}
+
+export function showNotifPopup(n) {
+    document.getElementById('notifBody').innerHTML = `<p>${n.msg}</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">${fmtD(Date.now())}</p>`
+    document.getElementById('notifAction').onclick = () => { window.closeNotif(); if (n.view) window.nav(n.view) }
+    document.getElementById('notifPopup').classList.add('show')
+    setTimeout(window.closeNotif, 8000)
+}
+
+window.closeNotif = function() {
+    document.getElementById('notifPopup').classList.remove('show')
+}
+
+// ============================================================
+// BIND POST RENDER
+// ============================================================
+export function bindPostRender() {
+    if (S.view === 'boletim' && role() !== 'aluno') {
+        setTimeout(() => {
+            if (window.drawChartNotas) window.drawChartNotas()
+        }, 100)
+    }
+    if (S.view === 'admin') {
+        setTimeout(() => {
+            if (window.drawChartAdmin) window.drawChartAdmin()
+        }, 100)
+    }
+    if (S.view === 'pendentes') {
+        setTimeout(() => {
+            if (window.carregarPendentes) window.carregarPendentes()
+        }, 100)
+    }
+    if (S.view === 'provas') {
+        setTimeout(() => {
+            if (window.carregarProvasPendentes) window.carregarProvasPendentes()
+        }, 100)
+    }
+}
+
+// ============================================================
+// EXPORTA FUNÇÕES GLOBAIS
+// ============================================================
+window.nav = function(viewName) {
+    S.prevView = S.view
+    S.view = viewName
+    renderSB()
+    renderV()
+}
+
+window.logout = async function() {
+    try {
+        await sb.auth.signOut()
+    } catch (e) {}
+    S.user = null
+    localStorage.removeItem('ss_session')
+    localStorage.removeItem('ss_user')
+    if (window.charts) {
+        Object.values(window.charts).forEach(c => { try { c.destroy() } catch(e) {} })
+        window.charts = {}
+    }
+    window.location.href = 'index.html'
+}
+
+window.showT = function(id) {
+    import('./utils.js').then(utils => {
+        utils.showT(id)
     })
-    container.innerHTML = html || `<div class="empty"><i class="fas fa-file-alt"></i><p>Nenhum material disponível ainda.</p></div>`
 }
 
-export function estudarMaterial(url) {
-    window.open(url, '_blank')
+window.recuperarSenha = function() {
+    import('./auth.js').then(auth => {
+        auth.recuperarSenha()
+    })
 }
 
-window.estudarMaterial = estudarMaterial
+window.mostrarTermos = function() {
+    const termosHtml = document.getElementById('termosHtml').innerHTML
+    const modalBox = document.getElementById('mdlBox')
+    modalBox.innerHTML = termosHtml
+    document.getElementById('mdlBg').classList.add('on')
+}
+
+window.closeMdl = function() {
+    document.getElementById('mdlBg').classList.remove('on')
+}
+
+document.getElementById('mdlBg')?.addEventListener('click', function(e) {
+    if (e.target === this) window.closeMdl()
+})
