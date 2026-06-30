@@ -1,9 +1,10 @@
 // ============================================================
 // VIEW: INÍCIO
 // ============================================================
-import { S, role, isAdmin, isProf, uid, nav, NRS } from './state.js'
-import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from './supabase-client.js'
-import { toast, $, $$ } from './utils.js'
+// CORREÇÃO: imports com '../' porque está em views/
+import { S, role, isAdmin, isProf, uid, nav } from '../state.js'
+import { NRS, toast, $, $$ } from '../utils.js'
+import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from '../supabase-client.js'
 
 export function vInicio() {
     const r = role()
@@ -47,7 +48,7 @@ export function vInicio() {
             
             if (r === 'aluno') {
                 const { data: progressos } = await sbGetProgressoUsuario(uid())
-                const concluidas = progressos?.filter(p => p.concluído === true).length || 0
+                const concluidas = progressos?.filter(p => p.concluido === true).length || 0
                 const total = NRS.length
                 const pct = total ? Math.round(concluidas / total * 100) : 0
                 const pendentes = total - concluidas
