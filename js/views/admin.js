@@ -3,7 +3,7 @@
 // ============================================================
 import { S, isAdmin, uid, nav, fmtD } from '../state.js'
 import { sb, sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from '../supabase-client.js'
-import { toast, handleError, openMdl, closeMdl, $, $$ } from '../utils.js'
+import { toast, handleError, openMdl, close, $, $$ } from '../utils.js'
 
 export function vAdmin() {
     if (!isAdmin()) return nav('inicio')
@@ -69,8 +69,7 @@ async function changeRole(id, role) {
 }
 
 function modalApagarTudo() {
-    openMdl(`<button class="mdl-x" onclick="closeMdl()"><i class="fas fa-times"></i></button><div style="text-align:center;padding:10px 0"><i class="fas fa-skull-crossbones" style="font-size:48px;color:#D32F2F;margin-bottom:12px;display:block"></i><h2 style="font-size:20px;font-weight:800;color:#D32F2F;margin-bottom:8px">Confirmar Apagamento Total</h2><p style="font-size:13px;color:var(--tx2);margin-bottom:6px">Apagará: salas, notas, provas, certificados, aulas e materiais.</p><p style="font-size:12px;color:#D32F2F;font-weight:700;margin-bottom:16px">DIGITE "APAGAR" PARA CONFIRMAR</p><input type="text" id="cfmApagar" placeholder='Digite "APAGAR"' style="width:100%;background:var(--ip);border:1px solid var(--bd);border-radius:var(--r);padding:12px;color:var(--tx);font-size:14px;text-align:center;margin-bottom:12px"><button class="btn btn-d btn-block" onclick="execApagar()"><i class="fas fa-bomb"></i> EXECUTAR</button></div>`)
-}
+   openMdl(`<button class="mdl-x" onclick="close()"><i class="fas fa-times"></i></button>...`)
 
 async function execApagar() {
     if ($('#cfmApagar')?.value?.trim() !== 'APAGAR') { toast('Digite "APAGAR" para confirmar', 'err'); return }
@@ -81,7 +80,7 @@ async function execApagar() {
     await sb.from('progresso_aulas').delete().neq('id', '')
     await sb.from('videoaulas').delete().neq('id', '')
     await sb.from('materiais').delete().neq('id', '')
-    closeMdl()
+    close()
     toast('TODOS os dados foram apagados!', 'warn')
     carregarAdminData()
 }
