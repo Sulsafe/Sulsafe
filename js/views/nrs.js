@@ -1,8 +1,9 @@
 // ============================================================
 // VIEW: NRs (Catálogo)
 // ============================================================
-import { nav, NRS } from './state.js'
-import { openMdl, closeMdl, $, $$ } from './utils.js'
+// CORREÇÃO: imports com '../'
+import { nav, NRS } from '../state.js'
+import { openMdl, closeMdl, $, $$ } from '../utils.js'
 
 export function vNRs() {
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
