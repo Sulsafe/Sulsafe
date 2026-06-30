@@ -89,3 +89,33 @@ export const NRS = [
     { id: '37', nm: 'Segurança em Máquinas', cat: 'especifico', ic: 'fa-gear' },
     { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
 ]
+export const NRS = [
+    { id: '1', nm: 'Disposições Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
+    { id: '2', nm: 'Inspeção Prévia', cat: 'geral', ic: 'fa-magnifying-glass' },
+    // ... resto das 38 NRs ...
+    { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
+] // <- linha 90
+
+// ============================================================
+// MODAL GENÉRICO - COLA A PARTIR DA LINHA 92
+// ============================================================
+export function openMdl(html) {
+    let mdl = $('#modal')
+    if (!mdl) {
+        mdl = document.createElement('div')
+        mdl.id = 'modal'
+        mdl.className = 'mdl'
+        document.body.appendChild(mdl)
+    }
+    mdl.innerHTML = html
+    mdl.classList.add('on')
+    document.body.style.overflow = 'hidden'
+}
+
+export function close() {
+    const mdl = $('#modal')
+    if (mdl) {
+        mdl.classList.remove('on')
+        document.body.style.overflow = ''
+    }
+}
