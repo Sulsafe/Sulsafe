@@ -93,6 +93,6 @@ window.liberarUsuario = async function(id) {
     if (error) { handleError(error); return }
     toast('Usuário liberado com sucesso!', 'success')
     carregarAdminData()
-}
+}  // <-- ESSA CHAVE QUE FALTAVA
 window.modalApagarTudo = modalApagarTudo
 window.execApagar = execApagar
