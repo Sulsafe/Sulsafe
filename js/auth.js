@@ -2,8 +2,30 @@
 // AUTH - LOGIN, CADASTRO, LOGOUT, RECUPERAÇÃO
 // ============================================================
 import { sb } from './supabase-client.js'
-import { ADMIN_EMAIL, S, loadCfg, enterDash, toast, handleError, sanitizar, showT } from './utils.js'
-// Importar showT do utils ou definir aqui
+import { S, loadCfg, toast, handleError, sanitizar, showT } from './utils.js'
+import { enterDash } from './app.js' // <-- importa do app.js
+
+// Funções auxiliares locais (ou você pode exportá-las do supabase-client.js)
+async function sbGetUser(id) {
+    const { data, error } = await sb
+        .from('usuarios')
+        .select('*')
+        .eq('id', id)
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function sbUpdateUser(id, updates) {
+    const { data, error } = await sb
+        .from('usuarios')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+    if (error) throw error
+    return data
+}
 
 export async function handleLogin(email, password) {
     try {
@@ -12,6 +34,7 @@ export async function handleLogin(email, password) {
             password: password
         })
         if (authError) {
+            // Tenta criar admin se for o email admin
             if (email === ADMIN_EMAIL) {
                 const { data: signUpData, error: signUpError } = await sb.auth.signUp({
                     email,
@@ -23,8 +46,7 @@ export async function handleLogin(email, password) {
                 await sbUpdateUser(userId, { role: 'admin', status: 'ativo' })
                 const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({ email, password })
                 if (loginError) throw loginError
-                const { data: user } = await sbGetUser(loginData.user.id)
-                if (!user) throw new Error('Erro ao buscar usuário')
+                const user = await sbGetUser(loginData.user.id)
                 S.user = user
                 localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
                 localStorage.setItem('ss_user', JSON.stringify(user))
@@ -36,16 +58,17 @@ export async function handleLogin(email, password) {
             throw new Error('Email ou senha incorretos')
         }
         // Busca perfil
-        const { data: user, error: userError } = await sbGetUser(authData.user.id)
-        if (userError || !user) {
+        let user
+        try {
+            user = await sbGetUser(authData.user.id)
+        } catch (e) {
+            // Se não existir, cria perfil básico
             await sbUpdateUser(authData.user.id, {
                 nome_completo: authData.user.user_metadata?.nome_completo || 'Usuário',
                 role: authData.user.user_metadata?.role || 'aluno',
                 status: 'ativo'
             })
-            const { data: newUser } = await sbGetUser(authData.user.id)
-            if (!newUser) throw new Error('Erro ao buscar perfil')
-            user = newUser
+            user = await sbGetUser(authData.user.id)
         }
         if (user.status === 'pendente' && user.role === 'aluno') {
             throw new Error('Aguardando aprovação do administrador')
@@ -76,10 +99,13 @@ export async function handleCadastro(nome, email, password, confirmPassword, ter
         })
         if (authError) throw authError
         const userId = authData.user.id
-        if (role === 'admin') {
-            await sbUpdateUser(userId, { status: 'ativo' })
-        }
-        const { data: user } = await sbGetUser(userId)
+        // Cria perfil
+        await sbUpdateUser(userId, {
+            nome_completo: nome,
+            role: role,
+            status: role === 'admin' ? 'ativo' : 'pendente'
+        })
+        const user = await sbGetUser(userId)
         if (role === 'admin') {
             S.user = user
             localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
@@ -104,7 +130,6 @@ export async function logout() {
     S.user = null
     localStorage.removeItem('ss_session')
     localStorage.removeItem('ss_user')
-    // Destruir gráficos se existir função
     if (window.destroyCharts) window.destroyCharts()
     window.location.href = 'index.html'
 }
