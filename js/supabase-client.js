@@ -1,382 +1,223 @@
 // ============================================================
-// SUPABASE CLIENT + CRUD
+// SUPABASE CLIENT - CONFIGURAÇÃO E FUNÇÕES DE ACESSO
 // ============================================================
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
-import { sanitizar, toast, handleError } from './utils.js'
-import { S, uid } from './state.js'
+// CORREÇÃO: importação correta do createClient
+import { createClient } from '@supabase/supabase-js'
 
-// Configurações
-const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
+const SUPABASE_URL = 'https://seu-projeto.supabase.co' // SUBSTITUA PELO SEU URL
+const SUPABASE_ANON_KEY = 'sua-chave-anon' // SUBSTITUA PELA SUA CHAVE
 
 export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-export const STORAGE_BUCKET = 'arquivos'
+export const STORAGE_BUCKET = 'sulsafe'
 
 // ============================================================
-// USUÁRIOS
+// FUNÇÕES DE ACESSO AOS DADOS
 // ============================================================
+
+// Usuários
 export async function sbGetUser(id) {
-    try {
-        const { data, error } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status, created_at')
-            .eq('id', id)
-            .single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    const { data, error } = await sb
+        .from('usuarios')
+        .select('*')
+        .eq('id', id)
+        .single()
+    if (error) throw error
+    return data
 }
 
-export async function sbUpdateUser(id, dados) {
-    try {
-        const { data, error } = await sb.from('profiles').update(dados).eq('id', id).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+export async function sbUpdateUser(id, updates) {
+    const { data, error } = await sb
+        .from('usuarios')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+    if (error) throw error
+    return data
 }
 
-export async function sbGetAllUsers(page = 0, limit = 20) {
-    try {
-        const { data, error, count } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status, created_at', { count: 'exact' })
-            .order('nome_completo')
-            .range(page * limit, (page + 1) * limit - 1)
-        if (error) throw error
-        return { data, error: null, count }
-    } catch (error) {
-        return { data: null, error, count: 0 }
-    }
-}
-
-export async function sbGetAlunos() {
-    try {
-        const { data, error } = await sb.from('profiles')
-            .select('id, nome_completo, email, role, status, created_at')
-            .eq('role', 'aluno')
-            .order('nome_completo')
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+export async function sbGetAllUsers() {
+    return await sb.from('usuarios').select('*')
 }
 
 export async function sbGetPendentes() {
-    try {
-        const { data, error } = await sb.from('profiles')
-            .select('id, nome_completo, email, created_at')
-            .eq('status', 'pendente')
-            .eq('role', 'aluno')
-            .order('created_at', { ascending: true })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    return await sb.from('usuarios').select('*').eq('status', 'pendente')
 }
 
 export async function sbLiberarUsuario(id) {
-    try {
-        const { data, error } = await sb.from('profiles').update({ status: 'ativo' }).eq('id', id).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
+    return await sb.from('usuarios').update({ status: 'ativo' }).eq('id', id).select().single()
 }
 
-// ============================================================
-// VIDEOAULAS
-// ============================================================
-export async function sbGetVideoaulas(nrId = null) {
-    try {
-        let query = sb.from('videoaulas').select('*, profiles(nome_completo)')
-        if (nrId) query = query.eq('nr_id', nrId)
-        const { data, error } = await query.order('ordem', { ascending: true })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbCriarVideoaula(videoaula) {
-    try {
-        const { data, error } = await sb.from('videoaulas').insert(videoaula).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// MATERIAIS
-// ============================================================
-export async function sbGetMateriais(nrId = null) {
-    try {
-        let query = sb.from('materiais').select('*, profiles(nome_completo)')
-        if (nrId) query = query.eq('nr_id', nrId)
-        const { data, error } = await query.order('criado_em', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbCriarMaterial(material) {
-    try {
-        const { data, error } = await sb.from('materiais').insert(material).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// UPLOAD ARQUIVOS (STORAGE)
-// ============================================================
-export async function sbUploadArquivo(bucket, path, file) {
-    try {
-        const { data, error } = await sb.storage.from(bucket).upload(path, file, {
-            cacheControl: '3600',
-            upsert: false
-        })
-        if (error) throw error
-        const { data: urlData } = sb.storage.from(bucket).getPublicUrl(path)
-        return { data: { ...data, publicUrl: urlData.publicUrl }, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// PROGRESSO
-// ============================================================
-export async function sbSalvarProgresso(userId, aulaId, segundos, concluido = false) {
-    try {
-        const { data, error } = await sb.from('progresso_aulas').upsert({
-            user_id: userId,
-            aula_id: aulaId,
-            assistiu_segundos: segundos,
-            concluído: concluido,
-            ultima_atualizacao: new Date().toISOString()
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbGetProgressoUsuario(userId) {
-    try {
-        const { data, error } = await sb.from('progresso_aulas')
-            .select('*, videoaulas(*)')
-            .eq('user_id', userId)
-            .order('ultima_atualizacao', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// NOTAS
-// ============================================================
-export async function sbGetNotasAluno(userId) {
-    try {
-        const { data, error } = await sb.from('notas')
-            .select('*')
-            .eq('usuario_id', userId)
-            .order('criado_em', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbLancarNota(userId, nrId, nota, obs = '', professorId = null) {
-    try {
-        const { data, error } = await sb.from('notas').insert({
-            usuario_id: userId,
-            nr_id: nrId,
-            nota,
-            obs: sanitizar(obs),
-            professor_id: professorId
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbGetMediasNRs() {
-    try {
-        const { data, error } = await sb.from('view_medias_nrs').select('*').order('nr_id')
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// CERTIFICADOS
-// ============================================================
-export async function sbEmitirCertificado(userId, nrId, nota, cargaHoraria = 40) {
-    try {
-        const codigo = 'SS-' + Math.random().toString(36).substr(2, 8).toUpperCase()
-        const { data, error } = await sb.from('certificados').insert({
-            usuario_id: userId,
-            nr_id: nrId,
-            codigo,
-            nota,
-            carga_horaria: cargaHoraria,
-            emitido_por: uid()
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbGetCertificadosAluno(userId) {
-    try {
-        const { data, error } = await sb.from('certificados')
-            .select('*')
-            .eq('usuario_id', userId)
-            .order('criado_em', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// PROVAS
-// ============================================================
-export async function sbEnviarProva(userId, nrId, titulo, arquivoUrl) {
-    try {
-        const { data, error } = await sb.from('provas').insert({
-            usuario_id: userId,
-            nr_id: nrId,
-            titulo: sanitizar(titulo),
-            arquivo_url: arquivoUrl,
-            status: 'pendente'
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbGetProvasPendentes() {
-    try {
-        const { data, error } = await sb.from('provas')
-            .select('*, profiles(nome_completo, email)')
-            .eq('status', 'pendente')
-            .order('criado_em', { ascending: true })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbCorrigirProva(provaId, nota, status = 'corrigido') {
-    try {
-        const { data, error } = await sb.from('provas')
-            .update({ nota, status, corrigido_em: new Date().toISOString() })
-            .eq('id', provaId)
-            .select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// SALAS
-// ============================================================
-export async function sbCriarSala(topico, meetId, criadoPor) {
-    try {
-        const { data, error } = await sb.from('salas').insert({
-            topico: sanitizar(topico),
-            meet_id: sanitizar(meetId),
-            criado_por: criadoPor,
-            ativa: true
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-export async function sbGetSalasAtivas() {
-    try {
-        const { data, error } = await sb.from('salas')
-            .select('*, profiles(nome_completo)')
-            .eq('ativa', true)
-            .order('created_at', { ascending: false })
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// NOTIFICAÇÕES
-// ============================================================
-export async function sbCriarNotificacao(userId, titulo, mensagem, link = null) {
-    try {
-        const { data, error } = await sb.from('notificacoes').insert({
-            usuario_id: userId,
-            titulo: sanitizar(titulo),
-            mensagem: sanitizar(mensagem),
-            link,
-            lida: false
-        }).select().single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    }
-}
-
-// ============================================================
-// DASHBOARD
-// ============================================================
+// Dashboard
 export async function sbGetDashboardMetrics() {
-    try {
-        const { data, error } = await sb.from('view_dashboard_admin').select('*').single()
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
+    const { data: total_usuarios } = await sb.from('usuarios').select('*', { count: 'exact', head: true })
+    const { data: total_alunos } = await sb.from('usuarios').select('*', { count: 'exact', head: true }).eq('role', 'aluno')
+    const { data: total_professores } = await sb.from('usuarios').select('*', { count: 'exact', head: true }).eq('role', 'professor')
+    const { data: pendentes } = await sb.from('usuarios').select('*', { count: 'exact', head: true }).eq('status', 'pendente')
+    const { data: provas_pendentes } = await sb.from('provas').select('*', { count: 'exact', head: true }).eq('status', 'pendente')
+    const { data: total_concluidas } = await sb.from('progresso_aulas').select('*', { count: 'exact', head: true }).eq('concluido', true)
+    return {
+        data: {
+            total_usuarios,
+            total_alunos,
+            total_professores,
+            pendentes,
+            provas_pendentes,
+            total_concluidas
+        }
     }
 }
 
 export async function sbGetRankingAlunos() {
-    try {
-        const { data, error } = await sb.from('view_ranking_alunos').select('*')
-        if (error) throw error
-        return { data, error: null }
-    } catch (error) {
-        return { data: null, error }
+    const { data: usuarios } = await sb.from('usuarios').select('id, nome_completo').eq('role', 'aluno')
+    if (!usuarios) return { data: [] }
+    const ranking = []
+    for (const u of usuarios) {
+        const { data: progressos } = await sb.from('progresso_aulas').select('concluido').eq('usuario_id', u.id)
+        const total = progressos?.length || 0
+        const concluidos = progressos?.filter(p => p.concluido === true).length || 0
+        const pct = total ? Math.round((concluidos / total) * 100) : 0
+        ranking.push({ ...u, progresso: pct })
     }
+    ranking.sort((a, b) => b.progresso - a.progresso)
+    return { data: ranking }
+}
+
+// Videoaulas
+export async function sbGetVideoaulas() {
+    return await sb.from('videoaulas').select('*').order('ordem')
+}
+
+export async function sbCriarVideoaula(dados) {
+    return await sb.from('videoaulas').insert(dados).select().single()
+}
+
+// Progresso
+export async function sbGetProgressoUsuario(usuarioId) {
+    return await sb.from('progresso_aulas').select('*').eq('usuario_id', usuarioId)
+}
+
+export async function sbSalvarProgresso(usuarioId, aulaId, tempo, concluido) {
+    const { data: existente } = await sb
+        .from('progresso_aulas')
+        .select('id')
+        .eq('usuario_id', usuarioId)
+        .eq('aula_id', aulaId)
+        .single()
+    if (existente) {
+        return await sb
+            .from('progresso_aulas')
+            .update({ tempo_assistido: tempo, concluido })
+            .eq('id', existente.id)
+    } else {
+        return await sb
+            .from('progresso_aulas')
+            .insert({ usuario_id: usuarioId, aula_id: aulaId, tempo_assistido: tempo, concluido })
+    }
+}
+
+// Materiais
+export async function sbGetMateriais() {
+    return await sb.from('materiais').select('*').order('criado_em', { ascending: false })
+}
+
+export async function sbCriarMaterial(dados) {
+    return await sb.from('materiais').insert(dados).select().single()
+}
+
+export async function sbUploadArquivo(bucket, path, file) {
+    return await sb.storage.from(bucket).upload(path, file)
+}
+
+// Salas
+export async function sbGetSalasAtivas() {
+    return await sb.from('salas').select('*, profiles(nome_completo)').eq('ativa', true).order('created_at', { ascending: false })
+}
+
+export async function sbCriarSala(topico, meetId, criadoPor) {
+    return await sb.from('salas').insert({ topico, meet_id: meetId, criado_por: criadoPor, ativa: true }).select().single()
+}
+
+// Notificações
+export async function sbCriarNotificacao(usuarioId, titulo, mensagem, link) {
+    return await sb.from('notificacoes').insert({
+        usuario_id: usuarioId,
+        titulo,
+        mensagem,
+        link,
+        lida: false
+    })
+}
+
+// Alunos
+export async function sbGetAlunos() {
+    return await sb.from('usuarios').select('id, nome_completo, email').eq('role', 'aluno')
+}
+
+// Notas
+export async function sbGetNotasAluno(alunoId) {
+    return await sb.from('notas').select('*').eq('aluno_id', alunoId).order('criado_em', { ascending: false })
+}
+
+export async function sbLancarNota(alunoId, nrId, nota, obs, professorId) {
+    return await sb.from('notas').insert({
+        aluno_id: alunoId,
+        nr_id: nrId,
+        nota,
+        obs,
+        professor_id: professorId
+    }).select().single()
+}
+
+export async function sbGetMediasNRs() {
+    const { data: notas } = await sb.from('notas').select('nr_id, nota')
+    const medias = {}
+    notas.forEach(n => {
+        if (!medias[n.nr_id]) medias[n.nr_id] = { total: 0, count: 0 }
+        medias[n.nr_id].total += Number(n.nota || 0)
+        medias[n.nr_id].count++
+    })
+    const resultado = Object.keys(medias).map(nr_id => ({
+        nr_id,
+        media_nota: medias[nr_id].total / medias[nr_id].count
+    }))
+    return { data: resultado }
+}
+
+// Provas
+export async function sbEnviarProva(alunoId, nrId, titulo, url) {
+    return await sb.from('provas').insert({
+        aluno_id: alunoId,
+        nr_id: nrId,
+        titulo,
+        url,
+        status: 'pendente'
+    }).select().single()
+}
+
+export async function sbGetProvasPendentes() {
+    return await sb.from('provas').select('*, profiles(nome_completo)').eq('status', 'pendente')
+}
+
+export async function sbGetProvasAluno(alunoId) {
+    return await sb.from('provas').select('*').eq('aluno_id', alunoId).order('criado_em', { ascending: false })
+}
+
+export async function sbCorrigirProva(provaId, nota, status) {
+    return await sb.from('provas').update({ nota, status }).eq('id', provaId)
+}
+
+// Certificados
+export async function sbGetCertificados(usuarioId) {
+    return await sb.from('certificados').select('*').eq('usuario_id', usuarioId).order('emitido_em', { ascending: false })
+}
+
+export async function sbGerarCertificado(usuarioId, nrId, titulo) {
+    return await sb.from('certificados').insert({
+        usuario_id: usuarioId,
+        nr_id: nrId,
+        titulo,
+        emitido_em: new Date().toISOString(),
+        revogado: false
+    }).select().single()
 }
