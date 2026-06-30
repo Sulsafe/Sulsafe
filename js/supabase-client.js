@@ -1,17 +1,17 @@
 // ============================================================
 // SUPABASE CLIENT - CONFIGURAÇÃO E EXPORTAÇÕES
 // ============================================================
-// Importa o createClient diretamente da CDN (URL absoluta)
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/module/index.js'
+// Importa o createClient da CDN (versão ESM)
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// Configure com suas credenciais
-const SUPABASE_URL = 'https://seu-projeto.supabase.co' // ← substitua pelo seu URL
-const SUPABASE_ANON_KEY = 'sua-chave-anon-aqui' // ← substitua pela sua chave
+// Configure com suas credenciais REAIS
+const SUPABASE_URL = 'https://seu-projeto.supabase.co' // ← SUBSTITUA AQUI
+const SUPABASE_ANON_KEY = 'sua-chave-anon-aqui'        // ← SUBSTITUA AQUI
 
 export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ============================================================
-// FUNÇÕES DE ACESSO AO BANCO
+// FUNÇÕES DE ACESSO AO BANCO (mantidas iguais)
 // ============================================================
 
 // Usuários
