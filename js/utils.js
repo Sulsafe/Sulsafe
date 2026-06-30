@@ -48,7 +48,7 @@ export function showT(id) {
     if (el) el.classList.add('on')
 }
 
-// Dados das 38 NRs
+// Dados das 38 NRs - SÓ 1 VEZ
 export const NRS = [
     { id: '1', nm: 'Disposições Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
     { id: '2', nm: 'Inspeção Prévia', cat: 'geral', ic: 'fa-magnifying-glass' },
@@ -89,15 +89,9 @@ export const NRS = [
     { id: '37', nm: 'Segurança em Máquinas', cat: 'especifico', ic: 'fa-gear' },
     { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
 ]
-export const NRS = [
-    { id: '1', nm: 'Disposições Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
-    { id: '2', nm: 'Inspeção Prévia', cat: 'geral', ic: 'fa-magnifying-glass' },
-    // ... resto das 38 NRs ...
-    { id: '38', nm: 'PGR - Gerenciamento de Riscos', cat: 'geral', ic: 'fa-chart-line' }
-] // <- linha 90
 
 // ============================================================
-// MODAL GENÉRICO - COLA A PARTIR DA LINHA 92
+// MODAL GENÉRICO
 // ============================================================
 export function openMdl(html) {
     let mdl = $('#modal')
@@ -119,3 +113,6 @@ export function close() {
         document.body.style.overflow = ''
     }
 }
+
+// Expõe pro HTML enxergar no onclick
+window.close = close
