@@ -1,7 +1,7 @@
 // ============================================================
 // MAIN - PONTO DE ENTRADA DA APLICAÇÃO
 // ============================================================
-import { S, registerView, setRenderSidebar, nav, loadCfg } from './state.js'
+import { S, registerView, setRenderSidebar, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
 import { handleLogin, handleCadastro } from './auth.js'
 
@@ -17,11 +17,11 @@ import { vAdmin } from './views/admin.js'
 import { vConfig } from './views/config.js'
 import { vPendentes } from './views/pendentes.js'
 
-// Views que estão na raiz de js/ (por enquanto)
+// Views que estão na raiz de js/
 import { vVideoaulas } from './videoaulas.js'
 import { vMateriais } from './materiais.js'
 
-import { renderSB, renderV, enterDash, checkNotifs } from './app.js'
+import { renderSB, renderV, enterDash } from './app.js'
 
 // Registrar todas as views
 registerView('inicio', vInicio)
@@ -37,33 +37,41 @@ registerView('admin', vAdmin)
 registerView('config', vConfig)
 registerView('pendentes', vPendentes)
 
+// Configura a função de renderização da sidebar (usada em app.js)
 setRenderSidebar(renderSB)
 
 // ============================================================
-// CONFIGURAR EVENT LISTENERS DOS FORMULÁRIOS DE LOGIN/CADASTRO
+// CONFIGURAR EVENT LISTENERS DOS FORMULÁRIOS (com verificação)
 // ============================================================
-document.getElementById('frmLogin').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const email = document.getElementById('lEmail').value.trim().toLowerCase()
-    const password = document.getElementById('lPass').value
-    await handleLogin(email, password)
-})
+const loginForm = document.getElementById('frmLogin')
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const email = document.getElementById('lEmail').value.trim().toLowerCase()
+        const password = document.getElementById('lPass').value
+        await handleLogin(email, password)
+    })
+}
 
-document.getElementById('frmCad').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const nome = document.getElementById('cNome').value.trim()
-    const email = document.getElementById('cEmail').value.trim().toLowerCase()
-    const password = document.getElementById('cPass').value
-    const confirm = document.getElementById('cPass2').value
-    const termos = document.getElementById('cTermos').checked
-    await handleCadastro(nome, email, password, confirm, termos)
-})
+const cadForm = document.getElementById('frmCad')
+if (cadForm) {
+    cadForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const nome = document.getElementById('cNome').value.trim()
+        const email = document.getElementById('cEmail').value.trim().toLowerCase()
+        const password = document.getElementById('cPass').value
+        const confirm = document.getElementById('cPass2').value
+        const termos = document.getElementById('cTermos').checked
+        await handleCadastro(nome, email, password, confirm, termos)
+    })
+}
 
 // ============================================================
 // INICIALIZAÇÃO (auto-login)
 // ============================================================
 ;(async function() {
     try {
+        // Tenta obter sessão ativa do Supabase
         const { data: { session } } = await sb.auth.getSession()
         if (session) {
             const { data: user } = await sbGetUser(session.user.id)
@@ -75,7 +83,8 @@ document.getElementById('frmCad').addEventListener('submit', async (e) => {
                 return
             }
         }
-        // Fallback para sessão antiga
+
+        // Fallback: sessão salva em localStorage (versão antiga)
         const sessionData = localStorage.getItem('ss_session')
         if (sessionData) {
             const { id } = JSON.parse(sessionData)
@@ -88,9 +97,14 @@ document.getElementById('frmCad').addEventListener('submit', async (e) => {
                 return
             }
         }
-        // Se não logado, mostrar auth
-        document.getElementById('authWrap').classList.remove('off')
+
+        // Se não logado, exibe tela de autenticação
+        const authWrap = document.getElementById('authWrap')
+        if (authWrap) authWrap.classList.remove('off')
     } catch (e) {
-        console.log('Erro no auto-login:', e)
+        console.warn('Erro no auto-login:', e)
+        // Em caso de erro, também mostra a tela de auth
+        const authWrap = document.getElementById('authWrap')
+        if (authWrap) authWrap.classList.remove('off')
     }
 })()
