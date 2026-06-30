@@ -3,8 +3,7 @@
 // ============================================================
 import { S, role, uid, nav, fmtD } from '../state.js'
 import { sbGetNotasAluno, sbLancarNota, sbGetAlunos, sbGetMediasNRs } from '../supabase-client.js'
-import { toast, handleError, sanitizar, openMdl, closeMdl, $, $$, NRS } from '../utils.js'
-
+import { toast, handleError, sanitizar, openMdl, close, $, $$, NRS } from '../utils.js'
 export function vBoletim() {
     const r = role()
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
