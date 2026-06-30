@@ -48,7 +48,7 @@ export function showT(id) {
     if (el) el.classList.add('on')
 }
 
-// Dados das 38 NRs - SÓ 1 VEZ
+// Dados das 38 NRs
 export const NRS = [
     { id: '1', nm: 'Disposições Gerais', cat: 'geral', ic: 'fa-clipboard-list' },
     { id: '2', nm: 'Inspeção Prévia', cat: 'geral', ic: 'fa-magnifying-glass' },
