@@ -3,7 +3,6 @@
 // ============================================================
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// 👇 TROCA AQUI PELAS TUAS CREDENCIAIS REAIS DO PAINEL SUPABASE
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 
@@ -90,7 +89,10 @@ export async function sbSalvarProgresso(usuario_id, aula_id, tempo_assistido, co
 
 // Materiais
 export async function sbGetMateriais() {
-    return await sb.from('materiais').select('*').order('criado_em', { ascending: false })
+  return await sb
+    .from('materiais')
+    .select('*')
+    .order('id', { ascending: false })
 }
 
 export async function sbCriarMaterial({ nr_id, titulo, descricao, url, tipo, criado_por }) {
