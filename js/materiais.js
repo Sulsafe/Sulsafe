@@ -84,11 +84,11 @@ async function adicionarMaterial() {
         if (arquivo.size > 20 * 1024 * 1024) {
             toast('Arquivo muito grande (máx 20MB)', 'err')
             return
-        }
         const path = `materiais/${uid()}/${Date.now()}_${arquivo.name}`
-        const { data: uploadData, error: uploadError } = await sbUploadArquivo(STORAGE_BUCKET, path, arquivo)
+        const { error: uploadError } = await sbUploadArquivo(STORAGE_BUCKET, path, arquivo)
         if (uploadError) { handleError(uploadError); return }
-        urlFinal = uploadData.publicUrl
+        const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path)
+        urlFinal = urlData.publicUrl
     }
 
     const { data, error } = await sbCriarMaterial({
