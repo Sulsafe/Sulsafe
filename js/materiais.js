@@ -1,7 +1,6 @@
 // ============================================================
 // VIEW: MATERIAIS (com upload e organização por NR)
 // ============================================================
-// CORREÇÃO: imports da mesma pasta
 import { S, isAdmin, isProf, uid, nav } from './state.js'
 import { toast, handleError, sanitizar, NRS, $, $$ } from './utils.js'
 import { sb, sbGetMateriais, sbCriarMaterial, sbUploadArquivo, STORAGE_BUCKET, sbGetAlunos, sbCriarNotificacao } from './supabase-client.js'
@@ -76,14 +75,15 @@ async function adicionarMaterial() {
     const url = $('#addMatUrl').value.trim()
 
     if (!titulo) { toast('Título é obrigatório', 'err'); return }
-    if (tipo === 'arquivo' && !arquivo) { toast('Selecione um arquivo', 'err'); return }
-    if (tipo === 'link' && !url) { toast('Insira um link', 'err'); return }
+    if (tipo === 'arquivo' &&!arquivo) { toast('Selecione um arquivo', 'err'); return }
+    if (tipo === 'link' &&!url) { toast('Insira um link', 'err'); return }
 
     let urlFinal = url
     if (arquivo) {
         if (arquivo.size > 20 * 1024 * 1024) {
             toast('Arquivo muito grande (máx 20MB)', 'err')
             return
+        } // ← ADICIONEI O } QUE FALTAVA AQUI
         const path = `materiais/${uid()}/${Date.now()}_${arquivo.name}`
         const { error: uploadError } = await sbUploadArquivo(STORAGE_BUCKET, path, arquivo)
         if (uploadError) { handleError(uploadError); return }
@@ -127,7 +127,9 @@ export async function carregarMateriais() {
     const container = $('#materiaisGrid')
     if (!container) return
 
-    const { data: materiais } = await sbGetMateriais()
+    const { data: materiais, error } = await sbGetMateriais()
+    if (error) { console.error(error); container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Erro ao carregar materiais</p></div>`; return }
+
     const materiaisPorNR = {}
     NRS.forEach(nr => { materiaisPorNR[nr.id] = [] })
     if (materiais) {
@@ -145,10 +147,10 @@ export async function carregarMateriais() {
                 <div><div class="nr-num">NR ${nr.id}</div><div class="nr-nm">${nr.nm}</div></div>
                 <span class="badge bg-info" style="margin-left:auto;">${items.length} materiais</span>
             </div>
-            ${items.length === 0 ? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
+            ${items.length === 0? `<p style="font-size:12px;color:var(--tx3);padding:4px 0;">Nenhum material disponível.</p>` : ''}
             ${items.map(m => `
                 <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--ip);border-radius:8px;border:1px solid var(--bd);margin-top:4px;">
-                    <i class="fas ${m.tipo === 'arquivo' ? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
+                    <i class="fas ${m.tipo === 'arquivo'? 'fa-file' : 'fa-link'}" style="color:var(--p);"></i>
                     <span style="flex:1;font-size:13px;font-weight:500;">${m.titulo}</span>
                     <button class="btn btn-sm btn-p" onclick="estudarMaterial('${m.url}')">
                         <i class="fas fa-book-open"></i> Estudar
@@ -161,6 +163,7 @@ export async function carregarMateriais() {
 }
 
 export function estudarMaterial(url) {
+    if (!url || url === 'null') { toast('Material sem link válido', 'err'); return }
     window.open(url, '_blank')
 }
 
