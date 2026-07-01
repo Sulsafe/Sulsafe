@@ -90,9 +90,9 @@ export async function sbSalvarProgresso(usuario_id, aula_id, tempo_assistido, co
 // Materiais
 export async function sbGetMateriais() {
   return await sb
-    .from('materiais')
-    .select('*')
-    .order('id', { ascending: false })
+   .from('materiais')
+   .select('*')
+   .order('id', { ascending: false }) 
 }
 
 export async function sbCriarMaterial({ nr_id, titulo, descricao, url, tipo, criado_por }) {
