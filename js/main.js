@@ -172,17 +172,25 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   console.log('🔍 Iniciando auto-login...')
   try {
     // 1. Tenta obter sessão ativa do Supabase
-    const { data: { session } } = await sb.auth.getSession()
-    if (session) {
-      const { data: user } = await sbGetUser(session.user.id)
-      if (user) {
-        if (user.status === 'pendente') {
-          console.log('⛔ Usuário pendente – bloqueando')
-          await sb.auth.signOut()
-          localStorage.removeItem('ss_user')
-          showPendenciaScreen(user.email, 'login')
-          return
-        }
+const { data: { session } } = await sb.auth.getSession()
+if (session) {
+  const { data: user } = await sbGetUser(session.user.id)
+  if (user) {
+    // REGRA: Só bloqueia se NÃO for admin E estiver pendente
+    const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
+    
+    if (!isAdmin && user.status === 'pendente') {
+      console.log('⛔ Usuário pendente – bloqueando')
+      await sb.auth.signOut()
+      localStorage.removeItem('ss_user')
+      showPendenciaScreen(user.email, 'login')
+      return
+    }
+    
+    // Se chegou aqui, pode logar
+    console.log('✅ Usuário liberado:', user.email)
+  }
+}
         // Ativo – entra no dashboard
         console.log('✅ Usuário ativo – acessando dashboard')
         S.user = user
