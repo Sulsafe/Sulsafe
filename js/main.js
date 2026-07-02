@@ -190,6 +190,23 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
         // Se chegou aqui, está liberado
         console.log('✅ Usuário liberado:', user.email)
         localStorage.setItem('ss_user', JSON.stringify(user))
+        showView('main-view') 
+        return
+      } // fecha if (user)
+    } // fecha if (session)
+    
+    // 2. Se não tem sessão, mostra tela de login
+    console.log('🔓 Nenhuma sessão – mostrando login')
+    showView('login-view')
+    
+  } catch (e) {
+    console.error('Erro no auto-login:', e)
+    showView('login-view')
+  }
+})() // fecha async function
+        // Se chegou aqui, está liberado
+        console.log('✅ Usuário liberado:', user.email)
+        localStorage.setItem('ss_user', JSON.stringify(user))
         showView('main-view') // ou window.location.href = '/dashboard.html'
         return // IMPORTANTE: para não cair no login
       }
