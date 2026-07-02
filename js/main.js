@@ -39,7 +39,7 @@ setRenderSidebar(renderSB)
 // ============================================================
 // CONSTANTES
 // ============================================================
-const ZAP_NUMBER = '5553997060864' // ← apenas números (DDD + número)
+const ZAP_NUMBER = '5553997060864' // ← apenas números
 
 // ============================================================
 // TOAST (feedback rápido)
@@ -67,24 +67,69 @@ function showPendenciaScreen(email, motivo = 'cadastro') {
     : 'Sua conta ainda não foi liberada. Fale com nosso comercial:'
 
   authWrap.innerHTML = `
-    <div class="auth-card" style="text-align:center; max-width: 420px;">
+    <div class="auth-card" style="text-align:center; max-width: 420px; margin: 0 auto;">
       <div style="font-size:56px; margin-bottom:16px;">${motivo === 'cadastro' ? '🔒' : '⏳'}</div>
-      <h2 style="color:var(--p); font-size:24px; font-weight:800; margin-bottom:8px;">
+      <h2 style="color:var(--p, #10B981); font-size:24px; font-weight:800; margin-bottom:8px;">
         ${motivo === 'cadastro' ? 'Conta criada com sucesso!' : 'Acesso Pendente'}
       </h2>
-      <p style="color:var(--tx2); margin-bottom:24px; line-height:1.6;">${msg}</p>
+      <p style="color:var(--tx2, #666); margin-bottom:24px; line-height:1.6;">${msg}</p>
       <a href="https://wa.me/${ZAP_NUMBER}?text=Olá, me cadastrei na Sulsafe com o email ${encodeURIComponent(email)}${motivo === 'login' ? ' e quero liberar meu acesso' : ''}" 
          target="_blank"
          class="btn btn-p btn-block" 
-         style="background:#25D366; border-color:#25D366; margin-bottom:16px;">
+         style="background:#25D366; border-color:#25D366; color:#fff; margin-bottom:16px; display:inline-block; padding:12px 24px; border-radius:8px; text-decoration:none;">
          <i class="fab fa-whatsapp"></i> Chamar no WhatsApp
       </a>
-      <p style="font-size:12px; color:var(--tx3);">Atendimento: Segunda a Sexta, 8h às 18h</p>
+      <p style="font-size:12px; color:var(--tx3, #999);">Atendimento: Segunda a Sexta, 8h às 18h</p>
     </div>
   `
   authWrap.classList.remove('off')
   const appWrap = document.getElementById('appWrap')
   if (appWrap) appWrap.style.display = 'none'
+}
+
+// ============================================================
+// FUNÇÃO PARA ENTRAR NO DASHBOARD (com fallback)
+// ============================================================
+function showDashboard() {
+  console.log('🚪 Entrando no dashboard...')
+  
+  // Oculta autenticação
+  const authWrap = document.getElementById('authWrap')
+  if (authWrap) {
+    authWrap.classList.add('off')
+    authWrap.style.display = 'none'
+  }
+  
+  // Mostra o app principal
+  const appWrap = document.getElementById('appWrap')
+  if (appWrap) {
+    appWrap.style.display = '' // ou 'flex' / 'block' conforme seu layout
+  } else {
+    console.warn('⚠️ #appWrap não encontrado, criando um container')
+    const newApp = document.createElement('div')
+    newApp.id = 'appWrap'
+    newApp.style.display = 'block'
+    document.body.prepend(newApp)
+  }
+  
+  // Tenta usar enterDash se existir, senão faz manual
+  try {
+    if (typeof enterDash === 'function') {
+      enterDash()
+    } else {
+      console.warn('enterDash não está definido, renderizando manualmente')
+      // Manual: renderizar sidebar e view inicial
+      if (typeof renderSB === 'function') renderSB()
+      if (typeof renderV === 'function') renderV('inicio')
+    }
+  } catch (e) {
+    console.error('Erro ao renderizar dashboard:', e)
+    // Fallback mínimo: mostra a view de início em um container simples
+    const main = document.getElementById('mainView') || document.createElement('div')
+    main.id = 'mainView'
+    main.innerHTML = '<h1>Bem-vindo</h1><p>Dashboard carregado (fallback)</p>'
+    if (!document.getElementById('mainView')) document.body.appendChild(main)
+  }
 }
 
 // ============================================================
@@ -125,7 +170,6 @@ document.querySelector('#frmCad')?.addEventListener('submit', async (e) => {
 
   if (profileErr) {
     console.error('DEU RUIM NO INSERT:', profileErr)
-    // Tenta deletar o usuário para não ficar órfão
     await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
     return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
   }
@@ -160,7 +204,6 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
     .eq('id', auth.user.id)
     .single()
 
-  // Se não encontrou perfil ou está pendente (e não é admin)
   const isAdmin = profile?.role === 'admin' || email === 'sulsafetreinamentos@gmail.com'
   if (!profile || (profile.status === 'pendente' && !isAdmin)) {
     await sb.auth.signOut()
@@ -170,7 +213,7 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
     return
   }
 
-  // Se ativo, recarrega para o auto-login entrar
+  // Se ativo, recarrega para o auto-login
   window.location.reload()
 })
 
@@ -185,7 +228,6 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
     if (session) {
       const { data: user } = await sbGetUser(session.user.id)
       if (user) {
-        // REGRA: Só bloqueia se NÃO for admin E estiver pendente
         const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
         if (!isAdmin && user.status === 'pendente') {
           console.log('⛔ Usuário pendente – bloqueando')
@@ -195,17 +237,16 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
           return
         }
 
-        // Se chegou aqui, está liberado
         console.log('✅ Usuário liberado:', user.email)
         S.user = user
         localStorage.setItem('ss_user', JSON.stringify(user))
         loadCfg()
-        enterDash()
+        showDashboard() // ← usando nossa função robusta
         return
       }
     }
 
-    // 2. Fallback: sessão salva em localStorage (versão antiga)
+    // 2. Fallback: localStorage
     const sessionData = localStorage.getItem('ss_session')
     if (sessionData) {
       const { id } = JSON.parse(sessionData)
@@ -222,7 +263,7 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
         S.user = user
         localStorage.setItem('ss_user', JSON.stringify(user))
         loadCfg()
-        enterDash()
+        showDashboard()
         return
       }
     }
@@ -232,6 +273,7 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
     const authWrap = document.getElementById('authWrap')
     if (authWrap) {
       authWrap.classList.remove('off')
+      authWrap.style.display = '' // remove inline style caso exista
       const appWrap = document.getElementById('appWrap')
       if (appWrap) appWrap.style.display = 'none'
     } else {
@@ -240,6 +282,9 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error('❌ Erro no auto-login:', e)
     const authWrap = document.getElementById('authWrap')
-    if (authWrap) authWrap.classList.remove('off')
+    if (authWrap) {
+      authWrap.classList.remove('off')
+      authWrap.style.display = ''
+    }
   }
 })()
