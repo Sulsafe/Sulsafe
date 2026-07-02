@@ -37,8 +37,6 @@ registerView('pendentes', vPendentes)
 setRenderSidebar(renderSB)
 
 // ============================================================
-// CONSTANTES
-// ============================================================
 const ZAP_NUMBER = '(55)53997060864' 
 // ============================================================
 // TOAST (feedback rápido)
@@ -114,36 +112,28 @@ document.querySelector('#frmCad')?.addEventListener('submit', async (e) => {
   if (!data.user) return toast('Erro ao criar usuário', 'error')
 
   // 2. FORÇA O INSERT NA TABELA profiles
-  const { error: profileErr } = await sb
-    .from('profiles')
-    .insert({
-      id: data.user.id,
-      email: email,
-      nome: nome,
-      status: 'pendente', // ESSENCIAL para aparecer na fila
-      role: 'aluno',
-      plano: null
-    })
+const { error: profileErr } = await sb
+  .from('profiles')
+  .insert({
+    id: data.user.id,
+    email: email,
+    nome_completo: nome, 
+    status: 'pendente', 
+    role: 'aluno'
+  })
 
-  if (profileErr) {
-    console.error('DEU RUIM NO INSERT:', profileErr)
-    // Tenta deletar o usuário criado (opcional)
-    await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
-    return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
-  }
+if (profileErr) {
+  console.error('DEU RUIM NO INSERT:', profileErr)
+  return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
+}
 
-  // 3. Desloga para não entrar no dashboard
   await sb.auth.signOut()
   localStorage.removeItem('ss_user')
   localStorage.removeItem('ss_session')
 
-  // 4. Mostra o balão do Zap (tela de pendência)
   showPendenciaScreen(email, 'cadastro')
 })
 
-// ============================================================
-// EVENTO: LOGIN (BLOQUEIA SE PENDENTE)
-// ============================================================
 document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   e.preventDefault()
 
