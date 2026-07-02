@@ -37,7 +37,10 @@ registerView('pendentes', vPendentes)
 setRenderSidebar(renderSB)
 
 // ============================================================
-const ZAP_NUMBER = '(55)53997060864' 
+// CONSTANTES
+// ============================================================
+const ZAP_NUMBER = '5553997060864' // ← apenas números (DDD + número)
+
 // ============================================================
 // TOAST (feedback rápido)
 // ============================================================
@@ -96,7 +99,6 @@ document.querySelector('#frmCad')?.addEventListener('submit', async (e) => {
   const pass2 = document.querySelector('#cPass2')?.value
   const termos = document.querySelector('#cTermos')?.checked
 
-  // Validações básicas
   if (!nome || !email || !pass) return toast('Preencha todos os campos', 'error')
   if (pass2 !== undefined && pass !== pass2) return toast('As senhas não coincidem', 'error')
   if (termos !== undefined && !termos) return toast('Aceite os termos de uso', 'error')
@@ -107,33 +109,39 @@ document.querySelector('#frmCad')?.addEventListener('submit', async (e) => {
     password: pass,
     options: { data: { nome_completo: nome } }
   })
-
   if (error) return toast('Erro: ' + error.message, 'error')
   if (!data.user) return toast('Erro ao criar usuário', 'error')
 
   // 2. FORÇA O INSERT NA TABELA profiles
-const { error: profileErr } = await sb
-  .from('profiles')
-  .insert({
-    id: data.user.id,
-    email: email,
-    nome_completo: nome, 
-    status: 'pendente', 
-    role: 'aluno'
-  })
+  const { error: profileErr } = await sb
+    .from('profiles')
+    .insert({
+      id: data.user.id,
+      email: email,
+      nome_completo: nome,
+      status: 'pendente',
+      role: 'aluno'
+    })
 
-if (profileErr) {
-  console.error('DEU RUIM NO INSERT:', profileErr)
-  return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
-}
+  if (profileErr) {
+    console.error('DEU RUIM NO INSERT:', profileErr)
+    // Tenta deletar o usuário para não ficar órfão
+    await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
+    return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
+  }
 
+  // 3. Desloga e limpa storages
   await sb.auth.signOut()
   localStorage.removeItem('ss_user')
   localStorage.removeItem('ss_session')
 
+  // 4. Mostra balão do Zap
   showPendenciaScreen(email, 'cadastro')
 })
 
+// ============================================================
+// EVENTO: LOGIN (BLOQUEIA SE PENDENTE)
+// ============================================================
 document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   e.preventDefault()
 
@@ -148,12 +156,13 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   // Busca o perfil
   const { data: profile } = await sb
     .from('profiles')
-    .select('status')
+    .select('status, role')
     .eq('id', auth.user.id)
     .single()
 
-  // Se pendente ou sem perfil, bloqueia
-  if (!profile || profile.status === 'pendente') {
+  // Se não encontrou perfil ou está pendente (e não é admin)
+  const isAdmin = profile?.role === 'admin' || email === 'sulsafetreinamentos@gmail.com'
+  if (!profile || (profile.status === 'pendente' && !isAdmin)) {
     await sb.auth.signOut()
     localStorage.removeItem('ss_user')
     localStorage.removeItem('ss_session')
@@ -178,7 +187,6 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
       if (user) {
         // REGRA: Só bloqueia se NÃO for admin E estiver pendente
         const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-        
         if (!isAdmin && user.status === 'pendente') {
           console.log('⛔ Usuário pendente – bloqueando')
           await sb.auth.signOut()
@@ -189,45 +197,6 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
 
         // Se chegou aqui, está liberado
         console.log('✅ Usuário liberado:', user.email)
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        showView('main-view') 
-        return
-      } // fecha if (user)
-    } // fecha if (session)
-    
-    // 2. Se não tem sessão, mostra tela de login
-    console.log('🔓 Nenhuma sessão – mostrando login')
-    showView('login-view')
-    
-  } catch (e) {
-    console.error('Erro no auto-login:', e)
-    showView('login-view')
-  }
-})() // fecha async function
-        // Se chegou aqui, está liberado
-        console.log('✅ Usuário liberado:', user.email)
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        showView('main-view') // ou window.location.href = '/dashboard.html'
-        return // IMPORTANTE: para não cair no login
-      }
-    }
-    
-    // 2. Se não tem sessão, mostra tela de login
-    console.log('🔓 Nenhuma sessão – mostrando login')
-    showView('login-view')
-    
-  } catch (e) {
-    console.error('Erro no auto-login:', e)
-    showView('login-view')
-  }
-})()
-    
-    // Se chegou aqui, pode logar
-    console.log('✅ Usuário liberado:', user.email)
-  }
-}
-        // Ativo – entra no dashboard
-        console.log('✅ Usuário ativo – acessando dashboard')
         S.user = user
         localStorage.setItem('ss_user', JSON.stringify(user))
         loadCfg()
@@ -242,7 +211,8 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
       const { id } = JSON.parse(sessionData)
       const { data: user } = await sbGetUser(id)
       if (user) {
-        if (user.status === 'pendente') {
+        const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
+        if (!isAdmin && user.status === 'pendente') {
           await sb.auth.signOut()
           localStorage.removeItem('ss_user')
           localStorage.removeItem('ss_session')
