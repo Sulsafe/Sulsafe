@@ -172,20 +172,38 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
   console.log('🔍 Iniciando auto-login...')
   try {
     // 1. Tenta obter sessão ativa do Supabase
-const { data: { session } } = await sb.auth.getSession()
-if (session) {
-  const { data: user } = await sbGetUser(session.user.id)
-  if (user) {
-    // REGRA: Só bloqueia se NÃO for admin E estiver pendente
-    const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-    
-    if (!isAdmin && user.status === 'pendente') {
-      console.log('⛔ Usuário pendente – bloqueando')
-      await sb.auth.signOut()
-      localStorage.removeItem('ss_user')
-      showPendenciaScreen(user.email, 'login')
-      return
+    const { data: { session } } = await sb.auth.getSession()
+    if (session) {
+      const { data: user } = await sbGetUser(session.user.id)
+      if (user) {
+        // REGRA: Só bloqueia se NÃO for admin E estiver pendente
+        const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
+        
+        if (!isAdmin && user.status === 'pendente') {
+          console.log('⛔ Usuário pendente – bloqueando')
+          await sb.auth.signOut()
+          localStorage.removeItem('ss_user')
+          showPendenciaScreen(user.email, 'login')
+          return
+        }
+
+        // Se chegou aqui, está liberado
+        console.log('✅ Usuário liberado:', user.email)
+        localStorage.setItem('ss_user', JSON.stringify(user))
+        showView('main-view') // ou window.location.href = '/dashboard.html'
+        return // IMPORTANTE: para não cair no login
+      }
     }
+    
+    // 2. Se não tem sessão, mostra tela de login
+    console.log('🔓 Nenhuma sessão – mostrando login')
+    showView('login-view')
+    
+  } catch (e) {
+    console.error('Erro no auto-login:', e)
+    showView('login-view')
+  }
+})()
     
     // Se chegou aqui, pode logar
     console.log('✅ Usuário liberado:', user.email)
