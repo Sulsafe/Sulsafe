@@ -1,28 +1,65 @@
 // ============================================================
-// SUPABASE CLIENT - CONFIGURAÇÃO E EXPORTAÇÕES
+// SUPABASE CLIENT - VERSÃO CORRIGIDA
 // ============================================================
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
+
+// ⚠️ ATENÇÃO: COPIE A CHAVE EXATA DO DASHBOARD
+// Settings > API > Project API Keys > anon public
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 
+console.log('🔑 Chave ANON carregada:', SUPABASE_ANON_KEY.substring(0, 20) + '...')
+
 // ============================================================
-// FETCH PERSONALIZADO COM CREDENTIALS
+// FETCH PERSONALIZADO - CORRIGIDO
 // ============================================================
 const customFetch = async (input, init = {}) => {
+  // Monta os headers com a chave API
+  const headers = {
+    'Content-Type': 'application/json',
+    'apikey': SUPABASE_ANON_KEY,  // ← ESSENCIAL
+    ...init?.headers
+  }
+
+  // Se for uma requisição autenticada, adiciona o token
+  const session = localStorage.getItem('ss_session')
+  if (session) {
+    try {
+      const { access_token } = JSON.parse(session)
+      if (access_token) {
+        headers['Authorization'] = `Bearer ${access_token}`
+      }
+    } catch (e) {
+      // Ignora erro de parsing
+    }
+  }
+
   const options = {
     ...init,
     credentials: 'include',
-    headers: {
-      ...init?.headers,
-      'Content-Type': 'application/json',
-    }
+    headers: headers
   }
-  return fetch(input, options)
+
+  console.log('📡 Fetch:', typeof input === 'string' ? input : input.url)
+  console.log('🔑 Headers enviados:', { 
+    'apikey': headers['apikey'].substring(0, 20) + '...',
+    'Authorization': headers['Authorization'] ? 'Bearer ***' : 'Não enviado'
+  })
+
+  const response = await fetch(input, options)
+  console.log('📡 Response status:', response.status)
+  
+  if (response.status === 401) {
+    console.error('❌ ERRO 401 - Chave API inválida ou não enviada')
+    console.error('🔑 Verifique se a chave ANON está correta no Dashboard')
+  }
+  
+  return response
 }
 
 // ============================================================
-// CLIENTE SUPABASE COM FETCH PERSONALIZADO
+// CLIENTE SUPABASE
 // ============================================================
 export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
@@ -34,38 +71,59 @@ export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   fetch: customFetch
 })
 
-// ============================================================
-// FUNÇÃO DE TESTE DE CONEXÃO COM RETRY
-// ============================================================
-export async function testConnection(retries = 5, delay = 1000) {
-  console.log(`🔄 Testando conexão com Supabase... (${retries} tentativas)`)
+console.log('✅ Supabase client inicializado')
 
-  for (let i = 0; i < retries; i++) {
-    try {
-      const { data, error } = await sb.auth.getSession()
-      if (!error) {
-        console.log('✅ Conexão com Supabase estabelecida!')
-        return true
-      }
-      console.warn(`⚠️ Tentativa ${i + 1}/${retries} falhou:`, error?.message || 'Erro desconhecido')
-    } catch (e) {
-      console.warn(`⚠️ Tentativa ${i + 1}/${retries} falhou:`, e.message)
+// ============================================================
+// TESTE RÁPIDO DE CONEXÃO
+// ============================================================
+export async function testConnection() {
+  try {
+    console.log('🔄 Testando conexão com Supabase...')
+    const { data, error } = await sb.auth.getSession()
+    if (error) {
+      console.error('❌ Erro:', error)
+      return false
     }
-
-    if (i < retries - 1) {
-      console.log(`⏳ Aguardando ${delay}ms antes da próxima tentativa...`)
-      await new Promise(resolve => setTimeout(resolve, delay))
-    }
+    console.log('✅ Conexão OK!')
+    return true
+  } catch (e) {
+    console.error('❌ Falha:', e.message)
+    return false
   }
-
-  console.error('❌ Falha ao conectar ao Supabase após várias tentativas')
-  return false
 }
 
 // ============================================================
-// USUÁRIOS
+// TESTE DA CHAVE API
 // ============================================================
+export async function testApiKey() {
+  try {
+    console.log('🔄 Testando chave API...')
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log('📡 Status da API:', response.status)
+    if (response.status === 200) {
+      console.log('✅ Chave API VÁLIDA!')
+      return true
+    } else if (response.status === 401) {
+      console.error('❌ Chave API INVÁLIDA! Verifique no Dashboard.')
+      return false
+    }
+  } catch (e) {
+    console.error('❌ Erro no teste:', e.message)
+    return false
+  }
+}
+
+// ============================================================
+// FUNÇÕES DE ACESSO AO BANCO
+// ============================================================
+
 export async function sbGetUser(id) {
+  console.log('🔍 Buscando usuário:', id)
   const { data, error } = await sb
     .from('usuarios')
     .select('*')
@@ -110,9 +168,7 @@ export async function sbLiberarUsuario(id) {
   return { data }
 }
 
-// ============================================================
-// DASHBOARD
-// ============================================================
+// Dashboard
 export async function sbGetDashboardMetrics() {
   return { 
     data: { 
@@ -130,9 +186,7 @@ export async function sbGetRankingAlunos() {
   return { data: [] }
 }
 
-// ============================================================
-// VIDEOAULAS
-// ============================================================
+// Videoaulas
 export async function sbGetVideoaulas() {
   const { data, error } = await sb
     .from('videoaulas')
@@ -150,9 +204,7 @@ export async function sbCriarVideoaula({ nr_id, titulo, descricao, url_video, du
   return { data }
 }
 
-// ============================================================
-// PROGRESSO
-// ============================================================
+// Progresso
 export async function sbGetProgressoUsuario(usuario_id) {
   const { data, error } = await sb
     .from('progresso_aulas')
@@ -186,9 +238,7 @@ export async function sbSalvarProgresso(usuario_id, aula_id, tempo_assistido, co
   }
 }
 
-// ============================================================
-// MATERIAIS
-// ============================================================
+// Materiais
 export async function sbGetMateriais() {
   const { data, error } = await sb
     .from('materiais')
@@ -206,9 +256,7 @@ export async function sbCriarMaterial({ nr_id, titulo, descricao, url, tipo, cri
   return { data }
 }
 
-// ============================================================
-// NOTIFICAÇÕES
-// ============================================================
+// Notificações
 export async function sbCriarNotificacao(usuario_id, titulo, mensagem, link) {
   const { data, error } = await sb
     .from('notificacoes')
@@ -217,9 +265,7 @@ export async function sbCriarNotificacao(usuario_id, titulo, mensagem, link) {
   return { data }
 }
 
-// ============================================================
-// PROVAS
-// ============================================================
+// Provas
 export async function sbEnviarProva(usuario_id, nr_id, titulo, url_arquivo) {
   const { data, error } = await sb
     .from('provas')
@@ -246,9 +292,7 @@ export async function sbCorrigirProva(id, nota, status) {
   return { data }
 }
 
-// ============================================================
-// SALAS
-// ============================================================
+// Salas
 export async function sbGetSalasAtivas() {
   const { data, error } = await sb
     .from('salas')
@@ -267,9 +311,7 @@ export async function sbCriarSala(topico, meet_id, criado_por) {
   return { data }
 }
 
-// ============================================================
-// NOTAS
-// ============================================================
+// Notas
 export async function sbGetNotasAluno(aluno_id) {
   const { data, error } = await sb
     .from('notas')
@@ -291,9 +333,7 @@ export async function sbGetMediasNRs() {
   return { data: [] }
 }
 
-// ============================================================
-// STORAGE (UPLOAD DE ARQUIVOS)
-// ============================================================
+// Storage
 export const STORAGE_BUCKET = 'sulsafe-arquivos'
 
 export async function sbUploadArquivo(bucket, path, file) {
@@ -302,9 +342,7 @@ export async function sbUploadArquivo(bucket, path, file) {
   return { data }
 }
 
-// ============================================================
-// CERTIFICADOS
-// ============================================================
+// Certificados
 export async function sbGetCertificados(userId) {
   const { data, error } = await sb
     .from('certificados')
