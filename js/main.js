@@ -83,6 +83,7 @@ function showPendenciaScreen(email, motivo = 'cadastro') {
     </div>
   `
   authWrap.classList.remove('off')
+  authWrap.style.display = 'flex'
   const appWrap = document.getElementById('appWrap')
   if (appWrap) appWrap.style.display = 'none'
 }
@@ -103,7 +104,7 @@ function showDashboard() {
   // Mostra o app principal
   const appWrap = document.getElementById('appWrap')
   if (appWrap) {
-    appWrap.style.display = '' // ou 'flex' / 'block' conforme seu layout
+    appWrap.style.display = 'block'
   } else {
     console.warn('⚠️ #appWrap não encontrado, criando um container')
     const newApp = document.createElement('div')
@@ -118,13 +119,11 @@ function showDashboard() {
       enterDash()
     } else {
       console.warn('enterDash não está definido, renderizando manualmente')
-      // Manual: renderizar sidebar e view inicial
       if (typeof renderSB === 'function') renderSB()
       if (typeof renderV === 'function') renderV('inicio')
     }
   } catch (e) {
     console.error('Erro ao renderizar dashboard:', e)
-    // Fallback mínimo: mostra a view de início em um container simples
     const main = document.getElementById('mainView') || document.createElement('div')
     main.id = 'mainView'
     main.innerHTML = '<h1>Bem-vindo</h1><p>Dashboard carregado (fallback)</p>'
@@ -133,115 +132,157 @@ function showDashboard() {
 }
 
 // ============================================================
+// FUNÇÃO PARA MOSTRAR TELA DE LOGIN
+// ============================================================
+function showLoginScreen() {
+  console.log('🔓 Nenhuma sessão – mostrando login')
+  const authWrap = document.getElementById('authWrap')
+  if (authWrap) {
+    // Remove qualquer classe que possa estar escondendo
+    authWrap.classList.remove('off')
+    // Força display block/flex
+    authWrap.style.display = 'flex'
+    authWrap.style.opacity = '1'
+    authWrap.style.visibility = 'visible'
+    
+    // Garante que o conteúdo do auth-card está visível
+    const authCard = authWrap.querySelector('.auth-card')
+    if (authCard) {
+      authCard.style.display = 'block'
+      authCard.style.opacity = '1'
+    }
+    
+    const appWrap = document.getElementById('appWrap')
+    if (appWrap) appWrap.style.display = 'none'
+  } else {
+    console.error('❌ #authWrap não encontrado no DOM!')
+  }
+}
+
+// ============================================================
 // EVENTO: CADASTRO (FORÇA INSERT E NÃO LOGA AUTOMATICAMENTE)
 // ============================================================
-document.querySelector('#frmCad')?.addEventListener('submit', async (e) => {
-  e.preventDefault()
+document.addEventListener('DOMContentLoaded', () => {
+  const frmCad = document.querySelector('#frmCad')
+  if (frmCad) {
+    frmCad.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-  const nome = document.querySelector('#cNome').value.trim()
-  const email = document.querySelector('#cEmail').value.trim().toLowerCase()
-  const pass = document.querySelector('#cPass').value
-  const pass2 = document.querySelector('#cPass2')?.value
-  const termos = document.querySelector('#cTermos')?.checked
+      const nome = document.querySelector('#cNome').value.trim()
+      const email = document.querySelector('#cEmail').value.trim().toLowerCase()
+      const pass = document.querySelector('#cPass').value
+      const pass2 = document.querySelector('#cPass2')?.value
+      const termos = document.querySelector('#cTermos')?.checked
 
-  if (!nome || !email || !pass) return toast('Preencha todos os campos', 'error')
-  if (pass2 !== undefined && pass !== pass2) return toast('As senhas não coincidem', 'error')
-  if (termos !== undefined && !termos) return toast('Aceite os termos de uso', 'error')
+      if (!nome || !email || !pass) return toast('Preencha todos os campos', 'error')
+      if (pass2 !== undefined && pass !== pass2) return toast('As senhas não coincidem', 'error')
+      if (termos !== undefined && !termos) return toast('Aceite os termos de uso', 'error')
 
-  // 1. Cria no Auth
-  const { data, error } = await sb.auth.signUp({
-    email,
-    password: pass,
-    options: { data: { nome_completo: nome } }
-  })
-  if (error) return toast('Erro: ' + error.message, 'error')
-  if (!data.user) return toast('Erro ao criar usuário', 'error')
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password: pass,
+        options: { data: { nome_completo: nome } }
+      })
+      if (error) return toast('Erro: ' + error.message, 'error')
+      if (!data.user) return toast('Erro ao criar usuário', 'error')
 
-  // 2. FORÇA O INSERT NA TABELA profiles
-  const { error: profileErr } = await sb
-    .from('profiles')
-    .insert({
-      id: data.user.id,
-      email: email,
-      nome_completo: nome,
-      status: 'pendente',
-      role: 'aluno'
+      const { error: profileErr } = await sb
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          email: email,
+          nome_completo: nome,
+          status: 'pendente',
+          role: 'aluno'
+        })
+
+      if (profileErr) {
+        console.error('DEU RUIM NO INSERT:', profileErr)
+        await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
+        return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
+      }
+
+      await sb.auth.signOut()
+      localStorage.removeItem('ss_user')
+      localStorage.removeItem('ss_session')
+      showPendenciaScreen(email, 'cadastro')
     })
-
-  if (profileErr) {
-    console.error('DEU RUIM NO INSERT:', profileErr)
-    await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
-    return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
   }
 
-  // 3. Desloga e limpa storages
-  await sb.auth.signOut()
-  localStorage.removeItem('ss_user')
-  localStorage.removeItem('ss_session')
+  // ============================================================
+  // EVENTO: LOGIN (BLOQUEIA SE PENDENTE)
+  // ============================================================
+  const frmLogin = document.querySelector('#frmLogin')
+  if (frmLogin) {
+    frmLogin.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-  // 4. Mostra balão do Zap
-  showPendenciaScreen(email, 'cadastro')
-})
+      const email = document.querySelector('#lEmail').value.trim().toLowerCase()
+      const pass = document.querySelector('#lPass').value
 
-// ============================================================
-// EVENTO: LOGIN (BLOQUEIA SE PENDENTE)
-// ============================================================
-document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
-  e.preventDefault()
+      if (!email || !pass) return toast('Preencha todos os campos', 'error')
 
-  const email = document.querySelector('#lEmail').value.trim().toLowerCase()
-  const pass = document.querySelector('#lPass').value
+      const { data: auth, error } = await sb.auth.signInWithPassword({ email, password: pass })
+      if (error) return toast(error.message, 'error')
 
-  if (!email || !pass) return toast('Preencha todos os campos', 'error')
+      const { data: profile } = await sb
+        .from('profiles')
+        .select('status, role')
+        .eq('id', auth.user.id)
+        .single()
 
-  const { data: auth, error } = await sb.auth.signInWithPassword({ email, password: pass })
-  if (error) return toast(error.message, 'error')
+      const isAdmin = profile?.role === 'admin' || email === 'sulsafetreinamentos@gmail.com'
+      if (!profile || (profile.status === 'pendente' && !isAdmin)) {
+        await sb.auth.signOut()
+        localStorage.removeItem('ss_user')
+        localStorage.removeItem('ss_session')
+        showPendenciaScreen(email, 'login')
+        return
+      }
 
-  // Busca o perfil
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('status, role')
-    .eq('id', auth.user.id)
-    .single()
-
-  const isAdmin = profile?.role === 'admin' || email === 'sulsafetreinamentos@gmail.com'
-  if (!profile || (profile.status === 'pendente' && !isAdmin)) {
-    await sb.auth.signOut()
-    localStorage.removeItem('ss_user')
-    localStorage.removeItem('ss_session')
-    showPendenciaScreen(email, 'login')
-    return
+      window.location.reload()
+    })
   }
-
-  // Se ativo, recarrega para o auto-login
-  window.location.reload()
 })
 
 // ============================================================
 // INICIALIZAÇÃO (auto-login com verificação de status)
 // ============================================================
-;(async function() {
+document.addEventListener('DOMContentLoaded', async function() {
   console.log('🔍 Iniciando auto-login...')
+  
+  // Pequeno delay para garantir que o DOM está pronto
+  await new Promise(resolve => setTimeout(resolve, 100))
+  
   try {
     // 1. Tenta obter sessão ativa do Supabase
     const { data: { session } } = await sb.auth.getSession()
+    
     if (session) {
-      const { data: user } = await sbGetUser(session.user.id)
-      if (user) {
-        const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-        if (!isAdmin && user.status === 'pendente') {
-          console.log('⛔ Usuário pendente – bloqueando')
-          await sb.auth.signOut()
-          localStorage.removeItem('ss_user')
-          showPendenciaScreen(user.email, 'login')
+      try {
+        const { data: user } = await sbGetUser(session.user.id)
+        if (user) {
+          const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
+          if (!isAdmin && user.status === 'pendente') {
+            console.log('⛔ Usuário pendente – bloqueando')
+            await sb.auth.signOut()
+            localStorage.removeItem('ss_user')
+            showPendenciaScreen(user.email, 'login')
+            return
+          }
+
+          console.log('✅ Usuário liberado:', user.email)
+          S.user = user
+          localStorage.setItem('ss_user', JSON.stringify(user))
+          loadCfg()
+          showDashboard()
           return
         }
-
-        console.log('✅ Usuário liberado:', user.email)
-        S.user = user
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        loadCfg()
-        showDashboard() // ← usando nossa função robusta
+      } catch (e) {
+        console.warn('⚠️ Erro ao buscar usuário:', e)
+        // Se falhar ao buscar o usuário, provavelmente é erro de conexão
+        // Mostra a tela de login como fallback
+        showLoginScreen()
         return
       }
     }
@@ -249,42 +290,36 @@ document.querySelector('#frmLogin')?.addEventListener('submit', async (e) => {
     // 2. Fallback: localStorage
     const sessionData = localStorage.getItem('ss_session')
     if (sessionData) {
-      const { id } = JSON.parse(sessionData)
-      const { data: user } = await sbGetUser(id)
-      if (user) {
-        const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-        if (!isAdmin && user.status === 'pendente') {
-          await sb.auth.signOut()
-          localStorage.removeItem('ss_user')
-          localStorage.removeItem('ss_session')
-          showPendenciaScreen(user.email, 'login')
+      try {
+        const { id } = JSON.parse(sessionData)
+        const { data: user } = await sbGetUser(id)
+        if (user) {
+          const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
+          if (!isAdmin && user.status === 'pendente') {
+            await sb.auth.signOut()
+            localStorage.removeItem('ss_user')
+            localStorage.removeItem('ss_session')
+            showPendenciaScreen(user.email, 'login')
+            return
+          }
+          S.user = user
+          localStorage.setItem('ss_user', JSON.stringify(user))
+          loadCfg()
+          showDashboard()
           return
         }
-        S.user = user
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        loadCfg()
-        showDashboard()
-        return
+      } catch (e) {
+        console.warn('⚠️ Erro ao buscar usuário do localStorage:', e)
+        localStorage.removeItem('ss_session')
       }
     }
 
     // 3. Se não logado, exibe tela de autenticação
-    console.log('🔓 Nenhuma sessão – mostrando login')
-    const authWrap = document.getElementById('authWrap')
-    if (authWrap) {
-      authWrap.classList.remove('off')
-      authWrap.style.display = '' // remove inline style caso exista
-      const appWrap = document.getElementById('appWrap')
-      if (appWrap) appWrap.style.display = 'none'
-    } else {
-      console.error('❌ #authWrap não encontrado no DOM!')
-    }
+    showLoginScreen()
+    
   } catch (e) {
     console.error('❌ Erro no auto-login:', e)
-    const authWrap = document.getElementById('authWrap')
-    if (authWrap) {
-      authWrap.classList.remove('off')
-      authWrap.style.display = ''
-    }
+    // Em caso de erro, mostra a tela de login
+    showLoginScreen()
   }
-})()
+})
