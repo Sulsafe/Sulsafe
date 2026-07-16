@@ -2,8 +2,9 @@
 // VIEW: BOLETIM (Aluno / Professor)
 // ============================================================
 import { S, role, uid, nav, fmtD } from '../state.js'
-import { sbGetNotasAluno, sbLancarNota, sbGetAlunos, sbGetMediasNRs } from '../supabase-client.js'
+import { sbGetNotasAluno, sbLancarNota, sbGetAlunos, sbGetMediasNRs, sb, sbCriarNotificacao } from '../supabase-client.js' // ← CORRIGIDO: importados sb e sbCriarNotificacao
 import { toast, handleError, sanitizar, openMdl, close, $, $$, NRS } from '../utils.js'
+
 export function vBoletim() {
     const r = role()
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -80,7 +81,7 @@ async function modalNota(aid, notaIdEdit) {
         nota = notas?.find(n => n.id === notaIdEdit)
     }
     
-    openMdl(`<button class="mdl-x" onclick="window.closeMdl()"><i class="fas fa-times"></i></button>
+    openMdl(`<button class="mdl-x" onclick="closeModalBoletim()"><i class="fas fa-times"></i></button>
         <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">${nota ? 'Editar' : 'Lançar'} Nota</h2>
         <form onsubmit="saveNota(event, '${aid || ''}', '${notaIdEdit || ''}')">
             <div class="fld"><label>Aluno</label>
@@ -111,9 +112,10 @@ async function saveNota(e, aid, notaIdEdit) {
     } else {
         await sbLancarNota(alunoId, nrid, nota, obs, uid())
         toast('Nota lançada!', 'success')
-        pushNotif(`Nova nota lançada para NR ${nrid}: ${nota}/10`, 'Ver boletim', 'boletim')
+        
+        await sbCriarNotificacao(alunoId, 'Nota Lançada', `Nova nota lançada para NR ${nrid}: ${nota}/10`, 'boletim')
     }
-    window.closeMdl()
+    close() 
     renderNotasAl()
     carregarBoletimProfessor()
 }
@@ -138,6 +140,7 @@ async function drawChartNotas() {
     const cv = document.getElementById('chartMediasNR')
     if (!cv) return
     const { data: medias } = await sbGetMediasNRs()
+    if (window.charts && window.charts.notas) try { window.charts.notas.notes.destroy() } catch (e) {}
     if (window.charts && window.charts.notas) try { window.charts.notas.destroy() } catch (e) {}
     window.charts = window.charts || {}
     window.charts.notas = new Chart(cv, { type: 'bar', data: { labels: medias.map(m => 'NR ' + m.nr_id), datasets: [{ label: 'Média', data: medias.map(m => Number(m.media_nota || 0)), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true, scales: { y: { min: 0, max: 10 } } } })
@@ -148,3 +151,5 @@ function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><di
 window.modalNota = modalNota
 window.saveNota = saveNota
 window.delNota = delNota
+window.renderNotasAl = renderNotasAl 
+window.closeModalBoletim = close 
