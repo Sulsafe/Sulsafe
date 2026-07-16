@@ -292,6 +292,16 @@ export async function sbCorrigirProva(id, nota, status) {
   return { data }
 }
 
+// CORRIGIDO: Adicionada a função que faltava para buscar as provas enviadas pelo aluno
+export async function sbGetProvasAluno(usuario_id) {
+  const { data, error } = await sb
+    .from('provas')
+    .select('*')
+    .eq('usuario_id', usuario_id)
+  if (error) throw error
+  return { data }
+}
+
 // Salas
 export async function sbGetSalasAtivas() {
   const { data, error } = await sb
