@@ -2,7 +2,7 @@
 // MAIN - PONTO DE ENTRADA DA APLICAÇÃO
 // ============================================================
 import { S, registerView, setRenderSidebar, loadCfg } from './state.js'
-import { sb, sbGetUser } from './js/supabase-client.js'
+import { sb, sbGetUser } from './supabase-client.js' // ← CORRIGIDO: Removido o "./js/" redundante
 // Views
 import { vInicio } from './views/inicio.js'
 import { vSalas } from './views/salas.js'
