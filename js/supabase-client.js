@@ -5,20 +5,14 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co'
 
-// ⚠️ ATENÇÃO: COPIE A CHAVE EXATA DO DASHBOARD
-// Settings > API > Project API Keys > anon public
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ'
 
 console.log('🔑 Chave ANON carregada:', SUPABASE_ANON_KEY.substring(0, 20) + '...')
 
-// ============================================================
-// FETCH PERSONALIZADO - CORRIGIDO
-// ============================================================
 const customFetch = async (input, init = {}) => {
-  // Monta os headers com a chave API
   const headers = {
     'Content-Type': 'application/json',
-    'apikey': SUPABASE_ANON_KEY,  // ← ESSENCIAL
+    'apikey': SUPABASE_ANON_KEY,
     ...init?.headers
   }
 
@@ -31,7 +25,7 @@ const customFetch = async (input, init = {}) => {
         headers['Authorization'] = `Bearer ${access_token}`
       }
     } catch (e) {
-      // Ignora erro de parsing
+
     }
   }
 
@@ -67,7 +61,6 @@ export const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     persistSession: true,
     detectSessionInUrl: true
   },
-  // @ts-ignore
   fetch: customFetch
 })
 
@@ -123,9 +116,9 @@ export async function testApiKey() {
 // ============================================================
 
 export async function sbGetUser(id) {
-  console.log('🔍 Buscando usuário:', id)
+  console.log('🔍 Buscando usuário na tabela profiles:', id)
   const { data, error } = await sb
-    .from('usuarios')
+    .from('profiles')
     .select('*')
     .eq('id', id)
     .single()
@@ -135,7 +128,7 @@ export async function sbGetUser(id) {
 
 export async function sbUpdateUser(id, updates) {
   const { data, error } = await sb
-    .from('usuarios')
+    .from('profiles')
     .update(updates)
     .eq('id', id)
     .select()
@@ -145,25 +138,25 @@ export async function sbUpdateUser(id, updates) {
 }
 
 export async function sbGetAllUsers() {
-  const { data, error } = await sb.from('usuarios').select('*')
+  const { data, error } = await sb.from('profiles').select('*')
   if (error) throw error
   return { data }
 }
 
 export async function sbGetAlunos() {
-  const { data, error } = await sb.from('usuarios').select('*').eq('role', 'aluno')
+  const { data, error } = await sb.from('profiles').select('*').eq('role', 'aluno')
   if (error) throw error
   return { data }
 }
 
 export async function sbGetPendentes() {
-  const { data, error } = await sb.from('usuarios').select('*').eq('status', 'pendente')
+  const { data, error } = await sb.from('profiles').select('*').eq('status', 'pendente')
   if (error) throw error
   return { data }
 }
 
 export async function sbLiberarUsuario(id) {
-  const { data, error } = await sb.from('usuarios').update({ status: 'ativo' }).eq('id', id)
+  const { data, error } = await sb.from('profiles').update({ status: 'ativo' }).eq('id', id)
   if (error) throw error
   return { data }
 }
@@ -292,7 +285,6 @@ export async function sbCorrigirProva(id, nota, status) {
   return { data }
 }
 
-// CORRIGIDO: Adicionada a função que faltava para buscar as provas enviadas pelo aluno
 export async function sbGetProvasAluno(usuario_id) {
   const { data, error } = await sb
     .from('provas')
