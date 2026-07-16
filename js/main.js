@@ -243,18 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 })
-
-// ============================================================
 // INICIALIZAÇÃO (auto-login com verificação de status)
-// ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🔍 Iniciando auto-login...')
   
-  // Pequeno delay para garantir que o DOM está pronto
   await new Promise(resolve => setTimeout(resolve, 100))
   
   try {
-    // 1. Tenta obter sessão ativa do Supabase
     const { data: { session } } = await sb.auth.getSession()
     
     if (session) {
@@ -278,9 +273,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           return
         }
       } catch (e) {
-        console.warn('⚠️ Erro ao buscar usuário:', e)
-        // Se falhar ao buscar o usuário, provavelmente é erro de conexão
-        // Mostra a tela de login como fallback
+        console.error('❌ ERRO DETALHADO NO AUTO-LOGIN (sbGetUser):', e) // ← MUDOU PARA console.error
         showLoginScreen()
         return
       }
@@ -308,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           return
         }
       } catch (e) {
-        console.warn('⚠️ Erro ao buscar usuário do localStorage:', e)
+        console.error('❌ ERRO DETALHADO NO LOCALSTORAGE AUTO-LOGIN:', e) // ← MUDOU PARA console.error
         localStorage.removeItem('ss_session')
       }
     }
@@ -317,8 +310,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     showLoginScreen()
     
   } catch (e) {
-    console.error('❌ Erro no auto-login:', e)
-    // Em caso de erro, mostra a tela de login
+    console.error('❌ ERRO NO AUTO-LOGIN GLOBAL:', e)
     showLoginScreen()
   }
 })
