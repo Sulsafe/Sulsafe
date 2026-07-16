@@ -1,10 +1,9 @@
 // ============================================================
 // VIEW: PROVAS (Aluno / Professor)
 // ============================================================
-// CORREÇÃO: imports com '../'
 import { S, role, uid, nav, fmtD } from '../state.js'
-import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET } from '../supabase-client.js'
-import { openMdl, close, $, $$, toast } from '../utils.js'
+import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET, sbGetProvasAluno } from '../supabase-client.js'
+import { openMdl, close, $, $$, toast, NRS, sanitizar, handleError } from '../utils.js' 
 export function vProvas() {
     const r = role()
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -108,7 +107,7 @@ async function carregarProvasPendentes() {
 }
 
 function abrirCorrecao(provaId) {
-    openMdl(`<button class="mdl-x" onclick="window.closeMdl()"><i class="fas fa-times"></i></button>
+    openMdl(`<button class="mdl-x" onclick="closeModalProvas()"><i class="fas fa-times"></i></button>
         <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">Corrigir Prova</h2>
         <div class="fld"><label>Nota (0 a 10)</label>
             <input type="number" id="corrNota" min="0" max="10" step="0.1" required>
@@ -129,10 +128,11 @@ async function finalizarCorrecao(provaId, status) {
     if (error) { handleError(error); return }
     
     toast('Prova corrigida! Nota: ' + nota, 'success')
-    window.closeMdl()
+    close() 
     carregarProvasPendentes()
 }
 
 window.enviarProva = enviarProva
 window.abrirCorrecao = abrirCorrecao
 window.finalizarCorrecao = finalizarCorrecao
+window.closeModalProvas = close 
