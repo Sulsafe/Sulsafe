@@ -1,150 +1,168 @@
-// ============================================================
-// AUTH - LOGIN, CADASTRO, LOGOUT, RECUPERAÇÃO
-// ============================================================
-import { sb } from './supabase-client.js'
-import { S, loadCfg, ADMIN_EMAIL } from './state.js'  // <-- MUDOU AQUI
-import { toast, handleError, sanitizar, showT } from './utils.js' // <-- E AQUI
-import { enterDash } from './app.js'
+// 📁 auth.js - VERSÃO CORRIGIDA (sem criação automática de admin)
 
-// Funções auxiliares locais (ou você pode exportá-las do supabase-client.js)
-async function sbGetUser(id) {
-    const { data, error } = await sb
-        .from('usuarios')
-        .select('*')
-        .eq('id', id)
-        .single()
-    if (error) throw error
-    return data
-}
+import { sb } from './supabase-client.js';
+import { state } from './state.js';
 
-async function sbUpdateUser(id, updates) {
-    const { data, error } = await sb
-        .from('usuarios')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single()
-    if (error) throw error
-    return data
-}
+// Constante ADMIN_EMAIL - mantenha apenas para verificação, NÃO para criar contas
+const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com';
 
 export async function handleLogin(email, password) {
     try {
-        const { data: authData, error: authError } = await sb.auth.signInWithPassword({
-            email: email,
-            password: password
-        })
-        if (authError) {
-            // Tenta criar admin se for o email admin
-            if (email === ADMIN_EMAIL) {
-                const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-                    email,
-                    password,
-                    options: { data: { nome_completo: 'Administrador SulSafe', role: 'admin' } }
-                })
-                if (signUpError) throw signUpError
-                const userId = signUpData.user.id
-                await sbUpdateUser(userId, { role: 'admin', status: 'ativo' })
-                const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({ email, password })
-                if (loginError) throw loginError
-                const user = await sbGetUser(loginData.user.id)
-                S.user = user
-                localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
-                localStorage.setItem('ss_user', JSON.stringify(user))
-                loadCfg()
-                enterDash()
-                toast('Conta admin criada! Bem-vindo!')
-                return
+        // Tenta fazer login normalmente
+        const { data, error } = await sb.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            console.warn('Tentativa de login falhou:', email);
+            return { 
+                success: false, 
+                error: 'Email ou senha incorretos. Verifique suas credenciais.' 
+            };
+        }
+
+        // Login bem sucedido
+        if (data?.user) {
+            // Busca o perfil do usuário
+            const { data: profile, error: profileError } = await sb
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (profileError) {
+                console.warn('Usuário logado mas sem perfil:', profileError);
+
+                const { error: createError } = await sb
+                    .from('profiles')
+                    .insert([{
+                        id: data.user.id,
+                        email: data.user.email,
+                        nome_completo: data.user.user_metadata?.nome_completo || 'Usuário',
+                        role: 'user'
+                    }]);
+
+                if (createError) {
+                    console.error('Erro ao criar perfil:', createError);
+                }
             }
-            throw new Error('Email ou senha incorretos')
+
+        
+            state.setUser({
+                id: data.user.id,
+                email: data.user.email,
+                profile: profile || null
+            });
+
+            return { 
+                success: true, 
+                user: data.user,
+                profile: profile || null
+            };
         }
-        // Busca perfil
-        let user
-        try {
-            user = await sbGetUser(authData.user.id)
-        } catch (e) {
-            // Se não existir, cria perfil básico
-            await sbUpdateUser(authData.user.id, {
-                nome_completo: authData.user.user_metadata?.nome_completo || 'Usuário',
-                role: authData.user.user_metadata?.role || 'aluno',
-                status: 'ativo'
-            })
-            user = await sbGetUser(authData.user.id)
-        }
-        if (user.status === 'pendente' && user.role === 'aluno') {
-            throw new Error('Aguardando aprovação do administrador')
-        }
-        if (user.status === 'bloqueado') throw new Error('Usuário bloqueado')
-        S.user = user
-        localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
-        localStorage.setItem('ss_user', JSON.stringify(user))
-        loadCfg()
-        enterDash()
-        toast('Bem-vindo(a), ' + user.nome_completo + '!', 'success')
+
+        return { success: false, error: 'Erro desconhecido no login' };
     } catch (error) {
-        handleError(error)
+        console.error('Erro na função handleLogin:', error);
+        return { 
+            success: false, 
+            error: 'Erro ao realizar login. Tente novamente.' 
+        };
     }
 }
 
-export async function handleCadastro(nome, email, password, confirmPassword, termos) {
-    if (!termos) { toast('Você precisa aceitar os termos de uso', 'err'); return }
-    if (password !== confirmPassword) { toast('As senhas não coincidem', 'err'); return }
-    if (password.length < 6) { toast('Senha deve ter no mínimo 6 caracteres', 'err'); return }
-    if (!nome) { toast('Nome é obrigatório', 'err'); return }
+export async function handleCadastro(email, password, nomeCompleto) {
     try {
-        const role = email === ADMIN_EMAIL ? 'admin' : 'aluno'
-        const { data: authData, error: authError } = await sb.auth.signUp({
+        const { data, error } = await sb.auth.signUp({
             email,
             password,
-            options: { data: { nome_completo: nome, role: role } }
-        })
-        if (authError) throw authError
-        const userId = authData.user.id
-        // Cria perfil
-        await sbUpdateUser(userId, {
-            nome_completo: nome,
-            role: role,
-            status: role === 'admin' ? 'ativo' : 'pendente'
-        })
-        const user = await sbGetUser(userId)
-        if (role === 'admin') {
-            S.user = user
-            localStorage.setItem('ss_session', JSON.stringify({ id: user.id }))
-            localStorage.setItem('ss_user', JSON.stringify(user))
-            loadCfg()
-            enterDash()
-            toast('Conta admin criada!', 'success')
-        } else {
-            toast('Cadastro realizado! Aguarde aprovação.', 'info')
-            showT('tLogin')
-            toast('Enviamos um email de confirmação para ' + email, 'info')
+            options: {
+                data: {
+                    nome_completo: nomeCompleto,
+                    role: 'user'
+                }
+            }
+        });
+
+        if (error) {
+            console.error('Erro no cadastro:', error);
+            return { success: false, error: error.message };
         }
+
+        if (data?.user) {
+            // Cria o perfil do usuário
+            const { error: profileError } = await sb
+                .from('profiles')
+                .insert([{
+                    id: data.user.id,
+                    email: data.user.email,
+                    nome_completo: nomeCompleto,
+                    role: 'user'
+                }]);
+
+            if (profileError) {
+                console.error('Erro ao criar perfil:', profileError);
+                return { 
+                    success: false, 
+                    error: 'Erro ao criar perfil. Tente novamente.' 
+                };
+            }
+
+            return { 
+                success: true, 
+                user: data.user,
+                message: 'Cadastro realizado com sucesso! Verifique seu email.' 
+            };
+        }
+
+        return { success: false, error: 'Erro ao criar conta' };
     } catch (error) {
-        handleError(error)
+        console.error('Erro na função handleCadastro:', error);
+        return { success: false, error: 'Erro ao realizar cadastro' };
     }
 }
 
-export async function logout() {
+// Função de logout
+export async function handleLogout() {
     try {
-        await sb.auth.signOut()
-    } catch (e) {}
-    S.user = null
-    localStorage.removeItem('ss_session')
-    localStorage.removeItem('ss_user')
-    if (window.destroyCharts) window.destroyCharts()
-    window.location.href = 'index.html'
+        const { error } = await sb.auth.signOut();
+        if (error) throw error;
+        
+        state.clearUser();
+        return { success: true };
+    } catch (error) {
+        console.error('Erro no logout:', error);
+        return { success: false, error: error.message };
+    }
 }
 
-export async function recuperarSenha() {
-    const email = prompt('Digite seu email para recuperar a senha:')
-    if (!email) return
+// Verifica se usuário está logado
+export async function checkAuth() {
     try {
-        const { error } = await sb.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/reset-password.html'
-        })
-        if (error) throw error
-        toast('Email de recuperação enviado! Verifique sua caixa de entrada.', 'success')
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user) {
+            const { data: profile } = await sb
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            state.setUser({
+                id: session.user.id,
+                email: session.user.email,
+                profile: profile || null
+            });
+
+            return { 
+                isAuthenticated: true, 
+                user: session.user,
+                profile: profile || null
+            };
+        }
+        return { isAuthenticated: false };
     } catch (error) {
-        handleError(error)
+        console.error('Erro ao verificar autenticação:', error);
+        return { isAuthenticated: false, error: error.message };
     }
 }
