@@ -1,8 +1,8 @@
 // ============================================================
-// MAIN - PONTO DE ENTRADA DA APLICAÇÃO
+// MAIN - PONTO DE ENTRADA DA APLICAÇÃO (VERSÃO CORRIGIDA)
 // ============================================================
 import { S, registerView, setRenderSidebar, loadCfg } from './state.js'
-import { sb, sbGetUser } from './supabase-client.js' // ← CORRIGIDO: Removido o "./js/" redundante
+import { sb, sbGetUser } from './supabase-client.js'
 // Views
 import { vInicio } from './views/inicio.js'
 import { vSalas } from './views/salas.js'
@@ -38,7 +38,7 @@ setRenderSidebar(renderSB)
 // ============================================================
 // CONSTANTES
 // ============================================================
-const ZAP_NUMBER = '5553997060864' // ← apenas números
+const ZAP_NUMBER = '5553997060864'
 
 // ============================================================
 // TOAST (feedback rápido)
@@ -88,7 +88,7 @@ function showPendenciaScreen(email, motivo = 'cadastro') {
 }
 
 // ============================================================
-// FUNÇÃO PARA ENTRAR NO DASHBOARD (com fallback)
+// FUNÇÃO PARA ENTRAR NO DASHBOARD
 // ============================================================
 function showDashboard() {
   console.log('🚪 Entrando no dashboard...')
@@ -112,7 +112,7 @@ function showDashboard() {
     document.body.prepend(newApp)
   }
   
-  // Tenta usar enterDash se existir, senão faz manual
+  // Tenta usar enterDash
   try {
     if (typeof enterDash === 'function') {
       enterDash()
@@ -137,14 +137,11 @@ function showLoginScreen() {
   console.log('🔓 Nenhuma sessão – mostrando login')
   const authWrap = document.getElementById('authWrap')
   if (authWrap) {
-    // Remove qualquer classe que possa estar escondendo
     authWrap.classList.remove('off')
-    // Força display block/flex
     authWrap.style.display = 'flex'
     authWrap.style.opacity = '1'
     authWrap.style.visibility = 'visible'
     
-    // Garante que o conteúdo do auth-card está visível
     const authCard = authWrap.querySelector('.auth-card')
     if (authCard) {
       authCard.style.display = 'block'
@@ -159,7 +156,30 @@ function showLoginScreen() {
 }
 
 // ============================================================
-// EVENTO: CADASTRO (FORÇA INSERT E NÃO LOGA AUTOMATICAMENTE)
+// FUNÇÃO PARA FORÇAR ENTRADA DO ADMIN (NOVA)
+// ============================================================
+function forceAdminAccess(user) {
+  console.log('🚀 Forçando acesso admin para:', user.email)
+  
+  // Salvar no formato correto
+  localStorage.setItem('ss_user', JSON.stringify(user))
+  localStorage.setItem('ss_session', JSON.stringify({ 
+    id: user.id,
+    access_token: 'forced',
+    refresh_token: 'forced'
+  }))
+  localStorage.setItem('user_logged_in', 'true')
+  localStorage.setItem('user_role', user.role || 'admin')
+  localStorage.setItem('user_status', user.status || 'ativo')
+  localStorage.setItem('user_id', user.id)
+  localStorage.setItem('user_email', user.email)
+  
+  // Mostrar dashboard
+  showDashboard()
+}
+
+// ============================================================
+// EVENTO: CADASTRO
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   const frmCad = document.querySelector('#frmCad')
@@ -209,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // EVENTO: LOGIN (BLOQUEIA SE PENDENTE)
+  // EVENTO: LOGIN
   // ============================================================
   const frmLogin = document.querySelector('#frmLogin')
   if (frmLogin) {
@@ -243,70 +263,126 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 })
-// INICIALIZAÇÃO (auto-login com verificação de status)
+
+// ============================================================
+// INICIALIZAÇÃO - AUTO-LOGIN (VERSÃO CORRIGIDA)
+// ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🔍 Iniciando auto-login...')
   
   await new Promise(resolve => setTimeout(resolve, 100))
   
   try {
+    // ========================================
+    // PASSO 1: Tentar sessão do Supabase
+    // ========================================
     const { data: { session } } = await sb.auth.getSession()
     
     if (session) {
+      console.log('✅ Sessão encontrada no Supabase')
+      
       try {
-        const { data: user } = await sbGetUser(session.user.id)
+        const user = await sbGetUser(session.user.id)
         if (user) {
           const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-          if (!isAdmin && user.status === 'pendente') {
+          
+          // Se for admin ou estiver ativo, libera
+          if (isAdmin || user.status !== 'pendente') {
+            console.log('✅ Usuário liberado:', user.email)
+            S.user = user
+            localStorage.setItem('ss_user', JSON.stringify(user))
+            localStorage.setItem('ss_session', JSON.stringify({ 
+              id: session.user.id,
+              access_token: session.access_token,
+              refresh_token: session.refresh_token
+            }))
+            loadCfg()
+            showDashboard()
+            return
+          } else {
+            // Usuário pendente
             console.log('⛔ Usuário pendente – bloqueando')
             await sb.auth.signOut()
             localStorage.removeItem('ss_user')
             showPendenciaScreen(user.email, 'login')
             return
           }
-
-          console.log('✅ Usuário liberado:', user.email)
-          S.user = user
-          localStorage.setItem('ss_user', JSON.stringify(user))
-          loadCfg()
-          showDashboard()
-          return
         }
       } catch (e) {
-        console.error('❌ ERRO DETALHADO NO AUTO-LOGIN (sbGetUser):', e) // ← MUDOU PARA console.error
+        console.error('❌ ERRO DETALHADO NO AUTO-LOGIN (sbGetUser):', e)
         showLoginScreen()
         return
       }
     }
 
-    // 2. Fallback: localStorage
+    // ========================================
+    // PASSO 2: Fallback - localStorage
+    // ========================================
     const sessionData = localStorage.getItem('ss_session')
     if (sessionData) {
+      console.log('📋 Tentando sessão do localStorage')
       try {
         const { id } = JSON.parse(sessionData)
-        const { data: user } = await sbGetUser(id)
+        const user = await sbGetUser(id)
         if (user) {
           const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-          if (!isAdmin && user.status === 'pendente') {
+          
+          if (isAdmin || user.status !== 'pendente') {
+            console.log('✅ Usuário liberado via localStorage:', user.email)
+            S.user = user
+            localStorage.setItem('ss_user', JSON.stringify(user))
+            loadCfg()
+            showDashboard()
+            return
+          } else {
             await sb.auth.signOut()
             localStorage.removeItem('ss_user')
             localStorage.removeItem('ss_session')
             showPendenciaScreen(user.email, 'login')
             return
           }
+        }
+      } catch (e) {
+        console.error('❌ ERRO NO LOCALSTORAGE AUTO-LOGIN:', e)
+        localStorage.removeItem('ss_session')
+      }
+    }
+
+    // ========================================
+    // PASSO 3: Fallback - Admin forçado (NOVO)
+    // ========================================
+    // Se o usuário for o admin e tiver dados no localStorage
+    const userLoggedIn = localStorage.getItem('user_logged_in')
+    const userRole = localStorage.getItem('user_role')
+    const userEmail = localStorage.getItem('user_email')
+    const userId = localStorage.getItem('user_id')
+    
+    if (userLoggedIn === 'true' && userRole === 'admin' && userEmail === 'sulsafetreinamentos@gmail.com') {
+      console.log('🚀 Forçando acesso admin via localStorage')
+      try {
+        const user = await sbGetUser(userId)
+        if (user) {
+          console.log('✅ Admin encontrado e forçado:', user.email)
           S.user = user
           localStorage.setItem('ss_user', JSON.stringify(user))
+          localStorage.setItem('ss_session', JSON.stringify({ 
+            id: userId,
+            access_token: 'forced',
+            refresh_token: 'forced'
+          }))
           loadCfg()
           showDashboard()
           return
         }
       } catch (e) {
-        console.error('❌ ERRO DETALHADO NO LOCALSTORAGE AUTO-LOGIN:', e) // ← MUDOU PARA console.error
-        localStorage.removeItem('ss_session')
+        console.error('❌ Erro ao forçar admin:', e)
       }
     }
 
-    // 3. Se não logado, exibe tela de autenticação
+    // ========================================
+    // PASSO 4: Nenhuma sessão
+    // ========================================
+    console.log('🔓 Nenhuma sessão – mostrando login')
     showLoginScreen()
     
   } catch (e) {
@@ -314,3 +390,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     showLoginScreen()
   }
 })
+
+// ============================================================
+// EXPORTAR FUNÇÕES PARA USO GLOBAL (NOVO)
+// ============================================================
+window.showDashboard = showDashboard
+window.showLoginScreen = showLoginScreen
+window.showPendenciaScreen = showPendenciaScreen
+window.forceAdminAccess = forceAdminAccess
+window.toast = toast
+
+console.log('✅ Main.js carregado com sucesso!')
+console.log('📌 Para forçar acesso admin, execute: forceAdminAccess()')
