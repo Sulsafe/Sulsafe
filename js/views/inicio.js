@@ -280,9 +280,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
-// EXPORTAR PARA USO GLOBAL
+// EXPORTAR PARA O SISTEMA DE ROTAS
 // ============================================
 
-window.carregarDashboard = carregarDashboard;
-window.stC = stC;
-window.cCard = cCard;
+export const vInicio = {
+  render: carregarDashboard,
+  init: function() {
+    console.log('📄 Página Início carregada');
+  }
+};
+
+// Também exportar funções individuais se precisar
+export { carregarDashboard, renderizarDashboard };
