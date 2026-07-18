@@ -221,30 +221,31 @@
 
 <script>
     // ============================================================
-    // SUPABASE CONFIG
+    // SUPABASE CONFIG - NUNCA USA 'const' PARA EVITAR ERRO
     // ============================================================
     console.log('🚀 Iniciando página de login...');
 
-    const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
+    // Configurações fixas
+    var SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
-    // Verificar se o Supabase já foi declarado
-    let supabase;
-    if (typeof window.supabaseClient !== 'undefined') {
-        supabase = window.supabaseClient;
-        console.log('✅ Reutilizando cliente Supabase existente');
-    } else {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        window.supabaseClient = supabase;
+    // USAR window.supabase PARA EVITAR REDECLARAÇÃO
+    if (typeof window.supabaseClient === 'undefined') {
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log('✅ Novo cliente Supabase criado');
+    } else {
+        console.log('✅ Reutilizando cliente Supabase existente');
     }
+
+    // Usar o cliente via window
+    var supabase = window.supabaseClient;
 
     // ============================================================
     // FUNÇÃO TOAST
     // ============================================================
     function showToast(msg, type = '') {
         console.log('📢 Toast:', msg, type);
-        const toast = document.getElementById('toast');
+        var toast = document.getElementById('toast');
         if (!toast) {
             alert(msg);
             return;
@@ -252,47 +253,42 @@
         toast.textContent = msg;
         toast.className = 'toast show ' + type;
         clearTimeout(toast._timeout);
-        toast._timeout = setTimeout(() => {
+        toast._timeout = setTimeout(function() {
             toast.className = 'toast';
         }, 5000);
     }
 
     // ============================================================
-    // FUNÇÃO DE LOGIN COM LOGS DETALHADOS
+    // FUNÇÃO DE LOGIN
     // ============================================================
     async function fazerLogin(email, password) {
         console.log('🔍 Tentando login para:', email);
-        console.log('📝 Senha:', password ? '***' : '(vazio)');
         
         try {
             console.log('📤 Enviando requisição para Supabase...');
-            console.log('  - URL:', SUPABASE_URL);
-            console.log('  - Key:', SUPABASE_KEY.substring(0, 20) + '...');
             
-            const { data, error } = await supabase.auth.signInWithPassword({
+            var resultado = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password
             });
+
+            var data = resultado.data;
+            var error = resultado.error;
 
             console.log('📥 Resposta recebida:');
             console.log('  - data:', data);
             console.log('  - error:', error);
 
             if (error) {
-                console.error('❌ ERRO DE AUTENTICAÇÃO:');
-                console.error('  - Mensagem:', error.message);
-                console.error('  - Status:', error.status);
-                console.error('  - Código:', error.code);
+                console.error('❌ Erro de autenticação:', error.message);
                 showToast('❌ ' + error.message, 'error');
                 return false;
             }
 
             if (data && data.user) {
-                console.log('✅ LOGIN BEM-SUCEDIDO!');
+                console.log('✅ Login bem-sucedido!');
                 console.log('  - User ID:', data.user.id);
                 console.log('  - Email:', data.user.email);
-                console.log('  - Criado em:', data.user.created_at);
-                console.log('  - Confirmado:', data.user.confirmed_at);
                 
                 localStorage.setItem('user_id', data.user.id);
                 localStorage.setItem('user_email', data.user.email);
@@ -300,23 +296,20 @@
                 
                 showToast('✅ Login realizado com sucesso!', 'success');
                 
-                console.log('🔄 Redirecionando para dashboard.html em 1 segundo...');
-                setTimeout(() => {
+                console.log('🔄 Redirecionando para dashboard.html...');
+                setTimeout(function() {
                     window.location.href = 'dashboard.html';
                 }, 1000);
                 
                 return true;
             }
 
-            console.warn('⚠️ Nenhum usuário retornado (data.user é null)');
+            console.warn('⚠️ Nenhum usuário retornado');
             showToast('❌ Erro desconhecido. Tente novamente.', 'error');
             return false;
 
         } catch (err) {
-            console.error('💥 ERRO INESPERADO:');
-            console.error('  - Nome:', err.name);
-            console.error('  - Mensagem:', err.message);
-            console.error('  - Stack:', err.stack);
+            console.error('💥 Erro inesperado:', err);
             showToast('❌ Erro ao fazer login. Tente novamente.', 'error');
             return false;
         }
@@ -328,33 +321,29 @@
     document.addEventListener('DOMContentLoaded', function() {
         console.log('📄 DOM carregado, configurando eventos...');
         
-        const form = document.getElementById('frmLogin');
-        const emailInput = document.getElementById('lEmail');
-        const passInput = document.getElementById('lPass');
-        const btn = document.getElementById('btnLogin');
+        var form = document.getElementById('frmLogin');
+        var emailInput = document.getElementById('lEmail');
+        var passInput = document.getElementById('lPass');
+        var btn = document.getElementById('btnLogin');
 
         if (!form) {
             console.error('❌ Formulário não encontrado!');
             return;
         }
 
-        console.log('✅ Formulário encontrado');
-        console.log('  - Email:', emailInput ? 'OK' : '❌');
-        console.log('  - Senha:', passInput ? 'OK' : '❌');
-        console.log('  - Botão:', btn ? 'OK' : '❌');
+        console.log('✅ Formulário encontrado, adicionando evento submit...');
 
         form.addEventListener('submit', async function(e) {
             console.log('🔄 Evento submit capturado!');
             e.preventDefault();
             
-            const email = emailInput.value.trim();
-            const password = passInput.value;
+            var email = emailInput.value.trim();
+            var password = passInput.value;
             
-            console.log('📝 Email digitado:', email);
-            console.log('📝 Password digitada:', password ? '***' : '(vazio)');
+            console.log('📝 Email:', email);
+            console.log('📝 Password:', password ? '***' : '(vazio)');
 
             if (!email || !password) {
-                console.warn('⚠️ Campos vazios');
                 showToast('Preencha todos os campos', 'error');
                 return;
             }
@@ -362,12 +351,10 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
 
-            const resultado = await fazerLogin(email, password);
+            await fazerLogin(email, password);
 
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-            
-            console.log('🏁 Resultado do login:', resultado ? 'SUCESSO' : 'FALHA');
         });
 
         console.log('✅ Evento submit configurado com sucesso!');
@@ -379,11 +366,10 @@
     (async function checkSession() {
         try {
             console.log('🔍 Verificando sessão existente...');
-            const { data: { session } } = await supabase.auth.getSession();
+            var resultado = await supabase.auth.getSession();
+            var session = resultado.data.session;
             if (session) {
                 console.log('✅ Sessão ativa encontrada!');
-                console.log('  - Usuário:', session.user.email);
-                console.log('  - Expira em:', session.expires_at);
                 console.log('🔄 Redirecionando para dashboard...');
                 window.location.href = 'dashboard.html';
             } else {
@@ -395,8 +381,6 @@
     })();
 
     console.log('🔐 Página de login carregada!');
-    console.log('📌 Digite email e senha e clique em Entrar');
-    console.log('📌 Veja os logs detalhados no console');
 </script>
 
 </body>
