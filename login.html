@@ -221,19 +221,28 @@
 
 <script>
     // ============================================================
-    // INICIALIZAÇÃO
+    // INICIALIZAÇÃO - EVITA ERRO DE DECLARAÇÃO DUPLICADA
     // ============================================================
     console.log('🚀 Iniciando página de login...');
 
     // ============================================================
-    // SUPABASE CONFIG
+    // SUPABASE CONFIG - USANDO var PARA EVITAR ERRO
     // ============================================================
     const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
-    console.log('📡 Conectando ao Supabase...');
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log('✅ Supabase client inicializado');
+    // Verificar se já existe para não declarar duas vezes
+    if (typeof supabase === 'undefined') {
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('✅ Supabase client inicializado (novo)');
+    } else {
+        console.log('✅ Supabase client já existente, reutilizando');
+        // Se já existe, usa o existente
+        var supabase = window.supabaseClient || window.supabase;
+    }
+
+    // Guardar referência global para reutilização
+    window.supabaseClient = supabase;
 
     // ============================================================
     // FUNÇÃO TOAST
@@ -283,7 +292,6 @@
                 console.log('  - User ID:', data.user.id);
                 console.log('  - Email:', data.user.email);
                 
-                // Salvar no localStorage
                 localStorage.setItem('user_id', data.user.id);
                 localStorage.setItem('user_email', data.user.email);
                 localStorage.setItem('user_logged_in', 'true');
@@ -310,7 +318,7 @@
     }
 
     // ============================================================
-    // EVENTO DO FORMULÁRIO - VERSÃO CORRIGIDA
+    // EVENTO DO FORMULÁRIO
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         console.log('📄 DOM carregado, configurando eventos...');
@@ -342,14 +350,11 @@
                 return;
             }
 
-            // Desabilitar botão
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
 
-            // Tentar login
             await fazerLogin(email, password);
 
-            // Reabilitar botão (se não redirecionou)
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
         });
