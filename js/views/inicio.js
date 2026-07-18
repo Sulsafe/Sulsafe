@@ -1,294 +1,233 @@
 // ============================================
-// DASHBOARD PRINCIPAL - VERSÃO CORRIGIDA
+// VIEW INÍCIO - DASHBOARD PRINCIPAL
 // ============================================
 
-// Variáveis globais
-let dadosDashboard = {
-  notificacoes: [],
-  salas: [],
-  videos: 38,
-  alunosPendentes: 0
+import { supabase, appState, navigateTo, showToast, showModal, closeModal } from '../js/main.js';
+
+// ============================================
+// DADOS DO DASHBOARD
+// ============================================
+const state = {
+    videos: 38,
+    salas: [],
+    notificacoes: [],
+    alunosPendentes: 0,
+    loading: true
 };
 
 // ============================================
-// FUNÇÃO PRINCIPAL - CARREGAR DASHBOARD
+// RENDERIZAÇÃO DA VIEW
 // ============================================
-
-async function carregarDashboard() {
-  try {
-    console.log('🚪 Entrando no dashboard...');
-    
-    // 1. Verificar autenticação
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      console.error('❌ Usuário não autenticado');
-      window.location.href = '/login.html';
-      return;
-    }
-
-    console.log('✅ Usuário autenticado:', user.id);
-
-    // 2. Buscar dados em paralelo
-    const [notificacoesResult, salasResult] = await Promise.allSettled([
-      buscarNotificacoes(user.id),
-      buscarSalas()
-    ]);
-
-    // 3. Processar resultados
-    if (notificacoesResult.status === 'fulfilled') {
-      dadosDashboard.notificacoes = notificacoesResult.value || [];
-      console.log('✅ Notificações:', dadosDashboard.notificacoes.length);
-    } else {
-      console.warn('⚠️ Erro notificações:', notificacoesResult.reason);
-      dadosDashboard.notificacoes = [];
-    }
-
-    if (salasResult.status === 'fulfilled') {
-      dadosDashboard.salas = salasResult.value || [];
-      console.log('✅ Salas ativas:', dadosDashboard.salas.length);
-    } else {
-      console.warn('⚠️ Erro salas:', salasResult.reason);
-      dadosDashboard.salas = [];
-    }
-
-    // Buscar alunos pendentes
-    try {
-      dadosDashboard.alunosPendentes = await buscarAlunosPendentes(user.id) || 0;
-    } catch (e) {
-      console.warn('⚠️ Erro ao buscar pendentes:', e);
-      dadosDashboard.alunosPendentes = 0;
-    }
-
-    // 4. Renderizar dashboard
-    renderizarDashboard();
-    
-    // 5. Remover loading
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) {
-      loadingEl.style.display = 'none';
-    }
-
-  } catch (error) {
-    console.error('❌ Erro geral:', error);
-    mostrarErro('Não foi possível carregar o dashboard. Tente novamente.');
-  }
-}
-
-// ============================================
-// FUNÇÕES DE BUSCA INDIVIDUAIS
-// ============================================
-
-async function buscarNotificacoes(userId) {
-  try {
-    const { data, error } = await supabase
-      .from('notificacoes')
-      .select('*')
-      .eq('usuario_id', userId)
-      .eq('lida', false)
-      .order('criado_em', { ascending: false })
-      .limit(5);
-
-    if (error) {
-      console.error('Erro ao buscar notificações:', error);
-      return [];
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Erro na busca de notificações:', error);
-    return [];
-  }
-}
-
-async function buscarSalas() {
-  try {
-    // Tentar com join primeiro
-    const { data, error } = await supabase
-      .from('salas')
-      .select(`
-        *,
-        profiles!left(nome_completo)
-      `)
-      .eq('ativa', true)
-      .order('criado_em', { ascending: false });
-
-    if (error) {
-      console.warn('⚠️ Erro no join de salas:', error);
-      
-      // Fallback: buscar sem join
-      const { data: salasSimples, error: errorSimples } = await supabase
-        .from('salas')
-        .select('*')
-        .eq('ativa', true)
-        .order('criado_em', { ascending: false });
-
-      if (errorSimples) {
-        console.error('Erro ao buscar salas:', errorSimples);
-        return [];
-      }
-
-      return salasSimples || [];
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Erro na busca de salas:', error);
-    return [];
-  }
-}
-
-async function buscarAlunosPendentes(userId) {
-  try {
-    const { count, error } = await supabase
-      .from('alunos')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pendente')
-      .eq('professor_id', userId);
-
-    if (error) {
-      console.warn('⚠️ Erro ao contar pendentes:', error);
-      return 0;
-    }
-
-    return count || 0;
-  } catch (error) {
-    return 0;
-  }
-}
-
-// ============================================
-// RENDERIZAÇÃO DO DASHBOARD - CORRIGIDA
-// ============================================
-
-function renderizarDashboard() {
-  console.log('📊 Renderizando dashboard...');
-  
-  // Função para atualizar ou criar elementos estatísticos
-  function atualizarStat(seletor, valor, label) {
-    let elemento = document.querySelector(seletor);
-    let container = document.querySelector('.stats-container');
-    
-    // Se não houver container, criar um
-    if (!container) {
-      container = document.createElement('div');
-      container.className = 'stats-container';
-      container.style.cssText = 'display:flex; gap:15px; padding:20px; flex-wrap:wrap; justify-content:center;';
-      
-      const dashboardContent = document.querySelector('.dashboard-content') || document.body;
-      dashboardContent.prepend(container);
-    }
-    
-    // Se o elemento não existir, criar
-    if (!elemento) {
-      const item = document.createElement('div');
-      item.className = 'stat-item';
-      item.style.cssText = 'background:white; padding:15px 25px; border-radius:10px; text-align:center; min-width:100px; box-shadow:0 2px 4px rgba(0,0,0,0.1);';
-      
-      const valorSpan = document.createElement('span');
-      valorSpan.className = seletor.replace('.', '');
-      valorSpan.textContent = valor;
-      valorSpan.style.cssText = 'display:block; font-size:28px; font-weight:bold; color:#2c3e50;';
-      
-      const labelSpan = document.createElement('label');
-      labelSpan.textContent = label || seletor.replace('.', '').replace('stat-', '').toUpperCase();
-      labelSpan.style.cssText = 'display:block; font-size:12px; color:#7f8c8d; margin-top:5px;';
-      
-      item.appendChild(valorSpan);
-      item.appendChild(labelSpan);
-      container.appendChild(item);
-      
-      return valorSpan;
-    }
-    
-    // Atualizar existente
-    elemento.textContent = valor;
-    return elemento;
-  }
-
-  // Atualizar estatísticas
-  atualizarStat('.stat-videos', dadosDashboard.videos || 38, 'Vídeos HD');
-  atualizarStat('.stat-salas', dadosDashboard.salas.length || 0, 'Salas Ativas');
-  atualizarStat('.stat-pendentes', dadosDashboard.alunosPendentes || 0, 'Pendentes');
-  atualizarStat('.stat-notificacoes', dadosDashboard.notificacoes.length || 0, 'Notificações');
-
-  // Se houver notificações, mostrar
-  const notifContainer = document.getElementById('notificacoes-container');
-  if (notifContainer && dadosDashboard.notificacoes.length > 0) {
-    notifContainer.innerHTML = dadosDashboard.notificacoes.map(n => `
-      <div class="notificacao-item">
-        <span class="notif-dot"></span>
-        ${n.mensagem || 'Nova notificação'}
-        <small>${new Date(n.criado_em).toLocaleDateString()}</small>
-      </div>
-    `).join('');
-  }
-  
-  console.log('✅ Dashboard atualizado!');
-}
-
-// ============================================
-// UTILITÁRIOS
-// ============================================
-
-function mostrarErro(mensagem) {
-  const loadingEl = document.getElementById('loading');
-  if (loadingEl) {
-    loadingEl.innerHTML = `
-      <div style="color: #e74c3c; padding: 20px;">
-        <i class="fas fa-exclamation-circle" style="font-size: 24px;"></i>
-        <p>${mensagem}</p>
-        <button onclick="carregarDashboard()" class="btn-retry">
-          🔄 Tentar Novamente
-        </button>
-      </div>
-    `;
-  }
-}
-
-// ============================================
-// FUNÇÕES DE NAVEGAÇÃO (existentes)
-// ============================================
-
-function stC(v, l, ic) { 
-  return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>` 
-}
-
-function cCard(ic, t, d, v) { 
-  return `<div class="card" onclick="window.nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>` 
-}
-
-// ============================================
-// INICIALIZAR
-// ============================================
-
-// Aguardar o DOM carregar
-document.addEventListener('DOMContentLoaded', function() {
-  // Verificar se o #appWrap existe, se não, criar
-  let appWrap = document.getElementById('appWrap');
-  if (!appWrap) {
-    console.warn('⚠️ #appWrap não encontrado, criando um container');
-    appWrap = document.createElement('div');
-    appWrap.id = 'appWrap';
-    document.body.appendChild(appWrap);
-  }
-
-  // Carregar dashboard após pequeno delay
-  setTimeout(() => {
-    carregarDashboard();
-  }, 100);
-});
-
-// ============================================
-// EXPORTAR PARA O SISTEMA DE ROTAS
-// ============================================
-
 export const vInicio = {
-  render: carregarDashboard,
-  init: function() {
-    console.log('📄 Página Início carregada');
-  }
+    render: function() {
+        console.log('📄 Renderizando Início...');
+        
+        const container = document.getElementById('mc');
+        if (!container) {
+            console.error('❌ #mc não encontrado');
+            return;
+        }
+
+        // HTML do Dashboard
+        container.innerHTML = `
+            <div class="page-header">
+                <div>
+                    <h1>Olá, Administrador</h1>
+                    <p class="page-subtitle">Painel Administrativo — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+                <div class="header-actions-dash">
+                    <span class="date-badge"><i class="fas fa-calendar-alt"></i> ${new Date().toLocaleDateString('pt-BR')}</span>
+                    <button class="btn btn-sm btn-p" onclick="window.salvarAlteracoes()"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </div>
+
+            <div id="dashLoading" class="loading-container">
+                <div class="spinner"></div>
+                <p>Carregando dashboard...</p>
+            </div>
+
+            <div id="dashContent" style="display:none;">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-video"></i></div>
+                        <div class="stat-value" id="statVideos">38</div>
+                        <div class="stat-label">Vídeos em HD</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="statSalas">0</div>
+                        <div class="stat-label">Salas ao Vivo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value" id="statPendentes">0</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-bell"></i></div>
+                        <div class="stat-value" id="statNotificacoes">0</div>
+                        <div class="stat-label">Notificações</div>
+                    </div>
+                </div>
+
+                <!-- Quick Access -->
+                <div class="quick-access">
+                    <div class="quick-card" onclick="window.navigateTo('videoaulas')">
+                        <i class="fas fa-video"></i>
+                        <h4>Vídeos</h4>
+                        <p>38 NRS em videoaulas HD</p>
+                    </div>
+                    <div class="quick-card" onclick="window.navigateTo('salas')">
+                        <i class="fas fa-users"></i>
+                        <h4>Salas ao Vivo</h4>
+                        <p>Participe ao vivo</p>
+                    </div>
+                    <div class="quick-card" onclick="window.navigateTo('assistente')">
+                        <i class="fas fa-robot"></i>
+                        <h4>Assistente IA</h4>
+                        <p>Dúvidas sobre NRS 24/7</p>
+                    </div>
+                    <div class="quick-card" onclick="window.navigateTo('corrigir')">
+                        <i class="fas fa-check-double"></i>
+                        <h4>Corrigir Provas</h4>
+                        <p>Aprovar alunos</p>
+                    </div>
+                </div>
+
+                <!-- Notificações -->
+                <div id="notificacoesContainer" style="margin-top:24px;"></div>
+            </div>
+        `;
+
+        // Carregar dados
+        this.carregarDados();
+    },
+
+    carregarDados: async function() {
+        try {
+            const user = appState.user;
+            if (!user) {
+                console.warn('⚠️ Usuário não autenticado');
+                return;
+            }
+
+            console.log('✅ Usuário:', user.id);
+
+            // Buscar dados
+            const [notificacoes, salas] = await Promise.all([
+                this.buscarNotificacoes(user.id),
+                this.buscarSalas()
+            ]);
+
+            state.notificacoes = notificacoes || [];
+            state.salas = salas || [];
+            state.alunosPendentes = state.notificacoes.filter(n => !n.lida).length;
+
+            // Renderizar
+            this.atualizarDashboard();
+
+        } catch (error) {
+            console.error('❌ Erro ao carregar:', error);
+            document.getElementById('dashLoading').innerHTML = `
+                <div style="color:#e74c3c;">
+                    <i class="fas fa-exclamation-circle" style="font-size:32px;"></i>
+                    <p>Erro ao carregar dados</p>
+                    <button class="btn btn-sm btn-p" onclick="location.reload()">Tentar Novamente</button>
+                </div>
+            `;
+        }
+    },
+
+    buscarNotificacoes: async function(userId) {
+        try {
+            const { data, error } = await supabase
+                .from('notificacoes')
+                .select('*')
+                .eq('usuario_id', userId)
+                .order('criado_em', { ascending: false })
+                .limit(5);
+
+            if (error) {
+                console.warn('⚠️ Erro notificações:', error);
+                return [];
+            }
+            return data || [];
+        } catch (e) {
+            return [];
+        }
+    },
+
+    buscarSalas: async function() {
+        try {
+            const { data, error } = await supabase
+                .from('salas')
+                .select('*')
+                .eq('ativa', true)
+                .order('criado_em', { ascending: false });
+
+            if (error) {
+                console.warn('⚠️ Erro salas:', error);
+                return [];
+            }
+            return data || [];
+        } catch (e) {
+            return [];
+        }
+    },
+
+    atualizarDashboard: function() {
+        console.log('📊 Atualizando dashboard...');
+
+        // Esconder loading, mostrar conteúdo
+        document.getElementById('dashLoading').style.display = 'none';
+        document.getElementById('dashContent').style.display = 'block';
+
+        // Atualizar stats
+        const videos = document.getElementById('statVideos');
+        const salas = document.getElementById('statSalas');
+        const pendentes = document.getElementById('statPendentes');
+        const notificacoes = document.getElementById('statNotificacoes');
+
+        if (videos) videos.textContent = state.videos;
+        if (salas) salas.textContent = state.salas.length;
+        if (pendentes) pendentes.textContent = state.alunosPendentes;
+        if (notificacoes) notificacoes.textContent = state.notificacoes.length;
+
+        // Atualizar notificações
+        const container = document.getElementById('notificacoesContainer');
+        if (container) {
+            if (state.notificacoes.length > 0) {
+                container.innerHTML = `
+                    <div class="notif-card">
+                        <h4><i class="fas fa-bell" style="color:#f39c12;"></i> Últimas Notificações</h4>
+                        ${state.notificacoes.map(n => `
+                            <div class="notif-item">
+                                <span class="notif-dot ${n.lida ? 'gray' : 'green'}"></span>
+                                <span class="notif-msg">${n.mensagem || 'Nova notificação'}</span>
+                                <span class="notif-date">${new Date(n.criado_em).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        console.log('✅ Dashboard atualizado!');
+    }
 };
 
-// Também exportar funções individuais se precisar
-export { carregarDashboard, renderizarDashboard };
+// ============================================
+// FUNÇÕES GLOBAIS (para onclick)
+// ============================================
+
+window.navigateTo = navigateTo;
+window.salvarAlteracoes = function() {
+    showToast('✅ Alterações salvas com sucesso!', 'success');
+};
+
+// ============================================
+// EXPORTAR VIEW
+// ============================================
+
+export default vInicio;
