@@ -29,11 +29,10 @@ async function carregarDashboard() {
 
     console.log('✅ Usuário autenticado:', user.id);
 
-    // 2. Buscar dados em paralelo com tratamento individual
+    // 2. Buscar dados em paralelo
     const [notificacoesResult, salasResult] = await Promise.allSettled([
       buscarNotificacoes(user.id),
-      buscarSalas(),
-      buscarAlunosPendentes(user.id)
+      buscarSalas()
     ]);
 
     // 3. Processar resultados
@@ -53,12 +52,12 @@ async function carregarDashboard() {
       dadosDashboard.salas = [];
     }
 
-    if (salasResult.status === 'fulfilled') {
-      // O terceiro resultado é o de alunos pendentes
-      const pendentesResult = await Promise.allSettled([buscarAlunosPendentes(user.id)]);
-      if (pendentesResult[0].status === 'fulfilled') {
-        dadosDashboard.alunosPendentes = pendentesResult[0].value || 0;
-      }
+    // Buscar alunos pendentes
+    try {
+      dadosDashboard.alunosPendentes = await buscarAlunosPendentes(user.id) || 0;
+    } catch (e) {
+      console.warn('⚠️ Erro ao buscar pendentes:', e);
+      dadosDashboard.alunosPendentes = 0;
     }
 
     // 4. Renderizar dashboard
@@ -82,23 +81,11 @@ async function carregarDashboard() {
 
 async function buscarNotificacoes(userId) {
   try {
-    // Primeiro, verificar se a tabela existe
-    const { data: tabelaExiste, error: checkError } = await supabase
-      .from('notificacoes')
-      .select('id')
-      .limit(1);
-
-    if (checkError && checkError.code === '42P01') {
-      console.warn('⚠️ Tabela notificacoes não existe');
-      return [];
-    }
-
-    // Buscar notificações não lidas
     const { data, error } = await supabase
       .from('notificacoes')
       .select('*')
       .eq('usuario_id', userId)
-      .eq('lida', false)  // ← IMPORTANTE: booleano, não string
+      .eq('lida', false)
       .order('criado_em', { ascending: false })
       .limit(5);
 
@@ -123,7 +110,7 @@ async function buscarSalas() {
         *,
         profiles!left(nome_completo)
       `)
-      .eq('ativa', true)  // ← IMPORTANTE: booleano
+      .eq('ativa', true)
       .order('criado_em', { ascending: false });
 
     if (error) {
@@ -153,9 +140,8 @@ async function buscarSalas() {
 
 async function buscarAlunosPendentes(userId) {
   try {
-    // Ajuste conforme sua estrutura de dados
     const { count, error } = await supabase
-      .from('alunos')  // ou 'provas', 'correcoes', etc.
+      .from('alunos')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pendente')
       .eq('professor_id', userId);
@@ -172,15 +158,59 @@ async function buscarAlunosPendentes(userId) {
 }
 
 // ============================================
-// RENDERIZAÇÃO DO DASHBOARD
+// RENDERIZAÇÃO DO DASHBOARD - CORRIGIDA
 // ============================================
 
 function renderizarDashboard() {
+  console.log('📊 Renderizando dashboard...');
+  
+  // Função para atualizar ou criar elementos estatísticos
+  function atualizarStat(seletor, valor, label) {
+    let elemento = document.querySelector(seletor);
+    let container = document.querySelector('.stats-container');
+    
+    // Se não houver container, criar um
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'stats-container';
+      container.style.cssText = 'display:flex; gap:15px; padding:20px; flex-wrap:wrap; justify-content:center;';
+      
+      const dashboardContent = document.querySelector('.dashboard-content') || document.body;
+      dashboardContent.prepend(container);
+    }
+    
+    // Se o elemento não existir, criar
+    if (!elemento) {
+      const item = document.createElement('div');
+      item.className = 'stat-item';
+      item.style.cssText = 'background:white; padding:15px 25px; border-radius:10px; text-align:center; min-width:100px; box-shadow:0 2px 4px rgba(0,0,0,0.1);';
+      
+      const valorSpan = document.createElement('span');
+      valorSpan.className = seletor.replace('.', '');
+      valorSpan.textContent = valor;
+      valorSpan.style.cssText = 'display:block; font-size:28px; font-weight:bold; color:#2c3e50;';
+      
+      const labelSpan = document.createElement('label');
+      labelSpan.textContent = label || seletor.replace('.', '').replace('stat-', '').toUpperCase();
+      labelSpan.style.cssText = 'display:block; font-size:12px; color:#7f8c8d; margin-top:5px;';
+      
+      item.appendChild(valorSpan);
+      item.appendChild(labelSpan);
+      container.appendChild(item);
+      
+      return valorSpan;
+    }
+    
+    // Atualizar existente
+    elemento.textContent = valor;
+    return elemento;
+  }
+
   // Atualizar estatísticas
-  document.querySelector('.stat-videos')?.textContent = dadosDashboard.videos || 38;
-  document.querySelector('.stat-salas')?.textContent = dadosDashboard.salas.length || 0;
-  document.querySelector('.stat-pendentes')?.textContent = dadosDashboard.alunosPendentes || 0;
-  document.querySelector('.stat-notificacoes')?.textContent = dadosDashboard.notificacoes.length || 0;
+  atualizarStat('.stat-videos', dadosDashboard.videos || 38, 'Vídeos HD');
+  atualizarStat('.stat-salas', dadosDashboard.salas.length || 0, 'Salas Ativas');
+  atualizarStat('.stat-pendentes', dadosDashboard.alunosPendentes || 0, 'Pendentes');
+  atualizarStat('.stat-notificacoes', dadosDashboard.notificacoes.length || 0, 'Notificações');
 
   // Se houver notificações, mostrar
   const notifContainer = document.getElementById('notificacoes-container');
@@ -193,6 +223,8 @@ function renderizarDashboard() {
       </div>
     `).join('');
   }
+  
+  console.log('✅ Dashboard atualizado!');
 }
 
 // ============================================
