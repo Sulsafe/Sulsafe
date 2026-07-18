@@ -1,91 +1,256 @@
-// ============================================================
-// VIEW: INÍCIO
-// ============================================================
-// CORREÇÃO: imports com '../' porque está em views/
-import { S, role, isAdmin, isProf, uid, nav } from '../state.js'
-import { NRS, toast, $, $$ } from '../utils.js'
-import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from '../supabase-client.js'
+// ============================================
+// DASHBOARD PRINCIPAL - VERSÃO CORRIGIDA
+// ============================================
 
-export function vInicio() {
-    const r = role()
-    let h = `<div class="btn-back" onclick="window.nav('${S.prevView || 'inicio'}')"><i class="fas fa-arrow-left"></i> Voltar</div>`
-    h += `<h2 class="wc">Olá, ${S.user?.nome_completo || 'Usuário'} 👋</h2>`
-    h += `<p class="wcs">Painel ${r === 'admin' ? 'Administrativo (Modo Deus)' : r === 'professor' ? 'do Professor' : 'do Aluno'} — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>`
+// Variáveis globais
+let dadosDashboard = {
+  notificacoes: [],
+  salas: [],
+  videos: 38,
+  alunosPendentes: 0
+};
+
+// ============================================
+// FUNÇÃO PRINCIPAL - CARREGAR DASHBOARD
+// ============================================
+
+async function carregarDashboard() {
+  try {
+    console.log('🚪 Entrando no dashboard...');
     
-    h += `<div class="stats" id="statsInicio">`
-    h += `<div class="st"><div class="st-v">...</div><div class="st-l"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div>`
-    h += `</div>`
-    h += `<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Acesso Rápido</h3><div class="cards">`
-    h += cCard('fa-play-circle', 'Videoaulas', '38 NRs em videoaulas HD', 'videoaulas')
-    h += cCard('fa-file-alt', 'Materiais', 'Arquivos e recursos', 'materiais')
-    h += cCard('fa-tower-broadcast', 'Salas ao Vivo', 'Participe ao vivo', 'salas')
-    h += cCard('fa-book', 'Catálogo de NRs', 'Consulte as 38 Normas', 'nrs')
-    h += cCard('fa-robot', 'Assistente IA', 'Dúvidas sobre NRs 24/7', 'ia')
-    if (r === 'aluno') {
-        h += cCard('fa-file-lines', 'Meu Boletim', 'Acompanhe suas notas', 'boletim')
-        h += cCard('fa-file-pdf', 'Minhas Provas', 'Envie sua prova', 'provas')
-        h += cCard('fa-certificate', 'Certificados', 'Certificados emitidos', 'certificados')
-    }
-    if (isProf()) {
-        h += cCard('fa-file-pen', 'Lançar Notas', 'Notas dos alunos', 'boletim')
-        h += cCard('fa-file-pdf', 'Corrigir Provas', 'Provas para corrigir', 'provas')
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
-    }
-    if (isAdmin()) {
-        h += cCard('fa-user-clock', 'Pendentes', 'Aprovar alunos', 'pendentes')
-        h += cCard('fa-file-pen', 'Notas', 'Gerenciar notas', 'boletim')
-        h += cCard('fa-file-pdf', 'Corrigir Provas', 'Provas para corrigir', 'provas')
-        h += cCard('fa-certificate', 'Certificados', 'Emitir certificados', 'certificados')
-        h += cCard('fa-shield-halved', 'Modo Deus', 'Controle total', 'admin')
-    }
-    h += `</div>`
+    // 1. Verificar autenticação
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     
-    setTimeout(async () => {
-        try {
-            const { data: metrics } = await sbGetDashboardMetrics()
-            const statsDiv = document.getElementById('statsInicio')
-            if (!statsDiv) return
-            
-            if (r === 'aluno') {
-                const { data: progressos } = await sbGetProgressoUsuario(uid())
-                const concluidas = progressos?.filter(p => p.concluido === true).length || 0
-                const total = NRS.length
-                const pct = total ? Math.round(concluidas / total * 100) : 0
-                const pendentes = total - concluidas
-                statsDiv.innerHTML = `
-                    ${stC(pct + '%', 'Progresso', 'fa-chart-line')}
-                    ${stC(concluidas, 'Vídeos Vistos', 'fa-check-circle')}
-                    ${stC(pendentes, 'Vídeos Pendentes', 'fa-clock')}
-                `
-                const progDiv = document.createElement('div')
-                progDiv.className = 'prog-w'
-                progDiv.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                        <span style="font-weight:600;font-size:13px">Progresso Geral — Vídeos</span>
-                        <span style="font-weight:800;color:var(--p);font-size:18px">${pct}%</span>
-                    </div>
-                    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
-                    <p style="font-size:11px;color:var(--tx3);margin-top:6px">${concluidas} de ${total} NRs concluídas — ${pendentes} pendentes</p>
-                `
-                statsDiv.parentNode.insertBefore(progDiv, statsDiv.nextSibling)
-            } else {
-                const alunos = metrics?.total_alunos || 0
-                const pendentes = metrics?.pendentes || 0
-                const provasPendentes = metrics?.provas_pendentes || 0
-                const { data: salas } = await sbGetSalasAtivas()
-                statsDiv.innerHTML = `
-                    ${stC(alunos, 'Alunos', 'fa-users')}
-                    ${stC(pendentes, 'Pendentes', 'fa-user-clock')}
-                    ${stC(salas?.length || 0, 'Salas Ativas', 'fa-tower-broadcast')}
-                    ${stC(provasPendentes, 'Provas Pendentes', 'fa-file-pdf')}
-                    ${stC(NRS.length, 'NRs', 'fa-book')}
-                `
-            }
-        } catch (e) { console.error('Erro ao carregar dashboard:', e) }
-    }, 100)
+    if (authError || !user) {
+      console.error('❌ Usuário não autenticado');
+      window.location.href = '/login.html';
+      return;
+    }
+
+    console.log('✅ Usuário autenticado:', user.id);
+
+    // 2. Buscar dados em paralelo com tratamento individual
+    const [notificacoesResult, salasResult] = await Promise.allSettled([
+      buscarNotificacoes(user.id),
+      buscarSalas(),
+      buscarAlunosPendentes(user.id)
+    ]);
+
+    // 3. Processar resultados
+    if (notificacoesResult.status === 'fulfilled') {
+      dadosDashboard.notificacoes = notificacoesResult.value || [];
+      console.log('✅ Notificações:', dadosDashboard.notificacoes.length);
+    } else {
+      console.warn('⚠️ Erro notificações:', notificacoesResult.reason);
+      dadosDashboard.notificacoes = [];
+    }
+
+    if (salasResult.status === 'fulfilled') {
+      dadosDashboard.salas = salasResult.value || [];
+      console.log('✅ Salas ativas:', dadosDashboard.salas.length);
+    } else {
+      console.warn('⚠️ Erro salas:', salasResult.reason);
+      dadosDashboard.salas = [];
+    }
+
+    if (salasResult.status === 'fulfilled') {
+      // O terceiro resultado é o de alunos pendentes
+      const pendentesResult = await Promise.allSettled([buscarAlunosPendentes(user.id)]);
+      if (pendentesResult[0].status === 'fulfilled') {
+        dadosDashboard.alunosPendentes = pendentesResult[0].value || 0;
+      }
+    }
+
+    // 4. Renderizar dashboard
+    renderizarDashboard();
     
-    return h
+    // 5. Remover loading
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+      loadingEl.style.display = 'none';
+    }
+
+  } catch (error) {
+    console.error('❌ Erro geral:', error);
+    mostrarErro('Não foi possível carregar o dashboard. Tente novamente.');
+  }
 }
 
-function stC(v, l, ic) { return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>` }
-function cCard(ic, t, d, v) { return `<div class="card" onclick="window.nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>` }
+// ============================================
+// FUNÇÕES DE BUSCA INDIVIDUAIS
+// ============================================
+
+async function buscarNotificacoes(userId) {
+  try {
+    // Primeiro, verificar se a tabela existe
+    const { data: tabelaExiste, error: checkError } = await supabase
+      .from('notificacoes')
+      .select('id')
+      .limit(1);
+
+    if (checkError && checkError.code === '42P01') {
+      console.warn('⚠️ Tabela notificacoes não existe');
+      return [];
+    }
+
+    // Buscar notificações não lidas
+    const { data, error } = await supabase
+      .from('notificacoes')
+      .select('*')
+      .eq('usuario_id', userId)
+      .eq('lida', false)  // ← IMPORTANTE: booleano, não string
+      .order('criado_em', { ascending: false })
+      .limit(5);
+
+    if (error) {
+      console.error('Erro ao buscar notificações:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Erro na busca de notificações:', error);
+    return [];
+  }
+}
+
+async function buscarSalas() {
+  try {
+    // Tentar com join primeiro
+    const { data, error } = await supabase
+      .from('salas')
+      .select(`
+        *,
+        profiles!left(nome_completo)
+      `)
+      .eq('ativa', true)  // ← IMPORTANTE: booleano
+      .order('criado_em', { ascending: false });
+
+    if (error) {
+      console.warn('⚠️ Erro no join de salas:', error);
+      
+      // Fallback: buscar sem join
+      const { data: salasSimples, error: errorSimples } = await supabase
+        .from('salas')
+        .select('*')
+        .eq('ativa', true)
+        .order('criado_em', { ascending: false });
+
+      if (errorSimples) {
+        console.error('Erro ao buscar salas:', errorSimples);
+        return [];
+      }
+
+      return salasSimples || [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Erro na busca de salas:', error);
+    return [];
+  }
+}
+
+async function buscarAlunosPendentes(userId) {
+  try {
+    // Ajuste conforme sua estrutura de dados
+    const { count, error } = await supabase
+      .from('alunos')  // ou 'provas', 'correcoes', etc.
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pendente')
+      .eq('professor_id', userId);
+
+    if (error) {
+      console.warn('⚠️ Erro ao contar pendentes:', error);
+      return 0;
+    }
+
+    return count || 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+// ============================================
+// RENDERIZAÇÃO DO DASHBOARD
+// ============================================
+
+function renderizarDashboard() {
+  // Atualizar estatísticas
+  document.querySelector('.stat-videos')?.textContent = dadosDashboard.videos || 38;
+  document.querySelector('.stat-salas')?.textContent = dadosDashboard.salas.length || 0;
+  document.querySelector('.stat-pendentes')?.textContent = dadosDashboard.alunosPendentes || 0;
+  document.querySelector('.stat-notificacoes')?.textContent = dadosDashboard.notificacoes.length || 0;
+
+  // Se houver notificações, mostrar
+  const notifContainer = document.getElementById('notificacoes-container');
+  if (notifContainer && dadosDashboard.notificacoes.length > 0) {
+    notifContainer.innerHTML = dadosDashboard.notificacoes.map(n => `
+      <div class="notificacao-item">
+        <span class="notif-dot"></span>
+        ${n.mensagem || 'Nova notificação'}
+        <small>${new Date(n.criado_em).toLocaleDateString()}</small>
+      </div>
+    `).join('');
+  }
+}
+
+// ============================================
+// UTILITÁRIOS
+// ============================================
+
+function mostrarErro(mensagem) {
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) {
+    loadingEl.innerHTML = `
+      <div style="color: #e74c3c; padding: 20px;">
+        <i class="fas fa-exclamation-circle" style="font-size: 24px;"></i>
+        <p>${mensagem}</p>
+        <button onclick="carregarDashboard()" class="btn-retry">
+          🔄 Tentar Novamente
+        </button>
+      </div>
+    `;
+  }
+}
+
+// ============================================
+// FUNÇÕES DE NAVEGAÇÃO (existentes)
+// ============================================
+
+function stC(v, l, ic) { 
+  return `<div class="st"><div class="st-v">${v}</div><div class="st-l"><i class="fas ${ic}" style="margin-right:4px"></i>${l}</div></div>` 
+}
+
+function cCard(ic, t, d, v) { 
+  return `<div class="card" onclick="window.nav('${v}')"><div class="card-ic"><i class="fas ${ic}"></i></div><div class="card-t">${t}</div><div class="card-d">${d}</div></div>` 
+}
+
+// ============================================
+// INICIALIZAR
+// ============================================
+
+// Aguardar o DOM carregar
+document.addEventListener('DOMContentLoaded', function() {
+  // Verificar se o #appWrap existe, se não, criar
+  let appWrap = document.getElementById('appWrap');
+  if (!appWrap) {
+    console.warn('⚠️ #appWrap não encontrado, criando um container');
+    appWrap = document.createElement('div');
+    appWrap.id = 'appWrap';
+    document.body.appendChild(appWrap);
+  }
+
+  // Carregar dashboard após pequeno delay
+  setTimeout(() => {
+    carregarDashboard();
+  }, 100);
+});
+
+// ============================================
+// EXPORTAR PARA USO GLOBAL
+// ============================================
+
+window.carregarDashboard = carregarDashboard;
+window.stC = stC;
+window.cCard = cCard;
