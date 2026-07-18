@@ -10,6 +10,7 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -169,7 +170,6 @@
         }
         .forgot-link:hover { color: var(--verde-escuro); }
 
-        /* TOAST */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -241,83 +241,105 @@
 
 <script>
     // ============================================================
-    // 1. CONFIGURAÇÃO SUPABASE (COM SUAS CREDENCIAIS)
+    // 1. CONFIGURAÇÃO SUPABASE (SUAS CREDENCIAIS)
     // ============================================================
     const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Criar cliente Supabase
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     console.log('✅ Supabase client initialized');
 
     // ============================================================
-    // 2. FUNÇÃO TOAST
+    // 2. FUNÇÃO TOAST (notificações)
     // ============================================================
     function showToast(msg, type = '') {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.className = 'toast show ' + type;
         clearTimeout(toast._timeout);
-        toast._timeout = setTimeout(() => toast.className = 'toast', 4000);
+        toast._timeout = setTimeout(() => {
+            toast.className = 'toast';
+        }, 4000);
     }
 
     // ============================================================
-    // 3. LOGIN COM SUPABASE
+    // 3. FUNÇÃO DE LOGIN
     // ============================================================
-    document.getElementById('frmLogin').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const email = document.getElementById('lEmail').value.trim();
-        const pass = document.getElementById('lPass').value;
-        const btn = document.getElementById('btnLogin');
-
-        if (!email || !pass) {
-            showToast('Preencha todos os campos', 'error');
-            return;
-        }
-
-        // Desabilitar botão durante o login
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-
+    async function fazerLogin(email, password) {
         try {
-            // 🔐 Tenta fazer login com Supabase
-            const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+            // Tenta fazer login
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
 
             if (error) {
+                console.error('❌ Erro no login:', error);
                 if (error.message.includes('Invalid login credentials')) {
                     showToast('❌ Email ou senha incorretos', 'error');
                 } else {
                     showToast('❌ ' + error.message, 'error');
                 }
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-                return;
+                return false;
             }
 
-            // ✅ Login bem-sucedido
-            if (data.user) {
-                showToast('✅ Login realizado com sucesso!', 'success');
-
-                // Salvar dados no localStorage
+            if (data && data.user) {
+                console.log('✅ Login bem-sucedido!', data.user);
+                
+                // Salvar informações no localStorage
                 localStorage.setItem('user_id', data.user.id);
                 localStorage.setItem('user_email', data.user.email);
-
+                localStorage.setItem('user_logged_in', 'true');
+                
+                showToast('✅ Login realizado com sucesso!', 'success');
+                
                 // Redirecionar para o dashboard
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1000);
+                
+                return true;
             }
 
+            return false;
         } catch (err) {
-            console.error('Erro no login:', err);
+            console.error('❌ Erro inesperado:', err);
             showToast('❌ Erro ao fazer login. Tente novamente.', 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            return false;
         }
+    }
+
+    // ============================================================
+    // 4. EVENTO DO FORMULÁRIO
+    // ============================================================
+    document.getElementById('frmLogin').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('lEmail').value.trim();
+        const password = document.getElementById('lPass').value;
+        const btn = document.getElementById('btnLogin');
+
+        // Validar campos
+        if (!email || !password) {
+            showToast('Preencha todos os campos', 'error');
+            return;
+        }
+
+        // Desabilitar botão
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+
+        // Tentar login
+        await fazerLogin(email, password);
+
+        // Reabilitar botão (se não redirecionou)
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
     });
 
     // ============================================================
-    // 4. ESQUECEU A SENHA (Reset via Supabase)
+    // 5. ESQUECEU A SENHA
     // ============================================================
     document.getElementById('forgotPassword').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -331,7 +353,7 @@
         }
 
         try {
-            const { error } = await sb.auth.resetPasswordForEmail(email, {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: 'https://sulsafe.com.br/reset-password.html'
             });
 
@@ -348,21 +370,23 @@
     });
 
     // ============================================================
-    // 5. (Opcional) Verificar se já está logado e redirecionar
+    // 6. VERIFICAR SE JÁ ESTÁ LOGADO
     // ============================================================
     (async function checkSession() {
         try {
-            const { data: { session } } = await sb.auth.getSession();
+            const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // Se já tem sessão, vai direto pro dashboard
+                console.log('✅ Sessão ativa, redirecionando...');
                 window.location.href = 'dashboard.html';
+            } else {
+                console.log('🔐 Nenhuma sessão ativa');
             }
         } catch (e) {
-            // Ignora erro e mostra login
+            console.log('🔐 Erro ao verificar sessão:', e);
         }
     })();
 
-    console.log('🔐 Página de login carregada com sucesso!');
+    console.log('🔐 Página de login carregada!');
 </script>
 
 </body>
