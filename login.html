@@ -2,91 +2,368 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-    <meta property="og:title" content="SulSafe - Segurança do Trabalho">
-    <meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
-    <meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
-    <meta name="robots" content="index, follow">
-    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SulSafe | Login</title>
+    <meta name="description" content="Acesse sua conta SulSafe e tenha acesso a 38 NRs, videoaulas e certificados.">
     <link rel="icon" type="image/png" href="logo1.png">
+
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --verde: #2E7D32;
+            --verde-escuro: #1B5E20;
+            --verde-claro: #43A047;
+            --verde-bg: #E8F5E9;
+            --verde-bg-2: #F1F8F1;
+            --dourado: #C9B037;
+            --dourado-escuro: #A8922C;
+            --dourado-claro: #E8D77A;
+            --texto: #1A1A1A;
+            --texto-sec: #555;
+            --texto-ter: #777;
+            --borda: #E0E0E0;
+            --branco: #FFFFFF;
+            --sombra-md: 0 12px 28px rgba(0,0,0,.10);
+            --radius: 16px;
+            --grad-verde: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--texto);
+            background: var(--branco);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(ellipse at top right, var(--verde-bg) 0%, transparent 60%),
+                        radial-gradient(ellipse at bottom left, rgba(201,176,55,.08) 0%, transparent 50%),
+                        linear-gradient(180deg, #fff 0%, var(--verde-bg-2) 100%);
+        }
+
+        .login-wrapper { width: 100%; max-width: 440px; margin: 0 auto; }
+        .login-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            box-shadow: var(--sombra-md);
+            border: 1px solid var(--borda);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--texto-sec);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: color .2s;
+        }
+        .back-link:hover { color: var(--verde-escuro); }
+        .login-logo { text-align: center; margin-bottom: 28px; }
+        .login-logo .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--verde-escuro);
+            letter-spacing: -.5px;
+        }
+        .login-logo .logo-sub {
+            font-size: 10px;
+            color: var(--dourado-escuro);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .login-title { font-size: 22px; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
+        .login-sub { font-size: 14px; color: var(--texto-sec); margin-bottom: 24px; }
+
+        .fld { margin-bottom: 16px; }
+        .fld label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto);
+            margin-bottom: 4px;
+        }
+        .fld input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--borda);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color .2s;
+            outline: none;
+            font-family: inherit;
+            background: #fafafa;
+        }
+        .fld input:focus {
+            border-color: var(--verde);
+            background: #fff;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--grad-verde);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(46,125,50,.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,125,50,.4); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-outline {
+            background: transparent;
+            color: var(--verde-escuro);
+            border: 2px solid var(--verde);
+        }
+        .btn-outline:hover { background: var(--verde); color: #fff; }
+        .btn-block { width: 100%; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+            color: var(--texto-ter);
+            font-size: 13px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--borda);
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--texto-sec);
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .forgot-link:hover { color: var(--verde-escuro); }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1a1a2e;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all .3s ease;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,.2);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.error { background: #e74c3c; }
+        .toast.success { background: #2ecc71; }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 28px 20px; }
+            .login-title { font-size: 20px; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ==================== AUTH ==================== -->
-<div id="authWrap">
-    <div class="auth-card">
-        <!-- LOGIN -->
-        <div class="t on" id="tLogin">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
-            <form id="frmLogin">
-                <div class="fld"><label>Email</label><input type="email" id="lEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha</label><input type="password" id="lPass" placeholder="Sua senha" required></div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            </form>
-            <div class="divider">ou</div>
-            <button class="btn btn-s btn-block" onclick="window.showT('tCad')">Cadastrar nova conta</button>
-            <div style="margin-top: 12px; text-align: center;">
-                <a href="#" onclick="window.recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
+<div class="login-wrapper">
+    <div class="login-card">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar ao site
+        </a>
+        <div class="login-logo">
+            <div class="logo-text">SulSafe</div>
+            <div class="logo-sub">Segurança do Trabalho</div>
+        </div>
+
+        <h1 class="login-title">Acesse sua conta</h1>
+        <p class="login-sub">38 NRs, videoaulas e certificados digitais</p>
+
+        <form id="frmLogin">
+            <div class="fld">
+                <label>Email</label>
+                <input type="email" id="lEmail" placeholder="seu@email.com" required autocomplete="email">
             </div>
-        </div>
-        <!-- CADASTRO -->
-        <div class="t" id="tCad">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Crie sua conta. Após o cadastro, fale com nosso time no WhatsApp para liberar seu acesso.</p>
-                <div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div>
-                <div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha (mínimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
-                <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
-                <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
-                    <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="window.mostrarTermos()">termos de uso</a></label>
-                </div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
-            </form>
-        </div>
+            <div class="fld">
+                <label>Senha</label>
+                <input type="password" id="lPass" placeholder="Sua senha" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnLogin">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+
+        <div class="divider">ou</div>
+        <a href="cadastro.html" class="btn btn-outline">
+            <i class="fas fa-user-plus"></i> Criar nova conta
+        </a>
+        <a href="#" class="forgot-link" id="forgotPassword">
+            <i class="fas fa-key"></i> Esqueceu a senha?
+        </a>
     </div>
 </div>
 
-<!-- ==================== DASHBOARD ==================== -->
-<div id="dash">
-    <aside class="sidebar" id="sidebar"></aside>
-    <main class="main" id="mc"></main>
-</div>
+<!-- Toast -->
+<div id="toast" class="toast"></div>
 
-<!-- MODAL GERAL -->
-<div class="mdl-bg" id="mdlBg"><div class="mdl" id="mdlBox"></div></div>
+<script>
+    // ============================================================
+    // 1. CONFIGURAÇÃO SUPABASE (COM SUAS CREDENCIAIS)
+    // ============================================================
+    const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
-<!-- NOTIFICAÇÃO POPUP -->
-<div class="notif-popup" id="notifPopup">
-    <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteúdo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="window.closeNotif()"><i class="fas fa-times"></i></button></div>
-    <div class="notif-popup-bd" id="notifBody"></div>
-    <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="window.closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
-</div>
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase client initialized');
 
-<!-- TOAST -->
-<div id="toast"></div>
+    // ============================================================
+    // 2. FUNÇÃO TOAST
+    // ============================================================
+    function showToast(msg, type = '') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast show ' + type;
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.className = 'toast', 4000);
+    }
 
-<!-- TERMOS MODAL (escondido) -->
-<div style="display:none" id="termosHtml">
-    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitação</strong><br>Ao utilizar a plataforma SulSafe, você concorda com estes termos.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteúdo</strong><br>Todo o material disponível é protegido por direitos autorais. É proibida a redistribuição sem autorização.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados são emitidos mediante conclusão do curso com nota mínima 7.0.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados são protegidos conforme a LGPD. Não compartilhamos com terceiros.</p>
-    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="window.closeMdl()">Entendi</button>
-</div>
+    // ============================================================
+    // 3. LOGIN COM SUPABASE
+    // ============================================================
+    document.getElementById('frmLogin').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-<!-- SCRIPT MODULAR -->
-<script type="module" src="js/main.js"></script>
+        const email = document.getElementById('lEmail').value.trim();
+        const pass = document.getElementById('lPass').value;
+        const btn = document.getElementById('btnLogin');
+
+        if (!email || !pass) {
+            showToast('Preencha todos os campos', 'error');
+            return;
+        }
+
+        // Desabilitar botão durante o login
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+
+        try {
+            // 🔐 Tenta fazer login com Supabase
+            const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+            if (error) {
+                if (error.message.includes('Invalid login credentials')) {
+                    showToast('❌ Email ou senha incorretos', 'error');
+                } else {
+                    showToast('❌ ' + error.message, 'error');
+                }
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                return;
+            }
+
+            // ✅ Login bem-sucedido
+            if (data.user) {
+                showToast('✅ Login realizado com sucesso!', 'success');
+
+                // Salvar dados no localStorage
+                localStorage.setItem('user_id', data.user.id);
+                localStorage.setItem('user_email', data.user.email);
+
+                // Redirecionar para o dashboard
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }
+
+        } catch (err) {
+            console.error('Erro no login:', err);
+            showToast('❌ Erro ao fazer login. Tente novamente.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        }
+    });
+
+    // ============================================================
+    // 4. ESQUECEU A SENHA (Reset via Supabase)
+    // ============================================================
+    document.getElementById('forgotPassword').addEventListener('click', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('lEmail').value.trim();
+
+        if (!email) {
+            showToast('Digite seu email primeiro', 'error');
+            document.getElementById('lEmail').focus();
+            return;
+        }
+
+        try {
+            const { error } = await sb.auth.resetPasswordForEmail(email, {
+                redirectTo: 'https://sulsafe.com.br/reset-password.html'
+            });
+
+            if (error) {
+                showToast('❌ ' + error.message, 'error');
+                return;
+            }
+
+            showToast('📧 Enviamos instruções para ' + email, 'success');
+        } catch (err) {
+            console.error('Erro ao enviar reset:', err);
+            showToast('❌ Erro ao enviar. Tente novamente.', 'error');
+        }
+    });
+
+    // ============================================================
+    // 5. (Opcional) Verificar se já está logado e redirecionar
+    // ============================================================
+    (async function checkSession() {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                // Se já tem sessão, vai direto pro dashboard
+                window.location.href = 'dashboard.html';
+            }
+        } catch (e) {
+            // Ignora erro e mostra login
+        }
+    })();
+
+    console.log('🔐 Página de login carregada com sucesso!');
+</script>
+
 </body>
 </html>
