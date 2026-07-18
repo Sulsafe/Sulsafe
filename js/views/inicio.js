@@ -1,12 +1,13 @@
-// ============================================
+// ============================================================
 // VIEW INÍCIO - DASHBOARD PRINCIPAL
-// ============================================
+// ============================================================
 
-import { supabase, appState, navigateTo, showToast, showModal, closeModal } from '../js/main.js';
+import { S, loadCfg } from '../state.js';
+import { sb } from '../supabase-client.js';
 
-// ============================================
-// DADOS DO DASHBOARD
-// ============================================
+// ============================================================
+// ESTADO LOCAL
+// ============================================================
 const state = {
     videos: 38,
     salas: [],
@@ -15,16 +16,16 @@ const state = {
     loading: true
 };
 
-// ============================================
-// RENDERIZAÇÃO DA VIEW
-// ============================================
+// ============================================================
+// FUNÇÃO PRINCIPAL - RENDER
+// ============================================================
 export const vInicio = {
     render: function() {
         console.log('📄 Renderizando Início...');
         
-        const container = document.getElementById('mc');
+        const container = document.getElementById('mainView') || document.getElementById('mc');
         if (!container) {
-            console.error('❌ #mc não encontrado');
+            console.error('❌ Container não encontrado');
             return;
         }
 
@@ -33,7 +34,7 @@ export const vInicio = {
             <div class="page-header">
                 <div>
                     <h1>Olá, Administrador</h1>
-                    <p class="page-subtitle">Painel Administrativo — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p class="page-subtitle">Painel Administrativo (Modo Deus) — ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
                 <div class="header-actions-dash">
                     <span class="date-badge"><i class="fas fa-calendar-alt"></i> ${new Date().toLocaleDateString('pt-BR')}</span>
@@ -83,14 +84,33 @@ export const vInicio = {
                         <h4>Salas ao Vivo</h4>
                         <p>Participe ao vivo</p>
                     </div>
-                    <div class="quick-card" onclick="window.navigateTo('assistente')">
+                    <div class="quick-card" onclick="window.navigateTo('ia')">
                         <i class="fas fa-robot"></i>
                         <h4>Assistente IA</h4>
                         <p>Dúvidas sobre NRS 24/7</p>
                     </div>
-                    <div class="quick-card" onclick="window.navigateTo('corrigir')">
+                    <div class="quick-card" onclick="window.navigateTo('provas')">
                         <i class="fas fa-check-double"></i>
                         <h4>Corrigir Provas</h4>
+                        <p>Aprovar alunos</p>
+                    </div>
+                </div>
+
+                <!-- Material -->
+                <div class="quick-access" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="quick-card" onclick="window.navigateTo('materiais')">
+                        <i class="fas fa-folder-open"></i>
+                        <h4>Material</h4>
+                        <p>Arquivos e recursos</p>
+                    </div>
+                    <div class="quick-card" onclick="window.navigateTo('nrs')">
+                        <i class="fas fa-book"></i>
+                        <h4>Catálogo de NRS</h4>
+                        <p>Consulte as 38 Normas</p>
+                    </div>
+                    <div class="quick-card" onclick="window.navigateTo('pendentes')">
+                        <i class="fas fa-clock"></i>
+                        <h4>Pendentes</h4>
                         <p>Aprovar alunos</p>
                     </div>
                 </div>
@@ -104,11 +124,15 @@ export const vInicio = {
         this.carregarDados();
     },
 
+    // ============================================================
+    // CARREGAR DADOS
+    // ============================================================
     carregarDados: async function() {
         try {
-            const user = appState.user;
+            const user = S?.user;
             if (!user) {
                 console.warn('⚠️ Usuário não autenticado');
+                this.mostrarErro('Usuário não autenticado');
                 return;
             }
 
@@ -124,24 +148,21 @@ export const vInicio = {
             state.salas = salas || [];
             state.alunosPendentes = state.notificacoes.filter(n => !n.lida).length;
 
-            // Renderizar
+            // Atualizar dashboard
             this.atualizarDashboard();
 
         } catch (error) {
             console.error('❌ Erro ao carregar:', error);
-            document.getElementById('dashLoading').innerHTML = `
-                <div style="color:#e74c3c;">
-                    <i class="fas fa-exclamation-circle" style="font-size:32px;"></i>
-                    <p>Erro ao carregar dados</p>
-                    <button class="btn btn-sm btn-p" onclick="location.reload()">Tentar Novamente</button>
-                </div>
-            `;
+            this.mostrarErro('Erro ao carregar dados do dashboard');
         }
     },
 
+    // ============================================================
+    // BUSCAR NOTIFICAÇÕES
+    // ============================================================
     buscarNotificacoes: async function(userId) {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await sb
                 .from('notificacoes')
                 .select('*')
                 .eq('usuario_id', userId)
@@ -154,13 +175,17 @@ export const vInicio = {
             }
             return data || [];
         } catch (e) {
+            console.warn('⚠️ Exceção notificações:', e);
             return [];
         }
     },
 
+    // ============================================================
+    // BUSCAR SALAS
+    // ============================================================
     buscarSalas: async function() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await sb
                 .from('salas')
                 .select('*')
                 .eq('ativa', true)
@@ -172,16 +197,23 @@ export const vInicio = {
             }
             return data || [];
         } catch (e) {
+            console.warn('⚠️ Exceção salas:', e);
             return [];
         }
     },
 
+    // ============================================================
+    // ATUALIZAR DASHBOARD
+    // ============================================================
     atualizarDashboard: function() {
         console.log('📊 Atualizando dashboard...');
 
-        // Esconder loading, mostrar conteúdo
-        document.getElementById('dashLoading').style.display = 'none';
-        document.getElementById('dashContent').style.display = 'block';
+        // Esconder loading
+        const loading = document.getElementById('dashLoading');
+        const content = document.getElementById('dashContent');
+        
+        if (loading) loading.style.display = 'none';
+        if (content) content.style.display = 'block';
 
         // Atualizar stats
         const videos = document.getElementById('statVideos');
@@ -210,24 +242,79 @@ export const vInicio = {
                         `).join('')}
                     </div>
                 `;
+            } else {
+                container.innerHTML = `
+                    <div class="notif-card" style="text-align:center; color:#7f8c8d; padding:20px;">
+                        <i class="fas fa-bell-slash" style="font-size:24px; margin-bottom:8px;"></i>
+                        <p>Nenhuma notificação recente</p>
+                    </div>
+                `;
             }
         }
 
         console.log('✅ Dashboard atualizado!');
+    },
+
+    // ============================================================
+    // MOSTRAR ERRO
+    // ============================================================
+    mostrarErro: function(mensagem) {
+        const loading = document.getElementById('dashLoading');
+        if (loading) {
+            loading.innerHTML = `
+                <div style="color: #e74c3c; text-align:center; padding:20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size:32px;"></i>
+                    <p style="margin:12px 0;">${mensagem}</p>
+                    <button class="btn btn-sm btn-p" onclick="location.reload()">
+                        <i class="fas fa-sync"></i> Tentar Novamente
+                    </button>
+                </div>
+            `;
+        }
     }
 };
 
-// ============================================
-// FUNÇÕES GLOBAIS (para onclick)
-// ============================================
+// ============================================================
+// FUNÇÕES GLOBAIS
+// ============================================================
 
-window.navigateTo = navigateTo;
 window.salvarAlteracoes = function() {
-    showToast('✅ Alterações salvas com sucesso!', 'success');
+    const toast = document.querySelector('#toast');
+    if (toast) {
+        toast.textContent = '✅ Alterações salvas com sucesso!';
+        toast.className = 'on ok';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.className = '', 3000);
+    } else {
+        alert('✅ Alterações salvas com sucesso!');
+    }
 };
 
-// ============================================
-// EXPORTAR VIEW
-// ============================================
+window.navigateTo = function(view) {
+    console.log('🔀 Navegando para:', view);
+    // Usar o sistema de navegação do main.js
+    if (typeof window.nav === 'function') {
+        window.nav(view);
+    } else {
+        // Fallback: tentar importar e renderizar
+        import(`./${view}.js`).then(module => {
+            if (module.vVideoaulas) {
+                document.getElementById('mainView').innerHTML = '<h1>' + view + '</h1><p>View carregada</p>';
+            }
+        }).catch(() => {
+            document.getElementById('mainView').innerHTML = `
+                <div style="text-align:center; padding:40px;">
+                    <h2>${view}</h2>
+                    <p>Página em construção</p>
+                </div>
+            `;
+        });
+    }
+};
 
+// ============================================================
+// EXPORT DEFAULT
+// ============================================================
 export default vInicio;
+
+console.log('✅ View Inicio carregada com sucesso!');
