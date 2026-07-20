@@ -221,15 +221,13 @@
 
 <script>
     // ============================================================
-    // SUPABASE CONFIG - NUNCA USA 'const' PARA EVITAR ERRO
+    // SUPABASE CONFIG
     // ============================================================
     console.log('🚀 Iniciando página de login...');
 
-    // Configurações fixas
     var SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
-    // USAR window.supabase PARA EVITAR REDECLARAÇÃO
     if (typeof window.supabaseClient === 'undefined') {
         window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log('✅ Novo cliente Supabase criado');
@@ -237,12 +235,8 @@
         console.log('✅ Reutilizando cliente Supabase existente');
     }
 
-    // Usar o cliente via window
     var supabase = window.supabaseClient;
 
-    // ============================================================
-    // FUNÇÃO TOAST
-    // ============================================================
     function showToast(msg, type = '') {
         console.log('📢 Toast:', msg, type);
         var toast = document.getElementById('toast');
@@ -258,9 +252,6 @@
         }, 5000);
     }
 
-    // ============================================================
-    // FUNÇÃO DE LOGIN
-    // ============================================================
     async function fazerLogin(email, password) {
         console.log('🔍 Tentando login para:', email);
         
@@ -293,12 +284,13 @@
                 localStorage.setItem('user_id', data.user.id);
                 localStorage.setItem('user_email', data.user.email);
                 localStorage.setItem('user_logged_in', 'true');
+                localStorage.setItem('user_role', data.user.email === 'sulsafetreinamentos@gmail.com' ? 'admin' : 'aluno');
                 
                 showToast('✅ Login realizado com sucesso!', 'success');
                 
-                console.log('🔄 Redirecionando para dashboard.html...');
+                console.log('🔄 Redirecionando para index.html...');
                 setTimeout(function() {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index.html';  // ✅ CORRIGIDO
                 }, 1000);
                 
                 return true;
@@ -315,9 +307,6 @@
         }
     }
 
-    // ============================================================
-    // EVENTO DO FORMULÁRIO
-    // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         console.log('📄 DOM carregado, configurando eventos...');
         
@@ -360,9 +349,6 @@
         console.log('✅ Evento submit configurado com sucesso!');
     });
 
-    // ============================================================
-    // VERIFICAR SESSÃO EXISTENTE
-    // ============================================================
     (async function checkSession() {
         try {
             console.log('🔍 Verificando sessão existente...');
@@ -370,8 +356,8 @@
             var session = resultado.data.session;
             if (session) {
                 console.log('✅ Sessão ativa encontrada!');
-                console.log('🔄 Redirecionando para dashboard...');
-                window.location.href = 'dashboard.html';
+                console.log('🔄 Redirecionando para index.html...');
+                window.location.href = 'index.html';  // ✅ CORRIGIDO
             } else {
                 console.log('🔐 Nenhuma sessão ativa');
             }
