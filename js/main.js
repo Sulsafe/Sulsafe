@@ -3,6 +3,7 @@
 // ============================================================
 import { S, registerView, setRenderSidebar, loadCfg } from './state.js'
 import { sb, sbGetUser } from './supabase-client.js'
+
 // Views
 import { vInicio } from './views/inicio.js'
 import { vSalas } from './views/salas.js'
@@ -53,352 +54,209 @@ function toast(msg, tipo = 'ok') {
 }
 
 // ============================================================
-// TELA DE PENDÊNCIA (balão do WhatsApp)
-// ============================================================
-function showPendenciaScreen(email, motivo = 'cadastro') {
-  const authWrap = document.getElementById('authWrap')
-  if (!authWrap) {
-    console.error('❌ #authWrap não encontrado')
-    return
-  }
-  const msg = motivo === 'cadastro'
-    ? 'Para liberar seu acesso à plataforma, fale com nosso time comercial no WhatsApp.'
-    : 'Sua conta ainda não foi liberada. Fale com nosso comercial:'
-
-  authWrap.innerHTML = `
-    <div class="auth-card" style="text-align:center; max-width: 420px; margin: 0 auto;">
-      <div style="font-size:56px; margin-bottom:16px;">${motivo === 'cadastro' ? '🔒' : '⏳'}</div>
-      <h2 style="color:var(--p, #10B981); font-size:24px; font-weight:800; margin-bottom:8px;">
-        ${motivo === 'cadastro' ? 'Conta criada com sucesso!' : 'Acesso Pendente'}
-      </h2>
-      <p style="color:var(--tx2, #666); margin-bottom:24px; line-height:1.6;">${msg}</p>
-      <a href="https://wa.me/${ZAP_NUMBER}?text=Olá, me cadastrei na Sulsafe com o email ${encodeURIComponent(email)}${motivo === 'login' ? ' e quero liberar meu acesso' : ''}" 
-         target="_blank"
-         class="btn btn-p btn-block" 
-         style="background:#25D366; border-color:#25D366; color:#fff; margin-bottom:16px; display:inline-block; padding:12px 24px; border-radius:8px; text-decoration:none;">
-         <i class="fab fa-whatsapp"></i> Chamar no WhatsApp
-      </a>
-      <p style="font-size:12px; color:var(--tx3, #999);">Atendimento: Segunda a Sexta, 8h às 18h</p>
-    </div>
-  `
-  authWrap.classList.remove('off')
-  authWrap.style.display = 'flex'
-  const appWrap = document.getElementById('appWrap')
-  if (appWrap) appWrap.style.display = 'none'
-}
-
-// ============================================================
-// FUNÇÃO PARA ENTRAR NO DASHBOARD
+// FUNÇÃO PARA MOSTRAR O DASHBOARD (VERSÃO SIMPLIFICADA)
 // ============================================================
 function showDashboard() {
   console.log('🚪 Entrando no dashboard...')
   
-  // Oculta autenticação
-  const authWrap = document.getElementById('authWrap')
-  if (authWrap) {
-    authWrap.classList.add('off')
-    authWrap.style.display = 'none'
+  // Verificar se já existe um dashboard renderizado
+  if (document.getElementById('dashboardContainer')) {
+    console.log('✅ Dashboard já está visível')
+    return
   }
   
-  // Mostra o app principal
-  const appWrap = document.getElementById('appWrap')
-  if (appWrap) {
-    appWrap.style.display = 'block'
+  // Esconder o conteúdo da página inicial
+  const sectionsToHide = [
+    '.hero', '.features', '.nrs', '.planos', '.faq', '.cta-final', 
+    '.trust-bar', '.imagens-section', '.section'
+  ]
+  
+  sectionsToHide.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.display = 'none'
+    })
+  })
+  
+  // Esconder o footer também
+  const footer = document.querySelector('.footer')
+  if (footer) footer.style.display = 'none'
+  
+  // Criar o container do dashboard
+  const dashboardDiv = document.createElement('div')
+  dashboardDiv.id = 'dashboardContainer'
+  dashboardDiv.style.cssText = `
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 70vh;
+  `
+  
+  const userEmail = localStorage.getItem('user_email') || S?.user?.email || 'sulsafetreinamentos@gmail.com'
+  const isAdmin = userEmail === 'sulsafetreinamentos@gmail.com'
+  const userName = localStorage.getItem('user_name') || (isAdmin ? 'Admin' : 'Aluno')
+  
+  dashboardDiv.innerHTML = `
+    <div style="background: linear-gradient(135deg, #1B5E20, #2E7D32); color: white; border-radius: 16px; padding: 40px; margin-bottom: 30px;">
+      <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 8px;">👋 Bem-vindo, ${userName}!</h1>
+      <p style="opacity: 0.9; font-size: 16px;">${userEmail}</p>
+      <p style="opacity: 0.8; margin-top: 8px; font-size: 14px;">${isAdmin ? '👑 Você tem acesso administrativo' : '📚 Aproveite seus cursos'}</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px;">
+      <div style="background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e8ecf1;">
+        <div style="font-size: 36px;">📚</div>
+        <h3 style="font-size: 24px; color: #2E7D32;">38</h3>
+        <p style="color: #666;">NRs Disponíveis</p>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e8ecf1;">
+        <div style="font-size: 36px;">🎓</div>
+        <h3 style="font-size: 24px; color: #2E7D32;">+100</h3>
+        <p style="color: #666;">Videoaulas</p>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e8ecf1;">
+        <div style="font-size: 36px;">📜</div>
+        <h3 style="font-size: 24px; color: #2E7D32;">+500</h3>
+        <p style="color: #666;">Certificados Emitidos</p>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e8ecf1;">
+        <div style="font-size: 36px;">🤖</div>
+        <h3 style="font-size: 24px; color: #2E7D32;">24/7</h3>
+        <p style="color: #666;">Assistente IA</p>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+      <a href="#nrs" style="background: #2E7D32; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+        <i class="fas fa-book"></i> Ver NRs
+      </a>
+      <a href="#planos" style="background: #C9B037; color: #1a1a2e; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+        <i class="fas fa-tags"></i> Ver Planos
+      </a>
+      <button onclick="window.logout()" style="background: #c0392b; color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    </div>
+  `
+  
+  // Inserir depois do header
+  const header = document.querySelector('.header')
+  if (header) {
+    header.after(dashboardDiv)
   } else {
-    console.warn('⚠️ #appWrap não encontrado, criando um container')
-    const newApp = document.createElement('div')
-    newApp.id = 'appWrap'
-    newApp.style.display = 'block'
-    document.body.prepend(newApp)
+    document.body.prepend(dashboardDiv)
   }
   
-  // Tenta usar enterDash
-  try {
-    if (typeof enterDash === 'function') {
-      enterDash()
-    } else {
-      console.warn('enterDash não está definido, renderizando manualmente')
-      if (typeof renderSB === 'function') renderSB()
-      if (typeof renderV === 'function') renderV('inicio')
-    }
-  } catch (e) {
-    console.error('Erro ao renderizar dashboard:', e)
-    const main = document.getElementById('mainView') || document.createElement('div')
-    main.id = 'mainView'
-    main.innerHTML = '<h1>Bem-vindo</h1><p>Dashboard carregado (fallback)</p>'
-    if (!document.getElementById('mainView')) document.body.appendChild(main)
+  // Atualizar o cabeçalho (mostrar "Sair" em vez de "Entrar")
+  const headerActions = document.querySelector('.header-actions')
+  if (headerActions) {
+    headerActions.innerHTML = `
+      <span style="color: #2E7D32; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;">
+        <i class="fas fa-user-circle"></i> ${userEmail}
+      </span>
+      <button onclick="window.logout()" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px;">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    `
   }
+}
+
+// ============================================================
+// FUNÇÃO DE LOGOUT
+// ============================================================
+window.logout = async function() {
+  console.log('🚪 Fazendo logout...')
+  try {
+    await sb.auth.signOut()
+  } catch (e) {
+    console.warn('Erro ao fazer logout no Supabase:', e)
+  }
+  localStorage.clear()
+  sessionStorage.clear()
+  window.location.reload()
 }
 
 // ============================================================
 // FUNÇÃO PARA MOSTRAR TELA DE LOGIN
 // ============================================================
 function showLoginScreen() {
-  console.log('🔓 Nenhuma sessão – mostrando login')
-  const authWrap = document.getElementById('authWrap')
-  if (authWrap) {
-    authWrap.classList.remove('off')
-    authWrap.style.display = 'flex'
-    authWrap.style.opacity = '1'
-    authWrap.style.visibility = 'visible'
-    
-    const authCard = authWrap.querySelector('.auth-card')
-    if (authCard) {
-      authCard.style.display = 'block'
-      authCard.style.opacity = '1'
-    }
-    
-    const appWrap = document.getElementById('appWrap')
-    if (appWrap) appWrap.style.display = 'none'
-  } else {
-    console.error('❌ #authWrap não encontrado no DOM!')
+  console.log('🔓 Nenhuma sessão – redirecionando para login.html')
+  // Se não estiver na página de login, redireciona
+  if (!window.location.pathname.includes('login.html')) {
+    window.location.href = 'login.html'
   }
 }
 
 // ============================================================
-// FUNÇÃO PARA FORÇAR ENTRADA DO ADMIN (NOVA)
-// ============================================================
-function forceAdminAccess(user) {
-  console.log('🚀 Forçando acesso admin para:', user.email)
-  
-  // Salvar no formato correto
-  localStorage.setItem('ss_user', JSON.stringify(user))
-  localStorage.setItem('ss_session', JSON.stringify({ 
-    id: user.id,
-    access_token: 'forced',
-    refresh_token: 'forced'
-  }))
-  localStorage.setItem('user_logged_in', 'true')
-  localStorage.setItem('user_role', user.role || 'admin')
-  localStorage.setItem('user_status', user.status || 'ativo')
-  localStorage.setItem('user_id', user.id)
-  localStorage.setItem('user_email', user.email)
-  
-  // Mostrar dashboard
-  showDashboard()
-}
-
-// ============================================================
-// EVENTO: CADASTRO
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  const frmCad = document.querySelector('#frmCad')
-  if (frmCad) {
-    frmCad.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const nome = document.querySelector('#cNome').value.trim()
-      const email = document.querySelector('#cEmail').value.trim().toLowerCase()
-      const pass = document.querySelector('#cPass').value
-      const pass2 = document.querySelector('#cPass2')?.value
-      const termos = document.querySelector('#cTermos')?.checked
-
-      if (!nome || !email || !pass) return toast('Preencha todos os campos', 'error')
-      if (pass2 !== undefined && pass !== pass2) return toast('As senhas não coincidem', 'error')
-      if (termos !== undefined && !termos) return toast('Aceite os termos de uso', 'error')
-
-      const { data, error } = await sb.auth.signUp({
-        email,
-        password: pass,
-        options: { data: { nome_completo: nome } }
-      })
-      if (error) return toast('Erro: ' + error.message, 'error')
-      if (!data.user) return toast('Erro ao criar usuário', 'error')
-
-      const { error: profileErr } = await sb
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          email: email,
-          nome_completo: nome,
-          status: 'pendente',
-          role: 'aluno'
-        })
-
-      if (profileErr) {
-        console.error('DEU RUIM NO INSERT:', profileErr)
-        await sb.auth.admin.deleteUser(data.user.id).catch(() => {})
-        return toast('Erro ao criar perfil: ' + profileErr.message, 'error')
-      }
-
-      await sb.auth.signOut()
-      localStorage.removeItem('ss_user')
-      localStorage.removeItem('ss_session')
-      showPendenciaScreen(email, 'cadastro')
-    })
-  }
-
-  // ============================================================
-  // EVENTO: LOGIN
-  // ============================================================
-  const frmLogin = document.querySelector('#frmLogin')
-  if (frmLogin) {
-    frmLogin.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const email = document.querySelector('#lEmail').value.trim().toLowerCase()
-      const pass = document.querySelector('#lPass').value
-
-      if (!email || !pass) return toast('Preencha todos os campos', 'error')
-
-      const { data: auth, error } = await sb.auth.signInWithPassword({ email, password: pass })
-      if (error) return toast(error.message, 'error')
-
-      const { data: profile } = await sb
-        .from('profiles')
-        .select('status, role')
-        .eq('id', auth.user.id)
-        .single()
-
-      const isAdmin = profile?.role === 'admin' || email === 'sulsafetreinamentos@gmail.com'
-      if (!profile || (profile.status === 'pendente' && !isAdmin)) {
-        await sb.auth.signOut()
-        localStorage.removeItem('ss_user')
-        localStorage.removeItem('ss_session')
-        showPendenciaScreen(email, 'login')
-        return
-      }
-
-      window.location.reload()
-    })
-  }
-})
-
-// ============================================================
-// INICIALIZAÇÃO - AUTO-LOGIN (VERSÃO CORRIGIDA)
+// INICIALIZAÇÃO - AUTO-LOGIN
 // ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🔍 Iniciando auto-login...')
   
-  await new Promise(resolve => setTimeout(resolve, 100))
+  // Se estiver na página de login, não faz nada (deixa o login.html gerenciar)
+  if (window.location.pathname.includes('login.html')) {
+    console.log('📄 Estamos na página de login, ignorando auto-login')
+    return
+  }
   
   try {
-    // ========================================
-    // PASSO 1: Tentar sessão do Supabase
-    // ========================================
+    // Verificar sessão no Supabase
     const { data: { session } } = await sb.auth.getSession()
     
     if (session) {
-      console.log('✅ Sessão encontrada no Supabase')
+      console.log('✅ Sessão encontrada no Supabase:', session.user.email)
       
-      try {
-        const user = await sbGetUser(session.user.id)
-        if (user) {
-          const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-          
-          // Se for admin ou estiver ativo, libera
-          if (isAdmin || user.status !== 'pendente') {
-            console.log('✅ Usuário liberado:', user.email)
-            S.user = user
-            localStorage.setItem('ss_user', JSON.stringify(user))
-            localStorage.setItem('ss_session', JSON.stringify({ 
-              id: session.user.id,
-              access_token: session.access_token,
-              refresh_token: session.refresh_token
-            }))
-            loadCfg()
-            showDashboard()
-            return
-          } else {
-            // Usuário pendente
-            console.log('⛔ Usuário pendente – bloqueando')
-            await sb.auth.signOut()
-            localStorage.removeItem('ss_user')
-            showPendenciaScreen(user.email, 'login')
-            return
-          }
-        }
-      } catch (e) {
-        console.error('❌ ERRO DETALHADO NO AUTO-LOGIN (sbGetUser):', e)
-        showLoginScreen()
-        return
-      }
+      // Salvar dados
+      const user = session.user
+      localStorage.setItem('user_id', user.id)
+      localStorage.setItem('user_email', user.email)
+      localStorage.setItem('user_logged_in', 'true')
+      localStorage.setItem('user_role', user.email === 'sulsafetreinamentos@gmail.com' ? 'admin' : 'aluno')
+      
+      // Mostrar dashboard
+      showDashboard()
+      return
     }
-
-    // ========================================
-    // PASSO 2: Fallback - localStorage
-    // ========================================
-    const sessionData = localStorage.getItem('ss_session')
-    if (sessionData) {
-      console.log('📋 Tentando sessão do localStorage')
-      try {
-        const { id } = JSON.parse(sessionData)
-        const user = await sbGetUser(id)
-        if (user) {
-          const isAdmin = user.role === 'admin' || user.email === 'sulsafetreinamentos@gmail.com'
-          
-          if (isAdmin || user.status !== 'pendente') {
-            console.log('✅ Usuário liberado via localStorage:', user.email)
-            S.user = user
-            localStorage.setItem('ss_user', JSON.stringify(user))
-            loadCfg()
-            showDashboard()
-            return
-          } else {
-            await sb.auth.signOut()
-            localStorage.removeItem('ss_user')
-            localStorage.removeItem('ss_session')
-            showPendenciaScreen(user.email, 'login')
-            return
-          }
-        }
-      } catch (e) {
-        console.error('❌ ERRO NO LOCALSTORAGE AUTO-LOGIN:', e)
-        localStorage.removeItem('ss_session')
-      }
-    }
-
-    // ========================================
-    // PASSO 3: Fallback - Admin forçado (NOVO)
-    // ========================================
-    // Se o usuário for o admin e tiver dados no localStorage
+    
+    // Fallback: verificar localStorage
     const userLoggedIn = localStorage.getItem('user_logged_in')
-    const userRole = localStorage.getItem('user_role')
     const userEmail = localStorage.getItem('user_email')
     const userId = localStorage.getItem('user_id')
     
-    if (userLoggedIn === 'true' && userRole === 'admin' && userEmail === 'sulsafetreinamentos@gmail.com') {
-      console.log('🚀 Forçando acesso admin via localStorage')
+    if (userLoggedIn === 'true' && userId) {
+      console.log('📋 Sessão encontrada no localStorage:', userEmail)
+      
+      // Tentar recuperar usuário via Supabase
       try {
-        const user = await sbGetUser(userId)
+        const { data: { user } } = await sb.auth.getUser()
         if (user) {
-          console.log('✅ Admin encontrado e forçado:', user.email)
-          S.user = user
-          localStorage.setItem('ss_user', JSON.stringify(user))
-          localStorage.setItem('ss_session', JSON.stringify({ 
-            id: userId,
-            access_token: 'forced',
-            refresh_token: 'forced'
-          }))
-          loadCfg()
+          localStorage.setItem('user_email', user.email)
           showDashboard()
           return
         }
       } catch (e) {
-        console.error('❌ Erro ao forçar admin:', e)
+        console.warn('⚠️ Não foi possível recuperar usuário:', e)
       }
+      
+      // Fallback: mostrar dashboard com dados do localStorage
+      showDashboard()
+      return
     }
-
-    // ========================================
-    // PASSO 4: Nenhuma sessão
-    // ========================================
-    console.log('🔓 Nenhuma sessão – mostrando login')
+    
+    // Nenhuma sessão
+    console.log('🔓 Nenhuma sessão encontrada')
     showLoginScreen()
     
   } catch (e) {
-    console.error('❌ ERRO NO AUTO-LOGIN GLOBAL:', e)
+    console.error('❌ ERRO NO AUTO-LOGIN:', e)
     showLoginScreen()
   }
 })
 
 // ============================================================
-// EXPORTAR FUNÇÕES PARA USO GLOBAL (NOVO)
+// EXPORTAR FUNÇÕES PARA USO GLOBAL
 // ============================================================
 window.showDashboard = showDashboard
 window.showLoginScreen = showLoginScreen
-window.showPendenciaScreen = showPendenciaScreen
-window.forceAdminAccess = forceAdminAccess
 window.toast = toast
 
 console.log('✅ Main.js carregado com sucesso!')
-console.log('📌 Para forçar acesso admin, execute: forceAdminAccess()')
