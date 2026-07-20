@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard SulSafe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #f5f5f5; }
+        .header { background: #1B5E20; color: white; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .btn { display: inline-block; padding: 10px 20px; background: #2E7D32; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
+        .btn:hover { background: #1B5E20; }
+        .btn-danger { background: #c0392b; }
+        .btn-danger:hover { background: #a93226; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat { text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; }
+        .stat h3 { font-size: 32px; color: #2E7D32; }
+        .stat p { color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>🏠 SulSafe Dashboard</h1>
+            <div>
+                <span id="userEmail" style="margin-right: 15px;"></span>
+                <button onclick="logout()" class="btn btn-danger">Sair</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card" id="welcomeCard">
+            <h2>Bem-vindo!</h2>
+            <p id="welcomeMsg">Carregando...</p>
+        </div>
+        
+        <div class="grid">
+            <div class="stat">
+                <h3>38</h3>
+                <p>NRs Disponíveis</p>
+            </div>
+            <div class="stat">
+                <h3>📹</h3>
+                <p>Videoaulas em HD</p>
+            </div>
+            <div class="stat">
+                <h3>🎓</h3>
+                <p>Certificados</p>
+            </div>
+            <div class="stat">
+                <h3>🤖</h3>
+                <p>Assistente IA 24/7</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📚 Acesse seus cursos</h3>
+            <p style="margin: 10px 0 15px;">Clique abaixo para acessar todos os cursos de NR</p>
+            <a href="index.html#nrs" class="btn">Ver NRs →</a>
+        </div>
+        
+        <div class="card" style="text-align: center; background: #E8F5E9;">
+            <p style="color: #2E7D32; font-weight: bold;">💡 Dica: Volte ao site principal para explorar todos os conteúdos</p>
+            <a href="index.html" class="btn" style="margin-top: 10px;">← Voltar ao site</a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function logout() {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        (async function() {
+            const welcomeMsg = document.getElementById('welcomeMsg');
+            const userEmail = document.getElementById('userEmail');
+            
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (!session) {
+                    welcomeMsg.innerHTML = '❌ Você não está logado. <a href="login.html">Faça login</a>';
+                    return;
+                }
+                
+                const isAdmin = session.user.email === 'sulsafetreinamentos@gmail.com';
+                userEmail.textContent = `👤 ${session.user.email}`;
+                welcomeMsg.innerHTML = `
+                    <strong>${isAdmin ? '👑 Administrador' : '👤 Aluno'}</strong>
+                    <p style="margin-top: 8px; color: #666;">
+                        Você está autenticado na plataforma SulSafe.
+                        ${isAdmin ? 'Você tem acesso administrativo.' : 'Aproveite seus cursos!'}
+                    </p>
+                `;
+            } catch (err) {
+                welcomeMsg.innerHTML = `❌ Erro: ${err.message}`;
+            }
+        })();
+    </script>
+</body>
+</html>
