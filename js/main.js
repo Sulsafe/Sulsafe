@@ -1,87 +1,35 @@
 // ============================================================
-// MAIN - PONTO DE ENTRADA DA APLICAÇÃO (VERSÃO CORRIGIDA)
+// MAIN - VERSÃO CORRIGIDA COM FORÇA BRUTA
 // ============================================================
-import { S, registerView, setRenderSidebar, loadCfg } from './state.js'
-import { sb, sbGetUser } from './supabase-client.js'
+import { sb } from './supabase-client.js'
 
-// Views
-import { vInicio } from './views/inicio.js'
-import { vSalas } from './views/salas.js'
-import { vNRs } from './views/nrs.js'
-import { vIA } from './views/ia.js'
-import { vBoletim } from './views/boletim.js'
-import { vProvas } from './views/provas.js'
-import { vCerts } from './views/certificados.js'
-import { vAdmin } from './views/admin.js'
-import { vConfig } from './views/config.js'
-import { vPendentes } from './views/pendentes.js'
-import { vVideoaulas } from './videoaulas.js'
-import { vMateriais } from './materiais.js'
-
-import { renderSB, renderV, enterDash } from './app.js'
-
-// Registrar views
-registerView('inicio', vInicio)
-registerView('videoaulas', vVideoaulas)
-registerView('materiais', vMateriais)
-registerView('salas', vSalas)
-registerView('nrs', vNRs)
-registerView('ia', vIA)
-registerView('boletim', vBoletim)
-registerView('provas', vProvas)
-registerView('certificados', vCerts)
-registerView('admin', vAdmin)
-registerView('config', vConfig)
-registerView('pendentes', vPendentes)
-
-setRenderSidebar(renderSB)
+console.log('🚀 MAIN.JS CARREGADO!')
 
 // ============================================================
-// CONSTANTES
-// ============================================================
-const ZAP_NUMBER = '5553997060864'
-
-// ============================================================
-// TOAST (feedback rápido)
-// ============================================================
-function toast(msg, tipo = 'ok') {
-  const t = document.querySelector('#toast')
-  if (!t) { console.warn('Toast element not found:', msg); return }
-  t.textContent = msg
-  t.className = `on ${tipo}`
-  clearTimeout(t._timeout)
-  t._timeout = setTimeout(() => t.className = '', 3000)
-}
-
-// ============================================================
-// FUNÇÃO PARA MOSTRAR O DASHBOARD (VERSÃO SIMPLIFICADA)
+// FUNÇÃO PARA MOSTRAR O DASHBOARD (COM FORÇA BRUTA)
 // ============================================================
 function showDashboard() {
   console.log('🚪 Entrando no dashboard...')
   
-  // Verificar se já existe um dashboard renderizado
-  if (document.getElementById('dashboardContainer')) {
-    console.log('✅ Dashboard já está visível')
-    return
-  }
+  // ========================================
+  // FORÇA BRUTA: REMOVER TUDO E MOSTRAR SÓ O DASHBOARD
+  // ========================================
   
-  // Esconder o conteúdo da página inicial
-  const sectionsToHide = [
-    '.hero', '.features', '.nrs', '.planos', '.faq', '.cta-final', 
-    '.trust-bar', '.imagens-section', '.section'
-  ]
-  
-  sectionsToHide.forEach(selector => {
-    document.querySelectorAll(selector).forEach(el => {
+  // 1. Esconder TUDO que não seja o header
+  document.querySelectorAll('body > *').forEach(el => {
+    if (!el.classList.contains('header') && el.id !== 'dashboardContainer') {
       el.style.display = 'none'
-    })
+    }
   })
   
-  // Esconder o footer também
-  const footer = document.querySelector('.footer')
-  if (footer) footer.style.display = 'none'
+  // 2. Remover dashboard antigo se existir
+  const oldDashboard = document.getElementById('dashboardContainer')
+  if (oldDashboard) oldDashboard.remove()
   
-  // Criar o container do dashboard
+  // 3. Criar o dashboard
+  const userEmail = localStorage.getItem('user_email') || 'sulsafetreinamentos@gmail.com'
+  const isAdmin = userEmail === 'sulsafetreinamentos@gmail.com'
+  
   const dashboardDiv = document.createElement('div')
   dashboardDiv.id = 'dashboardContainer'
   dashboardDiv.style.cssText = `
@@ -89,15 +37,15 @@ function showDashboard() {
     max-width: 1200px;
     margin: 0 auto;
     min-height: 70vh;
+    display: block !important;
+    position: relative;
+    z-index: 1000;
+    background: white;
   `
-  
-  const userEmail = localStorage.getItem('user_email') || S?.user?.email || 'sulsafetreinamentos@gmail.com'
-  const isAdmin = userEmail === 'sulsafetreinamentos@gmail.com'
-  const userName = localStorage.getItem('user_name') || (isAdmin ? 'Admin' : 'Aluno')
   
   dashboardDiv.innerHTML = `
     <div style="background: linear-gradient(135deg, #1B5E20, #2E7D32); color: white; border-radius: 16px; padding: 40px; margin-bottom: 30px;">
-      <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 8px;">👋 Bem-vindo, ${userName}!</h1>
+      <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 8px;">👋 Bem-vindo, ${isAdmin ? 'Admin' : 'Aluno'}!</h1>
       <p style="opacity: 0.9; font-size: 16px;">${userEmail}</p>
       <p style="opacity: 0.8; margin-top: 8px; font-size: 14px;">${isAdmin ? '👑 Você tem acesso administrativo' : '📚 Aproveite seus cursos'}</p>
     </div>
@@ -126,10 +74,10 @@ function showDashboard() {
     </div>
     
     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-      <a href="#nrs" style="background: #2E7D32; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+      <a href="#nrs" style="background: #2E7D32; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;" onclick="event.preventDefault(); document.querySelector('#nrs')?.scrollIntoView({behavior:'smooth'});">
         <i class="fas fa-book"></i> Ver NRs
       </a>
-      <a href="#planos" style="background: #C9B037; color: #1a1a2e; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+      <a href="#planos" style="background: #C9B037; color: #1a1a2e; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;" onclick="event.preventDefault(); document.querySelector('#planos')?.scrollIntoView({behavior:'smooth'});">
         <i class="fas fa-tags"></i> Ver Planos
       </a>
       <button onclick="window.logout()" style="background: #c0392b; color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
@@ -138,7 +86,7 @@ function showDashboard() {
     </div>
   `
   
-  // Inserir depois do header
+  // 4. Inserir depois do header
   const header = document.querySelector('.header')
   if (header) {
     header.after(dashboardDiv)
@@ -146,7 +94,7 @@ function showDashboard() {
     document.body.prepend(dashboardDiv)
   }
   
-  // Atualizar o cabeçalho (mostrar "Sair" em vez de "Entrar")
+  // 5. Atualizar o cabeçalho
   const headerActions = document.querySelector('.header-actions')
   if (headerActions) {
     headerActions.innerHTML = `
@@ -158,6 +106,12 @@ function showDashboard() {
       </button>
     `
   }
+  
+  // 6. Esconder o footer
+  const footer = document.querySelector('.footer')
+  if (footer) footer.style.display = 'none'
+  
+  console.log('✅ Dashboard exibido com sucesso!')
 }
 
 // ============================================================
@@ -176,87 +130,45 @@ window.logout = async function() {
 }
 
 // ============================================================
-// FUNÇÃO PARA MOSTRAR TELA DE LOGIN
-// ============================================================
-function showLoginScreen() {
-  console.log('🔓 Nenhuma sessão – redirecionando para login.html')
-  // Se não estiver na página de login, redireciona
-  if (!window.location.pathname.includes('login.html')) {
-    window.location.href = 'login.html'
-  }
-}
-
-// ============================================================
-// INICIALIZAÇÃO - AUTO-LOGIN
+// INICIALIZAÇÃO
 // ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🔍 Iniciando auto-login...')
   
-  // Se estiver na página de login, não faz nada (deixa o login.html gerenciar)
+  // Se estiver na página de login, não faz nada
   if (window.location.pathname.includes('login.html')) {
-    console.log('📄 Estamos na página de login, ignorando auto-login')
+    console.log('📄 Estamos na página de login, ignorando')
     return
   }
   
+  // Verificar se já está logado
+  const userLoggedIn = localStorage.getItem('user_logged_in')
+  const userEmail = localStorage.getItem('user_email')
+  
+  if (userLoggedIn === 'true' && userEmail) {
+    console.log('✅ Usuário logado via localStorage:', userEmail)
+    // Pequeno delay para garantir que o DOM está pronto
+    setTimeout(showDashboard, 100)
+    return
+  }
+  
+  // Verificar sessão no Supabase
   try {
-    // Verificar sessão no Supabase
     const { data: { session } } = await sb.auth.getSession()
-    
     if (session) {
       console.log('✅ Sessão encontrada no Supabase:', session.user.email)
-      
-      // Salvar dados
-      const user = session.user
-      localStorage.setItem('user_id', user.id)
-      localStorage.setItem('user_email', user.email)
+      localStorage.setItem('user_id', session.user.id)
+      localStorage.setItem('user_email', session.user.email)
       localStorage.setItem('user_logged_in', 'true')
-      localStorage.setItem('user_role', user.email === 'sulsafetreinamentos@gmail.com' ? 'admin' : 'aluno')
-      
-      // Mostrar dashboard
-      showDashboard()
+      localStorage.setItem('user_role', session.user.email === 'sulsafetreinamentos@gmail.com' ? 'admin' : 'aluno')
+      setTimeout(showDashboard, 100)
       return
     }
-    
-    // Fallback: verificar localStorage
-    const userLoggedIn = localStorage.getItem('user_logged_in')
-    const userEmail = localStorage.getItem('user_email')
-    const userId = localStorage.getItem('user_id')
-    
-    if (userLoggedIn === 'true' && userId) {
-      console.log('📋 Sessão encontrada no localStorage:', userEmail)
-      
-      // Tentar recuperar usuário via Supabase
-      try {
-        const { data: { user } } = await sb.auth.getUser()
-        if (user) {
-          localStorage.setItem('user_email', user.email)
-          showDashboard()
-          return
-        }
-      } catch (e) {
-        console.warn('⚠️ Não foi possível recuperar usuário:', e)
-      }
-      
-      // Fallback: mostrar dashboard com dados do localStorage
-      showDashboard()
-      return
-    }
-    
-    // Nenhuma sessão
-    console.log('🔓 Nenhuma sessão encontrada')
-    showLoginScreen()
-    
   } catch (e) {
-    console.error('❌ ERRO NO AUTO-LOGIN:', e)
-    showLoginScreen()
+    console.error('❌ Erro ao verificar sessão:', e)
   }
+  
+  console.log('🔓 Nenhuma sessão encontrada')
 })
 
-// ============================================================
-// EXPORTAR FUNÇÕES PARA USO GLOBAL
-// ============================================================
-window.showDashboard = showDashboard
-window.showLoginScreen = showLoginScreen
-window.toast = toast
-
-console.log('✅ Main.js carregado com sucesso!')
+console.log('✅ Main.js inicializado!')
