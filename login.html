@@ -34,9 +34,7 @@
             font-weight: 800;
             color: #1B5E20;
         }
-        .logo span {
-            color: #2E7D32;
-        }
+        .logo span { color: #2E7D32; }
         .logo p {
             color: #666;
             font-size: 14px;
@@ -67,8 +65,6 @@
         .btn {
             width: 100%;
             padding: 14px;
-            background: #2E7D32;
-            color: white;
             border: none;
             border-radius: 10px;
             font-size: 16px;
@@ -76,10 +72,12 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn:hover {
-            background: #1B5E20;
+        .btn-primary {
+            background: #2E7D32;
+            color: white;
         }
-        .btn:disabled {
+        .btn-primary:hover { background: #1B5E20; }
+        .btn-primary:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
@@ -88,9 +86,7 @@
             color: #555;
             margin-top: 8px;
         }
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
+        .btn-secondary:hover { background: #e0e0e0; }
         .divider {
             text-align: center;
             color: #999;
@@ -118,9 +114,8 @@
             text-decoration: none;
             font-size: 13px;
         }
-        .links a:hover {
-            color: #2E7D32;
-        }
+        .links a:hover { color: #2E7D32; }
+        .hidden { display: none !important; }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -142,7 +137,13 @@
         }
         .toast.error { background: #c0392b; }
         .toast.success { background: #2E7D32; }
-        .hidden { display: none; }
+        .spinner {
+            display: inline-block;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -153,7 +154,7 @@
         <p>Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
     </div>
 
-    <!-- LOGIN -->
+    <!-- ===== LOGIN ===== -->
     <form id="loginForm">
         <div class="form-group">
             <label>Email</label>
@@ -163,7 +164,7 @@
             <label>Senha</label>
             <input type="password" id="password" placeholder="Sua senha" required>
         </div>
-        <button type="submit" class="btn" id="loginBtn">
+        <button type="submit" class="btn btn-primary" id="loginBtn">
             <i class="fas fa-sign-in-alt"></i> Entrar
         </button>
     </form>
@@ -178,7 +179,7 @@
         <a href="#" onclick="recuperarSenha()"><i class="fas fa-key"></i> Esqueceu a senha?</a>
     </div>
 
-    <!-- CADASTRO (escondido) -->
+    <!-- ===== CADASTRO ===== -->
     <form id="cadastroForm" class="hidden" style="margin-top: 20px;">
         <div class="form-group">
             <label>Nome completo</label>
@@ -196,10 +197,10 @@
             <label>Confirmar senha</label>
             <input type="password" id="senhaCad2" placeholder="Repita a senha" required>
         </div>
-        <button type="submit" class="btn" id="cadastroBtn">
+        <button type="submit" class="btn btn-primary" id="cadastroBtn">
             <i class="fas fa-user-plus"></i> Criar conta
         </button>
-        <button type="button" class="btn btn-secondary" onclick="showLogin()" style="margin-top: 8px;">
+        <button type="button" class="btn btn-secondary" onclick="showLogin()">
             Voltar para login
         </button>
     </form>
@@ -207,7 +208,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- ===== SUPABASE ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
 <script>
 // ============================================================
 // CONFIGURAÇÃO SUPABASE
@@ -215,6 +219,7 @@
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
 
+// CRIA O CLIENTE SUPABASE
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================================
@@ -233,32 +238,32 @@ const cadastroBtn = document.getElementById('cadastroBtn');
 const toast = document.getElementById('toast');
 
 // ============================================================
-// FUNÇÕES
+// FUNÇÕES GLOBAIS
 // ============================================================
+window.showCadastro = function() {
+    loginForm.classList.add('hidden');
+    cadastroForm.classList.remove('hidden');
+};
+
+window.showLogin = function() {
+    cadastroForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+};
+
+window.recuperarSenha = function() {
+    const email = prompt('Digite seu email para recuperar a senha:');
+    if (email && email.includes('@')) {
+        showToast('Instruções enviadas para ' + email, 'success');
+    } else if (email) {
+        showToast('Digite um email válido.', 'error');
+    }
+};
+
 function showToast(message, type = 'info') {
     toast.textContent = message;
     toast.className = 'toast ' + type + ' show';
     clearTimeout(toast._timeout);
     toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function showCadastro() {
-    loginForm.classList.add('hidden');
-    cadastroForm.classList.remove('hidden');
-}
-
-function showLogin() {
-    cadastroForm.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-}
-
-function recuperarSenha() {
-    const email = prompt('Digite seu email para recuperar a senha:');
-    if (email && email.includes('@')) {
-        showToast('Instruções enviadas para ' + email, 'success');
-    } else if (email) {
-        showToast('Por favor, digite um email válido.', 'error');
-    }
 }
 
 // ============================================================
@@ -276,7 +281,7 @@ loginForm.addEventListener('submit', async (e) => {
     }
     
     loginBtn.disabled = true;
-    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+    loginBtn.innerHTML = '<span class="spinner"><i class="fas fa-spinner"></i></span> Entrando...';
     
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -286,13 +291,12 @@ loginForm.addEventListener('submit', async (e) => {
         
         if (error) {
             showToast('Email ou senha incorretos.', 'error');
-            console.error('Erro:', error);
+            console.error('Erro login:', error);
             return;
         }
         
         if (data?.user) {
             showToast('✅ Login realizado!', 'success');
-            
             localStorage.setItem('user_id', data.user.id);
             localStorage.setItem('user_email', data.user.email);
             localStorage.setItem('user_logged_in', 'true');
@@ -337,7 +341,7 @@ cadastroForm.addEventListener('submit', async (e) => {
     }
     
     cadastroBtn.disabled = true;
-    cadastroBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
+    cadastroBtn.innerHTML = '<span class="spinner"><i class="fas fa-spinner"></i></span> Criando...';
     
     try {
         const { data, error } = await supabase.auth.signUp({
@@ -357,22 +361,23 @@ cadastroForm.addEventListener('submit', async (e) => {
         }
         
         if (data?.user) {
-            // Cria perfil
-            await supabase
+            // Cria perfil na tabela profiles
+            const { error: profileError } = await supabase
                 .from('profiles')
                 .insert([{
                     id: data.user.id,
                     email: data.user.email,
                     nome_completo: nomeVal,
                     role: 'user'
-                }])
-                .then(({ error }) => {
-                    if (error) console.warn('Erro ao criar perfil:', error);
-                });
+                }]);
+            
+            if (profileError) {
+                console.warn('Erro ao criar perfil:', profileError);
+            }
             
             showToast('✅ Cadastro realizado! Verifique seu email.', 'success');
             setTimeout(() => {
-                showLogin();
+                window.showLogin();
                 email.value = emailVal;
                 cadastroForm.reset();
             }, 1000);
@@ -387,7 +392,7 @@ cadastroForm.addEventListener('submit', async (e) => {
 });
 
 // ============================================================
-// VERIFICA SESSÃO - redireciona se já logado
+// VERIFICA SE JÁ ESTÁ LOGADO
 // ============================================================
 (async function() {
     try {
