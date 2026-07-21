@@ -1,11 +1,13 @@
 // ============================================================
-// VIEW INÍCIO - DASHBOARD INSTITUCIONAL SULSAFE
+// VIEW INÍCIO - DASHBOARD INSTITUCIONAL SULSAFE v2
 // ============================================================
 
 import { S } from '../state.js';
 import { sb } from '../supabase-client.js';
 
-console.log('📄 Carregando view Inicio - Versão Institucional...');
+console.log('📄 Carregando view Inicio - Versão Institucional v2...');
+
+let userCheckInterval = null;
 
 // ============================================================
 // FUNÇÃO PRINCIPAL - RETORNA HTML
@@ -13,10 +15,25 @@ console.log('📄 Carregando view Inicio - Versão Institucional...');
 export function vInicio() {
     console.log('🎯 Renderizando Dashboard Institucional...');
     
-    // Carregar dados assíncronos
+    // Limpa interval antigo se existir
+    if(userCheckInterval) clearInterval(userCheckInterval);
+
+    // Aguarda o S.user carregar antes de buscar dados
+    userCheckInterval = setInterval(() => {
+        if (S?.user?.id) {
+            clearInterval(userCheckInterval);
+            console.log('✅ Usuário detectado:', S.user.id);
+            carregarDados();
+        }
+    }, 100);
+
+    // Timeout de segurança: para de tentar depois de 5s
     setTimeout(() => {
-        carregarDados();
-    }, 200);
+        if(userCheckInterval) {
+            clearInterval(userCheckInterval);
+            document.getElementById('dashStatus').textContent = '⚠️ Timeout de sessão';
+        }
+    }, 5000);
 
     return `
     <style>
@@ -429,10 +446,10 @@ export function vInicio() {
         <div style="margin-top: 24px; padding: 12px 16px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e8ecf1; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <span style="font-size: 12px; color: #7f8c8d;">
                 <i class="fas fa-circle" style="color: #2ecc71; font-size: 8px;"></i> 
-                Sistema operacional — <span id="dashStatus">Carregando...</span>
+                Sistema operacional — <span id="dashStatus">Aguardando sessão...</span>
             </span>
             <span style="font-size: 12px; color: #7f8c8d;">
-                <i class="fas fa-code"></i> Line 84, Column 31 — Coverage: N/A
+                <i class="fas fa-code"></i> v2.0 - Institucional
             </span>
         </div>
     </div>
@@ -539,4 +556,4 @@ function atualizarDashboard(notificacoes) {
 // ============================================================
 export default vInicio;
 
-console.log('✅ View Inicio Institucional carregado com sucesso!');
+console.log('✅ View Inicio Institucional v2 carregado com sucesso!');
