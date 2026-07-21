@@ -1,92 +1,168 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-    <meta property="og:title" content="SulSafe - Segurança do Trabalho">
-    <meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
-    <meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
-    <meta name="robots" content="index, follow">
-    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
-    <link rel="icon" type="image/png" href="logo1.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-</head>
-<body>
+<!-- SCRIPT DE LOGIN - USANDO auth.js -->
+<script type="module">
+console.log('📄 Login page iniciada...');
 
-<!-- ==================== AUTH ==================== -->
-<div id="authWrap">
-    <div class="auth-card">
-        <!-- LOGIN -->
-        <div class="t on" id="tLogin">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
-            <form id="frmLogin">
-                <div class="fld"><label>Email</label><input type="email" id="lEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha</label><input type="password" id="lPass" placeholder="Sua senha" required></div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            </form>
-            <div class="divider">ou</div>
-            <button class="btn btn-s btn-block" onclick="window.showT('tCad')">Cadastrar nova conta</button>
-            <div style="margin-top: 12px; text-align: center;">
-                <a href="#" onclick="window.recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
-            </div>
-        </div>
-        <!-- CADASTRO -->
-        <div class="t" id="tCad">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Crie sua conta. Após o cadastro, fale com nosso time no WhatsApp para liberar seu acesso.</p>
-                <div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div>
-                <div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha (mínimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
-                <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
-                <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
-                    <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="window.mostrarTermos()">termos de uso</a></label>
-                </div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
-            </form>
-        </div>
-    </div>
-</div>
+// Importa as funções de autenticação
+import { handleLogin, handleCadastro, checkAuth } from './js/auth.js';
 
-<!-- ==================== DASHBOARD ==================== -->
-<div id="dash">
-    <aside class="sidebar" id="sidebar"></aside>
-    <main class="main" id="mc"></main>
-</div>
+// ============================================================
+// ELEMENTOS DO DOM
+// ============================================================
+const frmLogin = document.getElementById('frmLogin');
+const frmCadastro = document.getElementById('frmCadastro');
+const lEmail = document.getElementById('lEmail');
+const lPass = document.getElementById('lPass');
+const cNome = document.getElementById('cNome');
+const cEmail = document.getElementById('cEmail');
+const cPass = document.getElementById('cPass');
+const cPass2 = document.getElementById('cPass2');
+const cTermos = document.getElementById('cTermos');
 
-<!-- MODAL GERAL -->
-<div class="mdl-bg" id="mdlBg"><div class="mdl" id="mdlBox"></div></div>
+// ============================================================
+// FUNÇÕES GLOBAIS (para os onclick do HTML)
+// ============================================================
+window.showT = function(tabId) {
+    document.querySelectorAll('.auth-card .t').forEach(el => el.classList.remove('on'));
+    document.getElementById(tabId).classList.add('on');
+};
 
-<!-- NOTIFICAÇÃO POPUP -->
-<div class="notif-popup" id="notifPopup">
-    <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteúdo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="window.closeNotif()"><i class="fas fa-times"></i></button></div>
-    <div class="notif-popup-bd" id="notifBody"></div>
-    <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="window.closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
-</div>
+window.recuperarSenha = function() {
+    const email = prompt('Digite seu email para recuperar a senha:');
+    if (email && email.includes('@')) {
+        alert('Instruções enviadas para ' + email);
+    } else if (email) {
+        alert('Por favor, digite um email válido.');
+    }
+};
 
-<!-- TOAST -->
-<div id="toast"></div>
+window.mostrarTermos = function() {
+    const modal = document.getElementById('mdlBg');
+    const box = document.getElementById('mdlBox');
+    const termos = document.getElementById('termosHtml');
+    if (modal && box && termos) {
+        box.innerHTML = termos.innerHTML;
+        modal.style.display = 'flex';
+    }
+};
 
-<!-- TERMOS MODAL (escondido) -->
-<div style="display:none" id="termosHtml">
-    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitação</strong><br>Ao utilizar a plataforma SulSafe, você concorda com estes termos.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteúdo</strong><br>Todo o material disponível é protegido por direitos autorais. É proibida a redistribuição sem autorização.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados são emitidos mediante conclusão do curso com nota mínima 7.0.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados são protegidos conforme a LGPD. Não compartilhamos com terceiros.</p>
-    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="window.closeMdl()">Entendi</button>
-</div>
+window.closeMdl = function() {
+    const modal = document.getElementById('mdlBg');
+    if (modal) modal.style.display = 'none';
+};
 
-<!-- SCRIPT MODULAR -->
-<script type="module" src="js/main.js"></script>
-</body>
-</html>
+// ============================================================
+// LOGIN - Usando handleLogin do auth.js
+// ============================================================
+frmLogin.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = lEmail.value.trim();
+    const password = lPass.value.trim();
+    
+    console.log('🔐 Tentando login:', email);
+    
+    if (!email || !password) {
+        alert('Preencha todos os campos.');
+        return;
+    }
+    
+    const btn = frmLogin.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+    btn.disabled = true;
+    
+    try {
+        const result = await handleLogin(email, password);
+        console.log('📥 Resultado do login:', result);
+        
+        if (result.success) {
+            console.log('✅ Login OK! Redirecionando...');
+            alert('Login realizado com sucesso!');
+            window.location.replace('/index.html');
+        } else {
+            alert(result.error || 'Erro ao fazer login.');
+        }
+    } catch (err) {
+        console.error('❌ Erro no login:', err);
+        alert('Erro ao fazer login. Tente novamente.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+});
+
+// ============================================================
+// CADASTRO - Usando handleCadastro do auth.js
+// ============================================================
+frmCadastro.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nome = cNome.value.trim();
+    const email = cEmail.value.trim();
+    const password = cPass.value;
+    const password2 = cPass2.value;
+    const termos = cTermos.checked;
+    
+    console.log('📝 Tentando cadastro:', email);
+    
+    if (!nome || !email || !password || !password2) {
+        alert('Preencha todos os campos.');
+        return;
+    }
+    
+    if (password.length < 6) {
+        alert('A senha deve ter no mínimo 6 caracteres.');
+        return;
+    }
+    
+    if (password !== password2) {
+        alert('As senhas não coincidem.');
+        return;
+    }
+    
+    if (!termos) {
+        alert('Você precisa aceitar os termos de uso.');
+        return;
+    }
+    
+    const btn = frmCadastro.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
+    btn.disabled = true;
+    
+    try {
+        const result = await handleCadastro(email, password, nome);
+        console.log('📥 Resultado cadastro:', result);
+        
+        if (result.success) {
+            alert('✅ Cadastro realizado! Verifique seu email para confirmar.');
+            window.showT('tLogin');
+            lEmail.value = email;
+            frmCadastro.reset();
+        } else {
+            alert(result.error || 'Erro ao criar conta.');
+        }
+    } catch (err) {
+        console.error('❌ Erro no cadastro:', err);
+        alert('Erro ao criar conta. Tente novamente.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+});
+
+// ============================================================
+// VERIFICA SE JÁ ESTÁ LOGADO (redireciona se sim)
+// ============================================================
+try {
+    const auth = await checkAuth();
+    if (auth.isAuthenticated) {
+        console.log('✅ Usuário já logado, redirecionando...');
+        window.location.replace('/index.html');
+    }
+} catch (err) {
+    console.warn('Erro ao verificar sessão:', err);
+}
+
+console.log('✅ Login page pronta!');
+</script>
