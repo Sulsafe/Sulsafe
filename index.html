@@ -1164,7 +1164,7 @@
 <header class="header" id="header">
     <div class="header-inner">
         <a href="#" class="logo-link" aria-label="SulSafe — Página inicial">
-          <span class="logo-mark"><img src="logo1.png" alt="Logo SulSafe" width="42" height="42"></span>
+          <span class="logo-mark"><img src="/logo1.png" alt="Logo SulSafe" width="42" height="42"></span>
             <span class="logo-text-wrap">
                 <span class="logo-text">SulSafe</span>
                 <span class="logo-sub">Segurança do Trabalho</span>
@@ -1178,9 +1178,9 @@
             <a href="#contato">Contato</a>
         </nav>
         <div class="header-actions">
-            <button onclick="window.location.href='login.html'" class="btn btn-primary" style="cursor:pointer;">
+            <a href="login.html" class="btn btn-primary" aria-label="Entrar na plataforma SulSafe">
                 <i class="fas fa-right-to-bracket"></i> Entrar
-            </button>
+            </a>
             <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNav">
                 <i class="fas fa-bars"></i>
             </button>
@@ -1192,9 +1192,7 @@
         <a href="#planos">Planos</a>
         <a href="#sobre">Sobre</a>
         <a href="#contato">Contato</a>
-        <button onclick="window.location.href='login.html'" class="btn btn-primary btn-block" style="cursor:pointer;">
-            <i class="fas fa-right-to-bracket"></i> Entrar
-        </button>
+        <a href="login.html" class="btn btn-primary btn-block"><i class="fas fa-right-to-bracket"></i> Entrar</a>
     </div>
 </header>
 
@@ -1215,9 +1213,9 @@
                     aulas ao vivo e certificado reconhecido. Estude no seu ritmo, do celular ou do computador.
                 </p>
                 <div class="hero-ctas">
-                    <button onclick="window.location.href='login.html'" class="btn btn-primary btn-lg" style="cursor:pointer;">
+                    <a href="login.html" class="btn btn-primary btn-lg">
                         <i class="fas fa-rocket"></i> Começar agora
-                    </button>
+                    </a>
                     <a href="#planos" class="btn btn-outline btn-lg">
                         <i class="fas fa-tags"></i> Ver planos
                     </a>
@@ -1393,7 +1391,7 @@
                     <li class="off"><i class="fas fa-xmark"></i> Aulas ao vivo ilimitadas</li>
                     <li class="off"><i class="fas fa-xmark"></i> Suporte prioritário</li>
                 </ul>
-                <button onclick="window.location.href='login.html'" class="btn btn-outline btn-block" style="cursor:pointer;">Assinar Mensal</button>
+                <a href="login.html" class="btn btn-outline btn-block">Assinar Mensal</a>
             </article>
 
             <article class="plano popular reveal d1">
@@ -1415,7 +1413,7 @@
                     <li><i class="fas fa-check"></i> Aulas ao vivo ilimitadas</li>
                     <li class="off"><i class="fas fa-xmark"></i> Suporte prioritário</li>
                 </ul>
-                <button onclick="window.location.href='login.html'" class="btn btn-primary btn-block" style="cursor:pointer;">Assinar Trimestral</button>
+                <a href="login.html" class="btn btn-primary btn-block">Assinar Trimestral</a>
             </article>
 
             <article class="plano reveal d2">
@@ -1436,7 +1434,7 @@
                     <li><i class="fas fa-check"></i> Aulas ao vivo ilimitadas</li>
                     <li><i class="fas fa-check"></i> Suporte prioritário dedicado</li>
                 </ul>
-                <button onclick="window.location.href='login.html'" class="btn btn-gold btn-block" style="cursor:pointer;">Assinar Anual</button>
+                <a href="login.html" class="btn btn-gold btn-block">Assinar Anual</a>
             </article>
         </div>
         <p class="text-center reveal" style="margin-top:32px;font-size:13.5px;color:var(--texto-ter);">
@@ -1534,9 +1532,9 @@
         <div class="reveal">
             <h2>Pronto para começar?</h2>
             <p>Junte-se a nós e garanta a segurança da sua equipe. Acesso imediato após o pagamento.</p>
-            <button onclick="window.location.href='login.html'" class="btn btn-gold btn-lg" style="cursor:pointer;">
+            <a href="login.html" class="btn btn-gold btn-lg">
                 <i class="fas fa-rocket"></i> Começar agora
-            </button>
+            </a>
             <div class="micro">
                 <i class="fas fa-bolt"></i> Acesso imediato &nbsp;·&nbsp; <i class="fas fa-shield-halved"></i> Pagamento seguro &nbsp;·&nbsp; <i class="fas fa-infinity"></i> 38 NRs disponíveis
             </div>
@@ -1836,6 +1834,42 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 })();
 
 console.log('✨ SulSafe carregado!');
+
+// ===== JS DOS PLANOS =====
+document.querySelectorAll('.btn-assinar').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const plano = btn.dataset.plano;
+    const valor = btn.dataset.valor;
+    document.getElementById('modalPagamento').classList.add('open');
+    document.getElementById('nomePlanoModal').innerText = plano;
+    document.getElementById('valorPlanoModal').innerText = valor;
+    
+    // esconde conteúdo anterior do modal
+    document.getElementById('conteudoPIX').style.display = 'none';
+    document.getElementById('conteudoBoleto').style.display = 'none';
+  });
+});
+
+function gerarPIX() {
+  document.getElementById('conteudoPIX').style.display = 'block';
+  document.getElementById('conteudoBoleto').style.display = 'none';
+  document.getElementById('qrCodeImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PIX-PLANO-FAKE';
+  document.getElementById('copiaColaTexto').innerText = '00020126580014BR.GOV.BCB.PIX...VALOR' + document.getElementById('valorPlanoModal').innerText;
+  alert('PIX gerado! Status: Pendente');
+}
+
+function gerarBoletoOnline() {
+  document.getElementById('conteudoBoleto').style.display = 'block';
+  document.getElementById('conteudoPIX').style.display = 'none';
+  const valor = document.getElementById('valorPlanoModal').innerText.replace('.','');
+  document.getElementById('linhaBoletoTexto').innerText = '23790.00000 00000.000 00000.000 1 999900000' + valor;
+  document.getElementById('vencimentoBoleto').innerText = new Date(Date.now() + 3*24*60*60*1000).toLocaleDateString('pt-BR');
+  alert('Boleto gerado! Marca como Pago no admin depois');
+}
+
+function fecharModalPag() {
+  document.getElementById('modalPagamento').classList.remove('open');
+}
+// ===== FIM JS DOS PLANOS =====
 </script>
 </body>
-</html>
