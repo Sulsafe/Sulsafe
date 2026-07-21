@@ -1,27 +1,28 @@
-// js/main.js - VERSÃO CORRIGIDA USANDO auth.js
+// js/main.js - VERSÃO FINAL
 console.log('🚀 MAIN.JS CARREGADO!');
 
-import { checkAuth, handleLogout } from './auth.js';
+import { checkAuth, initAuthListener } from './auth.js';
+import { S, setUser, clearUser, isAuthenticated, ADMIN_EMAIL } from './state.js';
+import { sb } from './supabase-client.js';
 
 // ============================================================
 // FUNÇÃO PARA MOSTRAR O DASHBOARD
 // ============================================================
-function showDashboard(user) {
+function showDashboard() {
     console.log('🚪 Entrando no dashboard...');
     
-    // Verificar se já existe um dashboard
     if (document.getElementById('dashboardContainer')) {
         console.log('✅ Dashboard já está visível');
         return;
     }
     
-    // Esconder TODO o conteúdo da página inicial
+    // Esconde conteúdo da página inicial
     document.querySelectorAll('.hero, .features, .nrs, .planos, .faq, .cta-final, .trust-bar, .imagens-section, .footer').forEach(el => {
         if (el) el.style.display = 'none';
     });
     
-    const userEmail = user?.email || localStorage.getItem('user_email') || 'Usuário';
-    const isAdmin = userEmail === 'sulsafetreinamentos@gmail.com';
+    const userEmail = S.user?.email || localStorage.getItem('user_email') || 'Usuário';
+    const isAdminUser = S.user?.email === ADMIN_EMAIL;
     
     const dashboardDiv = document.createElement('div');
     dashboardDiv.id = 'dashboardContainer';
@@ -29,9 +30,9 @@ function showDashboard(user) {
     
     dashboardDiv.innerHTML = `
         <div style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:white;border-radius:16px;padding:40px;margin-bottom:30px;">
-            <h1 style="font-size:32px;font-weight:900;margin-bottom:8px;">👋 Bem-vindo, ${isAdmin ? 'Admin' : 'Aluno'}!</h1>
+            <h1 style="font-size:32px;font-weight:900;margin-bottom:8px;">👋 Bem-vindo, ${isAdminUser ? 'Admin' : 'Aluno'}!</h1>
             <p style="opacity:0.9;font-size:16px;">${userEmail}</p>
-            <p style="opacity:0.8;margin-top:8px;font-size:14px;">${isAdmin ? '👑 Você tem acesso administrativo' : '📚 Aproveite seus cursos'}</p>
+            <p style="opacity:0.8;margin-top:8px;font-size:14px;">${isAdminUser ? '👑 Você tem acesso administrativo' : '📚 Aproveite seus cursos'}</p>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px;">
             <div style="background:white;border-radius:12px;padding:24px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e8ecf1;">
@@ -66,7 +67,7 @@ function showDashboard(user) {
     if (header) header.after(dashboardDiv);
     else document.body.prepend(dashboardDiv);
     
-    // Atualizar cabeçalho
+    // Atualiza cabeçalho
     const headerActions = document.querySelector('.header-actions');
     if (headerActions) {
         headerActions.innerHTML = `
@@ -81,71 +82,50 @@ function showDashboard(user) {
 }
 
 // ============================================================
-// FUNÇÃO DE LOGOUT GLOBAL
+// LOGOUT GLOBAL
 // ============================================================
 window.doLogout = async function() {
     console.log('🚪 Fazendo logout...');
-    const result = await handleLogout();
-    if (result.success) {
+    try {
+        await sb.auth.signOut();
+        clearUser();
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = '/login.html';
-    } else {
-        console.error('Erro no logout:', result.error);
+    } catch (err) {
+        console.error('❌ Erro no logout:', err);
         alert('Erro ao sair. Tente novamente.');
     }
 };
 
 // ============================================================
-// INICIALIZAÇÃO - VERIFICA SESSÃO
+// INICIALIZAÇÃO
 // ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🔍 Verificando sessão...');
     
     // Se estiver na página de login, NÃO FAZ NADA
-    if (window.location.pathname.includes('login.html') || window.location.pathname.includes('cadastro.html')) {
-        console.log('📄 Página de login/cadastro, ignorando verificação automática');
+    if (window.location.pathname.includes('login.html')) {
+        console.log('📄 Página de login, ignorando verificação');
         return;
     }
+    
+    // Inicializa o listener de autenticação
+    initAuthListener();
     
     try {
         const auth = await checkAuth();
         
         if (auth.isAuthenticated) {
             console.log('✅ Sessão ativa:', auth.user.email);
-            localStorage.setItem('user_id', auth.user.id);
-            localStorage.setItem('user_email', auth.user.email);
-            localStorage.setItem('user_logged_in', 'true');
-            localStorage.setItem('user_role', auth.user.email === 'sulsafetreinamentos@gmail.com' ? 'admin' : 'aluno');
-            setTimeout(() => showDashboard(auth.user), 100);
-            return;
-        }
-        
-        // Verifica localStorage como fallback
-        if (localStorage.getItem('user_logged_in') === 'true') {
-            console.log('📋 Sessão no localStorage (tentando restaurar)');
-            // Tenta restaurar a sessão
-            const { data } = await supabase.auth.getSession();
-            if (data?.session) {
-                setTimeout(() => showDashboard(data.session.user), 100);
-                return;
-            }
-            // Se não conseguir, limpa e redireciona
-            localStorage.clear();
+            showDashboard();
+        } else {
+            console.log('🔓 Nenhuma sessão, redirecionando para login...');
             window.location.href = '/login.html';
-            return;
         }
-        
-        console.log('🔓 Nenhuma sessão encontrada');
-        // Redireciona para login
+    } catch (err) {
+        console.error('❌ Erro na verificação:', err);
         window.location.href = '/login.html';
-        
-    } catch (e) {
-        console.error('❌ Erro na verificação:', e);
-        // Em caso de erro, tenta redirecionar para login
-        if (!window.location.pathname.includes('login.html')) {
-            window.location.href = '/login.html';
-        }
     }
 });
 
