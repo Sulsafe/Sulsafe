@@ -2,128 +2,98 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-    <title>SulSafe | Login</title>
-    <link rel="icon" type="image/png" href="logo1.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SulSafe - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --verde: #2E7D32;
-            --verde-escuro: #1B5E20;
-            --tx2: #555;
-            --tx3: #777;
-            --p: #2E7D32;
-            --borda: #e0e0e0;
-        }
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f7fa;
+            background: #f0f2f5;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            margin: 0;
             padding: 20px;
         }
-        .auth-card {
+        .login-container {
             background: white;
             border-radius: 24px;
             padding: 40px;
-            max-width: 420px;
+            max-width: 400px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.1);
         }
-        .back-to-site {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--tx3);
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 20px;
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
         }
-        .back-to-site:hover { color: var(--verde); }
-        .logo-r {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .lic {
-            width: 48px;
-            height: 48px;
-            background: var(--verde);
-            color: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
+        .logo h1 {
+            font-size: 32px;
             font-weight: 800;
+            color: #1B5E20;
         }
-        .lt {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--verde-escuro);
+        .logo span {
+            color: #2E7D32;
         }
-        .sub {
-            color: var(--tx2);
+        .logo p {
+            color: #666;
             font-size: 14px;
-            margin-bottom: 24px;
+            margin-top: 4px;
         }
-        .t { display: none; }
-        .t.on { display: block; }
-        .fld { margin-bottom: 16px; }
-        .fld label {
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
+            color: #555;
             margin-bottom: 4px;
-            color: var(--tx2);
         }
-        .fld input {
+        .form-group input {
             width: 100%;
             padding: 12px 16px;
-            border: 1.5px solid var(--borda);
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 15px;
-            transition: border-color .2s;
+            transition: border-color 0.2s;
         }
-        .fld input:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: var(--verde);
+            border-color: #2E7D32;
         }
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: 100px;
-            font-size: 15px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all .2s;
             width: 100%;
-        }
-        .btn-p {
-            background: var(--verde);
+            padding: 14px;
+            background: #2E7D32;
             color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .btn-p:hover { background: var(--verde-escuro); transform: translateY(-2px); }
-        .btn-p:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .btn-s {
+        .btn:hover {
+            background: #1B5E20;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
             background: #f0f0f0;
-            color: var(--tx2);
+            color: #555;
+            margin-top: 8px;
         }
-        .btn-s:hover { background: #e0e0e0; }
-        .btn-block { width: 100%; }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
         .divider {
             text-align: center;
-            color: var(--tx3);
+            color: #999;
             font-size: 13px;
             margin: 20px 0;
             position: relative;
@@ -135,28 +105,21 @@
             top: 50%;
             width: 40%;
             height: 1px;
-            background: var(--borda);
+            background: #e0e0e0;
         }
         .divider::before { left: 0; }
         .divider::after { right: 0; }
-        .mdl-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+        .links {
+            text-align: center;
+            margin-top: 12px;
         }
-        .mdl-bg.show { display: flex; }
-        .mdl {
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+        .links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .links a:hover {
+            color: #2E7D32;
         }
         .toast {
             position: fixed;
@@ -165,163 +128,89 @@
             transform: translateX(-50%);
             background: #333;
             color: white;
-            padding: 14px 28px;
-            border-radius: 12px;
+            padding: 12px 24px;
+            border-radius: 10px;
             font-size: 14px;
-            z-index: 9999;
             opacity: 0;
-            transition: opacity .3s;
+            transition: opacity 0.3s;
             pointer-events: none;
+            z-index: 9999;
         }
         .toast.show {
             opacity: 1;
             pointer-events: auto;
         }
         .toast.error { background: #c0392b; }
-        .toast.success { background: var(--verde); }
-        .spinner {
-            display: inline-block;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .toast.success { background: #2E7D32; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<!-- TOAST -->
+<div class="login-container">
+    <div class="logo">
+        <h1>🌿 Sul<span>Safe</span></h1>
+        <p>Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="password" placeholder="Sua senha" required>
+        </div>
+        <button type="submit" class="btn" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+    </form>
+
+    <div class="divider">ou</div>
+
+    <button class="btn btn-secondary" onclick="showCadastro()">
+        <i class="fas fa-user-plus"></i> Cadastrar nova conta
+    </button>
+
+    <div class="links">
+        <a href="#" onclick="recuperarSenha()"><i class="fas fa-key"></i> Esqueceu a senha?</a>
+    </div>
+
+    <!-- CADASTRO (escondido) -->
+    <form id="cadastroForm" class="hidden" style="margin-top: 20px;">
+        <div class="form-group">
+            <label>Nome completo</label>
+            <input type="text" id="nome" placeholder="Seu nome" required>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="emailCad" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+            <label>Senha (mínimo 6 caracteres)</label>
+            <input type="password" id="senhaCad" placeholder="Min. 6 caracteres" required minlength="6">
+        </div>
+        <div class="form-group">
+            <label>Confirmar senha</label>
+            <input type="password" id="senhaCad2" placeholder="Repita a senha" required>
+        </div>
+        <button type="submit" class="btn" id="cadastroBtn">
+            <i class="fas fa-user-plus"></i> Criar conta
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="showLogin()" style="margin-top: 8px;">
+            Voltar para login
+        </button>
+    </form>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- MODAL TERMOS -->
-<div class="mdl-bg" id="mdlBg">
-    <div class="mdl" id="mdlBox"></div>
-</div>
-
-<!-- ==================== AUTH ==================== -->
-<div id="authWrap">
-    <div class="auth-card">
-        <!-- LOGIN -->
-        <div class="t on" id="tLogin">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar</a>
-            <div class="logo-r">
-                <div class="lic">SS</div>
-                <div class="lt">SulSafe</div>
-            </div>
-            <p class="sub">Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
-            <form id="frmLogin">
-                <div class="fld">
-                    <label>Email</label>
-                    <input type="email" id="lEmail" placeholder="seu@email.com" required>
-                </div>
-                <div class="fld">
-                    <label>Senha</label>
-                    <input type="password" id="lPass" placeholder="Sua senha" required>
-                </div>
-                <button type="submit" class="btn btn-p btn-block" id="btnLogin">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
-                </button>
-            </form>
-            <div class="divider">ou</div>
-            <button class="btn btn-s btn-block" onclick="showT('tCad')">
-                <i class="fas fa-user-plus"></i> Cadastrar nova conta
-            </button>
-            <div style="margin-top: 12px; text-align: center;">
-                <a href="#" onclick="recuperarSenha()" style="font-size: 13px; color: var(--tx3);">
-                    <i class="fas fa-key"></i> Esqueceu a senha?
-                </a>
-            </div>
-        </div>
-
-        <!-- CADASTRO -->
-        <div class="t" id="tCad">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar</a>
-            <div class="logo-r">
-                <div class="lic">SS</div>
-                <div class="lt">SulSafe</div>
-            </div>
-            <p class="sub">Crie sua conta. Após o cadastro, fale conosco no WhatsApp para liberar seu acesso.</p>
-            <form id="frmCadastro">
-                <div class="fld">
-                    <label>Nome completo</label>
-                    <input type="text" id="cNome" placeholder="Seu nome" required>
-                </div>
-                <div class="fld">
-                    <label>Email</label>
-                    <input type="email" id="cEmail" placeholder="seu@email.com" required>
-                </div>
-                <div class="fld">
-                    <label>Senha (mínimo 6 caracteres)</label>
-                    <input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6">
-                </div>
-                <div class="fld">
-                    <label>Confirmar senha</label>
-                    <input type="password" id="cPass2" placeholder="Repita a senha" required>
-                </div>
-                <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
-                    <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="mostrarTermos()">termos de uso</a></label>
-                </div>
-                <button type="submit" class="btn btn-p btn-block" id="btnCadastro">
-                    <i class="fas fa-user-plus"></i> Criar conta
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- TERMOS MODAL (escondido) -->
-<div style="display:none" id="termosHtml">
-    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitação</strong><br>Ao utilizar a plataforma SulSafe, você concorda com estes termos.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteúdo</strong><br>Todo o material disponível é protegido por direitos autorais.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados são emitidos mediante conclusão do curso com nota mínima 7.0.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados são protegidos conforme a LGPD.</p>
-    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="closeMdl()">Entendi</button>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================
-// FUNÇÕES GLOBAIS
-// ============================================================
-function showT(tabId) {
-    document.querySelectorAll('.auth-card .t').forEach(el => el.classList.remove('on'));
-    document.getElementById(tabId).classList.add('on');
-}
-
-function recuperarSenha() {
-    const email = prompt('Digite seu email para recuperar a senha:');
-    if (email && email.includes('@')) {
-        alert('Instruções enviadas para ' + email);
-    } else if (email) {
-        alert('Por favor, digite um email válido.');
-    }
-}
-
-function mostrarTermos() {
-    const modal = document.getElementById('mdlBg');
-    const box = document.getElementById('mdlBox');
-    const termos = document.getElementById('termosHtml');
-    if (modal && box && termos) {
-        box.innerHTML = termos.innerHTML;
-        modal.classList.add('show');
-    }
-}
-
-function closeMdl() {
-    document.getElementById('mdlBg').classList.remove('show');
-}
-
-function showToast(message, type = 'info') {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.className = 'toast ' + type + ' show';
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// ============================================================
-// CONFIGURAÇÃO SUPABASE (DIRETO NO HTML - SEM IMPORTS)
+// CONFIGURAÇÃO SUPABASE
 // ============================================================
 const SUPABASE_URL = 'https://dhhvhiyoxadcwsfqlndw.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoaHZoaXlveGFkY3dzZnFsbmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTQ0NzIsImV4cCI6MjA5NjQ5MDQ3Mn0.3-We2KnsGekUMrDrG3F0qrP1ZCSwkG6sXcDUQ-ajuAQ';
@@ -331,56 +220,83 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ============================================================
 // ELEMENTOS
 // ============================================================
-const frmLogin = document.getElementById('frmLogin');
-const frmCadastro = document.getElementById('frmCadastro');
-const lEmail = document.getElementById('lEmail');
-const lPass = document.getElementById('lPass');
-const cNome = document.getElementById('cNome');
-const cEmail = document.getElementById('cEmail');
-const cPass = document.getElementById('cPass');
-const cPass2 = document.getElementById('cPass2');
-const cTermos = document.getElementById('cTermos');
-const btnLogin = document.getElementById('btnLogin');
-const btnCadastro = document.getElementById('btnCadastro');
+const loginForm = document.getElementById('loginForm');
+const cadastroForm = document.getElementById('cadastroForm');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const nome = document.getElementById('nome');
+const emailCad = document.getElementById('emailCad');
+const senhaCad = document.getElementById('senhaCad');
+const senhaCad2 = document.getElementById('senhaCad2');
+const loginBtn = document.getElementById('loginBtn');
+const cadastroBtn = document.getElementById('cadastroBtn');
+const toast = document.getElementById('toast');
+
+// ============================================================
+// FUNÇÕES
+// ============================================================
+function showToast(message, type = 'info') {
+    toast.textContent = message;
+    toast.className = 'toast ' + type + ' show';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function showCadastro() {
+    loginForm.classList.add('hidden');
+    cadastroForm.classList.remove('hidden');
+}
+
+function showLogin() {
+    cadastroForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+}
+
+function recuperarSenha() {
+    const email = prompt('Digite seu email para recuperar a senha:');
+    if (email && email.includes('@')) {
+        showToast('Instruções enviadas para ' + email, 'success');
+    } else if (email) {
+        showToast('Por favor, digite um email válido.', 'error');
+    }
+}
 
 // ============================================================
 // LOGIN
 // ============================================================
-frmLogin.addEventListener('submit', async (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const email = lEmail.value.trim();
-    const password = lPass.value.trim();
+    const emailVal = email.value.trim();
+    const passVal = password.value.trim();
     
-    if (!email || !password) {
+    if (!emailVal || !passVal) {
         showToast('Preencha todos os campos.', 'error');
         return;
     }
     
-    btnLogin.disabled = true;
-    btnLogin.innerHTML = '<span class="spinner"><i class="fas fa-spinner"></i></span> Entrando...';
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
     
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
+            email: emailVal,
+            password: passVal
         });
         
         if (error) {
             showToast('Email ou senha incorretos.', 'error');
-            console.error('Erro login:', error);
+            console.error('Erro:', error);
             return;
         }
         
         if (data?.user) {
-            showToast('Login realizado!', 'success');
+            showToast('✅ Login realizado!', 'success');
             
-            // Salva no localStorage
             localStorage.setItem('user_id', data.user.id);
             localStorage.setItem('user_email', data.user.email);
             localStorage.setItem('user_logged_in', 'true');
             
-            // Redireciona
             setTimeout(() => {
                 window.location.href = '/index.html';
             }, 500);
@@ -389,53 +305,47 @@ frmLogin.addEventListener('submit', async (e) => {
         console.error('Erro:', err);
         showToast('Erro ao fazer login. Tente novamente.', 'error');
     } finally {
-        btnLogin.disabled = false;
-        btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
     }
 });
 
 // ============================================================
 // CADASTRO
 // ============================================================
-frmCadastro.addEventListener('submit', async (e) => {
+cadastroForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const nome = cNome.value.trim();
-    const email = cEmail.value.trim();
-    const password = cPass.value;
-    const password2 = cPass2.value;
-    const termos = cTermos.checked;
+    const nomeVal = nome.value.trim();
+    const emailVal = emailCad.value.trim();
+    const senhaVal = senhaCad.value;
+    const senhaVal2 = senhaCad2.value;
     
-    if (!nome || !email || !password || !password2) {
+    if (!nomeVal || !emailVal || !senhaVal || !senhaVal2) {
         showToast('Preencha todos os campos.', 'error');
         return;
     }
     
-    if (password.length < 6) {
+    if (senhaVal.length < 6) {
         showToast('A senha deve ter no mínimo 6 caracteres.', 'error');
         return;
     }
     
-    if (password !== password2) {
+    if (senhaVal !== senhaVal2) {
         showToast('As senhas não coincidem.', 'error');
         return;
     }
     
-    if (!termos) {
-        showToast('Você precisa aceitar os termos de uso.', 'error');
-        return;
-    }
-    
-    btnCadastro.disabled = true;
-    btnCadastro.innerHTML = '<span class="spinner"><i class="fas fa-spinner"></i></span> Criando...';
+    cadastroBtn.disabled = true;
+    cadastroBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
     
     try {
         const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
+            email: emailVal,
+            password: senhaVal,
             options: {
                 data: {
-                    nome_completo: nome,
+                    nome_completo: nomeVal,
                     role: 'user'
                 }
             }
@@ -448,32 +358,31 @@ frmCadastro.addEventListener('submit', async (e) => {
         
         if (data?.user) {
             // Cria perfil
-            const { error: profileError } = await supabase
+            await supabase
                 .from('profiles')
                 .insert([{
                     id: data.user.id,
                     email: data.user.email,
-                    nome_completo: nome,
+                    nome_completo: nomeVal,
                     role: 'user'
-                }]);
+                }])
+                .then(({ error }) => {
+                    if (error) console.warn('Erro ao criar perfil:', error);
+                });
             
-            if (profileError) {
-                console.warn('Erro ao criar perfil:', profileError);
-            }
-            
-            showToast('Cadastro realizado! Verifique seu email.', 'success');
+            showToast('✅ Cadastro realizado! Verifique seu email.', 'success');
             setTimeout(() => {
-                showT('tLogin');
-                lEmail.value = email;
-                frmCadastro.reset();
+                showLogin();
+                email.value = emailVal;
+                cadastroForm.reset();
             }, 1000);
         }
     } catch (err) {
         console.error('Erro:', err);
         showToast('Erro ao criar conta. Tente novamente.', 'error');
     } finally {
-        btnCadastro.disabled = false;
-        btnCadastro.innerHTML = '<i class="fas fa-user-plus"></i> Criar conta';
+        cadastroBtn.disabled = false;
+        cadastroBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar conta';
     }
 });
 
@@ -494,5 +403,6 @@ frmCadastro.addEventListener('submit', async (e) => {
 
 console.log('✅ Login page carregada!');
 </script>
+
 </body>
 </html>
