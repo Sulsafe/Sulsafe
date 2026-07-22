@@ -1,13 +1,13 @@
 // ============================================================
 // VIEW: SALAS AO VIVO
 // ============================================================
-import { role, canManage, uid, nav, fmtD } from '../state.js' // <- ../ 
-import { sb, sbGetSalasAtivas, sbCriarSala } from '../supabase-client.js' // <- ../ + add sb
-import { toast, handleError, sanitizar, $, $$ } from '../utils.js' // <- ../ 
+import { role, canManage, uid, nav, fmtD } from '../state.js'
+import { sb, sbGetSalasAtivas, sbCriarSala } from '../supabase-client.js'
+import { toast, handleError, sanitizar, $, $$ } from '../utils.js'
 
 export function vSalas() {
     const r = role()
-    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>` // <- tirei window.
+    let h = `<div class="btn-back" onclick="nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
     h += `<h2 class="wc">Salas ao Vivo</h2><p class="wcs">${r === 'aluno' ? 'Participe das aulas em tempo real.' : 'Crie e gerencie salas ao vivo.'}</p>`
     if (canManage()) {
         h += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
@@ -23,7 +23,7 @@ export function vSalas() {
 
 async function carregarSalas() {
     const { data: salas } = await sbGetSalasAtivas()
-    const container = $('#listaSalas') // <- usei $
+    const container = $('#listaSalas')
     if (!container) return
     
     if (!salas || salas.length === 0) {
@@ -55,7 +55,6 @@ async function criarSalaSupabase() {
     const { data, error } = await sbCriarSala(top, meet, uid())
     if (error) { handleError(error); return }
     toast('Sala criada!', 'success')
-    // pushNotif(`Nova sala ao vivo: "${top}"`, 'Entrar', 'salas') // <- comentei pq não existe no utils.js
     carregarSalas()
     $('#salaTop').value = ''
     $('#salaMeet').value = ''
@@ -63,7 +62,7 @@ async function criarSalaSupabase() {
 
 async function encerrarSalaSupabase(id) {
     if (!confirm('Encerrar esta sala?')) return
-    await sb.from('salas').update({ ativa: false }).eq('id', id) // <- agora sb tá importado
+    await sb.from('salas').update({ ativa: false }).eq('id', id)
     toast('Sala encerrada', 'info')
     carregarSalas()
 }
