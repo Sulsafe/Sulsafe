@@ -1,129 +1,93 @@
-// js/state.js - ESTADO GLOBAL UNIFICADO
-import { sb } from './supabase-client.js';
+// ============================================================
+// STATE - ESTADO GLOBAL DA APLICAÇÃO
+// ============================================================
 
-// ============================================================
-// ESTADO GLOBAL
-// ============================================================
 export const S = {
     user: null,
-    view: 'inicio',
+    cfg: {},
+    currentView: 'inicio',
     prevView: null,
-    cfg: JSON.parse(localStorage.getItem('ss_cfg') || '{"tema":"verde","vol":80,"qual":"hd","speed":"1","autoPlay":true,"notifs":true}')
-};
-
-export const ADMIN_EMAIL = 'sulsafetreinamentos@gmail.com';
-
-// ============================================================
-// FUNÇÕES DE ACESSO
-// ============================================================
-export const role = () => S.user?.role || 'aluno';
-export const isAdmin = () => role() === 'admin' || S.user?.email === ADMIN_EMAIL;
-export const isProf = () => role() === 'professor';
-export const canManage = () => isAdmin() || isProf();
-export const uid = () => S.user?.id;
-export const fmtD = d => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
-export const genId = () => 'ss_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-
-// ============================================================
-// FUNÇÕES DE USUÁRIO (SUBSTITUEM O state.js ANTIGO)
-// ============================================================
-export function setUser(user) {
-    S.user = user;
-    localStorage.setItem('user_logged_in', 'true');
-    localStorage.setItem('user_id', user?.id || '');
-    localStorage.setItem('user_email', user?.email || '');
-    localStorage.setItem('user_role', isAdmin() ? 'admin' : 'aluno');
-    
-    // Notifica listeners
-    window.dispatchEvent(new CustomEvent('authchange', { detail: { user } }));
+    views: {},
+    sidebar: null
 }
 
-export function clearUser() {
-    S.user = null;
-    localStorage.removeItem('user_logged_in');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('user_role');
-    
-    // Notifica listeners
-    window.dispatchEvent(new CustomEvent('authchange', { detail: { user: null } }));
-}
-
-export function getUser() {
-    return S.user;
-}
-
-export function isAuthenticated() {
-    return S.user !== null;
-}
-
-// ============================================================
-// CONFIGURAÇÕES
-// ============================================================
-export function loadCfg() {
-    const t = S.cfg.tema || 'verde';
-    document.body.className = t !== 'verde' ? 't-' + t : '';
-}
-
-export async function loadCfgDB() {
-    try {
-        const { data, error } = await sb.from('configuracoes').select('*').single();
-        if (error) throw error;
-        S.cfg = { ...S.cfg, ...data };
-        saveCfg();
-        loadCfg();
-    } catch (e) {
-        console.log('Sem config no banco ou erro:', e);
-        loadCfg();
-    }
-}
-
-export function saveCfg() {
-    localStorage.setItem('ss_cfg', JSON.stringify(S.cfg));
-    loadCfg();
-}
-
-// ============================================================
-// REGISTRO DE VIEWS (PARA O DASHBOARD)
-// ============================================================
-const viewRegistry = {};
+// Lista das 38 NRs
+export const NRS = [
+    { n: 1,  nome: 'Disposições Gerais e Gerenciamento de Riscos', cat: 'gerais', emoji: '📋' },
+    { n: 2,  nome: 'Inspeção Prévia', cat: 'gerais', emoji: '📋' },
+    { n: 3,  nome: 'Embargo ou Interdição', cat: 'gerais', emoji: '📋' },
+    { n: 4,  nome: 'SESMT — Serviços Especializados', cat: 'gerais', emoji: '📋' },
+    { n: 5,  nome: 'CIPA — Comissão Interna de Prevenção', cat: 'gerais', emoji: '📋' },
+    { n: 6,  nome: 'EPI — Equipamento de Proteção Individual', cat: 'gerais', emoji: '🦺' },
+    { n: 7,  nome: 'PCMSO — Saúde Ocupacional', cat: 'gerais', emoji: '⚕️' },
+    { n: 8,  nome: 'Edificações', cat: 'gerais', emoji: '🏢' },
+    { n: 9,  nome: 'Avaliação de Riscos Ambientais (PGR)', cat: 'gerais', emoji: '📋' },
+    { n: 15, nome: 'Atividades e Operações Insalubres', cat: 'gerais', emoji: '⚠️' },
+    { n: 16, nome: 'Atividades e Operações Perigosas', cat: 'gerais', emoji: '⚠️' },
+    { n: 17, nome: 'Ergonomia', cat: 'gerais', emoji: '🎯' },
+    { n: 24, nome: 'Condições Sanitárias e de Conforto', cat: 'gerais', emoji: '🚿' },
+    { n: 25, nome: 'Resíduos Industriais', cat: 'gerais', emoji: '🗑️' },
+    { n: 26, nome: 'Sinalização de Segurança', cat: 'gerais', emoji: '🚸' },
+    { n: 28, nome: 'Fiscalização e Penalidades', cat: 'gerais', emoji: '📋' },
+    { n: 10, nome: 'Segurança em Eletricidade', cat: 'especificas', emoji: '⚡' },
+    { n: 11, nome: 'Movimentação e Armazenagem de Cargas', cat: 'especificas', emoji: '📦' },
+    { n: 12, nome: 'Máquinas e Equipamentos', cat: 'especificas', emoji: '🏭' },
+    { n: 13, nome: 'Vasos de Pressão e Caldeiras', cat: 'especificas', emoji: '🛢️' },
+    { n: 14, nome: 'Fornos Industriais', cat: 'especificas', emoji: '🔥' },
+    { n: 19, nome: 'Explosivos', cat: 'especificas', emoji: '💥' },
+    { n: 20, nome: 'Inflamáveis e Combustíveis', cat: 'especificas', emoji: '🔥' },
+    { n: 23, nome: 'Proteção Contra Incêndios', cat: 'especificas', emoji: '🧯' },
+    { n: 33, nome: 'Espaços Confinados', cat: 'especificas', emoji: '🔬' },
+    { n: 35, nome: 'Trabalho em Altura', cat: 'especificas', emoji: '🪜' },
+    { n: 18, nome: 'Indústria da Construção Civil', cat: 'setoriais', emoji: '🏗️' },
+    { n: 21, nome: 'Trabalho a Céu Aberto', cat: 'setoriais', emoji: '☀️' },
+    { n: 22, nome: 'Mineração', cat: 'setoriais', emoji: '⛏️' },
+    { n: 27, nome: 'Registro Profissional (Histórico)', cat: 'setoriais', emoji: '📜' },
+    { n: 29, nome: 'Segurança e Saúde nos Portos', cat: 'setoriais', emoji: '🚢' },
+    { n: 30, nome: 'Trabalho Aquaviário', cat: 'setoriais', emoji: '🚤' },
+    { n: 31, nome: 'Agricultura, Pecuária e Florestal', cat: 'setoriais', emoji: '🌾' },
+    { n: 32, nome: 'Serviços de Saúde', cat: 'setoriais', emoji: '⚕️' },
+    { n: 34, nome: 'Construção, Reparação e Desmontagem', cat: 'setoriais', emoji: '🏗️' },
+    { n: 36, nome: 'Abate e Processamento de Carnes', cat: 'setoriais', emoji: '🥩' },
+    { n: 37, nome: 'Plataformas de Petróleo', cat: 'setoriais', emoji: '🛢️' },
+    { n: 38, nome: 'Limpeza Urbana e Resíduos Sólidos', cat: 'setoriais', emoji: '🚛' }
+]
 
 export function registerView(name, fn) {
-    viewRegistry[name] = fn;
+    S.views[name] = fn
 }
-
-let _renderSidebar = () => {};
 
 export function setRenderSidebar(fn) {
-    _renderSidebar = fn;
+    S.sidebar = fn
 }
 
-export function nav(viewName) {
-    S.prevView = S.view;
-    S.view = viewName;
-    if (_renderSidebar) _renderSidebar();
-    
-    const fn = viewRegistry[viewName];
-    if (fn) {
-        fn();
-        window.dispatchEvent(new CustomEvent('viewchange', { detail: { view: viewName } }));
-    } else {
-        const mc = document.getElementById('mc');
-        if (mc) {
-            mc.innerHTML = `
-                <div class="empty">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <h4>View "${viewName}" não encontrada</h4>
-                </div>`;
-        }
+// Date format
+export function fmtD(d) {
+    if (!d) return ''
+    const dt = new Date(d)
+    return dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+// Exportar NRS como NRS para compatibilidade
+export { NRS as NRS_LIST }
+
+// Função de navegação global
+export function nav(view) {
+    S.prevView = S.currentView
+    S.currentView = view
+    if (S.sidebar) S.sidebar()
+    renderView()
+}
+
+function renderView() {
+    const viewFn = S.views[S.currentView]
+    if (!viewFn) return
+    const content = document.getElementById('appContent')
+    if (content) {
+        content.innerHTML = viewFn()
+        // Re-attach event listeners if needed
     }
 }
 
-export const navigateTo = nav;
-export function refreshView() {
-    if (S.view) {
-        const fn = viewRegistry[S.view];
-        if (fn) fn();
-    }
-}
-export const getCurrentView = () => S.view;
+// Tornar nav global
+window.nav = nav
