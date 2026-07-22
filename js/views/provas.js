@@ -2,8 +2,10 @@
 // VIEW: PROVAS (Aluno / Professor)
 // ============================================================
 import { S, role, uid, nav, fmtD } from '../state.js'
-import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET, sbGetProvasAluno } from '../supabase-client.js'
-import { openMdl, close, $, $$, toast, NRS, sanitizar, handleError } from '../utils.js' 
+import { sbEnviarProva, sbGetProvasPendentes, sbCorrigirProva, sbUploadArquivo, STORAGE_BUCKET, sbGetNotasAluno } from '../supabase-client.js'
+import { openMdl, closeMdl, $, $$, toast, sanitizar, handleError } from '../utils.js'
+import { NRS } from '../state.js'
+
 export function vProvas() {
     const r = role()
     let h = `<div class="btn-back" onclick="window.nav('inicio')"><i class="fas fa-arrow-left"></i> Voltar</div>`
@@ -33,6 +35,10 @@ export function vProvas() {
         setTimeout(carregarProvasPendentes, 200)
     }
     return h
+}
+
+function close() {
+    closeMdl()
 }
 
 async function enviarProva(e) {
@@ -65,7 +71,7 @@ async function enviarProva(e) {
 async function carregarMinhasProvas() {
     const container = document.getElementById('minhasProvas')
     if (!container) return
-    const { data: provas } = await sbGetProvasAluno(uid())
+    const { data: provas } = await sbGetNotasAluno(uid())
     
     if (!provas || provas.length === 0) {
         container.innerHTML = `<div class="empty"><i class="fas fa-file-pdf"></i><p>Nenhuma prova enviada.</p></div>`
@@ -75,7 +81,7 @@ async function carregarMinhasProvas() {
     let h = `<div class="tw"><table><thead><tr><th>NR</th><th>Título</th><th>Status</th><th>Nota</th><th>Data</th></tr></thead><tbody>`
     provas.forEach(p => {
         const statusCor = p.status === 'corrigido' ? 'bg-ok' : p.status === 'reprovado' ? 'bg-err' : 'bg-pendente'
-        h += `<tr><td>NR ${p.nr_id}</td><td>${p.titulo}</td><td><span class="badge ${statusCor}">${p.status}</span></td><td>${p.nota ?? '—'}</td><td>${fmtD(p.criado_em)}</td></tr>`
+        h += `<tr><td>NR ${p.nr_id}</td><td>${p.titulo || 'Prova'}</td><td><span class="badge ${statusCor}">${p.status || 'pendente'}</span></td><td>${p.nota ?? '—'}</td><td>${fmtD(p.criado_em)}</td></tr>`
     })
     h += `</tbody></table></div>`
     container.innerHTML = h
@@ -107,7 +113,7 @@ async function carregarProvasPendentes() {
 }
 
 function abrirCorrecao(provaId) {
-    openMdl(`<button class="mdl-x" onclick="closeModalProvas()"><i class="fas fa-times"></i></button>
+    openMdl(`<button class="mdl-x" onclick="close()"><i class="fas fa-times"></i></button>
         <h2 style="font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px">Corrigir Prova</h2>
         <div class="fld"><label>Nota (0 a 10)</label>
             <input type="number" id="corrNota" min="0" max="10" step="0.1" required>
@@ -128,11 +134,11 @@ async function finalizarCorrecao(provaId, status) {
     if (error) { handleError(error); return }
     
     toast('Prova corrigida! Nota: ' + nota, 'success')
-    close() 
+    close()
     carregarProvasPendentes()
 }
 
 window.enviarProva = enviarProva
 window.abrirCorrecao = abrirCorrecao
 window.finalizarCorrecao = finalizarCorrecao
-window.closeModalProvas = close 
+window.close = close
