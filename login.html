@@ -2,92 +2,355 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-    <meta name="description" content="SulSafe — Plataforma de ensino de Segurança do Trabalho com 38 NRs.">
-    <meta property="og:title" content="SulSafe - Segurança do Trabalho">
-    <meta property="og:description" content="Plataforma completa com 38 NRs, videoaulas e certificados digitais">
-    <meta name="keywords" content="segurança do trabalho, NRs, curso SST, CIPA, EPI, segurança no trabalho">
-    <meta name="robots" content="index, follow">
-    <title>SulSafe | Plataforma de Segurança do Trabalho</title>
-    <link rel="icon" type="image/png" href="logo1.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SulSafe | Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --verde: #2E7D32;
+            --verde-escuro: #1B5E20;
+            --verde-claro: #43A047;
+            --verde-bg: #E8F5E9;
+            --dourado: #C9B037;
+            --texto: #1A1A1A;
+            --texto-sec: #555;
+            --borda: #E0E0E0;
+            --branco: #FFFFFF;
+            --radius: 16px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #E8F5E9 0%, #fff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .login-container {
+            background: #fff;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 24px 48px rgba(0,0,0,.12);
+            border: 1px solid var(--borda);
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo img {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            background: var(--verde);
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .login-logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--verde-escuro);
+            letter-spacing: -1px;
+        }
+        .login-logo p {
+            color: var(--texto-sec);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--verde-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all .25s;
+            background: transparent;
+            color: var(--texto-sec);
+        }
+        .tab-btn.active {
+            background: #fff;
+            color: var(--verde-escuro);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto-sec);
+            margin-bottom: 6px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--borda);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color .2s;
+            background: #FAFAFA;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--verde);
+            background: #fff;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            background: var(--verde);
+            color: #fff;
+            border: none;
+            transition: all .25s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn:hover {
+            background: var(--verde-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46,125,50,.35);
+        }
+        .btn-gold {
+            background: var(--dourado);
+            color: var(--verde-escuro);
+        }
+        .btn-gold:hover { background: #A8922C; box-shadow: 0 6px 20px rgba(201,176,55,.4); }
+        .form-footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--texto-sec);
+        }
+        .form-footer a {
+            color: var(--verde);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .form-footer a:hover { text-decoration: underline; }
+        .terms-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--texto-sec);
+        }
+        .terms-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--verde);
+        }
+        .recaptcha-note {
+            font-size: 11px;
+            color: var(--texto-sec);
+            text-align: center;
+            margin-top: 12px;
+            opacity: .7;
+        }
+        .off { display: none !important; }
+        #authWrap { display: block; }
+        #appWrap { display: none; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--texto-sec);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            text-decoration: none;
+        }
+        .back-link:hover { color: var(--verde-escuro); }
+    </style>
 </head>
 <body>
 
-<!-- ==================== AUTH ==================== -->
 <div id="authWrap">
-    <div class="auth-card">
+    <div class="login-container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar</a>
+        
+        <div class="login-logo">
+            <img src="logo1.png" alt="SulSafe" onerror="this.style.display='none'">
+            <h1>SulSafe</h1>
+            <p>Segurança do Trabalho</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tLogin" onclick="window.showT('tLogin')">Entrar</button>
+            <button class="tab-btn" data-tab="tCad" onclick="window.showT('tCad')">Cadastrar</button>
+        </div>
+
         <!-- LOGIN -->
-        <div class="t on" id="tLogin">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Acesse sua conta — 38 NRs, videoaulas e certificados.</p>
+        <div class="tab-content active" id="tLogin">
             <form id="frmLogin">
-                <div class="fld"><label>Email</label><input type="email" id="lEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha</label><input type="password" id="lPass" placeholder="Sua senha" required></div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="lEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="lPass" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-right-to-bracket"></i> Entrar</button>
             </form>
-            <div class="divider">ou</div>
-            <button class="btn btn-s btn-block" onclick="window.showT('tCad')">Cadastrar nova conta</button>
-            <div style="margin-top: 12px; text-align: center;">
-                <a href="#" onclick="window.recuperarSenha()" style="font-size: 13px; color: var(--tx3);"><i class="fas fa-key"></i> Esqueceu a senha?</a>
+            <div class="form-footer">
+                <a href="#" onclick="window.recuperarSenha()">Esqueceu a senha?</a>
             </div>
         </div>
+
         <!-- CADASTRO -->
-        <div class="t" id="tCad">
-            <a href="index.html" class="back-to-site"><i class="fas fa-arrow-left"></i> Voltar ao site</a>
-            <div class="logo-r"><div class="lic">SS</div><div class="lt">SulSafe</div></div>
-            <p class="sub">Crie sua conta e comece a estudar agora.</p>
+        <div class="tab-content" id="tCad">
             <form id="frmCad">
-                <div class="fld"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" required></div>
-                <div class="fld"><label>Email</label><input type="email" id="cEmail" placeholder="seu@email.com" required></div>
-                <div class="fld"><label>Senha (mínimo 6 caracteres)</label><input type="password" id="cPass" placeholder="Min. 6 caracteres" required minlength="6"></div>
-                <div class="fld"><label>Confirmar senha</label><input type="password" id="cPass2" placeholder="Repita a senha" required></div>
-                <div class="fld" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)">
-                    <input type="checkbox" id="cTermos" required style="width:auto;accent-color:var(--p)">
-                    <label for="cTermos" style="margin:0">Li e aceito os <a href="#" onclick="window.mostrarTermos()">termos de uso</a></label>
+                <div class="form-group">
+                    <label>Nome completo</label>
+                    <input type="text" id="cNome" placeholder="Seu nome completo" required>
                 </div>
-                <button type="submit" class="btn btn-p btn-block"><i class="fas fa-user-plus"></i> Criar conta</button>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="cEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha (mín. 6 caracteres)</label>
+                    <input type="password" id="cPass" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar senha</label>
+                    <input type="password" id="cPass2" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="terms-row">
+                        <input type="checkbox" id="cTermos" required>
+                        Aceito os <a href="#" target="_blank">Termos de Uso</a> e a <a href="#" target="_blank">Política de Privacidade</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-user-plus"></i> Criar conta</button>
             </form>
+            <div class="recaptcha-note">Protegido por reCAPTCHA</div>
         </div>
     </div>
 </div>
 
-<!-- ==================== DASHBOARD ==================== -->
-<div id="dash">
-    <aside class="sidebar" id="sidebar"></aside>
-    <main class="main" id="mc"></main>
+<div id="appWrap" class="off">
+    <!-- Dashboard será renderizado aqui -->
 </div>
 
-<!-- MODAL GERAL -->
-<div class="mdl-bg" id="mdlBg"><div class="mdl" id="mdlBox"></div></div>
+<script type="importmap">
+{
+    "imports": {
+        "./js/": "./js/"
+    }
+}
+</script>
 
-<!-- NOTIFICAÇÃO POPUP -->
-<div class="notif-popup" id="notifPopup">
-    <div class="notif-popup-hd"><h4><i class="fas fa-bell"></i> Novo Conteúdo</h4><button class="mdl-x" style="position:static;background:rgba(255,255,255,.2);color:#fff" onclick="window.closeNotif()"><i class="fas fa-times"></i></button></div>
-    <div class="notif-popup-bd" id="notifBody"></div>
-    <div class="notif-popup-ft"><button class="btn btn-sm btn-s" onclick="window.closeNotif()">Fechar</button><button class="btn btn-sm btn-p" id="notifAction">Ver agora</button></div>
-</div>
+<script type="module">
+import { S, registerView, setRenderSidebar, nav, loadCfg } from './js/state.js'
+import { sb, sbGetUser } from './js/supabase-client.js'
+import { handleLogin, handleCadastro, logout, recuperarSenha } from './js/auth.js'
+import { renderSB, renderV, enterDash, checkNotifs } from './js/app.js'
+import { toast, showT, $, $$ } from './js/utils.js'
 
-<!-- TOAST -->
-<div id="toast"></div>
+// Import views
+import { vInicio } from './js/views/inicio.js'
+import { vAdmin } from './js/views/admin.js'
 
-<!-- TERMOS MODAL (escondido) -->
-<div style="display:none" id="termosHtml">
-    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px;color:var(--p)">Termos de Uso</h2>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2)"><strong>1. Aceitação</strong><br>Ao utilizar a plataforma SulSafe, você concorda com estes termos.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>2. Conteúdo</strong><br>Todo o material disponível é protegido por direitos autorais. É proibida a redistribuição sem autorização.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>3. Certificados</strong><br>Os certificados são emitidos mediante conclusão do curso com nota mínima 7.0.</p>
-    <p style="font-size:14px;line-height:1.8;color:var(--tx2);margin-top:12px"><strong>4. Privacidade</strong><br>Seus dados são protegidos conforme a LGPD. Não compartilhamos com terceiros.</p>
-    <button class="btn btn-p btn-block" style="margin-top:20px" onclick="window.closeMdl()">Entendi</button>
-</div>
+// Registrar views
+registerView('inicio', vInicio)
+registerView('admin', vAdmin)
 
-<!-- SCRIPT MODULAR -->
-<script type="module" src="js/main.js"></script>
+// Registrar views básicas (as outras serão carregadas depois)
+// Por enquanto, views vazias para não quebrar
+const viewsPlaceholder = ['videoaulas', 'materiais', 'salas', 'nrs', 'ia', 'boletim', 'provas', 'certificados', 'config', 'pendentes']
+viewsPlaceholder.forEach(v => {
+    registerView(v, () => `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Carregando ${v}...</p></div>`)
+})
+
+setRenderSidebar(renderSB)
+
+// Tornar funções globais
+window.logout = logout
+window.recuperarSenha = recuperarSenha
+window.showT = showT
+window.nav = nav
+window.toast = toast
+
+// Event listeners
+document.getElementById('frmLogin')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const email = document.getElementById('lEmail').value.trim().toLowerCase()
+    const password = document.getElementById('lPass').value
+    await handleLogin(email, password)
+})
+
+document.getElementById('frmCad')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const nome = document.getElementById('cNome').value.trim()
+    const email = document.getElementById('cEmail').value.trim().toLowerCase()
+    const password = document.getElementById('cPass').value
+    const confirm = document.getElementById('cPass2').value
+    const termos = document.getElementById('cTermos').checked
+    await handleCadastro(nome, email, password, confirm, termos)
+})
+
+// Auto-login
+;(async function() {
+    try {
+        const { data: { session } } = await sb.auth.getSession()
+        if (session) {
+            const { data: user } = await sbGetUser(session.user.id)
+            if (user) {
+                S.user = user
+                localStorage.setItem('ss_user', JSON.stringify(user))
+                loadCfg()
+                enterDash()
+                return
+            }
+        }
+        const sessionData = localStorage.getItem('ss_session')
+        if (sessionData) {
+            const { id } = JSON.parse(sessionData)
+            const { data: user } = await sbGetUser(id)
+            if (user) {
+                S.user = user
+                localStorage.setItem('ss_user', JSON.stringify(user))
+                loadCfg()
+                enterDash()
+                return
+            }
+        }
+        document.getElementById('authWrap').classList.remove('off')
+    } catch (e) {
+        console.log('Auto-login:', e)
+        document.getElementById('authWrap').classList.remove('off')
+    }
+})()
+</script>
+
 </body>
 </html>
