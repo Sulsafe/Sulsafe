@@ -2,8 +2,8 @@
 // AUTH - LOGIN, CADASTRO, LOGOUT, RECUPERAÇÃO
 // ============================================================
 import { sb } from './supabase-client.js'
-import { ADMIN_EMAIL, S, loadCfg, enterDash, toast, handleError, sanitizar, showT } from './utils.js'
-// Importar showT do utils ou definir aqui
+import { ADMIN_EMAIL, loadCfg, enterDash, toast, handleError, sanitizar, showT } from './utils.js'
+import { S } from './state.js'
 
 export async function handleLogin(email, password) {
     try {
@@ -104,7 +104,6 @@ export async function logout() {
     S.user = null
     localStorage.removeItem('ss_session')
     localStorage.removeItem('ss_user')
-    // Destruir gráficos se existir função
     if (window.destroyCharts) window.destroyCharts()
     window.location.href = 'index.html'
 }
