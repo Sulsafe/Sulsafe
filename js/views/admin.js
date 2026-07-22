@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: ADMIN (MODO DEUS)
 // ============================================================
-import { S, role, isAdmin, uid, nav, fmtD } from './state.js'
-import { sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from './supabase-client.js'
-import { toast, handleError, openMdl, closeMdl, $, $$ } from './utils.js'
+import { S, role, isAdmin, uid, nav, fmtD } from '../state.js'
+import { sbGetDashboardMetrics, sbGetAllUsers, sbGetRankingAlunos, sbUpdateUser, sbLiberarUsuario } from '../supabase-client.js'
+import { toast, handleError, openMdl, closeMdl, $, $$ } from '../utils.js'
 
 export function vAdmin() {
     if (!isAdmin()) return window.nav('inicio')
