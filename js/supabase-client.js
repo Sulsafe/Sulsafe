@@ -1,7 +1,7 @@
 // ============================================================
 // SUPABASE CLIENT + CRUD
 // ============================================================
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 import { ADMIN_EMAIL, uid, sanitizar, toast, handleError } from './utils.js'
 import { S } from './state.js'
 
