@@ -1,9 +1,9 @@
 // ============================================================
 // VIEW: INÍCIO
 // ============================================================
-import { S, role, isAdmin, isProf, uid, nav, NRS } from './state.js'
-import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from './supabase-client.js'
-import { toast, $, $$ } from './utils.js'
+import { S, role, isAdmin, isProf, uid, nav, NRS } from '../state.js'
+import { sbGetDashboardMetrics, sbGetProgressoUsuario, sbGetSalasAtivas } from '../supabase-client.js'
+import { toast, $, $$ } from '../utils.js'
 
 export function vInicio() {
     const r = role()
