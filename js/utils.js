@@ -120,6 +120,11 @@ style.textContent = `
 `
 document.head.appendChild(style)
 
+// Role helpers
+export function canManage() {
+    const r = role()
+    return r === 'admin' || r === 'professor'
+}
 // Expor funções para uso global
 window.toast = toast
 window.closeMdl = closeMdl
